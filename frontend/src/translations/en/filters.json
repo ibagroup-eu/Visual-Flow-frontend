@@ -1,0 +1,32 @@
+{
+    "status": "Status",
+    "statuses": {
+        "Draft": "Draft",
+        "Pending": "Pending",
+        "Running": "Running",
+        "Failed": "Failed",
+        "Succeeded": "Succeeded",
+        "Unknown": "Unknown",
+        "Error": "Error",
+        "Skipped": "Skipped",
+        "Terminated": "Terminated",
+        "Suspended": "Suspended",
+        "Stopped": "Stopped"
+    },
+    "N/A": "N/A",
+    "lastFinished": "Last Finished",
+    "lastEdit": "Last Edit",
+    "lastRun": "Last Run",
+    "timeRange": {
+        "last hour": "last hour",
+        "last 3 hours": "last 3 hours",
+        "last 8 hours": "last 8 hours",
+        "1 day ago": "1 day ago",
+        "3 days ago": "3 days ago",
+        "7 days ago": "7 days ago"
+    },
+    "noItems": "No items to display",
+    "dropDown": {
+        "None": "None"
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "Status": "Status",
+    "Level": "Level",
+    "CPU": "CPU",
+    "Memory": "Memory",
+    "JOB_ID": "JOB_ID*",
+    "level": {
+        "INFO": "INFO",
+        "WARN": "WARNING",
+        "ERROR": "ERROR",
+        "DEBUG": "DEBUG",
+        "RESULT": "RESULT"
+    },
+    "tooltip": {
+        "Play": "Run",
+        "Stop": "Stop",
+        "Save": "Save",
+        "Undo": "Undo",
+        "Redo": "Redo",
+        "Refresh": "Refresh",
+        "Logs": "Logs",
+        "Copy": "Copy",
+        "Remove": "Remove",
+        "jobDesigner": "Job Designer",
+        "Remove selected": "Remove selected",
+        "Export selected": "Export selected"
+    },
+    "noItems": "No items to display",
+    "confirm": {
+        "delete": "Are you sure you want to delete {{name}} job(s)?"
+    },
+    "params": {
+        "Name": "Name",
+        "driverRequestCores": "Driver Request Cores",
+        "driverCores": "Driver Cores",
+        "driverMemory": "Driver Memory",
+        "executorRequestCores": "Executor Request Cores",
+        "executorCores": "Executor Cores",
+        "executorMemory": "Executor Memory",
+        "executorInstances": "Executor Instances",
+        "shufflePartitions": "Shuffle Partitions"
+    }
+}

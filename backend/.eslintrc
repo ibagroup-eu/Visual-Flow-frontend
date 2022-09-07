@@ -1,0 +1,61 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest": true,
+        "node": true
+    },
+    "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": ["react", "prettier"],
+    "rules": {
+        "complexity": ["error", 10],
+        "quotes": ["error", "single"],
+        "react/destructuring-assignment": [1, "always", { "ignoreClassFields": true }],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/require-default-props": 0,
+        "jsx-a11y/click-events-have-key-events": 0,
+        "jsx-a11y/interactive-supports-focus": 0,
+        "jsx-a11y/no-static-element-interactions": 0,
+        "jsx-a11y/anchor-is-valid": 0,
+        "jsx-a11y/label-has-associated-control": 0,
+        "react/jsx-props-no-spreading": 0,
+        "react/jsx-curly-newline": 0,
+        "linebreak-style": 0,
+        "react/forbid-prop-types": 0,
+        "no-unused-expressions": 0,
+        "import/no-named-as-default": 0,
+        "curly": ["error", "all"],
+        "prettier/prettier": ["error", {
+            "endOfLine": "auto"
+        }]
+    },
+    "settings": {
+        "react": {
+            "createClass": "createReactClass",
+            "pragma": "React",
+            "version": "detect",
+            "flowVersion": "0.53"
+        },
+        "propWrapperFunctions": [
+            "forbidExtraProps",
+            { "property": "freeze", "object": "Object" },
+            { "property": "myFavoriteWrapper" }
+        ],
+        "linkComponents": [
+            "Hyperlink",
+            { "name": "Link", "linkAttribute": "to" }
+        ]
+    }
+}

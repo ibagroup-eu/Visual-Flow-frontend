@@ -1,0 +1,10 @@
+{
+  "SORT": [
+    {
+      "field": "sortType"
+    },
+    {
+      "field": "orderColumns"
+    }
+  ]
+}

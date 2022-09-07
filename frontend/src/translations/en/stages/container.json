@@ -1,0 +1,64 @@
+{
+  "name": {
+    "name": "Name",
+    "value": "Provide Stage name."
+  },
+  "image": {
+    "name": "Image link",
+    "value": "Docker image path. Examples: mysql, mysql:latest, bitnami/argo-cd:2.1.2, localhost:5000/bitnami/argo-cd:2.1.2, registry.redhat.io/rhel7:latest."
+  },
+  "imagePullPolicy": {
+    "name": "Image pull policy",
+    "value": "Defines when the image will be pulled(downloaded). Possible values:",
+    "value2": "If not present - download only if not exist locally;",
+    "value3": "Always - download before each start;",
+    "value4": "Never - do not download use only local copy."
+  },
+  "requestsCpu": {
+    "name": "Requests CPU",
+    "value": "Minimal number of CPU cores reserved for this container."
+  },
+  "requestsMemory": {
+    "name": "Requests memory",
+    "value": "Minimal amount of RAM reserved for this container."
+  },
+  "limitsCpu": {
+    "name": "Limits CPU",
+    "value": "Maximum limit of CPU cores that container can use."
+  },
+  "limitsMemory": {
+    "name": "Limits memory",
+    "value": "Maximum limit of RAM that container can use."
+  },
+  "mountProjectParams": {
+    "name": "Mount project params",
+    "value": "Defines whether to mount all project params as environment variables inside the Pod."
+  },
+  "imagePullSecretType": {
+    "name": "Authentication type",
+    "value": " Authentication mode that could be one of these:",
+    "value2": "1) Not applicable - image pull secrets are not needed, as the image is pulled from the public registry;",
+    "value3": "2) New - create a new image pull secret on the fly by providing all necessary information (see below);",
+    "value4": "3) Provided - use existing image pull secret by providing it's name (Image pull secret name)."
+  },
+  "imagePullSecretName": {
+    "name": "Image pull secret name",
+    "value": "Name of the secret to pull the image. Note that it must exist within the same k8s namespace as the current pipeline."
+  },
+  "username": {
+    "name": "Username",
+    "value": "User name for registry authentication."
+  },
+  "password": {
+    "name": "Password",
+    "value": "Password for registry authentication."
+  },
+  "registry": {
+    "name": "Registry",
+    "value": "Name of the registry for authentication."
+  },
+  "command": {
+    "name": "Command",
+    "value": "Command that will be executed once Pod is be created."
+  }
+}

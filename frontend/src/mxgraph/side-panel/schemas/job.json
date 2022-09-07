@@ -1,0 +1,10 @@
+{
+  "JOB": [
+    {
+      "field": "jobId"
+    },
+    {
+      "field": "jobName"
+    }
+  ]
+}

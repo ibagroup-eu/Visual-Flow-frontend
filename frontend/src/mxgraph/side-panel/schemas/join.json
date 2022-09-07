@@ -1,0 +1,13 @@
+{
+  "JOIN": [
+    {
+      "field": "columns"
+    },
+    {
+      "field": "leftDataset"
+    },
+    {
+      "field": "rightDataset"
+    }
+  ]
+}

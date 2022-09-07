@@ -1,0 +1,25 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "key": {
+        "name": "Key",
+        "value": "Specify the key column for the operation. To specify more than one key, use a comma or Enter."
+    },
+    "orderBy": {
+        "name": "Order By",
+        "value1": "You can specify the order of output columns:",
+        "value2": "1. Click on the Plus button.",
+        "value3": "2. In the drop-down lists that appear, specify the sort order (Asc or Desc) and column name.",
+        "value4": "Notes:",
+        "value5": "1. Use the Plus button to add as many columns as you need.",
+        "value6": "2. Use the Minus button to remove the filter.",
+        "value7": "3. When multiple columns are used in ORDER BY, first the rows will be sorted based on the first",
+        "value8": "column and then by the second column. Use the Upp Arrow and Down Arrow to change the order of columns.",
+        "value9": {
+            "name": "\ud835\udc08\ud835\udc26\ud835\udc29\ud835\udc28\ud835\udc2b\ud835\udc2d\ud835\udc1a\ud835\udc27\ud835\udc2d\u003a",
+            "value": "This parameter is used within the process of removing duplicates, it does not affect the result set."
+        }
+    }
+}

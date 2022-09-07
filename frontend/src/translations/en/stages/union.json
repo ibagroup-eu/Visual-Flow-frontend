@@ -1,0 +1,15 @@
+{
+  "name": {
+    "name": "Name",
+    "value": "Provide Stage name."
+  },
+  "mode": {
+    "name": "Mode",
+    "value1": "Distinct values. Returns result without any duplicate rows.",
+    "value2": "All values. Returns the result, including duplicates."
+  },
+  "description": {
+    "name": "Description",
+    "value": "Column's sequence, names, types are important."
+  }
+}

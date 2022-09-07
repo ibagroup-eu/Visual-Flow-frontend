@@ -1,0 +1,10 @@
+{
+  "name": {
+    "name": "Stage Name",
+    "value": "Provide Stage name."
+  },
+  "job": {
+    "name": "Job Name",
+    "value": "Select one of the existing jobs."
+  }
+}

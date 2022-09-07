@@ -1,0 +1,20 @@
+{
+  "parameter": {
+    "tooltip": {
+      "string": "String",
+      "secureString": "Secure string"
+    },
+    "Name": "Name",
+    "Value": "Value"
+  },
+  "usersAndRoles": {
+    "Toolbar": {
+      "Delete": "Delete"
+    },
+    "tableColumns": {
+      "ID": "ID",
+      "Name": "Name",
+      "Role": "Role"
+    }
+  }
+}

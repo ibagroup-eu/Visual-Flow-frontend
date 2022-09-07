@@ -1,0 +1,13 @@
+{
+  "GROUP": [
+    {
+      "field": "groupingColumns"
+    },
+    {
+      "field": "groupingCriteria"
+    },
+    {
+      "field": "dropGroupingColumns"
+    }
+  ]
+}

@@ -1,0 +1,458 @@
+{
+    "READ_WRITE": [
+        {
+            "field": "storage"
+        },
+        {
+            "field": "authType",
+            "conditions": [
+                {
+                    "storage": "cos"
+                }
+            ]
+        },
+        {
+            "field": "bucket",
+            "conditions": [
+                {
+                    "storage": "cos"
+                },
+                {
+                    "storage": "s3"
+                },
+                {
+                    "storage": "redshift"
+                }
+            ]
+        },
+        {
+            "field": "endpoint",
+            "conditions": [
+                {
+                    "storage": "cos"
+                },
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "format",
+            "conditions": [
+                {
+                    "storage": "cos"
+                },
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "path",
+            "conditions": [
+                {
+                    "storage": "cos"
+                },
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "iamApiKey",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "authType": "IAM"
+                }
+            ]
+        },
+        {
+            "field": "iamServiceId",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "authType": "IAM"
+                }
+            ]
+        },
+        {
+            "field": "accessKey",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "authType": "HMAC"
+                },
+                {
+                    "storage": "s3",
+                    "anonymousAccess": "false"
+                },
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "secretKey",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "authType": "HMAC"
+                },
+                {
+                    "storage": "s3",
+                    "anonymousAccess": "false"
+                },
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "option.delimiter",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "format": "csv"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv"
+                }
+            ]
+        },
+        {
+            "field": "option.header",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "format": "csv"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv"
+                }
+            ]
+        },
+        {
+            "field": "option.avroSchema",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "format": "avro"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro"
+                }
+            ]
+        },
+        {
+            "field": "anonymousAccess",
+            "conditions": [
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "jdbcUrl",
+            "conditions": [
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "user",
+            "conditions": [
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "elastic"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "mongo"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "password",
+            "conditions": [
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "redis"
+                },
+                {
+                    "storage": "elastic"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "mongo"
+                },
+                {
+                    "storage": "cassandra"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "option.dbtable",
+            "conditions": [
+                {
+                    "storage": "db2",
+                    "customSql": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "customSql": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "customSql": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "customSql": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "customSql": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "customSql": "true"
+                }
+            ]
+        },
+        {
+            "field": "customSql",
+            "conditions": [
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "certData",
+            "conditions": [
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "elastic"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "cassandra"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "nodes",
+            "conditions": [
+                {
+                    "storage": "elastic"
+                }
+            ]
+        },
+        {
+            "field": "ssl",
+            "conditions": [
+                {
+                    "storage": "elastic"
+                },
+                {
+                    "storage": "cassandra"
+                },
+                {
+                    "storage": "mongo"
+                },
+                {
+                    "storage": "redis"
+                },
+                {
+                    "storage": "s3"
+                }
+            ]
+        },
+        {
+            "field": "port",
+            "conditions": [
+                {
+                    "storage": "elastic"
+                },
+                {
+                    "storage": "mongo"
+                },
+                {
+                    "storage": "cassandra"
+                },
+                {
+                    "storage": "redis"
+                }
+            ]
+        },
+        {
+            "field": "index",
+            "conditions": [
+                {
+                    "storage": "elastic"
+                }
+            ]
+        },
+        {
+            "field": "database",
+            "conditions": [
+                {
+                    "storage": "mongo"
+                }
+            ]
+        },
+        {
+            "field": "collection",
+            "conditions": [
+                {
+                    "storage": "mongo"
+                }
+            ]
+        },
+        {
+            "field": "host",
+            "conditions": [
+                {
+                    "storage": "mongo"
+                },
+                {
+                    "storage": "cassandra"
+                },
+                {
+                    "storage": "redis"
+                }
+            ]
+        },
+        {
+            "field": "keyspace",
+            "conditions": [
+                {
+                    "storage": "cassandra"
+                }
+            ]
+        },
+        {
+            "field": "cluster",
+            "conditions": [
+                {
+                    "storage": "cassandra"
+                }
+            ]
+        },
+        {
+            "field": "username",
+            "conditions": [
+                {
+                    "storage": "cassandra"
+                }
+            ]
+        },
+        {
+            "field": "pushdownEnabled",
+            "conditions": [
+                {
+                    "storage": "cassandra"
+                }
+            ]
+        },
+        {
+            "field": "keyColumn",
+            "conditions": [
+                {
+                    "storage": "redis"
+                }
+            ]
+        },
+        {
+            "field": "model",
+            "conditions": [
+                {
+                    "storage": "redis"
+                }
+            ]
+        }
+    ]
+}

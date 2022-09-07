@@ -1,0 +1,16 @@
+{
+  "CDC": [
+    {
+      "field": "keyColumns"
+    },
+    {
+      "field": "newDataset"
+    },
+    {
+      "field": "oldDataset"
+    },
+    {
+      "field": "mode"
+    }
+  ]
+}

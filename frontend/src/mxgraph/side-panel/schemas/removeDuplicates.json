@@ -1,0 +1,10 @@
+{
+  "REMOVE_DUPLICATES": [
+    {
+      "field": "keyColumns"
+    },
+    {
+      "field": "orderColumns"
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+    "jobTitle": "Job Designer - {{name}}",
+    "pipelineTitle": "Pipeline Designer - {{name}}",
+    "PALETTE": "PALETTE",
+    "PARAMS": "PARAMS",
+    "Parameter": "Parameter",
+    "untitled": "Untitled*",
+    "palette": {
+        "READ": "Read",
+        "WRITE": "Write",
+        "JOIN": "Join",
+        "GROUP": "Group By",
+        "REMOVE_DUPLICATES": "Remove duplicates",
+        "FILTER": "Filter",
+        "TRANSFORM": "Transformer",
+        "UNION": "Union",
+        "CDC": "Change data capture",
+        "JOB": "Job",
+        "PIPELINE": "Pipeline",
+        "NOTIFICATION": "Notification",
+        "CONTAINER": "Container",
+        "CACHE": "Cache",
+        "SORT": "Sort"
+    },
+    "readConfiguration": {
+        "Name": "Name",
+        "Storage": "Storage",
+        "writeMode": "Write mode",
+        "AnonymousAccess": "Anonymous access",
+        "CustomSql": "Custom SQL",
+        "optiondbtable": "SQL statement",
+        "authType": "Authentication type",
+        "iamApiKey": "IAM api key",
+        "iamServiceId": "IAM service id",
+        "Endpoint": "Endpoint",
+        "Accesskey": "Access key",
+        "Secretkey": "Secret key",
+        "Bucket": "Bucket",
+        "Path": "Path in bucket",
+        "JDBCURL": "JDBC URL",
+        "User": "User",
+        "Username": "Username",
+        "Password": "Password",
+        "Schema": "Schema",
+        "Table": "Table",
+        "CertData": "CertData (optional)",
+        "Fileformat": "File format",
+        "Port": "Port",
+        "SSL": "SSL",
+        "Nodes": "Nodes",
+        "Index": "Index",
+        "Database": "Database",
+        "Collection": "Collection",
+        "Host": "Host",
+        "Keyspace": "Keyspace",
+        "PushdownEnabled": "Push down enabled",
+        "Cluster": "Cluster (optional)",
+        "Model": "Model",
+        "KeyColumn": "Key column",
+        "ReadMode": "Read mode",
+        "KeysPattern": "Keys pattern",
+        "Binary": "Binary",
+        "Hash": "Hash",
+        "ttl": "TTL",
+        "ExtraCopyOptions": "Extra copy options",
+        "Query": "Query",
+        "quantity": "Quantity",
+        "tableName": "Table name",
+        "TruncateMode": "Truncate Mode",
+        "Type": "Type",
+        "SchemaRead": "Schema on read"
+    },
+    "writeConfiguration": {
+        "Header": "Header",
+        "Delimiter": "Delimiter",
+        "PartitionBy": "Partition By",
+        "TruncateMode": "Truncate Mode"
+    },
+    "unionConfiguration": {
+        "Name": "Name",
+        "Mode": "Mode",
+        "all": "All values",
+        "distinct": "Distinct"
+    },
+    "groupByConfiguration": {
+        "GroupBy": "Group By",
+        "DropGroupingColumns": "Drop grouping columns",
+        "AggregateFunctions": "Aggregate functions"
+    },
+    "edgeConfiguration": {
+        "Successpath": "Success path"
+    },
+    "joinConfiguration": {
+        "Name": "Name",
+        "JoinType": "Join type",
+        "LinkOrdering": "Link Ordering",
+        "Left": "Left",
+        "Right": "Right",
+        "Key": "Key"
+    },
+    "RemoveDuplConfiguration": {
+        "Key": "Key",
+        "OrderBy": "Order By"
+    },
+    "CDCConfiguration": {
+        "Name": "Name",
+        "LinkOrdering": "Link Ordering",
+        "After": "After",
+        "Before": "Before",
+        "Key": "Key",
+        "Mode": "Mode"
+    },
+    "transformConfiguration": {
+        "Name": "Name",
+        "Output": "Output",
+        "Placeholder": "column_name AS alias_name",
+        "Mode": "Mode",
+        "simple": "Simple",
+        "fullSql": "Full SQL",
+        "tableName": "Table name"
+    },
+    "filterConfiguration": {
+        "Name": "Name",
+        "Filter": "Filter"
+    },
+    "notificationConfiguration": {
+        "Name": "Name",
+        "Addressees": "To",
+        "Message": "Message"
+    },
+    "cacheConfiguration": {
+        "Name": "Name",
+        "useDisk": "Use disk",
+        "useMemory": "Use memory",
+        "useOffHeap": "Use off heap",
+        "deserialized": "Deserialized",
+        "replication": "Replication"
+    },
+    "sortConfiguration": {
+        "Name": "Name",
+        "SortType": "Sort type",
+        "OrderColumns": "Order columns"
+    },
+    "Zoom": {
+        "Zoom": "Zoom",
+        "In": "Zoom in",
+        "Out": "Zoom out",
+        "Restore": "Restore",
+        "Select": "Select",
+        "Move": "Move"
+    },
+    "Path": "Path",
+    "Configuration": "Configuration",
+    "STAGE": "STAGE",
+    "Column": "Column",
+    "avroSchema": {
+        "useSchema": {
+            "name": "Schema"
+        },
+        "modal": {
+            "title": "Avro schema"
+        },
+        "fields": {
+            "name": "Name",
+            "type": "Type",
+            "nullable": "Nullable"
+        },
+        "validation": {
+            "duplicatedRow": "Duplicated row"
+        },
+        "search": {
+            "placeholder": "Search ..."
+        }
+    }
+}

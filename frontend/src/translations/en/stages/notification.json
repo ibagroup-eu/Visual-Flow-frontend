@@ -1,0 +1,14 @@
+{
+  "name": {
+    "name": "Name",
+    "value": "Provide Stage name."
+  },
+  "to": {
+    "name": "To",
+    "value": "Select one of the existing parameters that related to email or enter slack email."
+  },
+  "message": {
+    "name": "Message",
+    "value": "Enter the text that will be sent to the selected/entered email."
+  }
+}

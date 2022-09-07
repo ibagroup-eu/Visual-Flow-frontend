@@ -1,0 +1,10 @@
+{
+  "COMMON_SCHEMA": [
+    {
+      "field": "name"
+    },
+    {
+      "field": "operation"
+    }
+  ]
+}

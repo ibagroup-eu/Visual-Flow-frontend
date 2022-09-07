@@ -1,0 +1,253 @@
+/*
+ * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// User management
+export const RECEIVE_CURRENT_USER = 'RECEIVE_CURRENT_USER';
+export const CLEAR_CURRENT_USER = 'CLEAR_CURRENT_USER';
+// fetch users
+export const FETCH_USERS_START = 'FETCH_USERS_START';
+export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
+export const FETCH_USERS_FAIL = 'FETCH_USERS_FAIL';
+// fetch roles
+export const FETCH_ROLES_START = 'FETCH_ROLES_START';
+export const FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS';
+export const FETCH_ROLES_FAIL = 'FETCH_ROLES_FAIL';
+
+// PROJECT MANAGEMENT
+export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT';
+// fetch
+export const FETCH_PROJECTS_START = 'FETCH_PROJECTS_START';
+export const FETCH_PROJECTS_SUCCESS = 'FETCH_PROJECTS_SUCCESS';
+export const FETCH_PROJECTS_FAIL = 'FETCH_PROJECTS_FAIL';
+// get by id
+export const GET_PROJECT_START = 'GET_PROJECT_START';
+export const GET_PROJECT_SUCCESS = 'GET_PROJECT_SUCCESS';
+export const GET_PROJECT_FAIL = 'GET_PROJECT_FAIL';
+// create
+export const CREATE_PROJECT = 'CREATE_PROJECT';
+export const CREATE_PROJECT_SUCCESS = 'CREATE_PROJECT_SUCCESS';
+export const CREATE_PROJECT_FAIL = 'CREATE_PROJECT_FAIL';
+// delete
+export const DELETE_PROJECT = 'DELETE_PROJECT';
+export const DELETE_PROJECT_SUCCESS = 'DELETE_PROJECT_SUCCESS';
+export const DELETE_PROJECT_FAIL = 'DELETE_PROJECT_FAIL';
+// update
+export const UPDATE_PROJECT_START = 'UPDATE_PROJECT_START';
+export const UPDATE_PROJECT_SUCCESS = 'UPDATE_PROJECT_SUCCESS';
+export const UPDATE_PROJECT_FAIL = 'UPDATE_PROJECT_FAIL';
+
+// Overview page
+export const FETCH_RESOURCE_UTILIZATION_START = 'FETCH_RESOURCE_UTILIZATION_START';
+export const FETCH_RESOURCE_UTILIZATION_SUCCESS =
+    'FETCH_RESOURCE_UTILIZATION_SUCCESS';
+export const FETCH_RESOURCE_UTILIZATION_FAIL = 'FETCH_RESOURCE_UTILIZATION_FAIL';
+
+// Parameters page
+export const FETCH_PARAMETERS_START = 'FETCH_PARAMETERS_START';
+export const FETCH_PARAMETERS_SUCCESS = 'FETCH_PARAMETERS_SUCCESS';
+export const FETCH_PARAMETERS_FAIL = 'FETCH_PARAMETERS_FAIL';
+export const UPDATE_PARAMETERS_START = 'UPDATE_PARAMETERS_START';
+export const UPDATE_PARAMETERS_SUCCESS = 'UPDATE_PARAMETERS_SUCCESS';
+export const UPDATE_PARAMETERS_FAIL = 'UPDATE_PARAMETERS_FAIL';
+
+// Users and Roles page
+export const FETCH_USERS_AND_ROLES_START = 'FETCH_USERS_AND_ROLES_START';
+export const FETCH_USERS_AND_ROLES_SUCCESS = 'FETCH_USERS_AND_ROLES_SUCCESS';
+export const FETCH_USERS_AND_ROLES_FAIL = 'FETCH_USERS_AND_ROLES_FAIL';
+export const UPDATE_USERS_AND_ROLES_START = 'UPDATE_USERS_AND_ROLES_START';
+export const UPDATE_USERS_AND_ROLES_SUCCESS = 'UPDATE_USERS_AND_ROLES_SUCCESS';
+export const UPDATE_USERS_AND_ROLES_FAIL = 'UPDATE_USERS_AND_ROLES_FAIL';
+
+// Notifications
+export const ENQUEUE_SNACKBAR = 'ENQUEUE_SNACKBAR';
+export const CLOSE_SNACKBAR = 'CLOSE_SNACKBAR';
+export const REMOVE_SNACKBAR = 'REMOVE_SNACKBAR';
+
+// Jobs
+export const FETCH_JOBS_START = 'FETCH_JOBS_START';
+export const FETCH_JOBS_SUCCESS = 'FETCH_JOBS_SUCCESS';
+export const FETCH_JOBS_FAIL = 'FETCH_JOBS_FAIL';
+
+export const FETCH_JOB_START = 'FETCH_JOB_START';
+export const FETCH_JOB_SUCCESS = 'FETCH_JOB_SUCCESS';
+export const FETCH_JOB_FAIL = 'FETCH_JOB_FAIL';
+
+// update via Refresh button
+export const FETCH_JOB_STATUS_START = 'FETCH_JOB_STATUS_START';
+export const FETCH_JOB_STATUS_SUCCESS = 'FETCH_JOB_STATUS_SUCCESS';
+export const FETCH_JOB_STATUS_FAIL = 'FETCH_JOB_STATUS_FAIL';
+
+// update status at JD entering
+export const UPDATE_JOB_STATUS_START = 'UPDATE_JOB_STATUS_START';
+export const UPDATE_JOB_STATUS_SUCCESS = 'UPDATE_JOB_STATUS_SUCCESS';
+export const UPDATE_JOB_STATUS_FAIL = 'UPDATE_JOB_STATUS_FAIL';
+
+export const SET_JOB_SEARCH_FIELD = 'SET_JOB_SEARCH_FIELD';
+
+// create
+export const CREATE_JOB_START = 'CREATE_JOB_START';
+export const CREATE_JOB_SUCCESS = 'CREATE_JOB_SUCCESS';
+export const CREATE_JOB_FAIL = 'CREATE_JOB_FAIL';
+
+// update
+export const UPDATE_JOB_START = 'UPDATE_JOB_START';
+export const UPDATE_JOB_SUCCESS = 'UPDATE_JOB_SUCCESS';
+export const UPDATE_JOB_FAIL = 'UPDATE_JOB_FAIL';
+
+// delete
+export const DELETE_JOBS_START = 'DELETE_JOBS_START';
+export const DELETE_JOBS_SUCCESS = 'DELETE_JOBS_SUCCESS';
+export const DELETE_JOBS_FAIL = 'DELETE_JOBS_FAIL';
+
+// logs
+export const FETCH_LOGS_START = 'FETCH_LOGS_START';
+export const FETCH_LOGS_SUCCESS = 'FETCH_LOGS_SUCCESS';
+export const FETCH_LOGS_FAIL = 'FETCH_LOGS_FAIL';
+
+// run
+export const RUN_JOB_START = 'RUN_JOB_START';
+export const RUN_JOB_SUCCESS = 'RUN_JOB_SUCCESS';
+export const RUN_JOB_FAIL = 'RUN_JOB_FAIL';
+
+// stop
+export const STOP_JOB_START = 'STOP_JOB_START';
+export const STOP_JOB_SUCCESS = 'STOP_JOB_SUCCESS';
+export const STOP_JOB_FAIL = 'STOP_JOB_FAIL';
+
+// Copy
+export const COPY_JOB_START = 'COPY_JOB_START';
+export const COPY_JOB_SUCCESS = 'COPY_JOB_SUCCESS';
+export const COPY_JOB_FAIL = 'COPY_JOB_FAIL';
+
+// PIPELINES MANAGEMENT
+export const FETCH_PIPELINES_START = 'FETCH_PIPELINES_START';
+export const FETCH_PIPELINES_SUCCESS = 'FETCH_PIPELINES_SUCCESS';
+export const FETCH_PIPELINES_FAIL = 'FETCH_PIPELINES_FAIL';
+
+// ONE PIPELINE
+export const FETCH_PIPELINE_START = 'FETCH_PIPELINE_START';
+export const FETCH_PIPELINE_SUCCESS = 'FETCH_PIPELINE_SUCCESS';
+export const FETCH_PIPELINE_FAIL = 'FETCH_PIPELINE_FAIL';
+
+// Status
+export const UPDATE_PIPELINE_STATUS_START = 'UPDATE_PIPELINE_STATUS_START';
+export const UPDATE_PIPELINE_STATUS_SUCCESS = 'UPDATE_PIPELINE_STATUS_SUCCESS';
+export const UPDATE_PIPELINE_STATUS_FAIL = 'UPDATE_PIPELINE_STATUS_FAIL';
+
+// create
+export const CREATE_PIPELINE_START = 'CREATE_PIPELINE_START';
+export const CREATE_PIPELINE_SUCCESS = 'CREATE_PIPELINE_SUCCESS';
+export const CREATE_PIPELINE_FAIL = 'CREATE_PIPELINE_FAIL';
+
+// update
+export const UPDATE_PIPELINE_START = 'UPDATE_PIPELINE_START';
+export const UPDATE_PIPELINE_SUCCESS = 'UPDATE_PIPELINE_SUCCESS';
+export const UPDATE_PIPELINE_FAIL = 'UPDATE_PIPELINE_FAIL';
+// delete
+export const DELETE_PIPELINES_START = 'DELETE_PIPELINES_START';
+export const DELETE_PIPELINES_SUCCESS = 'DELETE_PIPELINES_SUCCESS';
+export const DELETE_PIPELINES_FAIL = 'DELETE_PIPELINES_FAIL';
+
+export const FETCH_PIPELINE_STATUS_START = 'FETCH_PIPELINE_STATUS_START';
+export const FETCH_PIPELINE_STATUS_SUCCESS = 'FETCH_PIPELINE_STATUS_SUCCESS';
+export const FETCH_PIPELINE_STATUS_FAIL = 'FETCH_PIPELINE_STATUS_FAIL';
+
+// run
+export const RUN_PIPELINE_START = 'RUN_PIPELINE_START';
+export const RUN_PIPELINE_SUCCESS = 'RUN_PIPELINE_SUCCESS';
+export const RUN_PIPELINE_FAIL = 'RUN_PIPELINE_FAIL';
+
+// stop
+export const STOP_PIPELINE_START = 'STOP_PIPELINE_START';
+export const STOP_PIPELINE_SUCCESS = 'STOP_PIPELINE_SUCCESS';
+export const STOP_PIPELINE_FAIL = 'STOP_PIPELINE_FAIL';
+
+// resume
+export const RESUME_PIPELINE_START = 'RESUME_PIPELINE_START';
+export const RESUME_PIPELINE_SUCCESS = 'RESUME_PIPELINE_SUCCESS';
+export const RESUME_PIPELINE_FAIL = 'RESUME_PIPELINE_FAIL';
+
+// Copy
+export const COPY_PIPELINE_START = 'COPY_PIPELINE_START';
+export const COPY_PIPELINE_SUCCESS = 'COPY_PIPELINE_SUCCESS';
+export const COPY_PIPELINE_FAIL = 'COPY_PIPELINE_FAIL';
+
+// Cron management
+export const FETCH_CRON_START = 'FETCH_CRON_START';
+export const FETCH_CRON_SUCCESS = 'FETCH_CRON_SUCCESS';
+export const FETCH_CRON_FAIL = 'FETCH_CRON_FAIL';
+
+// create
+export const CREATE_CRON_START = 'CREATE_CRON_START';
+export const CREATE_CRON_SUCCESS = 'CREATE_CRON_SUCCESS';
+export const CREATE_CRON_FAIL = 'CREATE_CRON_FAIL';
+
+// update
+export const UPDATE_CRON_START = 'UPDATE_CRON_START';
+export const UPDATE_CRON_SUCCESS = 'UPDATE_CRON_SUCCESS';
+export const UPDATE_CRON_FAIL = 'UPDATE_CRON_FAIL';
+
+// modals
+export const TOGGLE_CONFIRMATION = 'TOGGLE_CONFIRMATION';
+
+// mxGraph
+export const SET_SIDE_PANEL = 'SET_SIDE_PANEL';
+export const SET_CURRENT_CELL = 'SET_CURRENT_CELL';
+export const SET_GRAPH_PARAMS = 'SET_GRAPH_PARAMS';
+export const SET_GRAPH_FIELDS = 'SET_GRAPH_FIELDS';
+export const SET_GRAPH_DIRTY = 'SET_GRAPH_DIRTY';
+export const SET_SIDE_PANEL_DIRTY = 'SET_SIDE_PANEL_DIRTY';
+export const SET_PARAMS_DIRTY = 'SET_PARAMS_DIRTY';
+
+// Import resources
+export const CHECK_START = 'CHECK_START';
+export const CHECK_SUCCESS = 'CHECK_SUCCESS';
+export const CHECK_FAIL = 'CHECK_FAIL';
+export const IMPORT_START = 'IMPORT_START';
+export const IMPORT_SUCCESS = 'IMPORT_SUCCESS';
+export const IMPORT_FAIL = 'IMPORT_FAIL';
+
+// Export resources
+export const EXPORT_START = 'EXPORT_START';
+export const EXPORT_SUCCESS = 'EXPORT_SUCCESS';
+export const EXPORT_FAIL = 'EXPORT_FAIL';
+export const SET_EXPORT_FILENAME = 'SET_EXPORT_FILENAME';
+
+// Enhanced Table
+export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+export const SET_ROWS_PER_PAGE = 'SET_ROWS_PER_PAGE';
+export const SET_DEFAULT = 'SET_DEFAULT';
+export const SET_ORDER_BY = 'SET_ORDER_BY';
+
+// Zoom
+export const SET_ZOOM_VALUE = 'SET_ZOOM_VALUE';
+
+// Panning
+export const SET_PANNING = 'SET_PANNING';
+
+// Logs Modal
+export const SET_LOGS_MODAL = 'SET_LOGS_MODAL';
+
+// Jobs Filters
+export const SET_JOBS_LAST_RUN = 'SET_JOB_LAST_RUN';
+export const SET_JOBS_STATUS = 'SET_JOBS_STATUS';
+
+// Pipelines Filters
+export const SET_PIPELINES_LAST_RUN = 'SET_PIPELINES_LAST_RUN';
+export const SET_PIPELINES_STATUS = 'SET_PIPELINES_STATUS';

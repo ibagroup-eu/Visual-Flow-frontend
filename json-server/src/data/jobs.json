@@ -1,0 +1,70 @@
+{
+  "jobs": [
+    {
+      "id": "1",
+      "name": "job1",
+      "lastStarted": null,
+      "status": "Draft",
+      "lastModified": null,
+      "usage": {
+        "cpu": 0.123,
+        "memory": 0.321
+      }
+    },
+    {
+      "id": "2",
+      "name": "job2",
+      "lastStarted": "2020-02-01 00:00:00",
+      "status": "Running",
+      "lastModified": "2020-01-01 00:00:00",
+      "usage": {
+        "cpu": 0,
+        "memory": 1
+      }
+    },
+    {
+      "id": "3",
+      "name": "job3",
+      "lastStarted": "2020-03-01 00:00:00",
+      "status": "Succeeded",
+      "lastModified": "2020-01-01 00:00:00",
+      "usage": {
+        "cpu": 0.5,
+        "memory": 0.7
+      }
+    },
+    {
+      "id": "11",
+      "name": "job11",
+      "lastStarted": "2020-01-01 00:00:00",
+      "status": "Draft",
+      "lastModified": "2020-01-01 00:00:00",
+      "usage": {
+        "cpu": 0.123,
+        "memory": 0.321
+      }
+    },
+    {
+      "id": "22",
+      "name": "job22",
+      "lastStarted": "2020-01-01 00:00:00",
+      "status": "Running",
+      "lastModified": "2020-01-01 00:00:00",
+      "usage": {
+        "cpu": 0,
+        "memory": 1
+      }
+    },
+    {
+      "id": "33",
+      "name": "12345678901234567890123456789012345678901234567890",
+      "lastStarted": "2020-10-07 11:30:00",
+      "status": "Succeeded",
+      "lastModified": "2020-01-01 00:00:00",
+      "usage": {
+        "cpu": 0.5,
+        "memory": 0.7
+      }
+    }
+  ]
+}

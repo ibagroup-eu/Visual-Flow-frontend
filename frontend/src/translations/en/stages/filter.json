@@ -1,0 +1,16 @@
+{
+  "name": {
+    "name": "Name",
+    "value": "Provide Stage name."
+  },
+  "filter": {
+    "name": "Filter",
+    "value1": "Enter any boolean expression. Two or more expressions may be combined together using the logical  operators ( AND, OR ).",
+    "value2": "Examples:",
+    "value3": "> ((column1 < 10) and column2 between 10 and 25)",
+    "value4": {
+      "title": "More examples",
+      "link": "https://sparkbyexamples.com/spark/spark-dataframe-where-filter/"
+    }
+  }
+}

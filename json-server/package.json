@@ -1,0 +1,16 @@
+{
+  "name": "json-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "json-server": "^0.16.1",
+    "nodemon": "^2.0.2"
+  },
+  "scripts": {
+    "start": "nodemon -w src --exec npm run start:server",
+    "start:server": "json-server --port 3010 --delay 2000 --watch src/data.js --routes src/routes.json --middlewares src/json-server-display-headers.js"
+  }
+}

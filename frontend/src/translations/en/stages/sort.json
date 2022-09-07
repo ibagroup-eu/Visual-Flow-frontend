@@ -1,0 +1,18 @@
+{
+  "name": {
+    "name": "Name",
+    "value": "Provide Stage name."
+  },
+  "sortType": {
+    "name": "Sort type",
+    "value": "Choose type of sort (Full sort or Sort within partitions).",
+    "value1": "Full sort sorts DataFrame by the specified column(s).",
+    "value2": "Sort within partitions sorts each DataFrame partition by the specified column(s).",
+    "value3": "The order of the output data is not guaranteed because the data is ordered on partition-level."
+  },
+  "orderColumns": {
+    "name": "Order columns",
+    "value": "Choose column(s) and sorting order (default value is asc).",
+    "value1": "Possible sorting orders: asc, asc nulls first, asc nulls last, desc, desc nulls first, desc nulls last."
+  }
+}

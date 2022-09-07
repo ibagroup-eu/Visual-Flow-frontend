@@ -1,0 +1,184 @@
+{
+  "projects": [
+    {
+      "name": "Death 666 Death",
+      "id": "vf-death-666-death",
+      "description": "some desc",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "vf-visual-flow",
+      "name": "Visual Flow",
+      "description": "hi",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "1",
+      "name": "Project 1",
+      "description": "Description for project 1",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "2",
+      "name": "Project 2",
+      "description": "Description for project 2",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "3",
+      "name": "Project 3",
+      "description": "Description for project 3. It is long description with very important information",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "4",
+      "name": "Project Name is up to forty characters..",
+      "description": "Description for project 4",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "5",
+      "name": "Project 5",
+      "description": "Description for project 5",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "6",
+      "name": "Project 6",
+      "description": "Description for project 6",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    },
+    {
+      "id": "7",
+      "name": "Project 7",
+      "description": "Description for project 7",
+      "limits": {
+        "limitsCpu": 4.0,
+        "requestsCpu": 2.0,
+        "limitsMemory": 4.0,
+        "requestsMemory": 2.0,
+        "editable": true
+      },
+      "usage": {
+        "limitsCpu": 0.0,
+        "requestsCpu": 0.0,
+        "limitsMemory": 0.0,
+        "requestsMemory": 0.0,
+        "editable": false
+      },
+      "editable": true
+    }
+  ]
+}

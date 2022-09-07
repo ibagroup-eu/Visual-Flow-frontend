@@ -1,0 +1,18 @@
+{
+  "TRANSFORM": [
+    {
+      "field": "statement"
+    },
+    {
+      "field": "mode"
+    },
+    {
+      "field": "tableName",
+      "conditions": [
+          {
+              "mode": "Full_SQL"
+          }
+      ]
+    }
+  ]
+}

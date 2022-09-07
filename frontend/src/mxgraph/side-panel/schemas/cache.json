@@ -1,0 +1,19 @@
+{
+  "CACHE": [
+    {
+      "field": "useDisk"
+    },
+    {
+      "field": "useMemory"
+    },
+    {
+      "field": "useOffHeap"
+    },
+    {
+      "field": "deserialized"
+    },
+    {
+      "field": "replication"
+    }
+  ]
+}

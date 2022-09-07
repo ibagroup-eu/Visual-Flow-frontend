@@ -1,0 +1,153 @@
+{
+  "WRITE": [
+    {
+      "field": "writeMode",
+      "conditions": [
+        {
+          "storage": "cos"
+        },
+        {
+          "storage": "s3"
+        },
+        {
+          "storage": "db2"
+        },
+        {
+          "storage": "elastic"
+        },
+        {
+          "storage": "postgresql"
+        },
+        {
+          "storage": "oracle"
+        },
+        {
+          "storage": "mysql"
+        },
+        {
+          "storage": "redis"
+        },
+        {
+          "storage": "cassandra"
+        },
+        {
+          "storage": "mssql"
+        },
+        {
+          "storage": "mongo"
+        },
+        {
+          "storage": "redshift-jdbc"
+        }
+      ]
+    },
+    {
+      "field": "schema",
+      "conditions": [
+        {
+          "storage": "db2"
+        },
+        {
+          "storage": "postgresql"
+        },
+        {
+          "storage": "oracle"
+        },
+        {
+          "storage": "mysql"
+        },
+        {
+          "storage": "mssql"
+        },
+        {
+          "storage": "redshift-jdbc"
+        }
+      ]
+    },
+    {
+      "field": "table",
+      "conditions": [
+        {
+          "storage": "db2"
+        },
+        {
+          "storage": "postgresql"
+        },
+        {
+          "storage": "oracle"
+        },
+        {
+          "storage": "mysql"
+        },
+        {
+          "storage": "mssql"
+        },
+        {
+          "storage": "cassandra"
+        },
+        {
+          "storage": "redis"
+        },
+        {
+          "storage": "redshift-jdbc"
+        }
+      ]
+    },
+    {
+      "field": "ttl",
+      "conditions": [
+        {
+          "storage": "redis"
+        }
+      ]
+    },
+    {
+      "field": "partitionBy",
+      "conditions": [
+        {
+          "storage": "cos"
+        },
+        {
+          "storage": "s3"
+        }
+      ]
+    },
+    {
+      "field": "quantity",
+      "conditions": [
+        {
+          "storage": "stdout"
+        }
+      ]
+    },
+    {
+      "field": "truncateMode",
+      "conditions": [
+        {
+          "storage": "db2",
+          "writeMode": "Overwrite"
+        },
+        {
+          "storage": "postgresql",
+          "writeMode": "Overwrite"
+        },
+        {
+          "storage": "oracle",
+          "writeMode": "Overwrite"
+        },
+        {
+          "storage": "mysql",
+          "writeMode": "Overwrite"
+        },
+        {
+          "storage": "mssql",
+          "writeMode": "Overwrite"
+        },
+        {
+          "storage": "redshift-jdbc",
+          "writeMode": "Overwrite"
+        }
+      ]
+    }
+  ]
+}

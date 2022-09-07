@@ -1,0 +1,141 @@
+{
+    "name": "visual-flow-ui",
+    "version": "1.0.0",
+    "private": true,
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@material-ui/core": "^4.12.4",
+        "@material-ui/icons": "^4.11.3",
+        "@material-ui/lab": "^4.0.0-alpha.61",
+        "@material-ui/styles": "^4.11.5",
+        "axios": "~0.21.4",
+        "classnames": "^2.3.1",
+        "cron-validate": "^1.4.3",
+        "dotenv": "^8.6.0",
+        "history": "^4.10.1",
+        "i18next": "^19.9.2",
+        "jest-sonar-reporter": "^2.0.0",
+        "lodash": "^4.17.21",
+        "moment": "^2.29.3",
+        "mxgraph": "^4.2.2",
+        "nanoid": "^3.3.4",
+        "notistack": "^1.0.10",
+        "prop-types": "^15.8.1",
+        "qs": "^6.11.0",
+        "react": "^16.14.0",
+        "react-dom": "^16.14.0",
+        "react-i18next": "^11.17.0",
+        "react-redux": "^7.2.8",
+        "react-router": "^5.3.3",
+        "react-router-dom": "^5.3.3",
+        "react-router-redux": "^4.0.8",
+        "redux": "^4.2.0",
+        "redux-promise": "^0.6.0",
+        "redux-thunk": "^2.4.1",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.18.2",
+        "@babel/node": "^7.17.10",
+        "@babel/plugin-proposal-class-properties": "^7.17.12",
+        "@babel/plugin-proposal-object-rest-spread": "^7.18.0",
+        "@babel/plugin-proposal-optional-chaining": "^7.17.12",
+        "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+        "@babel/plugin-transform-runtime": "^7.18.2",
+        "@babel/preset-env": "^7.18.2",
+        "@babel/preset-react": "^7.17.12",
+        "@types/jest": "^27.5.2",
+        "babel-eslint": "^10.1.0",
+        "babel-loader": "^8.2.5",
+        "clean-webpack-plugin": "^4.0.0",
+        "css-loader": "^6.7.1",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-16": "^1.15.6",
+        "eslint": "^7.32.0",
+        "eslint-config-airbnb": "^18.2.1",
+        "eslint-config-prettier": "^2.10.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-jsx-a11y": "^6.5.1",
+        "eslint-plugin-prettier": "^3.4.1",
+        "eslint-plugin-react": "^7.30.0",
+        "eslint-plugin-react-hooks": "^4.5.0",
+        "fast-sass-loader": "^2.0.1",
+        "file-loader": "^6.2.0",
+        "html-loader": "^2.1.2",
+        "jest": "^27.5.1",
+        "jest-junit": "^13.2.0",
+        "loader-utils": "^2.0.2",
+        "mini-css-extract-plugin": "^2.6.0",
+        "node-sass": "^6.0.1",
+        "owasp-dependency-check": "^0.0.18",
+        "prettier": "^1.19.1",
+        "redux-mock-store": "^1.5.4",
+        "style-loader": "^3.3.1",
+        "webpack": "~5.58.2",
+        "webpack-cli": "^4.9.2",
+        "webpack-node-externals": "^3.0.0"
+    },
+    "scripts": {
+        "start": "webpack --config webpack.dev.js --watch",
+        "build": "webpack --config webpack.config.js --mode production",
+        "owasp": "owasp-dependency-check --project frontend --scan package-lock.json --scan package.json -f HTML --disableAssembly --failOnCVSS 8 --suppression dependency-check-suppression.xml",
+        "test": "jest && npm run owasp",
+        "coverage": "jest --coverage",
+        "format": "prettier --write \"./src/**/*.{js,md,scss}\"",
+        "format:diff": "prettier --list-different \"./src/**/*.{js,md,scss}\"",
+        "lint": "eslint ./src -f json -o reports/eslint-report.json",
+        "lint-fix": "eslint --fix ./src",
+        "lint:js": "eslint ./src --color --max-warnings 0 --no-ignore",
+        "lint:js:fix": "eslint ./src --color --max-warnings 0 --no-ignore --fix"
+    },
+    "jest": {
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/setupTests.js"
+        ],
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$",
+        "reporters": [
+            "default",
+            "jest-junit"
+        ],
+        "coverageReporters": [
+            "text",
+            "lcov",
+            "cobertura"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.js",
+            "!src/**/*.test.js",
+            "!src/**/*.Styles.js",
+            "!src/__tests__/**",
+            "!src/__mocks__/**",
+            "!**/setupTests.js"
+        ],
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
+            "\\.(scss|css|less)$": "<rootDir>/src/__mocks__/styleMock.js"
+        },
+        "testResultsProcessor": "jest-sonar-reporter",
+        "testEnvironment": "jsdom"
+    },
+    "jest-junit": {
+        "outputDirectory": "coverage/junit",
+        "outputName": "junit.xml",
+        "usePathForSuiteName": "true"
+    },
+    "jestSonar": {
+        "reportPath": "reports",
+        "reportFile": "test-report.xml"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}

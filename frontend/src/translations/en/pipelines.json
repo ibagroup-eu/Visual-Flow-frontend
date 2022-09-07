@@ -1,0 +1,20 @@
+{
+    "Progress": "Progress",
+    "tooltip": {
+        "Play": "Run",
+        "Stop": "Stop",
+        "Copy": "Copy",
+        "pipelineDesigner": "Pipeline Designer",
+        "Remove": "Remove",
+        "Remove selected": "Remove selected",
+        "Cron": "Cron",
+        "UseCron": "Use cron"
+    },
+    "confirm": {
+        "delete": "Are you sure you want to delete {{name}} pipeline(s)?"
+    },
+    "params": {
+        "Name": "Name"
+    },
+    "relatedJobs": "Export related jobs"
+}

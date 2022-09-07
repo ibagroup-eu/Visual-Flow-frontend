@@ -1,0 +1,29 @@
+{
+    "jobConfiguration": {
+        "Name": "Stage Name",
+        "JobName": "Job Name",
+        "OutputPaths": "Output Paths:",
+        "seeLogs": "See job logs"
+    },
+    "jobModal": {
+        "Jobs": "Jobs",
+        "search": "Search..."
+    },
+    "containerConfiguration": {
+        "Name": "Name",
+        "Image": "Image link",
+        "ImagePullPolicy": "Image pull policy",
+        "ImagePullSecretType": "Authentication type",
+        "requestsCpu": "Request CPU",
+        "requestsMemory": "Request Memory",
+        "limitsCpu": "Limits CPU",
+        "limitsMemory": "Limits Memory",
+        "units": "Units",
+        "MountProjectParams": "Mount project params",
+        "Command": "Command",
+        "Username": "Username",
+        "Password": "Password",
+        "Registry": "Registry",
+        "ImagePullSecretName": "Image pull secret name"
+    }
+}

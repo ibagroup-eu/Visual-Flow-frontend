@@ -1,0 +1,63 @@
+{
+  "CONTAINER": [
+    {
+      "field": "image"
+    },
+    {
+      "field": "imagePullPolicy"
+    },
+    {
+      "field": "limitsCpu"
+    },
+    {
+      "field": "requestsCpu"
+    },
+    {
+      "field": "limitsMemory"
+    },
+    {
+      "field": "requestsMemory"
+    },
+    {
+      "field": "mountProjectParams"
+    },
+    {
+      "field": "imagePullSecretType"
+    },
+    {
+      "field": "command"
+    },
+    {
+      "field": "username",
+      "conditions": [
+        {
+          "imagePullSecretType": "NEW"
+        }
+      ]
+    },
+    {
+      "field": "password",
+      "conditions": [
+        {
+          "imagePullSecretType": "NEW"
+        }
+      ]
+    },
+    {
+      "field": "registry",
+      "conditions": [
+        {
+          "imagePullSecretType": "NEW"
+        }
+      ]
+    },
+    {
+      "field": "imagePullSecretName",
+      "conditions": [
+        {
+          "imagePullSecretType": "PROVIDED"
+        }
+      ]
+    }
+  ]
+}

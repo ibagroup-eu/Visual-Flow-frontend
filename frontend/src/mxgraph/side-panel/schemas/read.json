@@ -1,0 +1,94 @@
+{
+    "READ": [
+        {
+            "field": "schema",
+            "conditions": [
+                {
+                    "storage": "db2",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "postgresql",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "oracle",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "mysql",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "mssql",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "mongo",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "customSql": "false"
+                }
+            ]
+        },
+        {
+            "field": "table",
+            "conditions": [
+                {
+                    "storage": "db2",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "postgresql",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "oracle",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "mysql",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "mssql",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "mongo",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "cassandra"
+                },
+                {
+                    "storage": "redis",
+                    "readMode": "key"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "customSql": "false"
+                }
+            ]
+        },
+        {
+            "field": "readMode",
+            "conditions": [
+                {
+                    "storage": "redis"
+                }
+            ]
+        },
+        {
+            "field": "keysPattern",
+            "conditions": [
+                {
+                    "storage": "redis",
+                    "readMode": "pattern"
+                }
+            ]
+        }
+    ]
+}
