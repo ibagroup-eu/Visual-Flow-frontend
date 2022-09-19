@@ -39,5 +39,8 @@ export default makeStyles(theme => ({
     cancelBtn: {
         background: theme.palette.grey[600],
         color: theme.palette.primary.contrastText
+    },
+    section: {
+        marginTop: theme.spacing(2)
     }
 }));

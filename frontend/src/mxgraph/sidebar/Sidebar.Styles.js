@@ -28,25 +28,20 @@ export default makeStyles(theme => ({
         flexDirection: 'column'
     },
     appBar: {
-        zIndex: theme.zIndex.drawer + 1
+        zIndex: theme.zIndex.drawer + 3
     },
     toolbar: {
         padding: 0
     },
     drawerOpen: {
         width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen
-        })
+        transition: theme.transitions.create('width'),
+        overflow: 'hidden'
     },
     drawerClose: {
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-        }),
-        overflow: 'hidden',
-        width: theme.spacing(4)
+        transition: theme.transitions.create('width'),
+        width: theme.spacing(4),
+        overflow: 'hidden'
     },
     content: {
         width: '100%',
@@ -55,8 +50,13 @@ export default makeStyles(theme => ({
         overflowY: 'auto',
         overflowX: 'hidden'
     },
-    hidden: {
-        display: 'none'
+    showContent: {
+        transition: theme.transitions.create('transform'),
+        transform: 'none'
+    },
+    hideContent: {
+        transition: theme.transitions.create('transform'),
+        transform: `translateX(-${drawerWidth}px)`
     },
     toggleButton: {
         color: theme.palette.text.secondary,
@@ -75,17 +75,13 @@ export default makeStyles(theme => ({
     },
     iconOpen: {
         left: theme.spacing(1),
-        transition: theme.transitions.create('left', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-        })
+        transition: theme.transitions.create(['left', 'transform']),
+        transform: 'rotate(180deg)'
     },
     iconClose: {
         boxSizing: 'border-box',
         left: drawerWidth - theme.spacing(3),
-        transition: theme.transitions.create('left', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-        })
+        transition: theme.transitions.create(['left', 'transform']),
+        transform: 'rotate(0deg)'
     }
 }));

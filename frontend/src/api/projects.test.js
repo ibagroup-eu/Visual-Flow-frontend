@@ -22,6 +22,7 @@ import axiosInstance from './axiosInstance';
 
 describe('projects', () => {
     const id = 'some_id';
+    const connectionID = 'connectionID';
     const expected = { data: {} };
 
     it('should call get when getProjects', () => {
@@ -109,6 +110,46 @@ describe('projects', () => {
         jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
         return projects.updateProjectUsers('id', users).then(result => {
             expect(result).toEqual(expected);
+        });
+    });
+
+    it('should get project connections', () => {
+        const requestURL = `/project/${id}/connections`;
+        const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return projects.getProjectConnections(id).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should update project connection', () => {
+        const requestURL = `/project/${id}/connections/${connectionID}`;
+        const spy = jest.spyOn(axiosInstance, 'put').mockResolvedValue(expected);
+        return projects
+            .updateProjectConnection(id, connectionID, {})
+            .then(result => {
+                expect(result).toEqual(expected);
+                expect(spy).toHaveBeenCalledWith(requestURL, {});
+            });
+    });
+
+    it('should update project connection', () => {
+        const requestURL = `/project/${id}/connections/${connectionID}`;
+        const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
+        return projects
+            .createProjectConnection(id, connectionID, {})
+            .then(result => {
+                expect(result).toEqual(expected);
+                expect(spy).toHaveBeenCalledWith(requestURL, {});
+            });
+    });
+
+    it('should delete project connection', () => {
+        const requestURL = `/project/${id}/connections/${connectionID}`;
+        const spy = jest.spyOn(axiosInstance, 'delete').mockResolvedValue(expected);
+        return projects.deleteProjectConnection(id, connectionID).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
         });
     });
 });

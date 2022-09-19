@@ -35,7 +35,8 @@ const PasswordInput = ({
     isTouched,
     onBlur,
     helperText,
-    fromDesigner
+    fromDesigner,
+    InputProps
 }) => {
     const [visible, setVisibility] = React.useState(false);
 
@@ -50,6 +51,7 @@ const PasswordInput = ({
             onChange={onChange}
             label={label}
             InputProps={{
+                ...InputProps,
                 endAdornment: (fromDesigner || !disabled) && (
                     <InputAdornment position="end">
                         <IconButton
@@ -82,7 +84,8 @@ PasswordInput.propTypes = {
     isTouched: PropTypes.bool,
     onBlur: PropTypes.func,
     helperText: PropTypes.any,
-    fromDesigner: PropTypes.bool
+    fromDesigner: PropTypes.bool,
+    InputProps: PropTypes.object
 };
 
 export default PasswordInput;

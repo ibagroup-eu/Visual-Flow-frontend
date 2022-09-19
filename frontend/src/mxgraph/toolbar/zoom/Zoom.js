@@ -35,6 +35,10 @@ import { setPanning, setZoomValue } from '../../../redux/actions/mxGraphActions'
 
 const marks = [
     {
+        value: 0.2,
+        label: '20'
+    },
+    {
         value: 0.5,
         label: '50'
     },
@@ -48,7 +52,7 @@ const marks = [
     }
 ];
 
-const Zoom = ({ graph, zoomVal, zoom, setZoomVal, panning, setPan }) => {
+export const Zoom = ({ graph, zoomVal, zoom, setZoomVal, panning, setPan }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
@@ -80,7 +84,7 @@ const Zoom = ({ graph, zoomVal, zoom, setZoomVal, panning, setPan }) => {
                 </Tooltip>
             </IconButton>
             <Slider
-                min={0.5}
+                min={0.2}
                 max={1.5}
                 defaultValue={1}
                 value={zoomVal}

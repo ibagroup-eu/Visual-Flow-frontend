@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import ProgressChart from '../../../chart/progress';
 import styles from './UtilizationCell.Styles';
 
-const UtilizationCell = ({ cpu = 0, memory = 0, classes, ...rest }) => {
+export const UtilizationCell = ({ cpu = 0, memory = 0, classes, ...rest }) => {
     const { t } = useTranslation();
     return (
         <TableCell className={classNames(classes.cell)} {...rest}>

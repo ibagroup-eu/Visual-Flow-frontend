@@ -28,6 +28,7 @@ import { PageSkeleton } from '../../components/skeleton';
 import { fetchParameters } from '../../redux/actions/settingsParametersActions';
 import { fetchJobs } from '../../redux/actions/jobsActions';
 import { PIPELINE } from '../../mxgraph/constants';
+import fetchUsers from '../../redux/actions/usersActions';
 
 export const PipelineDesigner = ({
     projectId,
@@ -37,6 +38,7 @@ export const PipelineDesigner = ({
     createFields,
     getParameters,
     getJobs,
+    getUsers,
     t,
     jobs
 }) => {
@@ -59,7 +61,37 @@ export const PipelineDesigner = ({
             NAME: {
                 label: t('pipelines:params.Name'),
                 type: 'text',
+                required: true,
                 validate: isValidName
+            },
+
+            TAGS: {
+                label: t('pipelines:params.Tags'),
+                type: 'chips',
+                hint: t('jobs:params.TagsHint')
+            },
+
+            NOTIFICATION_PANEL: {
+                label: t('pipelines:params.NotificationsPanel'),
+                type: 'section',
+                needs: ['NAME'],
+                fields: {
+                    NOTIFY_FAILURE: {
+                        label: t('pipelines:params.NotifyFailure'),
+                        type: 'switch'
+                    },
+
+                    NOTIFY_SUCCESS: {
+                        label: t('pipelines:params.NotifySuccess'),
+                        type: 'switch'
+                    },
+
+                    RECIPIENTS: {
+                        label: t('pipelines:params.Recipients'),
+                        type: 'emails',
+                        needs: ['NOTIFY_SUCCESS', 'NOTIFY_FAILURE']
+                    }
+                }
             }
         });
 
@@ -67,6 +99,7 @@ export const PipelineDesigner = ({
             getPipeline(projectId, pipelineId, t);
             getParameters(projectId);
             getJobs(projectId);
+            getUsers();
         }
     }, [projectId, pipelineId]);
 
@@ -86,7 +119,8 @@ PipelineDesigner.propTypes = {
     getParameters: PropTypes.func,
     getJobs: PropTypes.func,
     t: PropTypes.func,
-    jobs: PropTypes.object
+    jobs: PropTypes.object,
+    getUsers: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -98,7 +132,8 @@ const mapDispatchToProps = {
     getPipeline: fetchPipelineById,
     createFields: setFields,
     getParameters: fetchParameters,
-    getJobs: fetchJobs
+    getJobs: fetchJobs,
+    getUsers: fetchUsers
 };
 
 export default connect(

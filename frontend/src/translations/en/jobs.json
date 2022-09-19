@@ -23,7 +23,18 @@
         "Remove": "Remove",
         "jobDesigner": "Job Designer",
         "Remove selected": "Remove selected",
-        "Export selected": "Export selected"
+        "Export selected": "Export selected",
+        "History": "History"
+    },
+    "history": {
+        "Started": "STARTED",
+        "Duration": "DURATION",
+        "RunBy":"RUN BY",
+        "Log":"LOG",
+        "LastRunBy": "Last Run by",
+        "Today": "Today",
+        "Yesterday": "Yesterday",
+        "At": "At"
     },
     "noItems": "No items to display",
     "confirm": {
@@ -38,6 +49,9 @@
         "executorCores": "Executor Cores",
         "executorMemory": "Executor Memory",
         "executorInstances": "Executor Instances",
-        "shufflePartitions": "Shuffle Partitions"
+        "shufflePartitions": "Shuffle Partitions",
+        "ResourcesPanel": "Resources",
+        "Tags": "Tags",
+        "TagsHint": "Tag your job to categorize it"
     }
 }

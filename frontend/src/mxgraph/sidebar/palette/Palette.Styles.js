@@ -17,10 +17,12 @@
  * limitations under the License.
  */
 
-export default () => ({
+export default theme => ({
     stages: {
+        position: 'relative',
         border: '1px solid rgba(0, 0, 0, 0.12)',
         'border-radius': '15px',
+        boxShadow: 'none',
         width: 120,
         height: 72,
         cursor: 'pointer',
@@ -32,12 +34,16 @@ export default () => ({
         '-moz-user-select': 'none' /* Old versions of Firefox */,
         '-ms-user-select': 'none' /* Internet Explorer/Edge */,
         'user-select':
-            'none' /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */,
-        '& .MuiCardContent-root:last-child': {
-            'padding-bottom': 16
-        }
+            'none' /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
     },
     stage: {
         'text-align': 'center'
+    },
+    infoIcon: {
+        position: 'absolute',
+        fontSize: theme.spacing(1.75),
+        top: theme.spacing(1),
+        right: theme.spacing(1),
+        color: theme.palette.grey[600]
     }
 });

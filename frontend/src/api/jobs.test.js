@@ -90,4 +90,32 @@ describe('jobs', () => {
             expect(spy).toHaveBeenCalledWith(requestURL);
         });
     });
+
+    it('should run getJobLogs', () => {
+        jobId = 'fff';
+        const requestURL = `/project/${projectId}/job/${jobId}/logs`;
+        const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return jobs.getJobLogs(projectId, jobId).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should stop job', () => {
+        const requestURL = `/project/${projectId}/job/${jobId}/stop`;
+        const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
+        return jobs.stopJob(projectId, jobId).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should get job history', () => {
+        const requestURL = `/project/${projectId}/job/${jobId}/history`;
+        const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return jobs.getHistory(projectId, jobId).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
 });

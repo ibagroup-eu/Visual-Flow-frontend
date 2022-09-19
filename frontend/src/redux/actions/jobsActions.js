@@ -85,7 +85,6 @@ export const deleteJob = (projectId, jobIds) => dispatch => {
                 type: DELETE_JOBS_FAIL,
                 payload: { error }
             });
-            dispatch(fetchJobs(projectId));
         }
     );
 };

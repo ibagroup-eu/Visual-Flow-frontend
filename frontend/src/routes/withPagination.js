@@ -18,40 +18,50 @@
  */
 
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import qs from 'qs';
 import setCurrentTablePage, {
     setRowsPerPage,
     updateOrderBy
 } from '../redux/actions/enhancedTableActions';
+import { setJobsLastRun, setJobsStatus } from '../redux/actions/jobsActions';
+import {
+    setPipelinesLastRun,
+    setPipelinesStatus
+} from '../redux/actions/pipelinesActions';
 
 const withPagination = WrappedComponent => props => {
-    const location = useLocation();
     const dispatch = useDispatch();
 
-    const table = useSelector(state => state.enhancedTable);
+    const urlSearch = useSelector(state => state.pages.urlSearch);
 
     useEffect(() => {
-        const search = qs.parse(location.search, { ignoreQueryPrefix: true });
+        const search = qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
         search.page && dispatch(setCurrentTablePage(parseInt(search.page, 10)));
         search.rows && dispatch(setRowsPerPage(parseInt(search.rows, 10)));
+
+        search.jobStatus && dispatch(setJobsStatus(search.jobStatus));
+        search.jobLastRun && dispatch(setJobsLastRun(search.jobLastRun));
+
+        search.pipelineStatus && dispatch(setPipelinesStatus(search.pipelineStatus));
+        search.pipelineLastRun &&
+            dispatch(setPipelinesLastRun(search.pipelineLastRun));
 
         const sorted = search.orderBy || search.order;
         sorted && dispatch(updateOrderBy(search.orderBy, search.order));
     }, []);
 
     useEffect(() => {
-        if (!table.isInitial) {
+        if (!urlSearch.isInitial) {
             // Update the URL without 'history' tracking.
             window.history.replaceState(
                 {},
                 '',
-                window.location.pathname + table.search
+                window.location.pathname + urlSearch.search
             );
         }
-    }, [table.page, table.rowsPerPage, table.order, table.orderBy]);
+    }, [urlSearch.search]);
 
     return <WrappedComponent {...props} />;
 };

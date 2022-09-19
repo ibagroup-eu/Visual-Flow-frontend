@@ -21,7 +21,6 @@ import React, { useState } from 'react';
 import { Drawer, IconButton, Toolbar } from '@material-ui/core';
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PropTypes from 'prop-types';
 import SidebarTabs from './sidebar-tabs';
 import useStyles from './Sidebar.Styles';
@@ -37,23 +36,18 @@ const Sidebar = ({ graph = {}, name, ableToEdit }) => {
         <div className={classes.root}>
             <SidebarHeader graph={graph} name={name} ableToEdit={ableToEdit} />
             <Drawer
-                className={classNames({
-                    [classes.drawerOpen]: opened,
-                    [classes.drawerClose]: !opened
-                })}
+                className={opened ? classes.drawerOpen : classes.drawerClose}
                 variant="permanent"
                 classes={{
-                    paper: classNames({
-                        [classes.drawerOpen]: opened,
-                        [classes.drawerClose]: !opened
-                    })
+                    paper: opened ? classes.drawerOpen : classes.drawerClose
                 }}
             >
                 <Toolbar />
                 <div
-                    className={classNames(classes.content, {
-                        [classes.hidden]: !opened
-                    })}
+                    className={classNames(
+                        classes.content,
+                        opened ? classes.showContent : classes.hideContent
+                    )}
                 >
                     <SidebarTabs name={name} graph={graph} ableToEdit={ableToEdit} />
                 </div>
@@ -61,17 +55,13 @@ const Sidebar = ({ graph = {}, name, ableToEdit }) => {
             <IconButton
                 aria-label="toggle drawer"
                 onClick={toggleDrawer}
-                className={classNames(classes.toggleButton, {
-                    [classes.iconOpen]: !opened,
-                    [classes.iconClose]: opened
-                })}
+                className={classNames(
+                    classes.toggleButton,
+                    opened ? classes.iconClose : classes.iconOpen
+                )}
                 size="small"
             >
-                {opened ? (
-                    <ChevronLeftIcon fontSize="large" />
-                ) : (
-                    <ChevronRightIcon fontSize="large" />
-                )}
+                <ChevronLeftIcon fontSize="large" />
             </IconButton>
         </div>
     );

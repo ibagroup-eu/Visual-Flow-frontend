@@ -28,7 +28,6 @@ import { Description, Save } from '@material-ui/icons';
 import { has } from 'lodash';
 import useStyles from './JobsToolbar.Styles';
 import {
-    createJob,
     runJobAndRefreshIt,
     stopJobAndRefreshIt,
     updateJob
@@ -41,7 +40,7 @@ import EditDesignerButtons from '../edit-designer-buttons';
 import { fetchJob } from '../../../redux/actions/mxGraphActions';
 import { DRAFT, PENDING, RUNNING } from '../../constants';
 
-const JobsToolbar = ({
+export const JobsToolbar = ({
     graph,
     reversible,
     data,
@@ -50,7 +49,6 @@ const JobsToolbar = ({
     getStatus,
     getActualJob,
     storeStatus: { loading, status, id },
-    create,
     update,
     setSidePanel,
     sidePanelIsOpen,
@@ -69,12 +67,8 @@ const JobsToolbar = ({
 
     const stats = currentJob === id ? status : data.status;
 
-    const createUpdateJob = () => {
-        if (currentJob) {
-            update(graph, currentProject, currentJob, data);
-        } else {
-            create(graph, currentProject, data);
-        }
+    const updateJobHandler = () => {
+        update(graph, currentProject, currentJob, data);
     };
 
     const runAndUpdate = () => {
@@ -114,7 +108,7 @@ const JobsToolbar = ({
                     />
                 )}
                 {enableViewMode() && (
-                    <IconButton aria-label="saveIcon" onClick={createUpdateJob}>
+                    <IconButton aria-label="saveIcon" onClick={updateJobHandler}>
                         <Tooltip title={t('jobs:tooltip.Save')} arrow>
                             <Save />
                         </Tooltip>
@@ -153,7 +147,6 @@ JobsToolbar.propTypes = {
     sidePanelIsOpen: PropTypes.bool,
     setDirty: PropTypes.func,
     graph: PropTypes.object,
-    create: PropTypes.func,
     data: PropTypes.object,
     update: PropTypes.func,
     run: PropTypes.func,
@@ -174,7 +167,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    create: createJob,
     update: updateJob,
     run: runJobAndRefreshIt,
     stop: stopJobAndRefreshIt,

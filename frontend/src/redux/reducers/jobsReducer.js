@@ -40,7 +40,8 @@ import {
     COPY_JOB_SUCCESS,
     COPY_JOB_FAIL,
     SET_JOBS_LAST_RUN,
-    SET_JOBS_STATUS
+    SET_JOBS_STATUS,
+    SET_DEFAULT
 } from '../actions/types';
 
 const initialState = {
@@ -125,6 +126,12 @@ const jobsReducer = (state = initialState, action = {}) => {
             return {
                 ...state,
                 status: action.payload
+            };
+        case SET_DEFAULT:
+            return {
+                ...state,
+                lastRun: '',
+                status: ''
             };
         default:
             return state;

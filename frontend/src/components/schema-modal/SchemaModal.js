@@ -31,12 +31,15 @@ import AvroSchema from '../avro-schema';
 const SchemaModal = ({ values, onChange, display, onClose, editable = true }) => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const [schema, setSchema] = useState({
+
+    const DEFAULT_SCHEMA = {
         type: 'record',
         name: `schema_${uuidv4().replaceAll('-', '')}`,
         fields: [],
         ...JSON.parse(values || '{}')
-    });
+    };
+
+    const [schema, setSchema] = useState(DEFAULT_SCHEMA);
     const [isValid, setIsValid] = useState(false);
 
     const handleSchemaChange = updatedSchema => {
@@ -46,6 +49,12 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
             ...schema,
             fields: updatedSchema.fields
         });
+    };
+
+    const onCancel = () => {
+        setSchema(DEFAULT_SCHEMA);
+
+        onClose();
     };
 
     const onSave = () => {
@@ -87,7 +96,7 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
                 <Button
                     className={classNames(classes.button, classes.cancelBtn)}
                     variant="contained"
-                    onClick={onClose}
+                    onClick={onCancel}
                 >
                     {t('main:button.Cancel')}
                 </Button>

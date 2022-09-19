@@ -30,8 +30,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './TitleCell.Styles';
 import TableTimeData from '../../../table-time-data';
+import TagsList from '../../../tags-list';
 
-const TitleCell = ({
+export const TitleCell = ({
     hasInstance,
     title,
     pipelineId,
@@ -41,6 +42,7 @@ const TitleCell = ({
     lastEdit,
     checked,
     onClick,
+    tags,
     classes
 }) => (
     <TableCell component="th" scope="row" className={classes.cell}>
@@ -65,7 +67,7 @@ const TitleCell = ({
                     </Tooltip>
                 )}
             </Grid>
-            <Grid item xs={10}>
+            <Grid item xs={9}>
                 <Typography variant="h5" className={classes.title}>
                     {title}
                 </Typography>
@@ -81,6 +83,7 @@ const TitleCell = ({
                         lastRun={lastRun}
                     />
                 </Typography>
+                <TagsList tags={tags} />
             </Grid>
         </Grid>
     </TableCell>
@@ -96,7 +99,8 @@ TitleCell.propTypes = {
     checked: PropTypes.bool,
     onClick: PropTypes.func,
     classes: PropTypes.object,
-    pipelineId: PropTypes.string
+    pipelineId: PropTypes.string,
+    tags: PropTypes.array
 };
 
 export default withStyles(styles, { name: 'CellTitle' })(TitleCell);

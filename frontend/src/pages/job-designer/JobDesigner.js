@@ -26,14 +26,16 @@ import GraphDesigner from '../../mxgraph';
 import { PageSkeleton } from '../../components/skeleton';
 import { fetchParameters } from '../../redux/actions/settingsParametersActions';
 import { JOB } from '../../mxgraph/constants';
+import { fetchConnections } from '../../redux/actions/settingsConnectionsActions';
 
-const JobDesigner = ({
+export const JobDesigner = ({
     project,
     jobId,
     loading,
     getJob,
     createFields,
-    getParameters
+    getParameters,
+    getConnections
 }) => {
     const { t } = useTranslation();
 
@@ -59,70 +61,88 @@ const JobDesigner = ({
             NAME: {
                 label: t('jobs:params.Name'),
                 type: 'text',
+                required: true,
                 validate: isValidName
             },
 
-            DRIVER_REQUEST_CORES: {
-                label: t('jobs:params.driverRequestCores'),
-                type: 'number',
-                inputProps: { step: 0.1, min: 0 },
-                validate: isValidPositive
+            TAGS: {
+                label: t('jobs:params.Tags'),
+                type: 'chips',
+                hint: t('jobs:params.TagsHint')
             },
 
-            DRIVER_CORES: {
-                label: t('jobs:params.driverCores'),
-                type: 'number',
-                inputProps: { step: 1, min: 0 },
-                validate: isValidPositive
-            },
+            RESOURCES_PANEL: {
+                label: t('jobs:params.ResourcesPanel'),
+                type: 'section',
+                fields: {
+                    DRIVER_REQUEST_CORES: {
+                        label: t('jobs:params.driverRequestCores'),
+                        type: 'number',
+                        inputProps: { step: 0.1, min: 0 },
+                        validate: isValidPositive
+                    },
 
-            DRIVER_MEMORY: {
-                label: t('jobs:params.driverMemory'),
-                type: 'number',
-                inputProps: { step: 1, min: 0 },
-                adornment: 'GB',
-                validate: isValidPositive
-            },
+                    DRIVER_CORES: {
+                        label: t('jobs:params.driverCores'),
+                        type: 'number',
+                        inputProps: { step: 1, min: 0 },
+                        validate: isValidPositive
+                    },
 
-            EXECUTOR_REQUEST_CORES: {
-                label: t('jobs:params.executorRequestCores'),
-                type: 'number',
-                inputProps: { step: 0.1, min: 0 },
-                validate: isValidPositive
-            },
+                    DRIVER_MEMORY: {
+                        label: t('jobs:params.driverMemory'),
+                        type: 'number',
+                        inputProps: { step: 1, min: 0 },
+                        adornment: 'GB',
+                        validate: isValidPositive
+                    },
 
-            EXECUTOR_CORES: {
-                label: t('jobs:params.executorCores'),
-                type: 'number',
-                inputProps: { step: 1, min: 0 },
-                validate: isValidPositive
-            },
+                    EXECUTOR_REQUEST_CORES: {
+                        label: t('jobs:params.executorRequestCores'),
+                        type: 'number',
+                        inputProps: { step: 0.1, min: 0 },
+                        validate: isValidPositive
+                    },
 
-            EXECUTOR_MEMORY: {
-                label: t('jobs:params.executorMemory'),
-                type: 'number',
-                inputProps: { step: 1, min: 0 },
-                adornment: 'GB',
-                validate: isValidPositive
-            },
+                    EXECUTOR_CORES: {
+                        label: t('jobs:params.executorCores'),
+                        type: 'number',
+                        inputProps: { step: 1, min: 0 },
+                        validate: isValidPositive
+                    },
 
-            EXECUTOR_INSTANCES: {
-                label: t('jobs:params.executorInstances'),
-                type: 'number',
-                inputProps: { step: 1, min: 0 },
-                validate: isValidPositive
-            },
+                    EXECUTOR_MEMORY: {
+                        label: t('jobs:params.executorMemory'),
+                        type: 'number',
+                        inputProps: { step: 1, min: 0 },
+                        adornment: 'GB',
+                        validate: isValidPositive
+                    },
 
-            SHUFFLE_PARTITIONS: {
-                label: t('jobs:params.shufflePartitions'),
-                type: 'number',
-                inputProps: { step: 1, min: 0 },
-                validate: isValidPositive
+                    EXECUTOR_INSTANCES: {
+                        label: t('jobs:params.executorInstances'),
+                        type: 'number',
+                        inputProps: { step: 1, min: 0 },
+                        validate: isValidPositive
+                    },
+
+                    SHUFFLE_PARTITIONS: {
+                        label: t('jobs:params.shufflePartitions'),
+                        type: 'number',
+                        inputProps: { step: 1, min: 0 },
+                        validate: isValidPositive
+                    }
+                }
             }
         });
 
-        project && getJob(project, jobId, t) && getParameters(project);
+        if (project) {
+            getJob(project, jobId, t);
+            getParameters(project);
+            getConnections(project);
+        }
     }, [project, jobId]);
+
     return loading ? <PageSkeleton /> : <GraphDesigner type={JOB} />;
 };
 
@@ -132,7 +152,8 @@ JobDesigner.propTypes = {
     loading: PropTypes.bool,
     getJob: PropTypes.func,
     createFields: PropTypes.func,
-    getParameters: PropTypes.func
+    getParameters: PropTypes.func,
+    getConnections: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -142,7 +163,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     getJob: fetchJob,
     createFields: setFields,
-    getParameters: fetchParameters
+    getParameters: fetchParameters,
+    getConnections: fetchConnections
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JobDesigner);

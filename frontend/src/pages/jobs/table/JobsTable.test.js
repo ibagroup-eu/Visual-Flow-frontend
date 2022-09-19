@@ -75,7 +75,8 @@ describe('Jobs', () => {
             setStatus: jest.fn(),
             setCurrentPage: jest.fn(),
             currentPage: 0,
-            rowsPerPage: 4
+            rowsPerPage: 4,
+            getHistory: jest.fn()
         };
 
         wrapper = shallow(<JobsTable {...props} />);
@@ -135,14 +136,15 @@ describe('Jobs', () => {
         wrapper = mount(<JobsTable {...props} />);
         wrapper
             .children()
+            .at(1)
             .props()
             .children({ item: props.data[0] });
     });
 
     it('should calls onClick for all actions in getActions', () => {
-        wrapper = mount(<JobsTable {...props} />);
         wrapper
             .children()
+            .at(1)
             .props()
             .children({ item: props.data[0] })
             .props.children.at(6)
@@ -150,6 +152,7 @@ describe('Jobs', () => {
         expect(props.confirmationWindow).toBeCalled();
         wrapper
             .children()
+            .at(1)
             .props()
             .children({ item: { ...props.data[0], status: 'Draft' } })
             .props.children.at(6)
@@ -158,11 +161,11 @@ describe('Jobs', () => {
     });
 
     it('should render correct actions prop in ActionsCell with withRunAction and should have 2 actions', () => {
-        wrapper = mount(<JobsTable {...props} />);
-        wrapper.setProps({ ableToEdit: false });
+        wrapper = shallow(<JobsTable {...props} ableToEdit={false} />);
         expect(
             wrapper
                 .children()
+                .at(1)
                 .props()
                 .children({ item: props.data[0] })
                 .props.children.at(6).props.actions
@@ -170,11 +173,12 @@ describe('Jobs', () => {
     });
 
     it('should render correct actions prop in ActionsCell with withRunAction and should have 3 actions', () => {
-        wrapper = mount(<JobsTable {...props} />);
+        wrapper = shallow(<JobsTable {...props} ableToEdit={false} />);
         wrapper.setProps({ ableToEdit: false });
         expect(
             wrapper
                 .children()
+                .at(1)
                 .props()
                 .children({ item: { ...props.data[0], runnable: true } })
                 .props.children.at(6).props.actions

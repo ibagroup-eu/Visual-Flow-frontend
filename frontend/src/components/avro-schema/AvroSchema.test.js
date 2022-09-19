@@ -18,10 +18,10 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { I18nextProvider } from 'react-i18next';
 
-import AvroSchema, { toField, toSchema } from './AvroSchema';
+import AvroSchema, { checkDuplicates, toField, toSchema } from './AvroSchema';
 import i18n from '../../i18n';
 import types, { NULL } from './types';
 import Row from './row';
@@ -153,5 +153,196 @@ describe('AvroSchema', () => {
                 })
             ).toEqual(result)
         );
+    });
+
+    it('should check duplicates', () => {
+        expect(
+            checkDuplicates([{ name: 'f1', type: types.Double, nullable: false }])
+        ).toEqual([
+            { name: 'f1', type: types.Double, nullable: false, duplicated: false }
+        ]);
+
+        expect(checkDuplicates([])).toEqual([]);
+
+        expect(
+            checkDuplicates([
+                { name: 'f1', type: types.Double, nullable: false },
+                {
+                    name: 'f1',
+                    type: types.String,
+                    nullable: false
+                }
+            ])
+        ).toEqual([
+            { name: 'f1', type: types.Double, nullable: false, duplicated: false },
+            {
+                name: 'f1',
+                type: types.String,
+                nullable: false,
+                duplicated: false
+            }
+        ]);
+
+        expect(
+            checkDuplicates([
+                { name: 'f1', type: types.Double, nullable: false },
+                {
+                    name: 'f1',
+                    type: types.String,
+                    nullable: false
+                },
+                {
+                    name: 'f1',
+                    type: types.String,
+                    nullable: false
+                }
+            ])
+        ).toEqual([
+            { name: 'f1', type: types.Double, nullable: false, duplicated: false },
+            {
+                name: 'f1',
+                type: types.String,
+                nullable: false,
+                duplicated: false
+            },
+            {
+                name: 'f1',
+                type: types.String,
+                nullable: false,
+                duplicated: true
+            }
+        ]);
+
+        expect(
+            checkDuplicates([
+                { name: 'f1', type: types.Double, nullable: false },
+                { name: 'f1', type: types.Double, nullable: false }
+            ])
+        ).toEqual([
+            { name: 'f1', type: types.Double, nullable: false, duplicated: false },
+            { name: 'f1', type: types.Double, nullable: false, duplicated: true }
+        ]);
+    });
+
+    it('should remove a row', () => {
+        const defaultProps = {
+            onChange: jest.fn(),
+            schemaFields: [
+                {
+                    name: 'Field_1',
+                    type: [NULL, types.Boolean],
+                    nullable: true
+                },
+                {
+                    name: 'Field_2',
+                    type: types.Double
+                }
+            ]
+        };
+
+        const wrapper = mount(<AvroSchema {...defaultProps} />);
+
+        expect(wrapper.find(Row).length).toBe(defaultProps.schemaFields.length);
+
+        const firstRow = wrapper.find(Row).at(0);
+
+        firstRow.prop('onRemove')();
+
+        wrapper.update();
+
+        expect(wrapper.find(Row).length).toBe(defaultProps.schemaFields.length - 1);
+    });
+
+    it('should add a row', () => {
+        const defaultProps = {
+            onChange: jest.fn(),
+            schemaFields: [
+                {
+                    name: 'Field_1',
+                    type: [NULL, types.Boolean],
+                    nullable: true
+                },
+                {
+                    name: 'Field_2',
+                    type: types.Double
+                }
+            ]
+        };
+
+        const wrapper = mount(<AvroSchema {...defaultProps} />);
+
+        expect(wrapper.find(Row).length).toBe(defaultProps.schemaFields.length);
+
+        const firstRow = wrapper.find(Row).at(0);
+
+        firstRow.prop('onAdd')();
+
+        wrapper.update();
+
+        expect(wrapper.find(Row).length).toBe(defaultProps.schemaFields.length + 1);
+    });
+
+    it('should move up', () => {
+        const defaultProps = {
+            onChange: jest.fn(),
+            schemaFields: [
+                {
+                    name: 'Field_1',
+                    type: [NULL, types.Boolean],
+                    nullable: true
+                },
+                {
+                    name: 'Field_2',
+                    type: types.Double
+                }
+            ]
+        };
+
+        const wrapper = mount(<AvroSchema {...defaultProps} />);
+
+        expect(wrapper.find(Row).length).toBe(defaultProps.schemaFields.length);
+
+        const firstRow = wrapper.find(Row).at(1);
+
+        firstRow.prop('onMoveTop')();
+
+        wrapper.update();
+
+        expect(wrapper.find(Row).map(x => x.prop('name'))).toEqual([
+            'Field_2',
+            'Field_1'
+        ]);
+    });
+
+    it('should move down', () => {
+        const defaultProps = {
+            onChange: jest.fn(),
+            schemaFields: [
+                {
+                    name: 'Field_1',
+                    type: [NULL, types.Boolean],
+                    nullable: true
+                },
+                {
+                    name: 'Field_2',
+                    type: types.Double
+                }
+            ]
+        };
+
+        const wrapper = mount(<AvroSchema {...defaultProps} />);
+
+        expect(wrapper.find(Row).length).toBe(defaultProps.schemaFields.length);
+
+        const firstRow = wrapper.find(Row).at(0);
+
+        firstRow.prop('onMoveDown')();
+
+        wrapper.update();
+
+        expect(wrapper.find(Row).map(x => x.prop('name'))).toEqual([
+            'Field_2',
+            'Field_1'
+        ]);
     });
 });

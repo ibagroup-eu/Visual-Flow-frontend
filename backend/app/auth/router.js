@@ -54,6 +54,18 @@ const handleLogin = (req, res, next) => {
 
 router.get('/login', handleLogin);
 
+router.get('/logout', (req, res, next) => {
+    req.logout(err => {
+        if (err) {
+            return next(err);
+        }
+
+        return res.redirect(
+            config.app.logoutUrl || `${config.app.baseUrl}/login`
+        );
+    });
+});
+
 const callback = (req, res) => {
     res.redirect(
         req.session.redirectUrl
@@ -66,7 +78,7 @@ const callback = (req, res) => {
 router.get(
     '/callback',
     passport.authenticate(passportSetup.strategy.name, {
-        failureRedirect: '/login'
+        failureRedirect: `${config.app.baseUrl}/login`
     }),
     callback
 );
@@ -79,7 +91,11 @@ const isLoggedIn = (req, res, next) => {
 };
 
 router.get('/profile', isLoggedIn, (req, res) => {
-    res.json(req.user.profile);
+    if (process.env.NODE_ENV === 'production') {
+        res.json(req.user.profile);
+    } else {
+        res.json(req.user);
+    }
 });
 
 module.exports = { router, handleLogin, callback };

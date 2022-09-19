@@ -20,7 +20,7 @@
 FROM public.ecr.aws/lambda/nodejs:16.2022.06.07.18
 ARG PORT=8888
 WORKDIR /app/backend
-ENV NODE_ENV=production EXPRESS_PORT=$PORT
+ENV EXPRESS_PORT=$PORT
 COPY ./json-server /app/json-server
 COPY ./backend /app/backend
 COPY ./frontend /app/frontend

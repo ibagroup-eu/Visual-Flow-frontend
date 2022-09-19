@@ -20,7 +20,7 @@
 export default theme => ({
     toolbar: {
         position: 'relative',
-        zIndex: 1,
+        zIndex: 3,
         background: theme.palette.background.default,
         minHeight: theme.spacing(6)
     }

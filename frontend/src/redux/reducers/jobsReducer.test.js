@@ -29,7 +29,8 @@ import {
     COPY_JOB_SUCCESS,
     COPY_JOB_FAIL,
     SET_JOBS_LAST_RUN,
-    SET_JOBS_STATUS
+    SET_JOBS_STATUS,
+    SET_DEFAULT
 } from '../actions/types';
 
 describe('Jobs Reducer', () => {
@@ -194,6 +195,22 @@ describe('Jobs Reducer', () => {
             expect(jobsReducer(undefined, action)).toEqual({
                 ...initialState,
                 status: 'draft'
+            });
+        });
+
+        it('should handle SET_DEFAULT', () => {
+            const action = {
+                type: SET_DEFAULT
+            };
+
+            const state = {
+                lastRun: 'lastRun',
+                status: 'status'
+            };
+
+            expect(jobsReducer(state, action)).toEqual({
+                lastRun: '',
+                status: ''
             });
         });
     });

@@ -31,7 +31,7 @@ const CronInput = ({ cronValue, isUseCron, cronChange, cronLabels }) => {
 
     return (
         <>
-            <Box className={classes.errorMessageBox}>
+            <Box className={classes.messageBox}>
                 {isUseCron && (
                     <Typography className={classes.errorLabel}>
                         {t(cronValue.errorMessage)}

@@ -33,22 +33,24 @@ const sslDropdown = [
     }
 ];
 
-const Ssl = ({ ableToEdit, value, handleInputChange }) => (
+const Ssl = ({ ableToEdit, value, handleInputChange, connection }) => (
     <SelectField
         ableToEdit={ableToEdit}
-        label="jobDesigner:readConfiguration.SSL"
+        label="jobDesigner:readConfiguration.ssl"
         name="ssl"
         value={value}
         handleInputChange={handleInputChange}
         menuItems={sslDropdown}
         type={READWRITE}
+        connection={connection}
     />
 );
 
 Ssl.propTypes = {
     ableToEdit: PropTypes.bool,
     value: PropTypes.any,
-    handleInputChange: PropTypes.func
+    handleInputChange: PropTypes.func,
+    connection: PropTypes.object
 };
 
 export default Ssl;

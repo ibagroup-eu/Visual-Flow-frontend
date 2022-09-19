@@ -73,7 +73,7 @@ const CustomTextField = ({
         }
     };
 
-    React.useEffect(() => {
+    const setDefaultValue = () => {
         if (!textValue && defaultTextValue) {
             const event = {
                 target: {
@@ -83,8 +83,21 @@ const CustomTextField = ({
             };
             handleOnChange(event);
         }
-        setCurrenValue(parsedValue[2]);
-    });
+    };
+
+    React.useEffect(() => {
+        if (
+            value &&
+            parsedValue[2] !== selectValue &&
+            !parsedValue[2].includes('e')
+        ) {
+            setCurrenValue(parsedValue[2] || defaultValue);
+        }
+    }, [value]);
+
+    React.useEffect(() => {
+        setDefaultValue();
+    }, []);
 
     return (
         <div className={classNames(classes.root, className)}>
@@ -101,6 +114,7 @@ const CustomTextField = ({
                 type={textType}
                 inputProps={inputProps}
                 required={required}
+                onBlur={setDefaultValue}
             />
             <TextField
                 className={classNames(classes.select)}

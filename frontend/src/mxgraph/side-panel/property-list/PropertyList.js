@@ -37,7 +37,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './PropertyList.Styles';
 import getMenuItems from '../helpers/getMenuItems';
 
-const PropertyList = ({
+export const PropertyList = ({
     ableToEdit,
     items,
     defaultValue = '',

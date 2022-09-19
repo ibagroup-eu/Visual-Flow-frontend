@@ -64,6 +64,10 @@ const menu = id =>
                     link: `/${id}/settings/parameters`
                 },
                 {
+                    name: i18n.t('main:Connections'),
+                    link: `/${id}/settings/connections`
+                },
+                {
                     name: i18n.t('main:Users/Roles'),
                     link: `/${id}/settings/users`
                 }

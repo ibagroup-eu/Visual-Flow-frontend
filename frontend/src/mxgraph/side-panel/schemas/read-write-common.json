@@ -89,6 +89,9 @@
                 },
                 {
                     "storage": "s3"
+                },
+                {
+                    "storage": "redshift"
                 }
             ]
         },
@@ -105,6 +108,9 @@
                 },
                 {
                     "storage": "s3"
+                },
+                {
+                    "storage": "redshift"
                 }
             ]
         },
@@ -203,6 +209,9 @@
                     "storage": "mongo"
                 },
                 {
+                    "storage": "redshift"
+                },
+                {
                     "storage": "redshift-jdbc"
                 }
             ]
@@ -236,6 +245,9 @@
                 },
                 {
                     "storage": "cassandra"
+                },
+                {
+                    "storage": "redshift"
                 },
                 {
                     "storage": "redshift-jdbc"
@@ -288,6 +300,9 @@
                 },
                 {
                     "storage": "mssql"
+                },
+                {
+                    "storage": "redshift"
                 },
                 {
                     "storage": "redshift-jdbc"
@@ -347,6 +362,9 @@
                     "storage": "redis"
                 },
                 {
+                    "storage": "redshift"
+                },
+                {
                     "storage": "s3"
                 }
             ]
@@ -365,6 +383,9 @@
                 },
                 {
                     "storage": "redis"
+                },
+                {
+                    "storage": "redshift"
                 }
             ]
         },
@@ -381,6 +402,9 @@
             "conditions": [
                 {
                     "storage": "mongo"
+                },
+                {
+                    "storage": "redshift"
                 }
             ]
         },
@@ -403,6 +427,9 @@
                 },
                 {
                     "storage": "redis"
+                },
+                {
+                    "storage": "redshift"
                 }
             ]
         },
@@ -451,6 +478,14 @@
             "conditions": [
                 {
                     "storage": "redis"
+                }
+            ]
+        },
+        {
+            "field": "extraCopyOptions",
+            "conditions": [
+                {
+                    "storage": "redshift"
                 }
             ]
         }

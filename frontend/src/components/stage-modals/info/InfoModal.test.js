@@ -20,6 +20,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import InfoModal from './InfoModal';
+import { STORAGES } from '../../../mxgraph/constants';
 
 describe('InfoModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -42,16 +43,22 @@ describe('InfoModal', () => {
     };
 
     it('should render without crashes', () => {
-        const [wrapper] = init(
-            {
-                currentStorage: 'redis',
-                display: false,
-                redis: [{ title: 'title', paragraph_1: 'paragraph', hide: false }]
-            },
-            false,
-            mount
-        );
+        Object.values(STORAGES)
+            .map(({ value }) => value)
+            .forEach(storage => {
+                const [wrapper] = init(
+                    {
+                        currentStorage: storage,
+                        display: false,
+                        [storage]: [
+                            { title: 'title', paragraph_1: 'paragraph', hide: false }
+                        ]
+                    },
+                    false,
+                    mount
+                );
 
-        expect(wrapper).toBeDefined();
+                expect(wrapper).toBeDefined();
+            });
     });
 });

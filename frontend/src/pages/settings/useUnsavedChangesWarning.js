@@ -41,7 +41,7 @@ const useUnsavedChangesWarning = () => {
 
     const showModal = location => {
         if (
-            !window.location.pathname.includes(location.pathname) ||
+            !window.location.pathname?.includes(location.pathname) ||
             location.pathname === '/'
         ) {
             setModalVisible(true);

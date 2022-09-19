@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import styles from './DropdownFilter.Styles';
 
-const DropdownFilter = ({ items, label, value, onChange, classes }) => {
+const DropdownFilter = ({ items, label, value, onChange, classes, menuProps }) => {
     const id = kebabCase(label);
     const { t } = useTranslation();
 
@@ -42,6 +42,7 @@ const DropdownFilter = ({ items, label, value, onChange, classes }) => {
                 id={`${id}-select`}
                 value={value}
                 onChange={onChange}
+                MenuProps={menuProps || {}}
             >
                 <MenuItem value="">
                     <em>{t('filters:dropDown.None')}</em>
@@ -61,7 +62,8 @@ DropdownFilter.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    menuProps: PropTypes.object
 };
 
 export default withStyles(styles)(DropdownFilter);

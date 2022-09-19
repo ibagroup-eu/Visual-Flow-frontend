@@ -40,15 +40,17 @@ const LogsHeader = ({
     onSearch,
     searchValue,
     onSelect,
-    levels
+    levels,
+    modal
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
     return (
         <Grid container justifyContent="space-between" className={classes.root}>
-            <Grid item>
+            <Grid className={classNames({ [classes.search]: modal })} item>
                 <SearchInput
+                    fullWidth
                     value={searchValue}
                     placeholder={t('main:search')}
                     onChange={onSearch}
@@ -70,7 +72,7 @@ const LogsHeader = ({
                                 multiple
                                 onChange={onSelect}
                                 label="Level"
-                                className={classNames(classes.selectButton)}
+                                className={classes.selectButton}
                                 value={levels}
                                 renderValue={selected => selected.join(', ')}
                             >
@@ -111,7 +113,8 @@ LogsHeader.propTypes = {
     onSearch: PropTypes.func,
     onSelect: PropTypes.func,
     searchValue: PropTypes.string,
-    levels: PropTypes.array
+    levels: PropTypes.array,
+    modal: PropTypes.bool
 };
 
 export default LogsHeader;

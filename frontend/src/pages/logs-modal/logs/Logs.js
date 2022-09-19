@@ -122,7 +122,7 @@ Logs.propTypes = {
 
 const mapStateToProps = state => ({
     logs: state.pages.logs,
-    query: state.enhancedTable.search
+    query: state.pages.urlSearch.search
 });
 
 const mapDispatchToProps = {

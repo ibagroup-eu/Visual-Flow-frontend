@@ -191,10 +191,16 @@ const UsersTable = ({
             )
         );
 
-    const handleDeleteUsers = () =>
+    const handleDeleteUsers = () => {
         handleUpdateUsers(
             users.filter(user => selected.indexOf(user.username) === -1)
         );
+        const lastPageAfterRemove =
+            Math.ceil((users.length - selected.length) / rowsPerPage) - 1;
+        if (page > lastPageAfterRemove && lastPageAfterRemove >= 0) {
+            setPage(lastPageAfterRemove);
+        }
+    };
 
     const renderSelect = (username, userRole) => (
         <Select

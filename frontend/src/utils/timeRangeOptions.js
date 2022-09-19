@@ -29,26 +29,26 @@ const getLocalTime = data =>
 export default {
     'last hour': date =>
         moment()
-            .subtract(1, 'hours')
+            .subtract({ hours: 1, minutes: 30 })
             .isBefore(getLocalTime(date)),
     'last 3 hours': date =>
         moment()
-            .subtract(3, 'hours')
+            .subtract({ hours: 3, minutes: 30 })
             .isBefore(getLocalTime(date)),
     'last 8 hours': date =>
         moment()
-            .subtract(8, 'hours')
+            .subtract({ hours: 8, minutes: 30 })
             .isBefore(getLocalTime(date)),
     '1 day ago': date =>
         moment()
-            .subtract(1, 'days')
+            .subtract({ days: 1, hours: 12 })
             .isBefore(getLocalTime(date)),
     '3 days ago': date =>
         moment()
-            .subtract(3, 'days')
+            .subtract({ days: 3, hours: 12 })
             .isBefore(getLocalTime(date)),
     '7 days ago': date =>
         moment()
-            .subtract(7, 'days')
+            .subtract({ days: 7, hours: 12 })
             .isBefore(getLocalTime(date))
 };

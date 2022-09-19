@@ -25,14 +25,20 @@ describe('Router', () => {
     let app;
     const user = { id: 1 };
     const mock = jest.fn();
+    const originalEnv = process.env;
 
     beforeEach(() => {
+        process.env = { ...originalEnv };
         app = express();
         app.use((req, res, next) => {
             mock(req, res, next);
             next();
         });
         app.use(router);
+    });
+
+    afterEach(() => {
+        process.env = originalEnv;
     });
 
     it('/login should redirect to auth provider url', done => {
@@ -55,7 +61,18 @@ describe('Router', () => {
             .end(done);
     });
 
-    it('/profile should return the user when authenticated', done => {
+    it('/profile should return the user for production when authenticated', done => {
+        process.env.NODE_ENV = 'production';
+        mock.mockImplementation(req => {
+            req.user = user;
+        });
+        request(app)
+            .get('/profile')
+            .expect(200)
+            .end(done);
+    });
+
+    it('/profile should return the user for development when authenticated', done => {
         mock.mockImplementation(req => {
             req.user = user;
         });

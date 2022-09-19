@@ -32,14 +32,10 @@ const TableTimeData = ({ lastRun, lastFinished, lastEdit }) => {
     const classes = useStyles();
 
     const formatDate = date =>
-        (date && moment(date, DATE_FORMAT_UTC).fromNow()) || t(NA);
+        (date && moment.utc(date, DATE_FORMAT_UTC).fromNow()) || t(NA);
 
     const formatTooltip = date =>
-        (date &&
-            moment(date, DATE_FORMAT_UTC)
-                .format(DATE_FORMAT_UTC)
-                .slice(0, -3)) ||
-        t(NA);
+        (date && moment(date, DATE_FORMAT_UTC).format(DATE_FORMAT_UTC)) || t(NA);
 
     return (
         <>

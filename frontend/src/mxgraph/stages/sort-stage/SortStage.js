@@ -24,6 +24,7 @@ import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './SortStage.Styles';
 import { SORT_TYPES } from '../../constants';
 import makeTooltip from '../helpers/makeTooltip';
+import StageTag from '../../../components/stage-tag';
 
 const SortStage = ({ stage }) => {
     const classes = useStyles();
@@ -40,13 +41,7 @@ const SortStage = ({ stage }) => {
                 {makeTooltip(stage.name, stage.name)}
             </Typography>
 
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.sortType}
-            >
-                {sortType}
-            </Typography>
+            <StageTag className={classes.sortType} content={sortType} />
         </div>
     );
 };

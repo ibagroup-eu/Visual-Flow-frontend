@@ -32,7 +32,7 @@ import { TuneOutlined } from '@material-ui/icons';
 import useStyles from './ContainerConfiguration.Styles';
 import CustomTextField from '../../../components/custom-text-field';
 import { CPU, IMAGE_PULL_POLICY, LIMITS, MEMORY } from '../constants/container';
-import ImagePullSecretType from './ImagePullSecretType';
+import ImagePullSecretType from './image-pull-secret-type';
 import SelectField from '../../../components/select-field';
 import ClearButton from '../helpers/ClearButton';
 import { OTHER } from '../../constants';

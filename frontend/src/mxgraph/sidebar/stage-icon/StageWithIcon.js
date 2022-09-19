@@ -19,7 +19,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import stageIcon from './stageIcon';
 import useStyles from './StageWithIcon.Styles';
 
@@ -27,12 +27,12 @@ const StageWithIcon = ({ name, operation }) => {
     const classes = useStyles();
 
     return (
-        <Typography variant="body2" component="div" className={classes.stage}>
-            &nbsp;
+        <Box className={classes.stage}>
             {stageIcon(operation)}
-            &nbsp;
-            <div>{name}</div>
-        </Typography>
+            <Typography variant="caption" className={classes.typography}>
+                {name}
+            </Typography>
+        </Box>
     );
 };
 

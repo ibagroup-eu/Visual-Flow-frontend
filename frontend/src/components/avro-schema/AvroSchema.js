@@ -63,6 +63,18 @@ export const toSchema = field => ({
     type: field.nullable ? [NULL, field.type] : field.type
 });
 
+export const checkDuplicates = updatedFields => {
+    const duplicatedFields = duplicates(
+        updatedFields,
+        field => `${field.name}-${field.type}-${field.nullable}}`
+    );
+
+    return updatedFields.map((field, index) => ({
+        ...field,
+        duplicated: duplicatedFields.has(index)
+    }));
+};
+
 const AvroSchema = ({
     onChange,
     className,
@@ -90,18 +102,6 @@ const AvroSchema = ({
             }),
         [fields]
     );
-
-    const checkDuplicates = updatedFields => {
-        const duplicatedFields = duplicates(
-            updatedFields,
-            field => `${field.name}-${field.type}-${field.nullable}}`
-        );
-
-        return updatedFields.map((field, index) => ({
-            ...field,
-            duplicated: duplicatedFields.has(index)
-        }));
-    };
 
     const onChangeHandler = index => (name, value) => {
         setFields(

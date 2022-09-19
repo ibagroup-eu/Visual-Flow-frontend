@@ -38,11 +38,11 @@ const Basic = ({ project, projectId, loading, getProject: getProjectById }) => {
         <PageSkeleton />
     ) : (
         <Grid container>
-            <Grid item xs={3} />
-            <Grid item xs={6} className={classes.root}>
+            <Grid item xs={2} />
+            <Grid item xs={8} className={classes.root}>
                 <AddProjectForm project={project} />
             </Grid>
-            <Grid item xs={3} />
+            <Grid item xs={2} />
         </Grid>
     );
 };

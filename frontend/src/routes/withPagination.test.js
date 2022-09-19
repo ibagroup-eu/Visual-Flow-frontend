@@ -22,17 +22,11 @@ import { mount, shallow } from 'enzyme';
 
 import withPagination from './withPagination';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
 jest.mock('react-redux', () => ({
     ...jest.requireActual('react-redux'),
     useSelector: jest.fn(() => ({})),
     useDispatch: jest.fn()
-}));
-
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useLocation: jest.fn()
 }));
 
 describe('withPagination', () => {
@@ -48,11 +42,9 @@ describe('withPagination', () => {
         const dispatch = jest.fn();
 
         global.history.replaceState = jest.fn();
+        global.location.search = '?page=0&rows=5&orderBy=name&order=asc';
 
         useSelector.mockImplementation(() => ({ isInitial: false }));
-        useLocation.mockImplementation(() => ({
-            search: '?page=0&rows=5&orderBy=name&order=asc'
-        }));
         useDispatch.mockImplementation(() => dispatch);
 
         const Component = withPagination(FakeComponent);
@@ -67,9 +59,9 @@ describe('withPagination', () => {
         const dispatch = jest.fn();
 
         global.history.replaceState = jest.fn();
+        global.location.search = '';
 
         useSelector.mockImplementation(() => ({ isInitial: true }));
-        useLocation.mockImplementation(() => ({ search: '' }));
         useDispatch.mockImplementation(() => dispatch);
 
         const Component = withPagination(FakeComponent);

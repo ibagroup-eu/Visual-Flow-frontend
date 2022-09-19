@@ -42,7 +42,7 @@ import {
     setRowsPerPage
 } from '../../../redux/actions/enhancedTableActions';
 
-const EnhancedTable = ({
+export const EnhancedTable = ({
     data,
     actions,
     orderColumns,
@@ -62,7 +62,7 @@ const EnhancedTable = ({
     const [selected, setSelected] = React.useState([]);
 
     useEffect(() => {
-        setTableOrderBy(orderColumns[0]?.id, 'asc');
+        setTableOrderBy(orderBy, order);
     }, []);
 
     const { t } = useTranslation();

@@ -24,6 +24,7 @@ export default makeStyles(theme => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        width: '100%'
     }
 }));

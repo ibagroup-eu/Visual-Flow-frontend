@@ -21,8 +21,19 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { ProjectForm } from './ProjectForm';
 import FormWrapper from '../form-wrapper';
+import history from '../../utils/history';
+
+jest.mock('../../utils/history', () => ({
+    push: jest.fn(),
+    listen: jest.fn()
+}));
 
 describe('ProjectForm', () => {
+    beforeEach(() => {
+        history.push.mockClear();
+        history.listen.mockClear();
+    });
+
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             update: jest.fn(),
@@ -54,5 +65,21 @@ describe('ProjectForm', () => {
         wrapper.find(FormWrapper).simulate('submit');
 
         expect(props.create).toHaveBeenCalled();
+    });
+
+    it('should handle "onCancel" when a project does not exist', () => {
+        const [wrapper, _] = init({}, true);
+
+        wrapper.find(FormWrapper).simulate('cancel');
+
+        expect(history.push).toHaveBeenCalled();
+    });
+
+    it('should handle "onCancel" when a project does exist', () => {
+        const [wrapper] = init({ project: {} }, false);
+
+        wrapper.find(FormWrapper).simulate('cancel');
+
+        expect(history.push).not.toHaveBeenCalled();
     });
 });

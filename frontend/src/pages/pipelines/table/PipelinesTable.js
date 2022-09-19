@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import CalendarTodayIcon from '@material-ui/icons//CalendarToday';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import EventIcon from '@material-ui/icons/Event';
 import PlayArrowOutlinedIcon from '@material-ui/icons/PlayArrowOutlined';
 import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
@@ -61,6 +61,7 @@ import {
 } from '../../../components/helpers/JobsPipelinesTable';
 import CronModal from '../../../components/cron-modal';
 import withPagination from '../../../routes/withPagination';
+import { filterData } from '../../jobs/table/JobsTable';
 
 const utilizationField = (t, lastRun, onChange, classname) => (
     <Grid item className={classname}>
@@ -106,8 +107,8 @@ const PipelinesTable = ({
 
     const getActions = item => [
         {
-            title: t('pipelines:tooltip.Cron'),
-            Icon: item.cron ? EventIcon : CalendarTodayIcon,
+            title: t('pipelines:tooltip.Scheduling'),
+            Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
             disable: !item.runnable,
             onClick: () =>
                 setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
@@ -196,13 +197,6 @@ const PipelinesTable = ({
         }
     ];
 
-    const filterData = () =>
-        data?.filter(
-            item =>
-                (!status || item.status === status) &&
-                (!timeRange[lastRun] || timeRange[lastRun](item.startedAt))
-        );
-
     const withRunAction = act =>
         act.runnable ? getActions(act).slice(0, 2) : getActions(act).slice(1, 2);
 
@@ -217,7 +211,7 @@ const PipelinesTable = ({
                 projectId={projectId}
             />
             <EnhancedTable
-                data={filterData()}
+                data={filterData(data, status, lastRun)}
                 actions={
                     ableToEdit ? getGlobalActions() : getGlobalActions().slice(-1)
                 }
@@ -273,6 +267,7 @@ const PipelinesTable = ({
                             lastRun={item.startedAt}
                             lastFinished={item.finishedAt}
                             lastEdit={item.lastModified}
+                            tags={item.tags}
                         />
 
                         <DividerCell />

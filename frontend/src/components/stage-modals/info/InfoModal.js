@@ -38,6 +38,7 @@ const InfoModal = ({
     mongo,
     cassandra,
     redis,
+    redshift,
     stdout,
     display,
     title,
@@ -80,6 +81,8 @@ const InfoModal = ({
                 return cassandra;
             case STORAGES.REDIS.label:
                 return redis;
+            case STORAGES.REDSHIFT.label:
+                return redshift;
             case STORAGES.STDOUT.label:
                 return stdout;
             default:
@@ -220,6 +223,7 @@ InfoModal.propTypes = {
     mongo: PropTypes.array,
     cassandra: PropTypes.array,
     redis: PropTypes.array,
+    redshift: PropTypes.array,
     elastic: PropTypes.array,
     stdout: PropTypes.array,
     display: PropTypes.bool,

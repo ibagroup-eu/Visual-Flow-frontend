@@ -27,9 +27,6 @@ export default makeStyles(theme => ({
         background: theme.palette.primary.main,
         color: theme.palette.primary.contrastText
     },
-    hidden: {
-        visibility: 'hidden'
-    },
     icon: {
         backgroundColor: 'currentColor'
     },
@@ -40,10 +37,13 @@ export default makeStyles(theme => ({
     },
     button: {
         width: 100,
-        margin: theme.spacing(0, 3, 7, 3),
+        margin: theme.spacing(0, 3, 3, 3),
         color: theme.palette.primary.contrastText
     },
     cancelBtn: {
         background: theme.palette.grey[600]
+    },
+    root: {
+        marginBottom: theme.spacing(9)
     }
 }));

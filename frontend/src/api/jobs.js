@@ -44,5 +44,8 @@ export default {
         axiosInstance.post(`/project/${projectId}/job/${jobId}/stop`),
 
     copyJob: (projectId, jobId) =>
-        axiosInstance.post(`/project/${projectId}/${jobId}/copyJob`)
+        axiosInstance.post(`/project/${projectId}/${jobId}/copyJob`),
+
+    getHistory: (projectId, jobId) =>
+        axiosInstance.get(`/project/${projectId}/job/${jobId}/history`)
 };

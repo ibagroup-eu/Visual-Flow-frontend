@@ -105,7 +105,7 @@ const JoinConfiguration = ({
                                     {`${t('jobDesigner:joinConfiguration.Left')}: `}
                                 </Typography>
                                 <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels[0]}
+                                    {edgeLabels.Left}
                                 </Typography>
                             </div>
                             <div className={classes.row}>
@@ -117,7 +117,7 @@ const JoinConfiguration = ({
                                     {`${t('jobDesigner:joinConfiguration.Right')}: `}
                                 </Typography>
                                 <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels[1]}
+                                    {edgeLabels.Right}
                                 </Typography>
                             </div>
                         </div>
@@ -126,36 +126,38 @@ const JoinConfiguration = ({
                         </IconButton>
                     </Box>
                     <Divider className={classes.divider} />
-                    <Autocomplete
-                        disabled={!ableToEdit}
-                        id="columns"
-                        multiple
-                        freeSolo
-                        autoSelect
-                        options={[]}
-                        value={state.columns?.split(',') || []}
-                        onChange={(event, value) =>
-                            onChange('columns', value?.join(','))
-                        }
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
+                    {state.joinType !== 'cross' && (
+                        <Autocomplete
+                            disabled={!ableToEdit}
+                            id="columns"
+                            multiple
+                            freeSolo
+                            autoSelect
+                            options={[]}
+                            value={state.columns?.split(',') || []}
+                            onChange={(event, value) =>
+                                onChange('columns', value?.join(','))
+                            }
+                            renderTags={(value, getTagProps) =>
+                                value.map((option, index) => (
+                                    <Chip
+                                        variant="outlined"
+                                        label={option}
+                                        {...getTagProps({ index })}
+                                    />
+                                ))
+                            }
+                            renderInput={params => (
+                                <TextField
+                                    {...params}
+                                    fullWidth
                                     variant="outlined"
-                                    label={option}
-                                    {...getTagProps({ index })}
+                                    label={t('jobDesigner:joinConfiguration.Key')}
+                                    required
                                 />
-                            ))
-                        }
-                        renderInput={params => (
-                            <TextField
-                                {...params}
-                                fullWidth
-                                variant="outlined"
-                                label={t('jobDesigner:joinConfiguration.Key')}
-                                required
-                            />
-                        )}
-                    />
+                            )}
+                        />
+                    )}
                 </>
             )}
         </>
@@ -166,7 +168,7 @@ JoinConfiguration.propTypes = {
     ableToEdit: PropTypes.bool,
     state: PropTypes.object,
     onChange: PropTypes.func,
-    edgeLabels: PropTypes.array,
+    edgeLabels: PropTypes.object,
     handleSwap: PropTypes.func
 };
 

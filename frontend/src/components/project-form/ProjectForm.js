@@ -108,7 +108,7 @@ export const ProjectForm = ({ project, create, update }) => {
             onCancel={onCancel}
             onSubmit={onSubmit}
             title={formTitle}
-            isSaveBtnDisabled={isSaveBtnDisabled}
+            isSaveBtnDisabled={isSaveBtnDisabled()}
         >
             <Grid container spacing={4}>
                 <Grid item xs={12}>

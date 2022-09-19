@@ -21,7 +21,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import PropertySelect from './PropertySelect';
 import { times } from 'lodash';
-import { Select } from '@material-ui/core';
+import { MenuItem, Select } from '@material-ui/core';
 
 describe('PropertySelect', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -39,7 +39,7 @@ describe('PropertySelect', () => {
     it('should render without crashes', () => {
         const [wrapper] = init();
 
-        expect(wrapper.find(Select).find('option').length).toBe(5);
+        expect(wrapper.find(Select).find(MenuItem).length).toBe(5);
     });
 
     it('should handle "onChange"', () => {

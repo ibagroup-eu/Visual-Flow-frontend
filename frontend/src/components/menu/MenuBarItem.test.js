@@ -19,10 +19,10 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { MenuBarItem } from './MenuBarItem';
 import { Collapse, ListItemText, MenuItem } from '@material-ui/core';
+import { ExpandMore } from '@material-ui/icons';
+import { MenuBarItem } from './MenuBarItem';
 import ItemIcon from './ItemIcon';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 const FakeIcon = () => <div>FakeIcon</div>;
 
@@ -65,19 +65,5 @@ describe('MenuBarItem', () => {
         const [wrapper] = init();
 
         expect(wrapper.find(ExpandMore).exists()).toBeTruthy();
-        expect(wrapper.find(ExpandLess).exists()).toBeFalsy();
-    });
-
-    it('should render ExpandLess icon', () => {
-        const [wrapper, props] = init({}, true);
-
-        wrapper.find(MenuItem).simulate('click');
-
-        wrapper.update();
-
-        expect(props.onClick).toHaveBeenCalled();
-
-        expect(wrapper.find(ExpandMore).exists()).toBeFalsy();
-        expect(wrapper.find(ExpandLess).exists()).toBeTruthy();
     });
 });

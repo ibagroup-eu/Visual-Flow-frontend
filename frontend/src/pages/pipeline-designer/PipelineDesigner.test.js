@@ -35,6 +35,7 @@ describe('PipelineDesigner', () => {
             createFields: jest.fn(),
             getParameters: jest.fn(),
             getJobs: jest.fn(),
+            getUsers: jest.fn(),
             t: jest.fn(),
             jobs: { loading: false }
         };
@@ -68,6 +69,7 @@ describe('PipelineDesigner', () => {
         );
         expect(props.getParameters).toBeCalledWith('newVswId');
         expect(props.getJobs).toBeCalledWith('newVswId');
+        expect(props.getUsers).toHaveBeenCalled();
     });
 
     it('should call isValidName with diff params', () => {

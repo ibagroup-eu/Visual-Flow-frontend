@@ -30,7 +30,6 @@ import {
     TableRow,
     TextField,
     Box,
-    Button,
     Radio
 } from '@material-ui/core';
 import { connect } from 'react-redux';
@@ -41,6 +40,8 @@ import PasswordInput from '../../../../components/password-input';
 import { PageSkeleton } from '../../../../components/skeleton';
 
 import useStyles from './ParametersModal.Styles';
+import ModalConfirmButtons from '../connections-modal/confirmButtons/ModalConfirmButtons';
+import { valueIsLink } from '../../../../components/rw-text-fields/ReadWriteTextFields';
 
 const ParametersModal = ({
     ableToEdit,
@@ -53,24 +54,21 @@ const ParametersModal = ({
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-    const { params = [] } = parameters;
+    const { params = [] } = parameters || {};
 
     const [searchValue, setSearchValue] = React.useState('');
     const [projectParameters, setProjectParameters] = React.useState(params);
     const [selectedValue, setSelectedValue] = React.useState('');
+    const paramSelected = projectParameters.find(
+        param => param.key === selectedValue
+    );
 
     React.useEffect(() => {
         setProjectParameters(params);
     }, [parameters]);
 
     React.useEffect(() => {
-        setSelectedValue(
-            currentValue.length > 4 &&
-                currentValue.charAt(0) === '#' &&
-                currentValue.charAt(currentValue.length - 1) === '#'
-                ? currentValue.slice(1, -1)
-                : ''
-        );
+        setSelectedValue(valueIsLink(currentValue) ? currentValue.slice(1, -1) : '');
         setProjectParameters(params);
         setSearchValue('');
     }, [display]);
@@ -89,7 +87,12 @@ const ParametersModal = ({
         disabled: true,
         fullWidth: true,
         placeholder: t('setting:parameter.Value'),
-        value: parameterValue
+        value: parameterValue,
+        InputProps: {
+            classes: {
+                disabled: classes.paper
+            }
+        }
     });
 
     return (
@@ -102,14 +105,9 @@ const ParametersModal = ({
                 <PageSkeleton />
             ) : (
                 <Box className={classes.wrapper}>
-                    <Box
-                        className={classNames(
-                            classes.flex,
-                            classes.spaceBetween,
-                            classes.paddedBottom
-                        )}
-                    >
+                    <Box className={classes.search}>
                         <SearchInput
+                            fullWidth
                             value={searchValue}
                             onChange={event =>
                                 handleChangeSearch(event.target.value)
@@ -125,9 +123,13 @@ const ParametersModal = ({
                             <TableBody>
                                 {projectParameters.map(({ key, value, secret }) => (
                                     <TableRow key={key}>
-                                        {ableToEdit && (
+                                        {(!!paramSelected || ableToEdit) && (
                                             <TableCell className={classes.cell}>
                                                 <Radio
+                                                    disabled={!ableToEdit}
+                                                    className={
+                                                        classes.radioButtonCell
+                                                    }
                                                     checked={selectedValue === key}
                                                     onChange={event =>
                                                         setSelectedValue(
@@ -147,11 +149,17 @@ const ParametersModal = ({
                                         >
                                             <TextField
                                                 disabled
+                                                fullWidth
                                                 variant="outlined"
                                                 value={key}
                                                 placeholder={t(
                                                     'setting:parameter.Name'
                                                 )}
+                                                InputProps={{
+                                                    classes: {
+                                                        disabled: classes.paper
+                                                    }
+                                                }}
                                             />
                                         </TableCell>
                                         <TableCell
@@ -177,26 +185,12 @@ const ParametersModal = ({
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Box className={classes.buttonsGroup}>
-                        {ableToEdit && (
-                            <Button
-                                className={classes.button}
-                                variant="contained"
-                                color="primary"
-                                onClick={() => onSetValue(selectedValue)}
-                                disabled={!selectedValue}
-                            >
-                                {t('main:button.Confirm')}
-                            </Button>
-                        )}
-                        <Button
-                            className={classNames(classes.button, classes.cancelBtn)}
-                            variant="contained"
-                            onClick={onClose}
-                        >
-                            {t('main:button.Discard')}
-                        </Button>
-                    </Box>
+                    <ModalConfirmButtons
+                        ableToEdit={ableToEdit}
+                        selectedValue={selectedValue}
+                        onClose={onClose}
+                        onSetValue={onSetValue}
+                    />
                 </Box>
             )}
         </PopupForm>
@@ -215,7 +209,6 @@ ParametersModal.propTypes = {
     onSetValue: PropTypes.func,
     parameters: PropTypes.object,
     loading: PropTypes.bool,
-    getParameters: PropTypes.func,
     currentValue: PropTypes.string
 };
 

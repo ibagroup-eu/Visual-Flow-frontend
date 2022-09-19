@@ -22,7 +22,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core';
 import styles from './TabPanel.Styles';
 
-const TabPanel = ({ children, value, index, classes }) =>
+export const TabPanel = ({ children, value, index, classes }) =>
     value === index && (
         <div role="tabpanel" className={classes.root}>
             {children}

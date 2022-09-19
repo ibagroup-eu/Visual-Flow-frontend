@@ -32,7 +32,7 @@ describe('CronModal', () => {
             onClose: jest.fn(),
             projectId: 'projectId',
             cronState: {
-                data: {},
+                data: { schedule: '1 1 1 1 1', suspend: true },
                 loading: false
             },
             createCronValue: jest.fn(() => Promise.resolve()),

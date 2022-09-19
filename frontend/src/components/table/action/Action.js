@@ -22,7 +22,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './Action.Styles';
 
-const Action = ({ title, Icon, onClick, classes, disable }) => (
+export const Action = ({ title, Icon, onClick, classes, disable }) => (
     <Tooltip title={disable ? '' : title} arrow>
         <IconButton
             disabled={disable || false}

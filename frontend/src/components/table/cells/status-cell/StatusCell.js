@@ -25,7 +25,7 @@ import classNames from 'classnames';
 import styles from './StatusCell.Styles';
 import Status from '../../../status';
 
-const StatusCell = ({ status, hint, classes, ...rest }) => {
+export const StatusCell = ({ status, hint, classes, ...rest }) => {
     const { t } = useTranslation();
     return (
         <TableCell className={classNames(classes.cell)} {...rest}>

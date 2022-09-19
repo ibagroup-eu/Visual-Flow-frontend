@@ -30,7 +30,7 @@ import styles from './TableToolbar.Styles';
 import Action from '../action';
 import TableSort from '../table-sort';
 
-const TableToolbar = ({
+export const TableToolbar = ({
     selected = [],
     rowCount = 0,
     onSelectAllClick,

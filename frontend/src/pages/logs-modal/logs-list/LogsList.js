@@ -69,9 +69,11 @@ const LogsList = ({
             container
             alignItems={modal ? 'flex-start' : 'center'}
             direction="column"
+            className={classNames({ [classes.root]: modal })}
         >
             <Grid className={classes.logsHeader} item xs={12}>
                 <LogsHeader
+                    modal={modal}
                     onSearch={event => onSearch(event.target.value)}
                     searchValue={search}
                     onRefreshClick={onRefresh}

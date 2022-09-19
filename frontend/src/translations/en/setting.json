@@ -1,20 +1,33 @@
 {
-  "parameter": {
-    "tooltip": {
-      "string": "String",
-      "secureString": "Secure string"
+    "parameter": {
+        "tooltip": {
+            "string": "String",
+            "secureString": "Secure string"
+        },
+        "Name": "Name",
+        "Value": "Value"
     },
-    "Name": "Name",
-    "Value": "Value"
-  },
-  "usersAndRoles": {
-    "Toolbar": {
-      "Delete": "Delete"
+    "connection": {
+        "tooltip": {
+            "Open": "Open Connection",
+            "Edit": "Edit Connection",
+            "Delete": "Delete Connection",
+            "Ping": "Ping Connection"
+        },
+        "Name": "Name",
+        "Storage": "Storage",
+        "Configuration": "New Connection",
+        "View": "View Connection",
+        "Edit": "Edit Connection"
     },
-    "tableColumns": {
-      "ID": "ID",
-      "Name": "Name",
-      "Role": "Role"
+    "usersAndRoles": {
+        "Toolbar": {
+            "Delete": "Delete"
+        },
+        "tableColumns": {
+            "ID": "ID",
+            "Name": "Name",
+            "Role": "Role"
+        }
     }
-  }
 }

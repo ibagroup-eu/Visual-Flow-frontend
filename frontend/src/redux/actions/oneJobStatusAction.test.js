@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-import fetchJobStatus from './oneJobStatusAction';
+import fetchJobStatus, { updateJobStatus } from './oneJobStatusAction';
 import api from '../../api/jobs';
 import {
     FETCH_JOB_STATUS_START,
     FETCH_JOB_STATUS_SUCCESS,
-    FETCH_JOB_STATUS_FAIL
+    FETCH_JOB_STATUS_FAIL,
+    UPDATE_JOB_STATUS_START,
+    UPDATE_JOB_STATUS_SUCCESS, UPDATE_JOB_STATUS_FAIL
 } from './types';
 
 describe('One Job Status action', () => {
@@ -74,6 +76,40 @@ describe('One Job Status action', () => {
                     [{ type: FETCH_JOB_STATUS_START }],
                     [{ type: FETCH_JOB_STATUS_FAIL, payload: { error: 'error' } }]
                 ]);
+            });
+        });
+    });
+
+    describe('updateJobStatus', () => {
+        it('should trigger UPDATE_JOB_STATUS_START', () => {
+            const dispatch = jest.fn();
+
+            updateJobStatus()(dispatch);
+
+            expect(dispatch.mock.calls[0][0]).toEqual({
+                type: UPDATE_JOB_STATUS_START
+            });
+        });
+
+        it('should trigger UPDATE_JOB_STATUS_SUCCESS', () => {
+            const dispatch = jest.fn();
+
+            updateJobStatus('pipelineId', 'status')(dispatch);
+
+            expect(dispatch.mock.calls[1][0]).toEqual({
+                type: UPDATE_JOB_STATUS_SUCCESS,
+                payload: { status: 'status', id: 'pipelineId' }
+            });
+        });
+
+        it('should trigger UPDATE_JOB_STATUS_FAIL', () => {
+            const dispatch = jest.fn();
+
+            updateJobStatus(undefined, 'status')(dispatch);
+
+            expect(dispatch.mock.calls[1][0]).toEqual({
+                type: UPDATE_JOB_STATUS_FAIL,
+                payload: 'Job status has not been updated'
             });
         });
     });

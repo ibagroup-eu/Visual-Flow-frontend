@@ -32,6 +32,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { HistoryOutlined } from '@material-ui/icons';
 import TitleCell from '../../../components/table/cells/title-cell';
 import DividerCell from '../../../components/table/cells/divider-cell';
 import StatusCell from '../../../components/table/cells/status-cell';
@@ -61,19 +62,22 @@ import {
     joinDataNames
 } from '../../../components/helpers/JobsPipelinesTable';
 import withPagination from '../../../routes/withPagination';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
 
 const withRunAction = (act, getActions) =>
     act.runnable ? getActions(act).slice(0, 3) : getActions(act).slice(1, 3);
 
-const filterData = (data, status, lastRun) =>
-    data?.filter(
-        item =>
-            (!status || item.status === status) &&
-            (!timeRange[lastRun] ||
+export const filterData = (data, status, lastRun) =>
+    data?.filter(item => {
+        const itemStatus = !status || item.status === status;
+        const itemLastRun =
+            !timeRange[lastRun] ||
+            (item.startedAt &&
                 timeRange[lastRun](
                     moment(item.startedAt, DATE_FORMAT).format(DATE_FORMAT)
-                ))
-    );
+                ));
+        return itemStatus && itemLastRun;
+    });
 
 const JobsTable = ({
     projectId,
@@ -97,6 +101,7 @@ const JobsTable = ({
     const classes = withStyles();
     const [showModal, setShowModal] = React.useState(false);
     const [selectedJobs, setSelectedJobs] = React.useState([]);
+    const [jobHistory, setJobHistory] = React.useState({});
 
     const projId = projectId;
     const resolveStatus = value => ({
@@ -174,6 +179,12 @@ const JobsTable = ({
             onClick: () => copy(projectId, item.id)
         },
         {
+            title: t('jobs:tooltip.History'),
+            Icon: HistoryOutlined,
+            disable: !item.finishedAt || !!item.pipelineId,
+            onClick: () => setJobHistory(item)
+        },
+        {
             title: t('jobs:tooltip.Remove'),
             Icon: DeleteOutlinedIcon,
             disable: item.pipelineInstances?.length !== 0,
@@ -195,91 +206,97 @@ const JobsTable = ({
     ];
 
     return (
-        <EnhancedTable
-            data={filterData(data, status, lastRun)}
-            actions={ableToEdit ? getGlobalActions() : getGlobalActions().slice(-1)}
-            orderColumns={[
-                { id: 'name', name: t('main:form.Name') },
-                { id: 'startedAt', name: t('filters:lastRun') },
-                { id: 'status', name: t('filters:status') }
-            ]}
-            filter={
-                <>
-                    <ExportModalWindow
-                        showModal={showModal}
-                        tableData={data}
-                        display={showModal}
-                        projectId={projectId}
-                        selectedJobs={selectedJobs}
-                        onClose={() => setShowModal(false)}
-                    />
-                    <Grid item className={classes.status}>
-                        <DropdownFilter
-                            items={statuses}
-                            label={t('filters:status')}
-                            value={status}
-                            onChange={event => {
-                                setStatus(event.target.value);
-                                setCurrentPage(0);
-                            }}
+        <>
+            <HistoryPanel jobData={jobHistory} setPanelState={setJobHistory} />
+            <EnhancedTable
+                data={filterData(data, status, lastRun)}
+                actions={
+                    ableToEdit ? getGlobalActions() : getGlobalActions().slice(-1)
+                }
+                orderColumns={[
+                    { id: 'name', name: t('main:form.Name') },
+                    { id: 'startedAt', name: t('filters:lastRun') },
+                    { id: 'status', name: t('filters:status') }
+                ]}
+                filter={
+                    <>
+                        <ExportModalWindow
+                            showModal={showModal}
+                            tableData={data}
+                            display={showModal}
+                            projectId={projectId}
+                            selectedJobs={selectedJobs}
+                            onClose={() => setShowModal(false)}
                         />
-                    </Grid>
-                    <Grid item className={classes.utilization}>
-                        <DropdownFilter
-                            items={Object.keys(timeRange).map(value => ({
-                                value,
-                                label: t(`filters:timeRange.${value}`) || value
-                            }))}
-                            label={t('filters:lastRun')}
-                            value={lastRun}
-                            onChange={event => {
-                                setLastRun(event.target.value);
-                                setCurrentPage(0);
-                            }}
+                        <Grid item className={classes.status}>
+                            <DropdownFilter
+                                items={statuses}
+                                label={t('filters:status')}
+                                value={status}
+                                onChange={event => {
+                                    setStatus(event.target.value);
+                                    setCurrentPage(0);
+                                }}
+                            />
+                        </Grid>
+                        <Grid item className={classes.utilization}>
+                            <DropdownFilter
+                                items={Object.keys(timeRange).map(value => ({
+                                    value,
+                                    label: t(`filters:timeRange.${value}`) || value
+                                }))}
+                                label={t('filters:lastRun')}
+                                value={lastRun}
+                                onChange={event => {
+                                    setLastRun(event.target.value);
+                                    setCurrentPage(0);
+                                }}
+                            />
+                        </Grid>
+                    </>
+                }
+            >
+                {({ item, checked, onClick }) => (
+                    <>
+                        <TitleCell
+                            hasInstance={item.pipelineInstances?.length !== 0}
+                            checked={checked}
+                            onClick={onClick}
+                            title={item.name}
+                            pipelineId={item.pipelineId}
+                            pipelines={pipelines}
+                            lastRun={item.startedAt}
+                            lastFinished={item.finishedAt}
+                            lastEdit={item.lastModified}
+                            tags={item.tags}
                         />
-                    </Grid>
-                </>
-            }
-        >
-            {({ item, checked, onClick }) => (
-                <>
-                    <TitleCell
-                        hasInstance={item.pipelineInstances?.length !== 0}
-                        checked={checked}
-                        onClick={onClick}
-                        title={item.name}
-                        pipelineId={item.pipelineId}
-                        pipelines={pipelines}
-                        lastRun={item.startedAt}
-                        lastFinished={item.finishedAt}
-                        lastEdit={item.lastModified}
-                    />
 
-                    <DividerCell />
+                        <DividerCell />
 
-                    <StatusCell
-                        classes={{ cell: classes.status }}
-                        status={item.status}
-                    />
+                        <StatusCell
+                            classes={{ cell: classes.status }}
+                            status={item.status}
+                        />
 
-                    <DividerCell />
+                        <DividerCell />
 
-                    <UtilizationCell
-                        classes={{ cell: classes.utilization }}
-                        cpu={item.usage?.cpu}
-                        memory={item.usage?.memory}
-                    />
-                    <DividerCell />
-                    <ActionsCell
-                        actions={
-                            ableToEdit
-                                ? getActions(item)
-                                : withRunAction(item, getActions)
-                        }
-                    />
-                </>
-            )}
-        </EnhancedTable>
+                        <UtilizationCell
+                            classes={{ cell: classes.utilization }}
+                            cpu={item.usage?.cpu}
+                            memory={item.usage?.memory}
+                        />
+                        <DividerCell />
+                        <ActionsCell
+                            actions={
+                                ableToEdit
+                                    ? getActions(item)
+                                    : withRunAction(item, getActions)
+                            }
+                        />
+                    </>
+                )}
+            </EnhancedTable>
+        </>
     );
 };
 

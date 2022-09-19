@@ -18,18 +18,25 @@
  */
 
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Fade } from '@material-ui/core';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { entries, get, isFunction, set, keys, isEqual } from 'lodash';
+import { entries, get, isFunction, set, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import { setParams, setParamsDirty } from '../../../redux/actions/mxGraphActions';
-import ParamsTextField from './ParamsTextField';
+
 import useStyles from './Params.Styles';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
+import DividerWithText from '../../side-panel/helpers/DividerWithText';
+import {
+    ParamsEmailsField,
+    ParamsSwitchField,
+    ParamsTextField,
+    ParamsChipsField
+} from './fields';
 
-const defaultParams = {
+const DEFAULT_PARAMS = {
     NAME: '',
     DRIVER_REQUEST_CORES: 0.1,
     DRIVER_CORES: 1,
@@ -41,8 +48,33 @@ const defaultParams = {
     SHUFFLE_PARTITIONS: 10
 };
 
-const Params = ({
-    store: { fields, data },
+const FIELD_COMPONENTS = {
+    text: ParamsTextField,
+    switch: ParamsSwitchField,
+    emails: ParamsEmailsField,
+    chips: ParamsChipsField
+};
+
+export const getFieldNames = fields => {
+    const names = [];
+
+    const rec = structure => {
+        entries(structure).forEach(([k, v]) => {
+            if (v.type === 'section') {
+                rec(v.fields);
+            } else {
+                names.push(k);
+            }
+        });
+    };
+
+    rec(fields);
+
+    return names;
+};
+
+export const Params = ({
+    store: { fields, data = {} } = {},
     save,
     setDirty,
     ableToEdit,
@@ -52,8 +84,9 @@ const Params = ({
     const classes = useStyles();
     const { t } = useTranslation();
     const params = { ...data.params, NAME: data.name };
-    const initialState = keys(fields).reduce(
-        (acc, name) => set(acc, name, get(params, name, `${defaultParams[name]}`)),
+
+    const initialState = getFieldNames(fields).reduce(
+        (acc, name) => set(acc, name, get(params, name, get(DEFAULT_PARAMS, name))),
         {}
     );
 
@@ -61,10 +94,12 @@ const Params = ({
 
     const handleChange = event => {
         event.persist();
+
         const newValue = {
             ...state,
             [event.target.name]: event.target.value
         };
+
         setState(newValue);
         setDirty(!isEqual(newValue, { ...data.params, NAME: data.name }));
     };
@@ -76,22 +111,44 @@ const Params = ({
                 isFunction(field.validate) && field.validate(state[key])
         );
 
+    const isVisible = field => !field.needs || field.needs.some(x => get(state, x));
+
+    const getField = (key, field) => {
+        const FieldComponent = get(FIELD_COMPONENTS, field.type, ParamsTextField);
+
+        return (
+            <FieldComponent
+                ableToEdit={ableToEdit}
+                key={key}
+                name={key}
+                {...field}
+                value={state[key]}
+                onChange={handleChange}
+            />
+        );
+    };
+
+    const getSection = (key, field) => (
+        <Fade key={key} in>
+            <div className={classes.section}>
+                <DividerWithText>{field.label}</DividerWithText>
+                <div className={classes.section}>
+                    {entries(field.fields).map(
+                        ([k, v]) => isVisible(v) && getField(k, v)
+                    )}
+                </div>
+            </div>
+        </Fade>
+    );
+
     return (
         <div className={classes.root}>
             <div className={classes.params}>
-                {entries(fields).map(([key, field]) => {
-                    const value = state[key];
-                    return (
-                        <ParamsTextField
-                            ableToEdit={ableToEdit}
-                            key={key}
-                            name={key}
-                            {...field}
-                            value={value}
-                            onChange={handleChange}
-                        />
-                    );
-                })}
+                {entries(fields).map(([key, field]) =>
+                    field.type === 'section'
+                        ? isVisible(field) && getSection(key, field)
+                        : isVisible(field) && getField(key, field)
+                )}
             </div>
             <div className={classes.buttons}>
                 {ableToEdit && (

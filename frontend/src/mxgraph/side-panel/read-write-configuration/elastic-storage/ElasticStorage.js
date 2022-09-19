@@ -20,33 +20,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE } from '../../../constants';
 import Ssl from '../helpers/Ssl';
 
 const fields = [
-    { field: 'Nodes' },
-    { field: 'Port' },
-    { field: 'User' },
-    { field: 'Index' }
+    [{ field: 'nodes' }, { field: 'port' }, { field: 'user' }],
+    [{ field: 'index' }]
 ];
 
-const field = [{ field: 'Password' }];
+const field = [{ field: 'password' }];
 
 const ElasticStorage = ({
     inputValues,
     handleInputChange,
     openModal,
-    ableToEdit
+    ableToEdit,
+    connectionPage,
+    connection
 }) => (
     <>
         <ReadTextFields
             ableToEdit={ableToEdit}
-            fields={fields}
+            fields={fields[0]}
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -54,27 +57,45 @@ const ElasticStorage = ({
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
             hidden
         />
-        {inputValues.operation === WRITE && (
-            <WriteMode
-                disabled={!ableToEdit}
-                value={inputValues.writeMode}
-                onChange={handleInputChange}
-            />
-        )}
         <Ssl
             ableToEdit={ableToEdit}
             value={inputValues.ssl}
             handleInputChange={handleInputChange}
+            connection={connection}
         />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={[{ field: 'Cert Data', disabled: inputValues.ssl !== 'true' }]}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-        />
+
+        {!connectionPage && (
+            <>
+                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
+                {inputValues.operation === WRITE && (
+                    <WriteMode
+                        disabled={!ableToEdit}
+                        value={inputValues.writeMode}
+                        onChange={handleInputChange}
+                    />
+                )}
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={fields[1]}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                    hidden
+                />
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={[
+                        { field: 'certData', disabled: inputValues.ssl !== 'true' }
+                    ]}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                />
+            </>
+        )}
     </>
 );
 
@@ -82,7 +103,9 @@ ElasticStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
     openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default ElasticStorage;

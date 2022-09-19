@@ -177,7 +177,8 @@ export const createPipeline = (graph, projectId, pipelineData) => dispatch => {
     return api
         .createPipeline(projectId, {
             definition: currentGraph,
-            name: pipelineData.name
+            name: pipelineData.name,
+            params: pipelineData.params
         })
         .then(
             response => {
@@ -209,7 +210,8 @@ export const updatePipeline = (graph, projectId, id, pipelineData) => dispatch =
             projectId,
             {
                 definition: currentGraph,
-                name: pipelineData.name
+                name: pipelineData.name,
+                params: pipelineData.params
             },
             id
         )

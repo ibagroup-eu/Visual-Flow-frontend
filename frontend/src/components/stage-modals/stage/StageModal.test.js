@@ -30,7 +30,7 @@ import {
     JOIN,
     NOTIFICATION,
     READ,
-    REMOVE_DUPLICATES,
+    REMOVE_DUPLICATES, SLICE,
     SORT,
     TRANSFORM,
     UNION,
@@ -61,7 +61,8 @@ describe('StageModal', () => {
             NOTIFICATION,
             CONTAINER,
             CACHE,
-            SORT
+            SORT,
+            SLICE
         ];
 
         stages.map(stageName => {

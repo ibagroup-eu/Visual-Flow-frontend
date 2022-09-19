@@ -41,6 +41,7 @@ import pipelineDesigner from './translations/en/pipelineDesigner.json';
 import filters from './translations/en/filters.json';
 import cache from './translations/en/stages/cache.json';
 import sort from './translations/en/stages/sort.json';
+import slice from './translations/en/stages/slice.json';
 
 export const resources = {
     en: {
@@ -63,7 +64,8 @@ export const resources = {
         pipelineDesigner,
         filters,
         cache,
-        sort
+        sort,
+        slice
     }
 };
 

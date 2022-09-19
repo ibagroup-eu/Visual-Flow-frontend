@@ -49,7 +49,7 @@ const jobStatuses = [
     }
 ];
 
-const getOutputPaths = graph => {
+export const getOutputPaths = graph => {
     const currentCell = graph.getSelectionCell();
     const outputEdges = graph.getOutgoingEdges(currentCell);
 
@@ -62,7 +62,7 @@ const getOutputPaths = graph => {
         : [];
 };
 
-const JobConfiguration = ({
+export const JobConfiguration = ({
     isDisabled,
     ableToEdit,
     configuration,

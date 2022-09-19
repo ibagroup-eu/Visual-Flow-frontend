@@ -28,7 +28,12 @@ import {
     FETCH_PIPELINE_START,
     FETCH_PIPELINE_SUCCESS,
     FETCH_PIPELINE_FAIL,
-    SET_ZOOM_VALUE
+    SET_ZOOM_VALUE,
+    SET_GRAPH_DIRTY,
+    SET_SIDE_PANEL_DIRTY,
+    SET_PARAMS_DIRTY,
+    SET_PANNING,
+    SET_LOGS_MODAL
 } from '../actions/types';
 import mxGraphReducer from './mxGraphReducer';
 
@@ -195,6 +200,66 @@ describe('mxGraph Reducer', () => {
                 loading: false,
                 error
             });
+        });
+    });
+
+    it('should handle SET_GRAPH_DIRTY', () => {
+        const action = {
+            type: SET_GRAPH_DIRTY,
+            payload: 'dirty'
+        };
+
+        expect(mxGraphReducer(undefined, action)).toEqual({
+            ...initialState,
+            dirty: 'dirty'
+        });
+    });
+
+    it('should handle SET_SIDE_PANEL_DIRTY', () => {
+        const action = {
+            type: SET_SIDE_PANEL_DIRTY,
+            payload: 'dirty'
+        };
+
+        expect(mxGraphReducer(undefined, action)).toEqual({
+            ...initialState,
+            sidePanelIsDirty: 'dirty'
+        });
+    });
+
+    it('should handle SET_PARAMS_DIRTY', () => {
+        const action = {
+            type: SET_PARAMS_DIRTY,
+            payload: 'dirty'
+        };
+
+        expect(mxGraphReducer(undefined, action)).toEqual({
+            ...initialState,
+            paramsIsDirty: 'dirty'
+        });
+    });
+
+    it('should handle SET_PANNING', () => {
+        const action = {
+            type: SET_PANNING,
+            payload: 'dirty'
+        };
+
+        expect(mxGraphReducer(undefined, action)).toEqual({
+            ...initialState,
+            panning: 'dirty'
+        });
+    });
+
+    it('should handle SET_LOGS_MODAL', () => {
+        const action = {
+            type: SET_LOGS_MODAL,
+            payload: 'dirty'
+        };
+
+        expect(mxGraphReducer(undefined, action)).toEqual({
+            ...initialState,
+            showLogsModal: 'dirty'
         });
     });
 });

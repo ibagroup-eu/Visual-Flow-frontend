@@ -43,5 +43,8 @@ export default makeStyles(theme => ({
     },
     refreshBtn: {
         justifyContent: 'flex-end'
+    },
+    search: {
+        width: '35%'
     }
 }));

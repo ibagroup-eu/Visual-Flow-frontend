@@ -25,16 +25,18 @@ import Grid from '@material-ui/core/Grid';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/styles';
 import { withTranslation } from 'react-i18next';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { jobStages, jobStagesByType } from '../../jobStages';
 import styles from './Palette.Styles';
 import StageWithIcon from '../stage-icon/StageWithIcon';
 import stageLabels from '../../stageLabels';
 import { pipelinesStages, pipelinesStagesByType } from '../../pipelinesStages';
 import history from '../../../utils/history';
+import StageModal from '../../../components/stage-modals/stage';
 
 const { mxEvent, mxUtils, mxDragSource } = mxgraph();
 
-class Palette extends React.Component {
+export class Palette extends React.Component {
     constructor(props) {
         super(props);
         const currentPath = history.location.pathname.split('/')[1];
@@ -42,7 +44,8 @@ class Palette extends React.Component {
             refSidebar: React.createRef(),
             stages: currentPath === 'jobs' ? jobStages : pipelinesStages,
             stagesByType:
-                currentPath === 'jobs' ? jobStagesByType : pipelinesStagesByType
+                currentPath === 'jobs' ? jobStagesByType : pipelinesStagesByType,
+            operationName: ''
         };
     }
 
@@ -102,6 +105,7 @@ class Palette extends React.Component {
                 graph.autoscroll,
                 true
             );
+            ds.dragElementZIndex = 1201;
             ds.createDragElement = mxDragSource.prototype.createDragElement;
         });
     };
@@ -120,15 +124,29 @@ class Palette extends React.Component {
         };
         const xPoint = getRandomPoint();
         const yPoint = getRandomPoint();
-        this.addCell(graph, null, null, xPoint, yPoint, stageName);
+        const graphTranslate = graph.getView().getTranslate();
+        this.addCell(
+            graph,
+            null,
+            null,
+            xPoint - graphTranslate.x,
+            yPoint - graphTranslate.y,
+            stageName
+        );
     };
 
     render() {
         const { classes, t } = this.props;
-        const { refSidebar, stages } = this.state;
+        const { refSidebar, stages, operationName } = this.state;
 
         return (
             <div ref={refSidebar}>
+                <StageModal
+                    display={!!operationName}
+                    stageName={operationName}
+                    title={t(`jobDesigner:palette.${operationName}`)}
+                    onClose={() => this.setState({ operationName: '' })}
+                />
                 <Grid container spacing={2}>
                     {stages.map(stage => (
                         <Grid item xs={6} key={stage.operation}>
@@ -145,6 +163,14 @@ class Palette extends React.Component {
                                     name={t(
                                         `jobDesigner:palette.${stage.operation}`
                                     )}
+                                />
+                                <InfoOutlinedIcon
+                                    className={classes.infoIcon}
+                                    onClick={() =>
+                                        this.setState({
+                                            operationName: stage.operation
+                                        })
+                                    }
                                 />
                             </Card>
                         </Grid>

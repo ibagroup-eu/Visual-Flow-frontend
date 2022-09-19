@@ -22,25 +22,30 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@material-ui/core';
 import { Cancel } from '@material-ui/icons';
 import { READWRITE } from '../../constants';
+import useStyles from './ClearButton.Styles';
 
-const ClearButton = ({ name, value, ableToEdit, handleInputChange, type }) => (
-    <IconButton
-        disabled={!(ableToEdit && Boolean(value))}
-        onClick={() =>
-            type === READWRITE
-                ? handleInputChange({
-                      target: {
-                          name,
-                          value: ''
-                      }
-                  })
-                : handleInputChange(name, '')
-        }
-    >
-        <Cancel />
-    </IconButton>
-);
+const ClearButton = ({ name, value, ableToEdit, handleInputChange, type }) => {
+    const classes = useStyles();
 
+    return (
+        <IconButton
+            className={classes.button}
+            disabled={!(ableToEdit && Boolean(value))}
+            onClick={() =>
+                type === READWRITE
+                    ? handleInputChange({
+                          target: {
+                              name,
+                              value: ''
+                          }
+                      })
+                    : handleInputChange(name, '')
+            }
+        >
+            <Cancel />
+        </IconButton>
+    );
+};
 ClearButton.propTypes = {
     name: PropTypes.string,
     value: PropTypes.any,

@@ -31,7 +31,7 @@ export default makeStyles(theme => ({
         height: 'max-content',
         overflow: 'auto',
         borderRadius: 10,
-        maxHeight: '80%'
+        maxHeight: '85%'
     },
     header: {
         background: theme.palette.primary.main,

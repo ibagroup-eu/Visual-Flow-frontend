@@ -17,28 +17,11 @@
  * limitations under the License.
  */
 
-const drawerWidth = 360;
-
 export default theme => ({
     root: {
         display: 'flex',
-        flexDirection: 'column'
-    },
-    drawerOpen: {
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen
-        }),
-        left: 'auto'
-    },
-    drawerClose: {
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
-        }),
-        overflow: 'hidden',
-        width: 0
+        flexDirection: 'column',
+        zIndex: theme.zIndex.drawer + 2
     },
     content: {
         width: '100%',
@@ -46,9 +29,6 @@ export default theme => ({
         display: 'flex',
         overflowY: 'auto',
         overflowX: 'hidden'
-    },
-    hidden: {
-        display: 'none'
     },
     form: {
         width: 350,

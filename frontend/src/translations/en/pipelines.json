@@ -8,13 +8,23 @@
         "Remove": "Remove",
         "Remove selected": "Remove selected",
         "Cron": "Cron",
-        "UseCron": "Use cron"
+        "Scheduling": "Scheduling",
+        "OnOff": "On/Off"
     },
     "confirm": {
         "delete": "Are you sure you want to delete {{name}} pipeline(s)?"
     },
     "params": {
-        "Name": "Name"
+        "Name": "Name",
+        "NotifyFailure": "Notify about failure",
+        "NotifySuccess": "Notify about success",
+        "Recipients": "Recipients",
+        "NotificationsPanel": "Notifications",
+        "Tags": "Tags",
+        "TagsHint": "Tag your job to categorize it"
     },
-    "relatedJobs": "Export related jobs"
+    "relatedJobs": "Export related jobs",
+    "cronInfo": {
+        "nextAt": "Next at"
+    }
 }

@@ -18,17 +18,19 @@
  */
 
 import { Collapse, Divider, List, ListItemText } from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@material-ui/icons';
 import React from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useTranslation } from 'react-i18next';
 import ItemIcon from './ItemIcon';
+import useStyles from './MenuBarItem.Styles';
 
 const isSelected = (item, path) => item.link === path;
 
 export const MenuBarItem = ({ item, menuOpen, onClick, location }) => {
+    const classes = useStyles();
     const { t } = useTranslation();
 
     const { name, Icon, items = [] } = item;
@@ -62,8 +64,11 @@ export const MenuBarItem = ({ item, menuOpen, onClick, location }) => {
                     primary={t(`main:${name}`)}
                     inset={!Icon}
                 />
-                {isExpandable && !open && <ExpandMore />}
-                {isExpandable && open && <ExpandLess />}
+                {isExpandable && (
+                    <ExpandMore
+                        className={open ? classes.iconClose : classes.iconOpen}
+                    />
+                )}
             </MenuItem>
 
             {isExpandable && menuOpen && (

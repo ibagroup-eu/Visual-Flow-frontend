@@ -19,29 +19,36 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE } from '../../../constants';
 import Ssl from '../helpers/Ssl';
 
 const fields = [
-    { field: 'Database' },
-    { field: 'Collection' },
-    { field: 'Host' },
-    { field: 'Port' },
-    { field: 'User' }
+    [{ field: 'host' }, { field: 'port' }, { field: 'user' }],
+    [{ field: 'database' }, { field: 'collection' }]
 ];
 
-const field = [{ field: 'Password' }];
+const field = [{ field: 'password' }];
 
-const MongoStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) => (
+const MongoStorage = ({
+    inputValues,
+    handleInputChange,
+    openModal,
+    ableToEdit,
+    connectionPage,
+    connection
+}) => (
     <>
         <ReadTextFields
             ableToEdit={ableToEdit}
-            fields={fields}
+            fields={fields[0]}
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -49,19 +56,34 @@ const MongoStorage = ({ inputValues, handleInputChange, openModal, ableToEdit })
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
             hidden
         />
         <Ssl
             ableToEdit={ableToEdit}
             value={inputValues.ssl}
             handleInputChange={handleInputChange}
+            connection={connection}
         />
-        {inputValues.operation === WRITE && (
-            <WriteMode
-                disabled={!ableToEdit}
-                value={inputValues.writeMode}
-                onChange={handleInputChange}
-            />
+
+        {!connectionPage && (
+            <>
+                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={fields[1]}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                />
+                {inputValues.operation === WRITE && (
+                    <WriteMode
+                        disabled={!ableToEdit}
+                        value={inputValues.writeMode}
+                        onChange={handleInputChange}
+                    />
+                )}
+            </>
         )}
     </>
 );
@@ -70,7 +92,9 @@ MongoStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
     openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default MongoStorage;

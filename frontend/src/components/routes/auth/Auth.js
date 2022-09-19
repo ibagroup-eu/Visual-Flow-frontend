@@ -20,10 +20,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+
 import AuthRenderer from './AuthRenderer';
+import { setCurrentProfile } from '../../../redux/actions/profileActions';
 
 const Auth = ({ redirect, children }) => {
     const [user, setUser] = useState(null);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const { CancelToken } = axios;
@@ -32,7 +36,10 @@ const Auth = ({ redirect, children }) => {
             .get(`${window.BASE_URL}profile`, {
                 cancelToken: source.token
             })
-            .then(response => setUser(response.data))
+            .then(response => {
+                setUser(response.data);
+                dispatch(setCurrentProfile(response.data));
+            })
             .catch(thrown => {
                 if (!axios.isCancel(thrown)) {
                     window.location.assign(

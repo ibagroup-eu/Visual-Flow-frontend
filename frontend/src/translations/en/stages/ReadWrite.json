@@ -323,6 +323,62 @@
             "value": "Data time to live in seconds. Data doesn't expire if TTL is less than 1. By default, it's 0."
         }
     },
+    "REDSHIFT": {
+        "host": {
+            "name": "Host",
+            "value": "Host of the Redshift master node."
+        },
+        "port": {
+            "name": "Port",
+            "value": "Port of the Redshift master node."
+        },
+        "database": {
+            "name": "Database",
+            "value": "Identifies a Redshift database name."
+        },
+        "user": {
+            "name": "User",
+            "value": "Credentials to access the database."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Credentials to access the database."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Whether Redshift connection should be secured via SSL."
+        },
+        "tempdir": {
+            "name": "Bucket",
+            "value": "A writeable location in Amazon S3, to be used for unloaded data when reading and Avro data to be loaded into Redshift when writing.",
+            "value1": "If you're using Redshift data source for Spark as part of a regular ETL pipeline, it can be useful to set a Lifecycle Policy on a bucket and use that as a temp location for this data."
+        },
+        "accessKey": {
+            "name": "Access key",
+            "value": "AWS access key, must have write permissions to the S3 bucket."
+        },
+        "secretKey": {
+            "name": "Secret key",
+            "value": "AWS secret access key corresponding to provided access key."
+        },
+        "extraCopyOptions": {
+            "name": "Extra copy options (optional)",
+            "value": "A list of extra options to append to the Redshift COPY command when loading data, e.g. TRUNCATECOLUMNS or MAXERROR n (see the Redshift docs for other options).",
+            "value1": "Note that since these options are appended to the end of the COPY command, only options that make sense at the end of the command can be used, but that should cover most possible use cases."
+        },
+        "customSql": {
+            "name": "Custom SQL",
+            "value": "Whether to read from custom query or from the table."
+        },
+        "table": {
+            "name": "Table",
+            "value": "Database table to read/write."
+        },
+        "query": {
+            "name": "Query",
+            "value": "Custom SQL query that will be loaded into DataFrame."
+        }
+    },
     "noAdditionalFields": "There are no additional fields.",
     "STDOUT": {
         "description": {

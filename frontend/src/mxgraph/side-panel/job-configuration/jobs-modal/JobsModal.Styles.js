@@ -21,34 +21,42 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
     wrapper: {
-        maxHeight: 546,
-        overflow: 'hidden'
+        maxHeight: '90vh',
+        overflow: 'hidden',
+        padding: theme.spacing(2, 3, 2, 3),
+        width: '85vw',
+        maxWidth: '100%'
     },
     listContent: {
         overflow: 'auto',
-        maxHeight: 280,
-        marginTop: theme.spacing(4),
-        borderRadius: 15,
-        backgroundColor: theme.palette.background.default
+        maxHeight: '45vh'
     },
-    radioBtn: {
+    cell: {
+        '&:first-child': {
+            paddingLeft: '8px !important'
+        },
+        '&:last-child': {
+            paddingRight: '8px !important'
+        },
+        '& div and not:(button)': {
+            backgroundColor: theme.palette.background.paper
+        },
         backgroundColor: theme.palette.background.default,
-        border: 'none'
+        padding: '8px 4px'
+    },
+    radioButtonCell: {
+        padding: theme.spacing(2)
+    },
+    search: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        paddingBottom: theme.spacing(3),
+        width: '35%'
     },
     jobCell: {
-        backgroundColor: theme.palette.background.default,
-        width: 484,
-        border: 'none'
+        width: '100%'
     },
-    buttonsGroup: {
-        marginTop: 56
-    },
-    button: {
-        width: 100,
-        margin: theme.spacing(0, 2, 7, 2),
-        color: theme.palette.primary.contrastText
-    },
-    cancelBtn: {
-        background: theme.palette.grey[600]
+    paper: {
+        backgroundColor: theme.palette.background.paper
     }
 }));

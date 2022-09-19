@@ -21,62 +21,45 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
     wrapper: {
-        maxHeight: 900,
-        overflow: 'hidden'
-    },
-    hidden: {
-        visibility: 'hidden'
-    },
-    flex: {
-        display: 'flex'
-    },
-    spaceBetween: {
-        justifyContent: 'space-between'
-    },
-    end: {
-        justifyContent: 'end'
-    },
-    paddedTop: {
-        paddingTop: theme.spacing(3)
-    },
-    paddedBottom: {
-        paddingBottom: theme.spacing(3)
+        maxHeight: '90vh',
+        overflow: 'hidden',
+        padding: theme.spacing(2, 3, 2, 3),
+        width: '85vw',
+        maxWidth: '100%'
     },
     parameterList: {
         overflow: 'auto',
-        maxHeight: 500
+        maxHeight: '45vh'
     },
     cell: {
         '&:first-child': {
-            paddingLeft: '16px !important'
+            paddingLeft: '8px !important'
         },
         '&:last-child': {
-            paddingRight: '16px !important'
+            paddingRight: '8px !important'
         },
-        '& div': {
+        '& div and not:(button)': {
             backgroundColor: theme.palette.background.paper
         },
         backgroundColor: theme.palette.background.default,
         padding: '8px 4px'
     },
+    radioButtonCell: {
+        padding: theme.spacing(2)
+    },
     keyCell: {
-        width: 254
+        width: '30%'
     },
     valueCell: {
-        width: 710
+        width: '100%'
     },
-    buttonsGroup: {
-        marginTop: 82,
+    search: {
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'space-between',
+        paddingBottom: theme.spacing(3),
+        width: '35%'
     },
-    button: {
-        width: 100,
-        margin: theme.spacing(0, 2, 7, 2),
-        color: theme.palette.primary.contrastText
-    },
-    cancelBtn: {
-        background: theme.palette.grey[600]
+    paper: {
+        backgroundColor: theme.palette.background.paper
     }
 }));

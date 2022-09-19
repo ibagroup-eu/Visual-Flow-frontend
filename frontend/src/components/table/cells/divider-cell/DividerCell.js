@@ -22,7 +22,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './DividerCell.Styles';
 
-const DividerCell = ({ classes }) => (
+export const DividerCell = ({ classes }) => (
     <TableCell className={classes.cell}>
         <Divider orientation="vertical" className={classes.divider} light />
     </TableCell>

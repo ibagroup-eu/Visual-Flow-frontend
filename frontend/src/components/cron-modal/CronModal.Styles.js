@@ -35,7 +35,8 @@ export default makeStyles(theme => ({
     },
     switchBox: {
         display: 'flex',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        margin: theme.spacing(0, 0, 3, 0)
     },
     cell: {
         backgroundColor: theme.palette.background.default,
@@ -84,11 +85,20 @@ export default makeStyles(theme => ({
     errorLabel: {
         color: theme.palette.error.main
     },
-    errorMessageBox: {
-        textAlign: 'center',
-        height: theme.spacing(4)
+    messageBox: {
+        textAlign: 'center'
     },
     inputMinWidth: {
         minWidth: 330
+    },
+    runInfoLabel: {
+        color: theme.palette.secondary.main
+    },
+    runTimeLabel: {
+        fontSize: 25,
+        margin: theme.spacing(-1, 0, 1, 0)
+    },
+    nextCron: {
+        margin: theme.spacing(0, 0, 2, 0)
     }
 }));

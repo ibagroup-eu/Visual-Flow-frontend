@@ -31,9 +31,7 @@ describe('EnhancedTable Reducer', () => {
             page: 0,
             rowsPerPage: 5,
             orderBy: 'name',
-            order: 'asc',
-            isInitial: false,
-            search: '?page=0&rows=5&order=asc&orderBy=name'
+            order: 'asc'
         });
     });
 
@@ -46,9 +44,7 @@ describe('EnhancedTable Reducer', () => {
             page: 1,
             rowsPerPage: 5,
             orderBy: 'name',
-            order: 'asc',
-            isInitial: false,
-            search: '?page=1&rows=5&order=asc&orderBy=name'
+            order: 'asc'
         });
     });
 
@@ -61,9 +57,7 @@ describe('EnhancedTable Reducer', () => {
             page: 0,
             rowsPerPage: 10,
             orderBy: 'name',
-            order: 'asc',
-            isInitial: false,
-            search: '?page=0&rows=10&order=asc&orderBy=name'
+            order: 'asc'
         });
     });
 
@@ -75,9 +69,7 @@ describe('EnhancedTable Reducer', () => {
             page: 0,
             rowsPerPage: 5,
             orderBy: 'name',
-            order: 'asc',
-            isInitial: false,
-            search: '?page=0&rows=5&order=asc&orderBy=name'
+            order: 'asc'
         });
     });
 
@@ -90,9 +82,7 @@ describe('EnhancedTable Reducer', () => {
             page: 0,
             rowsPerPage: 5,
             orderBy: 'status',
-            order: 'desc',
-            isInitial: false,
-            search: '?page=0&rows=5&order=desc&orderBy=status'
+            order: 'desc'
         });
     });
 });

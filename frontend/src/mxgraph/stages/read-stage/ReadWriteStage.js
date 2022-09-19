@@ -41,7 +41,7 @@ const ReadWriteStage = ({ stage }) => {
                 className={classes.bucket}
                 color="textSecondary"
             >
-                {t('jobDesigner:readConfiguration.Bucket')}:{' '}
+                {t('jobDesigner:readConfiguration.bucket')}:{' '}
                 {makeTooltip(stage.bucket, stage.bucket)}
             </Typography>
             <Typography
@@ -72,7 +72,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.schema}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Schema')}:{' '}
+                            {t('jobDesigner:readConfiguration.schema')}:{' '}
                             {makeTooltip(stage.schema, stage.schema)}
                         </Typography>
                         <Typography
@@ -81,7 +81,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.table}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Table')}:{' '}
+                            {t('jobDesigner:readConfiguration.table')}:{' '}
                             {makeTooltip(stage.table, stage.table)}
                         </Typography>
                     </>
@@ -94,7 +94,7 @@ const ReadWriteStage = ({ stage }) => {
                         className={classes.bucket}
                         color="textSecondary"
                     >
-                        {t('jobDesigner:readConfiguration.Index')}:{' '}
+                        {t('jobDesigner:readConfiguration.index')}:{' '}
                         {makeTooltip(stage.index, stage.index)}
                     </Typography>
                 );
@@ -110,7 +110,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.schema}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Database')}:{' '}
+                            {t('jobDesigner:readConfiguration.database')}:{' '}
                             {makeTooltip(stage.database, stage.database)}
                         </Typography>
                         <Typography
@@ -119,8 +119,31 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.table}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Collection')}:{' '}
+                            {t('jobDesigner:readConfiguration.collection')}:{' '}
                             {makeTooltip(stage.collection, stage.collection)}
+                        </Typography>
+                    </>
+                );
+            case STORAGES.REDSHIFT.value:
+                return (
+                    <>
+                        <Typography
+                            variant="caption"
+                            component="div"
+                            className={classes.schema}
+                            color="textSecondary"
+                        >
+                            {t('jobDesigner:readConfiguration.database')}:{' '}
+                            {makeTooltip(stage.database, stage.database)}
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            component="div"
+                            className={classes.table}
+                            color="textSecondary"
+                        >
+                            {t('jobDesigner:readConfiguration.bucket')}:{' '}
+                            {makeTooltip(stage.bucket, stage.bucket)}
                         </Typography>
                     </>
                 );
@@ -133,7 +156,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.schema}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Keyspace')}:{' '}
+                            {t('jobDesigner:readConfiguration.keyspace')}:{' '}
                             {makeTooltip(stage.keyspace, stage.keyspace)}
                         </Typography>
                         <Typography
@@ -142,7 +165,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.table}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Table')}:{' '}
+                            {t('jobDesigner:readConfiguration.table')}:{' '}
                             {makeTooltip(stage.table, stage.table)}
                         </Typography>
                     </>
@@ -156,7 +179,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.schema}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.Host')}:{' '}
+                            {t('jobDesigner:readConfiguration.host')}:{' '}
                             {makeTooltip(stage.host, stage.host)}
                         </Typography>
                         <Typography
@@ -165,7 +188,7 @@ const ReadWriteStage = ({ stage }) => {
                             className={classes.table}
                             color="textSecondary"
                         >
-                            {t('jobDesigner:readConfiguration.KeyColumn')}:{' '}
+                            {t('jobDesigner:readConfiguration.keyColumn')}:{' '}
                             {makeTooltip(stage.keyColumn, stage.keyColumn)}
                         </Typography>
                     </>

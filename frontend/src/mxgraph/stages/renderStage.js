@@ -27,6 +27,7 @@ import stageIcon from '../sidebar/stage-icon/stageIcon';
 
 import UnionStage from './union-stage';
 import JoinStage from './join-stage';
+import SliceStage from './slice-stage/SliceStage';
 import CDCStage from './cdc-stage';
 import EdgeStage from './edge-stage';
 import NotificationStage from './notification-stage';
@@ -41,6 +42,7 @@ import {
     GROUP,
     REMOVE_DUPLICATES,
     JOIN,
+    SLICE,
     CDC,
     EDGE,
     TRANSFORM,
@@ -55,7 +57,19 @@ import {
 
 const root = {
     position: 'relative',
-    width: 130
+    width: 130,
+    border: 'none'
+};
+
+const stageStyle = {
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+};
+
+const textStyle = {
+    textAlign: 'left',
+    marginLeft: '4.8px'
 };
 
 // eslint-disable-next-line complexity
@@ -67,10 +81,11 @@ const renderStage = (stage, t, type, jobs, params) => {
     ) {
         return (
             <div style={root}>
-                <div>
+                <div style={stageStyle}>
                     {stageIcon(stage.operation)}
-                    &nbsp;
-                    {t(`jobDesigner:palette.${stage.operation}`)}
+                    <div style={textStyle}>
+                        {t(`jobDesigner:palette.${stage.operation}`)}
+                    </div>
                 </div>
                 {type === PIPELINE && (
                     <StageWarning stage={stage} jobs={jobs} params={params} />
@@ -91,6 +106,8 @@ const renderStage = (stage, t, type, jobs, params) => {
             return <RemoveDuplicatesStage stage={stage} />;
         case JOIN:
             return <JoinStage stage={stage} />;
+        case SLICE:
+            return <SliceStage stage={stage} />;
         case CDC:
             return <CDCStage stage={stage} />;
         case EDGE:

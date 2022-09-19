@@ -31,5 +31,19 @@ export default {
     updateProject: project => axiosInstance.post(`/project/${project.id}`, project),
     getProjectUsers: id => axiosInstance.get(`/project/${id}/users`),
     updateProjectUsers: (id, updatedUsers) =>
-        axiosInstance.post(`/project/${id}/users`, updatedUsers)
+        axiosInstance.post(`/project/${id}/users`, updatedUsers),
+    getProjectConnections: projectName =>
+        axiosInstance.get(`/project/${projectName}/connections`),
+    updateProjectConnection: (projectName, connectionId, connection) =>
+        axiosInstance.put(
+            `/project/${projectName}/connections/${connectionId}`,
+            connection
+        ),
+    createProjectConnection: (projectName, connectionId, connection) =>
+        axiosInstance.post(
+            `/project/${projectName}/connections/${connectionId}`,
+            connection
+        ),
+    deleteProjectConnection: (projectName, connectionId) =>
+        axiosInstance.delete(`/project/${projectName}/connections/${connectionId}`)
 };

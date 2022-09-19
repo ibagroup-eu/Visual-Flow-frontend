@@ -20,11 +20,17 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { FormControl, Select } from '@material-ui/core';
+import { FormControl, MenuItem, Select } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import useStyles from './PropertySelect.Styles';
 
-const PropertySelect = ({ className, handleChange, placeholder, properties }) => {
+const PropertySelect = ({
+    className,
+    handleChange,
+    placeholder,
+    properties,
+    isConnections
+}) => {
     const classes = useStyles();
     const { t } = useTranslation();
 
@@ -38,19 +44,32 @@ const PropertySelect = ({ className, handleChange, placeholder, properties }) =>
     return (
         <FormControl variant="outlined">
             <Select
-                native
                 onChange={handleChangeSelect}
                 inputProps={{ 'aria-label': 'Without label' }}
                 className={classNames(classes.selectButton, className)}
                 value={newProperty}
+                MenuProps={{
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left'
+                    },
+                    getContentAnchorEl: null,
+                    disableScrollLock: true,
+                    style: {
+                        maxHeight: 300,
+                        maxWidth: 0
+                    }
+                }}
             >
-                <option value="-1" disabled>
+                <MenuItem value="-1" disabled>
                     {placeholder}
-                </option>
+                </MenuItem>
                 {properties.map(({ value, name }) => (
-                    <option key={value} value={value}>
-                        {t(`setting:parameter.tooltip.${name}`)}
-                    </option>
+                    <MenuItem key={value} value={value}>
+                        {isConnections
+                            ? name
+                            : t(`setting:parameter.tooltip.${name}`)}
+                    </MenuItem>
                 ))}
             </Select>
         </FormControl>
@@ -61,7 +80,8 @@ PropertySelect.propTypes = {
     className: PropTypes.string,
     handleChange: PropTypes.func,
     placeholder: PropTypes.string,
-    properties: PropTypes.arrayOf(PropTypes.object)
+    properties: PropTypes.arrayOf(PropTypes.object),
+    isConnections: PropTypes.bool
 };
 
 export default PropertySelect;

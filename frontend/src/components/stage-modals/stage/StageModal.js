@@ -19,6 +19,7 @@
 
 import React from 'react';
 import FilterModal from '../modals/FilterModal';
+import SliceModal from '../modals/SliceModal';
 import RWModal from '../modals/RWModal';
 import TransformerModal from '../modals/TransformerModal';
 import GroupModal from '../modals/GroupModal';
@@ -45,6 +46,7 @@ import {
     NOTIFICATION,
     CONTAINER,
     CACHE,
+    SLICE,
     SORT
 } from '../../../mxgraph/constants';
 
@@ -79,6 +81,8 @@ const StageModal = ({ stageName, ...restProps }) => {
                 return <CacheModal {...restProps} />;
             case SORT:
                 return <SortModal {...restProps} />;
+            case SLICE:
+                return <SliceModal {...restProps} />;
             default:
                 return null;
         }

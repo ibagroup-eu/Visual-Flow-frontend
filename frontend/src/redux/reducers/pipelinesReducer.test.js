@@ -40,7 +40,8 @@ import {
     COPY_PIPELINE_SUCCESS,
     COPY_PIPELINE_FAIL,
     SET_PIPELINES_STATUS,
-    SET_PIPELINES_LAST_RUN
+    SET_PIPELINES_LAST_RUN,
+    SET_DEFAULT
 } from '../actions/types';
 
 describe('pipelines Reducer', () => {
@@ -357,6 +358,22 @@ describe('pipelines Reducer', () => {
             expect(pipelinesReducer(undefined, action)).toEqual({
                 ...initialState,
                 status: 'draft'
+            });
+        });
+
+        it('should handle SET_DEFAULT', () => {
+            const action = {
+                type: SET_DEFAULT
+            };
+
+            const state = {
+                lastRun: 'lastRun',
+                status: 'status'
+            };
+
+            expect(pipelinesReducer(state, action)).toEqual({
+                lastRun: '',
+                status: ''
             });
         });
     });

@@ -28,14 +28,17 @@ import {
     TableRow,
     TextField,
     Box,
-    Radio
+    Radio,
+    TableContainer,
+    Paper
 } from '@material-ui/core';
 
+import classNames from 'classnames';
 import PopupForm from '../../../../components/popup-form';
 import SearchInput from '../../../../components/search-input';
 import { PageSkeleton } from '../../../../components/skeleton';
 import useStyles from './JobsModal.Styles';
-import SaveCancelButtons from '../../buttons';
+import ModalConfirmButtons from '../../read-write-configuration/connections-modal/confirmButtons/ModalConfirmButtons';
 
 const JobsModal = ({
     ableToEdit,
@@ -52,6 +55,7 @@ const JobsModal = ({
     const [jobList, setJobList] = React.useState(_.sortBy(jobs, 'name'));
     const [searchValue, setSearchValue] = React.useState('');
     const [selectedValue, setSelectedValue] = React.useState('');
+    const jobSelected = jobs.find(job => job.id === selectedValue);
 
     React.useEffect(() => {
         setSelectedValue(currentValue);
@@ -78,8 +82,9 @@ const JobsModal = ({
                 <PageSkeleton />
             ) : (
                 <Box className={classes.wrapper}>
-                    <Box>
+                    <Box className={classes.search}>
                         <SearchInput
+                            fullWidth
                             value={searchValue}
                             onChange={event =>
                                 handleChangeSearch(event.target.value)
@@ -87,18 +92,23 @@ const JobsModal = ({
                             placeholder={t('pipelineDesigner:jobModal.search')}
                         />
                     </Box>
-                    <Box className={classes.listContent} boxShadow={3}>
+                    <TableContainer
+                        className={classes.listContent}
+                        component={Paper}
+                    >
                         <Table>
                             <TableBody>
                                 {jobList
                                     .filter(job => job.pipelineId === null)
                                     .map(({ id, name }) => (
                                         <TableRow key={id}>
-                                            {ableToEdit && (
-                                                <TableCell
-                                                    className={classes.radioBtn}
-                                                >
+                                            {(!!jobSelected || ableToEdit) && (
+                                                <TableCell className={classes.cell}>
                                                     <Radio
+                                                        disabled={!ableToEdit}
+                                                        className={
+                                                            classes.radioButtonCell
+                                                        }
                                                         checked={
                                                             selectedValue === id
                                                         }
@@ -112,7 +122,12 @@ const JobsModal = ({
                                                     />
                                                 </TableCell>
                                             )}
-                                            <TableCell className={classes.jobCell}>
+                                            <TableCell
+                                                className={classNames(
+                                                    classes.cell,
+                                                    classes.jobCell
+                                                )}
+                                            >
                                                 <TextField
                                                     disabled
                                                     variant="outlined"
@@ -121,22 +136,24 @@ const JobsModal = ({
                                                     placeholder={t(
                                                         'pipelineDesigner:jobConfiguration.Name'
                                                     )}
+                                                    InputProps={{
+                                                        classes: {
+                                                            disabled: classes.paper
+                                                        }
+                                                    }}
                                                 />
                                             </TableCell>
                                         </TableRow>
                                     ))}
                             </TableBody>
                         </Table>
-                    </Box>
-                    <Box className={classes.buttonsGroup}>
-                        <SaveCancelButtons
-                            ableToEdit={ableToEdit}
-                            saveCell={() => onSetValue(selectedValue)}
-                            cancelChanges={onClose}
-                            isDisabled={!selectedValue}
-                            isModal
-                        />
-                    </Box>
+                    </TableContainer>
+                    <ModalConfirmButtons
+                        ableToEdit={ableToEdit}
+                        selectedValue={selectedValue}
+                        onClose={onClose}
+                        onSetValue={onSetValue}
+                    />
                 </Box>
             )}
         </PopupForm>

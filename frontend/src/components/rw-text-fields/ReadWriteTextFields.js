@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { camelCase } from 'lodash';
+import { camelCase, has } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { TextField, InputAdornment, IconButton, Box } from '@material-ui/core';
@@ -28,7 +28,7 @@ import useStyles from './ReadWriteTextFields.Styles';
 import ClearButton from '../../mxgraph/side-panel/helpers/ClearButton';
 import { READWRITE } from '../../mxgraph/constants';
 
-const valueIsLink = value =>
+export const valueIsLink = value =>
     Boolean(value) &&
     value.length > 4 &&
     value.charAt(0) === '#' &&
@@ -43,7 +43,8 @@ const ReadWriteTextFields = ({
     nameWIthPoint = false,
     required,
     hidden,
-    disabled
+    disabled,
+    connection
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -83,7 +84,11 @@ const ReadWriteTextFields = ({
                             ? 'password'
                             : 'text'
                     }
-                    disabled={!ableToEdit || valueIsLink(inputValues[fieldName])}
+                    disabled={
+                        has(connection, fieldName) ||
+                        !ableToEdit ||
+                        valueIsLink(inputValues[fieldName])
+                    }
                     name={fieldName}
                     value={inputValues[fieldName] || ''}
                     onChange={handleInputChange}
@@ -115,7 +120,7 @@ const ReadWriteTextFields = ({
                 <ClearButton
                     name={fieldName}
                     value={inputValues[fieldName]}
-                    ableToEdit={ableToEdit}
+                    ableToEdit={!has(connection, fieldName) && ableToEdit}
                     handleInputChange={handleInputChange}
                     type={READWRITE}
                 />
@@ -133,7 +138,8 @@ ReadWriteTextFields.propTypes = {
     nameWIthPoint: PropTypes.bool,
     required: PropTypes.bool,
     hidden: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default ReadWriteTextFields;

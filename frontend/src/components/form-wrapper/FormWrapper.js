@@ -42,13 +42,14 @@ const FormWrapper = ({
     onSubmit,
     onCancel,
     isSaveBtnDisabled,
-    editable
+    editable,
+    disableSaveButtons
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
     return (
-        <Card>
+        <Card className={classes.root}>
             <CardHeader
                 title={t(`main:form.header.${title}`)}
                 className={classes.header}
@@ -64,29 +65,26 @@ const FormWrapper = ({
                 }
             />
             <CardContent className={classes.paddedTop}>{children}</CardContent>
-            <CardActions
-                className={classNames(
-                    { [classes.hidden]: !editMode },
-                    classes.buttonsGroup
-                )}
-            >
-                <Button
-                    className={classes.button}
-                    variant="contained"
-                    color="primary"
-                    onClick={onSubmit}
-                    disabled={isSaveBtnDisabled()}
-                >
-                    {t('main:button.Save')}
-                </Button>
-                <Button
-                    className={classNames(classes.button, classes.cancelBtn)}
-                    variant="contained"
-                    onClick={onCancel}
-                >
-                    {t('main:button.Cancel')}
-                </Button>
-            </CardActions>
+            {editMode && !disableSaveButtons && (
+                <CardActions className={classNames(classes.buttonsGroup)}>
+                    <Button
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                        onClick={onSubmit}
+                        disabled={isSaveBtnDisabled}
+                    >
+                        {t('main:button.Save')}
+                    </Button>
+                    <Button
+                        className={classNames(classes.button, classes.cancelBtn)}
+                        variant="contained"
+                        onClick={onCancel}
+                    >
+                        {t('main:button.Cancel')}
+                    </Button>
+                </CardActions>
+            )}
         </Card>
     );
 };
@@ -99,7 +97,8 @@ FormWrapper.propTypes = {
     setEditMode: PropTypes.func,
     onSubmit: PropTypes.func,
     onCancel: PropTypes.func,
-    isSaveBtnDisabled: PropTypes.func
+    isSaveBtnDisabled: PropTypes.bool,
+    disableSaveButtons: PropTypes.bool
 };
 
 export default FormWrapper;

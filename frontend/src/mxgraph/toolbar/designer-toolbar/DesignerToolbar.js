@@ -32,7 +32,7 @@ import { JOIN, CDC, EDGE } from '../../constants';
 
 const { mxEvent, mxUndoManager, mxEventObject } = mxgraph();
 
-class DesignerToolbar extends React.Component {
+export class DesignerToolbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {

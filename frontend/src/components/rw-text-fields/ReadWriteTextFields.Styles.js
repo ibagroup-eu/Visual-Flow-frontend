@@ -19,19 +19,19 @@
 
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles(() => ({
+export default makeStyles(theme => ({
     fieldWrapper: {
         display: 'flex',
         alignItems: 'center'
     },
     button: {
         padding: 0,
-        marginLeft: 5
+        marginLeft: theme.spacing(1)
     },
     multilineButton: {
-        top: 14,
+        top: theme.spacing(1.75),
         position: 'absolute',
-        right: 14
+        right: theme.spacing(1.75)
     },
     multilineCross: {
         alignItems: 'baseline'

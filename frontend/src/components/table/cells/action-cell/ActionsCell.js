@@ -23,7 +23,7 @@ import PropTypes from 'prop-types';
 import styles from './ActionsCell.Styles';
 import Action from '../../action';
 
-const ActionsCell = ({ actions, classes, ...rest }) => (
+export const ActionsCell = ({ actions, classes, ...rest }) => (
     <TableCell width={1} className={classes.cell} {...rest}>
         {actions.map(action => (
             <Action

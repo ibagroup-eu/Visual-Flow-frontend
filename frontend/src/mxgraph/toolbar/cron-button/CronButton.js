@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { IconButton, Tooltip } from '@material-ui/core';
-import CalendarTodayIcon from '@material-ui/icons//CalendarToday';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import EventIcon from '@material-ui/icons/Event';
 import CronModal from '../../../components/cron-modal';
 
@@ -57,8 +57,12 @@ const CronButton = ({ projectId, pipeline, refresh, changesNotSaved }) => {
                 aria-label="cronIcon"
                 onClick={openCronModal}
             >
-                <Tooltip title={t('pipelines:tooltip.Cron')} arrow>
-                    {pipeline.cron ? <EventIcon /> : <CalendarTodayIcon />}
+                <Tooltip title={t('pipelines:tooltip.Scheduling')} arrow>
+                    {pipeline.cron && !pipeline.cronSuspend ? (
+                        <EventIcon />
+                    ) : (
+                        <CalendarTodayIcon />
+                    )}
                 </Tooltip>
             </IconButton>
         </div>

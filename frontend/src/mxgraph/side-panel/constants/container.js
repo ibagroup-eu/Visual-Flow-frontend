@@ -41,3 +41,12 @@ export const IMAGE_PULL_SECRET_TYPE = {
     NEW: { label: 'New', value: 'NEW' },
     PROVIDED: { label: 'Provided', value: 'PROVIDED' }
 };
+
+export const secretFields = [
+    'accessKey',
+    'secretKey',
+    'password',
+    'iamApiKey',
+    'iamServiceId',
+    'index'
+];

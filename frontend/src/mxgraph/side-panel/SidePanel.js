@@ -20,7 +20,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import mxgraph from 'mxgraph';
-import classNames from 'classnames';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -48,6 +47,28 @@ const { mxRectangle, mxConstants } = mxgraph();
 export const CELL_WIDTH = 224;
 
 export const CELL_HEIGHT = 144;
+
+export const cleanUpConfiguration = (fields, schema) => {
+    let result = {};
+    Object.entries(fields).forEach(([key, value]) => {
+        const schemaLine = schema.find(v => v.field === key);
+        const conditions = get(schemaLine, 'conditions', undefined);
+        if (!conditions) {
+            result = { ...result, [key]: value };
+        } else {
+            conditions.forEach(condition => {
+                if (
+                    Object.entries(condition).every(
+                        ([field, val]) => get(fields, field) === val
+                    )
+                ) {
+                    result = { ...result, [key]: value };
+                }
+            });
+        }
+    });
+    return result;
+};
 
 class SidePanel extends React.Component {
     constructor(props) {
@@ -116,28 +137,6 @@ class SidePanel extends React.Component {
         setCell('');
     }
 
-    cleanUpConfiguration = (fields, schema) => {
-        let result = {};
-        Object.entries(fields).forEach(([key, value]) => {
-            const schemaLine = schema.find(v => v.field === key);
-            const conditions = get(schemaLine, 'conditions', undefined);
-            if (!conditions) {
-                result = { ...result, [key]: value };
-            } else {
-                conditions.forEach(condition => {
-                    if (
-                        Object.entries(condition).every(
-                            ([field, val]) => get(fields, field) === val
-                        )
-                    ) {
-                        result = { ...result, [key]: value };
-                    }
-                });
-            }
-        });
-        return result;
-    };
-
     graphChanged = () => {
         const {
             graph,
@@ -178,7 +177,7 @@ class SidePanel extends React.Component {
     saveCell = configuration => {
         const commonSchema = get(schemas, 'COMMON_SCHEMA', []);
         const schema = get(schemas, configuration.operation, []);
-        const cleanConfiguration = this.cleanUpConfiguration(configuration, [
+        const cleanConfiguration = cleanUpConfiguration(configuration, [
             ...commonSchema,
             ...schema
         ]);
@@ -256,20 +255,7 @@ class SidePanel extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Drawer
-                    className={classNames({
-                        [classes.drawerOpen]: sidePanelIsOpen,
-                        [classes.drawerClose]: !sidePanelIsOpen
-                    })}
-                    variant="permanent"
-                    anchor="right"
-                    classes={{
-                        paper: classNames({
-                            [classes.drawerOpen]: sidePanelIsOpen,
-                            [classes.drawerClose]: !sidePanelIsOpen
-                        })
-                    }}
-                >
+                <Drawer open={sidePanelIsOpen} anchor="right" variant="persistent">
                     <StageModal
                         display={showModal}
                         stageName={configuration.operation}
@@ -278,11 +264,7 @@ class SidePanel extends React.Component {
                         currentStorage={storageValue}
                     />
                     <Toolbar />
-                    <div
-                        className={classNames(classes.content, {
-                            [classes.hidden]: !sidePanelIsOpen
-                        })}
-                    >
+                    <div className={classes.content}>
                         <Box className={classes.form}>
                             <Box className={classes.separated}>
                                 <Typography variant="h6">

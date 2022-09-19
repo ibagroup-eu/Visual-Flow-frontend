@@ -19,6 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import CosProperties from '../common';
 import SelectField from '../../../../components/select-field';
@@ -35,15 +37,22 @@ const authType = [
     }
 ];
 
-const endpointField = [{ field: 'Endpoint' }];
+const endpointField = [{ field: 'endpoint' }];
 
-const fields = [{ field: 'Bucket' }, { field: 'Path' }];
+const fields = [{ field: 'bucket' }, { field: 'path' }];
 
-const keyFields = [{ field: 'Access key' }, { field: 'Secret key' }];
+const keyFields = [{ field: 'accessKey' }, { field: 'secretKey' }];
 
 const iamFields = [{ field: 'iamApiKey' }, { field: 'iamServiceId' }];
 
-const CosStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) => {
+const CosStorage = ({
+    inputValues,
+    handleInputChange,
+    openModal,
+    ableToEdit,
+    connectionPage,
+    connection
+}) => {
     return (
         <>
             <ReadTextFields
@@ -52,6 +61,7 @@ const CosStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                 inputValues={inputValues}
                 ableToEdit={ableToEdit}
                 handleInputChange={handleInputChange}
+                connection={connection}
             />
             <SelectField
                 ableToEdit={ableToEdit}
@@ -61,6 +71,7 @@ const CosStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                 handleInputChange={handleInputChange}
                 menuItems={authType}
                 type={READWRITE}
+                connection={connection}
             />
             {inputValues.authType === 'HMAC' && (
                 <ReadTextFields
@@ -69,6 +80,7 @@ const CosStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
+                    connection={connection}
                     hidden
                 />
             )}
@@ -79,16 +91,24 @@ const CosStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
+                    connection={connection}
                     hidden
                 />
             )}
-            <CosProperties
-                fields={fields}
-                openModal={openModal}
-                inputValues={inputValues}
-                ableToEdit={ableToEdit}
-                handleInputChange={handleInputChange}
-            />
+            {!connectionPage && (
+                <>
+                    {!isEqual(connection, {}) && (
+                        <Divider style={{ marginTop: 8 }} />
+                    )}
+                    <CosProperties
+                        fields={fields}
+                        openModal={openModal}
+                        inputValues={inputValues}
+                        ableToEdit={ableToEdit}
+                        handleInputChange={handleInputChange}
+                    />
+                </>
+            )}
         </>
     );
 };
@@ -97,7 +117,9 @@ CosStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
     openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default CosStorage;

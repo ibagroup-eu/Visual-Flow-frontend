@@ -22,8 +22,7 @@ export default theme => ({
         paddingLeft: theme.spacing(2),
         width: '100%',
         textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        minWidth: theme.spacing(50)
+        overflow: 'hidden'
     },
     cell: {
         maxWidth: 0,

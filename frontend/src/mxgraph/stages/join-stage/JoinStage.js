@@ -38,30 +38,33 @@ const JoinStage = ({ stage }) => {
                 {stageIcon(stage.operation)}
                 {makeTooltip(stage.name, stage.name)}
             </Typography>
-
             <Typography
                 variant="caption"
                 component="div"
                 className={classes.keyCaption}
                 color="textSecondary"
             >
-                {t('jobDesigner:joinConfiguration.Key')}:
-                {columns.slice(0, 5).map(value => (
-                    <Typography
-                        title={value}
-                        key={value}
-                        variant="caption"
-                        component="span"
-                        className={classes.key}
-                    >
-                        {value}
-                    </Typography>
-                ))}
-                <span className={classes.dots}>
-                    {columns.length > 5 && makeTooltip(columns.join(', '), ' ...')}
-                </span>
+                {stage.joinType !== 'cross' && (
+                    <>
+                        {t('jobDesigner:joinConfiguration.Key')}:
+                        {columns.slice(0, 5).map(value => (
+                            <Typography
+                                title={value}
+                                key={value}
+                                variant="caption"
+                                component="span"
+                                className={classes.key}
+                            >
+                                {value}
+                            </Typography>
+                        ))}
+                        <span className={classes.dots}>
+                            {columns.length > 5 &&
+                                makeTooltip(columns.join(', '), ' ...')}
+                        </span>
+                    </>
+                )}
             </Typography>
-
             <StageTag className={classes.joinType} content={stage.joinType} />
         </div>
     );

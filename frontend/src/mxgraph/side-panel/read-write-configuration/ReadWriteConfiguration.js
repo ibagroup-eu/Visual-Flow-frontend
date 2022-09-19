@@ -20,10 +20,11 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField } from '@material-ui/core';
+import { Box, Divider, IconButton, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { get } from 'lodash';
+import { TuneOutlined } from '@material-ui/icons';
 import Db2Storage from './db2-storage';
 import CosStorage from './cos-storage';
 import AwsStorage from './aws-storage';
@@ -32,7 +33,10 @@ import MongoStorage from './mongo-storage';
 import { STORAGES } from '../../constants';
 import CassandraStorage from './cassandra-storage';
 import RedisStorage from './redis-storage';
+import RedShiftStorage from './redshift-storage';
 import StdoutStorage from './stdout-storage';
+import useStyles from './ReadWriteConfiguration.Styles';
+import DividerWithText from '../helpers/DividerWithText';
 
 const isTruncateStorage = storage =>
     [
@@ -49,8 +53,46 @@ const truncateModeDefaultValues = {
     value: 'None'
 };
 
-const ReadWriteConfiguration = ({ state, ableToEdit, onChange, openModal }) => {
+// eslint-disable-next-line complexity
+export const getStorageComponent = name => {
+    switch (name.toLowerCase()) {
+        case STORAGES.DB2.value:
+        case STORAGES.POSTGRE.value:
+        case STORAGES.ORACLE.value:
+        case STORAGES.MYSQL.value:
+        case STORAGES.MSSQL.value:
+        case STORAGES.REDSHIFTJDBC.value:
+            return Db2Storage;
+        case STORAGES.MONGO.value:
+            return MongoStorage;
+        case STORAGES.COS.value:
+            return CosStorage;
+        case STORAGES.AWS.value:
+            return AwsStorage;
+        case STORAGES.ELASTIC.value:
+            return ElasticStorage;
+        case STORAGES.CASSANDRA.value:
+            return CassandraStorage;
+        case STORAGES.REDIS.value:
+            return RedisStorage;
+        case STORAGES.REDSHIFT.value:
+            return RedShiftStorage;
+        case STORAGES.STDOUT.value:
+            return StdoutStorage;
+        default:
+            throw new Error(`Unsupported storage: ${name}`);
+    }
+};
+
+const ReadWriteConfiguration = ({
+    state,
+    ableToEdit,
+    onChange,
+    openModal,
+    connection
+}) => {
     const { t } = useTranslation();
+    const classes = useStyles();
 
     const { truncateMode, writeMode, storage } = state;
 
@@ -67,35 +109,6 @@ const ReadWriteConfiguration = ({ state, ableToEdit, onChange, openModal }) => {
         }
     }, [writeMode, storage, truncateMode]);
 
-    // eslint-disable-next-line complexity
-    const getStorageComponent = name => {
-        switch (name.toLowerCase()) {
-            case STORAGES.DB2.value:
-            case STORAGES.POSTGRE.value:
-            case STORAGES.ORACLE.value:
-            case STORAGES.MYSQL.value:
-            case STORAGES.MSSQL.value:
-            case STORAGES.REDSHIFTJDBC.value:
-                return Db2Storage;
-            case STORAGES.MONGO.value:
-                return MongoStorage;
-            case STORAGES.COS.value:
-                return CosStorage;
-            case STORAGES.AWS.value:
-                return AwsStorage;
-            case STORAGES.ELASTIC.value:
-                return ElasticStorage;
-            case STORAGES.CASSANDRA.value:
-                return CassandraStorage;
-            case STORAGES.REDIS.value:
-                return RedisStorage;
-            case STORAGES.STDOUT.value:
-                return StdoutStorage;
-            default:
-                throw new Error(`Unsupported storage: ${name}`);
-        }
-    };
-
     const renderStorageComponent = name => {
         const Comp = getStorageComponent(name);
         return (
@@ -106,6 +119,7 @@ const ReadWriteConfiguration = ({ state, ableToEdit, onChange, openModal }) => {
                     onChange(event.target.name, event.target.value)
                 }
                 openModal={openModal}
+                connection={connection}
             />
         );
     };
@@ -122,21 +136,39 @@ const ReadWriteConfiguration = ({ state, ableToEdit, onChange, openModal }) => {
                     Object.values(STORAGES).find(el => el.value === state.storage) ||
                     null
                 }
-                onChange={(event, newValue) =>
-                    onChange('storage', newValue?.value || undefined)
-                }
+                onChange={(event, newValue) => {
+                    onChange('storage', newValue?.value || undefined);
+                    if (state.connectionName) {
+                        onChange('connectionName', null);
+                    }
+                }}
                 renderInput={params => (
-                    <TextField
-                        {...params}
-                        variant="outlined"
-                        margin="normal"
-                        placeholder={t('jobDesigner:readConfiguration.Storage')}
-                        label={t('jobDesigner:readConfiguration.Storage')}
-                        required
-                    />
+                    <Box className={classes.wrapper}>
+                        <TextField
+                            {...params}
+                            variant="outlined"
+                            margin="normal"
+                            placeholder={t('jobDesigner:readConfiguration.Storage')}
+                            label={t('jobDesigner:readConfiguration.Storage')}
+                            required
+                        />
+                        <IconButton
+                            className={classes.button}
+                            onClick={() => openModal('connectionName')}
+                        >
+                            <TuneOutlined />
+                        </IconButton>
+                    </Box>
                 )}
             />
-            <Divider />
+
+            {state.connectionName ? (
+                <DividerWithText>
+                    {state.connectionName.slice(1, -1)}
+                </DividerWithText>
+            ) : (
+                <Divider />
+            )}
             {state.storage && renderStorageComponent(state.storage)}
         </>
     );
@@ -146,7 +178,8 @@ ReadWriteConfiguration.propTypes = {
     state: PropTypes.object,
     ableToEdit: PropTypes.bool,
     onChange: PropTypes.func,
-    openModal: PropTypes.func
+    openModal: PropTypes.func,
+    connection: PropTypes.object
 };
 
 export default ReadWriteConfiguration;

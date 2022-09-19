@@ -10,6 +10,7 @@
     "Basic": "Basic",
     "Parameters": "Parameters",
     "Users/Roles": "Users/Roles",
+    "Connections": "Connections",
     "Exit": "Exit",
     "jobDesigner": "Job Designer",
     "search": "Search...",
@@ -41,7 +42,9 @@
             "usersAndRoles": "Users and Roles",
             "addUser": "Add User",
             "Parameters": "Parameters",
-            "Export": "Export to"
+            "Export": "Export to",
+            "editProjectConnections": "Manage Connections",
+            "Connections": "Connections"
         },
         "Name": "Name",
         "Description": "Description",
@@ -68,7 +71,9 @@
         "Confirm": "CONFIRM",
         "Discard": "DISCARD",
         "UseSchema": "Use Schema",
-        "EditSchema": "Edit Schema"
+        "EditSchema": "Edit Schema",
+        "AddConnection": "CREATE CONNECTION",
+        "Ping": "PING"
     },
     "validation": {
         "3to40chars": "Wrong symbol or should be 3 to 40 characters long.",
@@ -96,6 +101,19 @@
         "No": "No",
         "sure": "Are you sure you want to delete",
         "unsaved": "Are you sure? Unsaved changes will be lost"
+    },
+    "profileMenu": {
+        "profile": "Profile",
+        "logOut": "Log out"
+    },
+    "profilePage": {
+        "header": "User Profile",
+        "titles": {
+            "username": "Username:",
+            "fullName": "Full Name:",
+            "email": "Email:",
+            "authorizationToken": "Authorization Token:"
+        }
     },
     "404": "Sorry, we can’t find the page you are looking for.",
     "unsavedChanges": {

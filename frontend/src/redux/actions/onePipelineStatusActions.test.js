@@ -21,9 +21,14 @@ import api from '../../api/pipelines';
 import {
     FETCH_PIPELINE_STATUS_START,
     FETCH_PIPELINE_STATUS_SUCCESS,
-    FETCH_PIPELINE_STATUS_FAIL
+    FETCH_PIPELINE_STATUS_FAIL,
+    UPDATE_PIPELINE_STATUS_START,
+    UPDATE_PIPELINE_STATUS_SUCCESS,
+    UPDATE_PIPELINE_STATUS_FAIL
 } from './types';
-import fetchPipelineStatus from './onePipelineStatusActions';
+import fetchPipelineStatus, {
+    updatePipelineStatus
+} from './onePipelineStatusActions';
 
 describe('OnePipelineStatus action', () => {
     let dispatch;
@@ -77,6 +82,40 @@ describe('OnePipelineStatus action', () => {
                     [{ type: FETCH_PIPELINE_STATUS_START }],
                     [{ type: FETCH_PIPELINE_STATUS_FAIL, payload: { error } }]
                 ]);
+            });
+        });
+    });
+
+    describe('updatePipelineStatus', () => {
+        it('should trigger UPDATE_PIPELINE_STATUS_START', () => {
+            const dispatch = jest.fn();
+
+            updatePipelineStatus()(dispatch);
+
+            expect(dispatch.mock.calls[0][0]).toEqual({
+                type: UPDATE_PIPELINE_STATUS_START
+            });
+        });
+
+        it('should trigger UPDATE_PIPELINE_STATUS_SUCCESS', () => {
+            const dispatch = jest.fn();
+
+            updatePipelineStatus('pipelineId', 'status')(dispatch);
+
+            expect(dispatch.mock.calls[1][0]).toEqual({
+                type: UPDATE_PIPELINE_STATUS_SUCCESS,
+                payload: { status: 'status', id: 'pipelineId' }
+            });
+        });
+
+        it('should trigger UPDATE_PIPELINE_STATUS_FAIL', () => {
+            const dispatch = jest.fn();
+
+            updatePipelineStatus(undefined, 'status')(dispatch);
+
+            expect(dispatch.mock.calls[1][0]).toEqual({
+                type: UPDATE_PIPELINE_STATUS_FAIL,
+                payload: 'Pipeline status has not been updated'
             });
         });
     });

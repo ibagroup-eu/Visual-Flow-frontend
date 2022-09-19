@@ -75,7 +75,7 @@ const CDCConfiguration = ({
                                     {`${t('jobDesigner:CDCConfiguration.After')}: `}
                                 </Typography>
                                 <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels[0]}
+                                    {edgeLabels.After}
                                 </Typography>
                             </div>
                             <div className={classes.fieldRow}>
@@ -87,7 +87,7 @@ const CDCConfiguration = ({
                                     {`${t('jobDesigner:CDCConfiguration.Before')}: `}
                                 </Typography>
                                 <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels[1]}
+                                    {edgeLabels.Before}
                                 </Typography>
                             </div>
                         </div>
@@ -145,7 +145,7 @@ CDCConfiguration.propTypes = {
     ableToEdit: PropTypes.bool,
     state: PropTypes.object,
     onChange: PropTypes.func,
-    edgeLabels: PropTypes.array,
+    edgeLabels: PropTypes.object,
     handleSwap: PropTypes.func
 };
 

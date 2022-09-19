@@ -19,6 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { READ, WRITE, READWRITE } from '../../../constants';
@@ -35,11 +37,11 @@ const customSql = [
     }
 ];
 
-const customFields = [{ field: 'Schema' }, { field: 'Table' }];
+const customFields = [{ field: 'schema' }, { field: 'table' }];
 
-const fields = [{ field: 'JDBC URL' }, { field: 'User' }];
+const fields = [{ field: 'jdbcUrl' }, { field: 'user' }];
 
-const field = [{ field: 'Password' }];
+const field = [{ field: 'password' }];
 
 const truncateMode = [
     {
@@ -68,7 +70,14 @@ const truncateModeCascade = [
 
 const showCascade = storage => !(storage !== 'postgresql' && storage !== 'oracle');
 
-const Db2Storage = ({ inputValues, handleInputChange, openModal, ableToEdit }) => {
+const Db2Storage = ({
+    inputValues,
+    handleInputChange,
+    openModal,
+    ableToEdit,
+    connectionPage,
+    connection
+}) => {
     let value = inputValues.truncateMode;
     if (!showCascade(inputValues.storage)) {
         const valueTruncateMode = truncateMode.map(v => v.value);
@@ -85,6 +94,7 @@ const Db2Storage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                 inputValues={inputValues}
                 handleInputChange={handleInputChange}
                 openModal={openModal}
+                connection={connection}
             />
             <ReadTextFields
                 ableToEdit={ableToEdit}
@@ -92,12 +102,16 @@ const Db2Storage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                 inputValues={inputValues}
                 handleInputChange={handleInputChange}
                 openModal={openModal}
+                connection={connection}
                 hidden
             />
+            {!connectionPage && !isEqual(connection, {}) && (
+                <Divider style={{ marginTop: 8 }} />
+            )}
             {inputValues.operation === READ && (
                 <SelectField
                     ableToEdit={ableToEdit}
-                    label="jobDesigner:readConfiguration.CustomSql"
+                    label="jobDesigner:readConfiguration.customSql"
                     name="customSql"
                     value={inputValues.customSql}
                     handleInputChange={handleInputChange}
@@ -141,7 +155,7 @@ const Db2Storage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                     {inputValues.writeMode === 'Overwrite' && (
                         <SelectField
                             ableToEdit={ableToEdit}
-                            label="jobDesigner:writeConfiguration.TruncateMode"
+                            label="jobDesigner:readConfiguration.truncateMode"
                             name="truncateMode"
                             value={value || ''}
                             handleInputChange={handleInputChange}
@@ -155,13 +169,15 @@ const Db2Storage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                     )}
                 </>
             )}
-            <ReadTextFields
-                ableToEdit={ableToEdit}
-                fields={[{ field: 'Cert Data', rows: 6 }]}
-                inputValues={inputValues}
-                handleInputChange={handleInputChange}
-                openModal={openModal}
-            />
+            {!connectionPage && (
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={[{ field: 'certData', rows: 6 }]}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                />
+            )}
         </>
     );
 };
@@ -178,7 +194,9 @@ Db2Storage.propTypes = {
         customSql: PropTypes.string,
         partitionBy: PropTypes.string,
         storage: PropTypes.string
-    })
+    }),
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default Db2Storage;

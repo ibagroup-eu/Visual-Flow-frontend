@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Box from '@material-ui/core/Box';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -35,7 +35,7 @@ import {
 } from '../../../redux/actions/settingsParametersActions';
 import { PageSkeleton } from '../../../components/skeleton';
 
-import ParametersTableRow from '../components/parameters';
+import ParametersTableRow from '../components/parameters-table-row';
 import useStyles from './Parameters.Styles';
 import useUnsavedChangesWarning from '../useUnsavedChangesWarning';
 
@@ -77,12 +77,23 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
             params: projectParameters.map(({ id, ...p }) => p)
         });
         setEditMode(false);
+        setPristine();
     };
 
     const onCancel = () => {
         setEditMode(false);
         setProjectParameters(parameterData);
+        setPristine();
     };
+
+    React.useEffect(() => {
+        if (
+            editMode &&
+            isEqual(projectParameters.map(({ id, ...p }) => p).sort(), params.sort())
+        ) {
+            setPristine();
+        }
+    }, [projectParameters]);
 
     const handleChangeParameter = (event, changedId, field) => {
         event.persist();
@@ -93,6 +104,7 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                     : parameter
             )
         );
+        setDirty();
     };
 
     const removeParameter = removedId => {
@@ -105,9 +117,10 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
         setProjectParameters(prevState =>
             prevState.filter(parameter => parameter.id !== removedId)
         );
+        setDirty();
     };
 
-    const handleClickNewFieldType = event =>
+    const handleClickNewFieldType = event => {
         setProjectParameters(prevState => [
             ...prevState,
             {
@@ -117,6 +130,8 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                 id: uniqueId()
             }
         ]);
+        setDirty();
+    };
 
     const handleChangeSearch = value => {
         setSearchValue(value);
@@ -133,22 +148,7 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
         />
     );
 
-    const saveButtonIsDisabled = () => {
-        useEffect(() => {
-            isEqual(projectParameters.map(({ id, ...p }) => p).sort(), params.sort())
-                ? setPristine()
-                : setDirty();
-        });
-
-        return (
-            !editable ||
-            isEqual(
-                projectParameters.map(({ id, ...p }) => p).sort(),
-                params.sort()
-            ) ||
-            Boolean(errorParameters.length)
-        );
-    };
+    const saveButtonIsDisabled = () => !editable || Boolean(errorParameters.length);
 
     const filterParameters = () =>
         projectParameters.filter(
@@ -182,8 +182,8 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
         <PageSkeleton />
     ) : (
         <Grid container>
-            <Grid item xs={3} />
-            <Grid item xs={6} className={classes.root}>
+            <Grid item xs={2} />
+            <Grid item xs={8} className={classes.root}>
                 <FormWrapper
                     title={cardTitle}
                     editable={editable}
@@ -194,7 +194,7 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                     }}
                     onCancel={onCancel}
                     onSubmit={onSubmit}
-                    isSaveBtnDisabled={saveButtonIsDisabled}
+                    isSaveBtnDisabled={saveButtonIsDisabled()}
                 >
                     <Box
                         className={classNames(
@@ -203,13 +203,16 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                             classes.paddedBottom
                         )}
                     >
-                        <SearchInput
-                            value={searchValue}
-                            onChange={event =>
-                                handleChangeSearch(event.target.value)
-                            }
-                            placeholder={t('main:search')}
-                        />
+                        <Box className={classes.search}>
+                            <SearchInput
+                                fullWidth
+                                value={searchValue}
+                                onChange={event =>
+                                    handleChangeSearch(event.target.value)
+                                }
+                                placeholder={t('main:search')}
+                            />
+                        </Box>
                         {renderNewFieldDropdown()}
                     </Box>
 
@@ -231,7 +234,7 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                         </Table>
                     </TableContainer>
 
-                    {shouldAddButtonRepeat() && (
+                    {shouldAddButtonRepeat() && editMode && (
                         <Box
                             className={classNames(
                                 classes.flex,
@@ -244,7 +247,7 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                     )}
                 </FormWrapper>
             </Grid>
-            <Grid item xs={3} />
+            <Grid item xs={2} />
             {Prompt}
         </Grid>
     );

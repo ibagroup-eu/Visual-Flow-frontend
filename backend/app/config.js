@@ -22,10 +22,15 @@ const path = require('path');
 const config = {
     express: {
         port: process.env.EXPRESS_PORT || 8888,
-        host: process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1'
+        host:
+            process.env.NODE_ENV === 'production' ||
+            process.env.NODE_ENV === 'development'
+                ? '0.0.0.0'
+                : '127.0.0.1'
     },
     app: {
         baseUrl: process.env.BASE_URL || '/',
+        logoutUrl: process.env.LOGOUT_URL,
         buildPath:
             process.env.BUILD_PATH ||
             path.join(__dirname, '../../frontend/public'),

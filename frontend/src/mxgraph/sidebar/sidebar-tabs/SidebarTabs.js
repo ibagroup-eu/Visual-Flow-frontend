@@ -30,7 +30,7 @@ import useStyles from './SidebarTabs.Styles';
 import TabPanel from '../tab-pannel';
 import { setGraphDirty } from '../../../redux/actions/mxGraphActions';
 
-const SidebarTabs = ({ name, graph = {}, setDirty, ableToEdit }) => {
+export const SidebarTabs = ({ name, graph = {}, setDirty, ableToEdit }) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const [value, setValue] = React.useState(0);

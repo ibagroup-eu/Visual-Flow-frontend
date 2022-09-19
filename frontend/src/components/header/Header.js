@@ -40,14 +40,26 @@ import MenuBar from '../menu';
 import getMenu from '../menu/menu';
 import history from '../../utils/history';
 import SelectProject from '../select-project';
+import ProfileMenu from './profile-menu';
 
 export const Header = ({ classes }) => {
     const { t } = useTranslation();
     const theme = useTheme();
 
     const menu = getMenu(useSelector(state => state.projects.currentProject));
+    const userInfo = useSelector(state => state.user.profile.data);
     const [menuOpen, setMenuOpen] = useState(true);
     const opened = menuOpen && menu;
+    const [anchorEl, setAnchorEl] = useState(null);
+    const openProfileMenu = Boolean(anchorEl);
+
+    const handleOpenProfileMenu = event => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseProfileMenu = () => {
+        setAnchorEl(null);
+    };
 
     const handleDrawerOpen = () => setMenuOpen(true);
 
@@ -94,11 +106,21 @@ export const Header = ({ classes }) => {
                         </span>
                     </Typography>
                     {menu && <SelectProject />}
-                    <Avatar className={classes.user}>
+                    <Avatar
+                        src={userInfo?.avatar}
+                        className={classes.user}
+                        aria-haspopup="true"
+                        onClick={handleOpenProfileMenu}
+                    >
                         <IconButton>
                             <Person color="primary" />
                         </IconButton>
                     </Avatar>
+                    <ProfileMenu
+                        open={openProfileMenu}
+                        anchorEl={anchorEl}
+                        handleClose={handleCloseProfileMenu}
+                    />
                 </Toolbar>
             </AppBar>
 

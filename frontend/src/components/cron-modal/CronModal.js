@@ -30,6 +30,7 @@ import HelperTable from './helper-table';
 import CronInput from './cron-input/CronInput';
 import { createCron, getCron, updateCron } from '../../redux/actions/cronActions';
 import { PageSkeleton } from '../skeleton';
+import RunInfo from './run-info';
 
 const errorMessageParams = [
     'minutes',
@@ -57,7 +58,22 @@ const additionalCheckParams = [
     }
 ];
 
+const defaultCronLabels = [
+    { label: 'MINUTE (0-59)', error: false },
+    { label: 'HOUR (0-23)', error: false },
+    { label: 'DAY OF MONTH (1-31)', error: false },
+    { label: 'MONTH (1-12)', error: false },
+    { label: 'DAY OF WEEK (0-6)', error: false }
+];
+
 const trimCronValue = value => value.trim().replace(/ {2,}/g, ' ');
+
+const correctDayOfWeekLabel = errorMessage => {
+    if (errorMessage.includes('daysOfWeek field is bigger than')) {
+        return errorMessage.replace("'7'", "'6'");
+    }
+    return errorMessage;
+};
 
 export const CronModal = ({
     cronPipeline: { pipelineId, cronExists },
@@ -81,13 +97,7 @@ export const CronModal = ({
         errorMessage: ''
     });
     const [lastCronValue, setLastCronValue] = React.useState('');
-    const [cronLabels, setCronLabels] = React.useState([
-        { label: 'MINUTE (0-59)', error: false },
-        { label: 'HOUR (0-23)', error: false },
-        { label: 'DAY OF MONTH (1-31)', error: false },
-        { label: 'MONTH (1-12)', error: false },
-        { label: 'DAY OF WEEK (0-6)', error: false }
-    ]);
+    const [cronLabels, setCronLabels] = React.useState(defaultCronLabels);
 
     const removeLabelsErrors = () =>
         setCronLabels(prevState =>
@@ -137,14 +147,7 @@ export const CronModal = ({
         } else {
             const errorValues = cronValidate.getError();
 
-            if (
-                errorValues[0].includes(
-                    "daysOfWeek field is bigger than upper limit '7'"
-                )
-            ) {
-                const newErrorValue = errorValues[0].replace("'7'", "'6'");
-                errorValues[0] = newErrorValue;
-            }
+            errorValues[0] = correctDayOfWeekLabel(errorValues[0]);
 
             setCronValue({
                 value: inputValue,
@@ -152,15 +155,26 @@ export const CronModal = ({
             });
 
             errorMessageParams.forEach((param, index) => {
-                errorValues.findIndex(value => value.includes(param)) !== -1
-                    ? changeCronLabel(index, true)
-                    : changeCronLabel(index, false);
+                changeCronLabel(
+                    index,
+                    errorValues.findIndex(value => value.includes(param)) !== -1
+                );
             });
         }
 
         const valuesArray = checkValue.split(' ');
         if (valuesArray.length === 5) {
             valuesArray.forEach((value, index) => {
+                value.split(/,|-|\//).forEach(valueItem => {
+                    if (valueItem.length > 1 && valueItem[0] === '0') {
+                        setCronValue({
+                            value: inputValue,
+                            errorMessage: `Leading zeros (value ${valueItem}) in ${errorMessageParams[index]} field are invalid.`
+                        });
+                        changeCronLabel(index, true);
+                    }
+                });
+
                 if (value.includes('.')) {
                     setCronValue({
                         value: inputValue,
@@ -223,7 +237,7 @@ export const CronModal = ({
     return (
         <PopupForm
             display={!!pipelineId}
-            title={t('pipelines:tooltip.Cron')}
+            title={t('pipelines:tooltip.Scheduling')}
             onClose={onClose}
             isNotHelper
             minWidthClass="cronMinWidth"
@@ -246,9 +260,10 @@ export const CronModal = ({
                                     checked={isUseCron.current}
                                 />
                             }
-                            label={t('pipelines:tooltip.UseCron')}
+                            label={t('pipelines:tooltip.OnOff')}
                         />
                     </Box>
+                    <RunInfo cronValue={cronValue} isUseCron={isUseCron.current} />
                     <CronInput
                         cronValue={cronValue}
                         isUseCron={isUseCron.current}

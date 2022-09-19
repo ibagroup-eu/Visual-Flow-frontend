@@ -40,6 +40,10 @@ import onePipelineStatusReducer from './onePipelineStatusReducer';
 import importExportReducer from './importExportReducer';
 import enhancedTableReducer from './enhancedTableReducer';
 import cronReducer from './cronReducer';
+import settingsConnectionsReducer from './settingsConnectionsReducer';
+import urlSearchReducer from './urlSearchReducer';
+import profileReducer from './profileReducer';
+import historyReducer from './historyReducer';
 
 const combine = combineReducers({
     routing: routerReducer,
@@ -56,12 +60,16 @@ const combine = combineReducers({
         pipelines: pipelinesReducer,
         settingsBasic: settingsBasicReducer,
         settingsParameters: settingsParametersReducer,
+        settingsConnections: settingsConnectionsReducer,
         settingsUsersRoles: settingsUsersRolesReducer,
-        cron: cronReducer
+        cron: cronReducer,
+        urlSearch: urlSearchReducer,
+        history: historyReducer
     }),
     user: combineReducers({
         users: usersReducer,
-        roles: rolesReducer
+        roles: rolesReducer,
+        profile: profileReducer
     }),
     importExport: importExportReducer,
     enhancedTable: enhancedTableReducer

@@ -1,0 +1,16 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide a stage name."
+    },
+    "Mode": {
+        "name": "Mode",
+        "value": "Slice mode defines the type of behavior, whether it drops columns or keep them.",
+        "value2": " 'Drop mode' — All mentioned columns will be dropped from the result.",
+        "value3": " 'Keep mode' — All mentioned columns will be kept in the result."
+    },
+    "Columns": {
+        "name": "Columns",
+        "value": "Specify column names."
+    }
+}

@@ -21,6 +21,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { has } from 'lodash';
 import ClearButton from '../../mxgraph/side-panel/helpers/ClearButton';
 import useStyles from './SelectField.Styles';
 import getMenuItems from '../../mxgraph/side-panel/helpers/getMenuItems';
@@ -35,7 +36,8 @@ const SelectField = ({
     menuItems,
     type,
     defaultValue,
-    required
+    required,
+    connection
 }) => {
     const classes = useStyles();
     const { t } = useTranslation();
@@ -55,7 +57,7 @@ const SelectField = ({
     return (
         <Box className={classes.wrapper}>
             <TextField
-                disabled={!ableToEdit}
+                disabled={has(connection, name) || !ableToEdit}
                 label={t(label)}
                 placeholder={t(label)}
                 variant="outlined"
@@ -80,7 +82,7 @@ const SelectField = ({
             <ClearButton
                 name={name}
                 value={value}
-                ableToEdit={ableToEdit}
+                ableToEdit={!has(connection, name) && ableToEdit}
                 handleInputChange={handleInputChange}
                 type={type}
             />
@@ -97,7 +99,8 @@ SelectField.propTypes = {
     menuItems: PropTypes.array,
     type: PropTypes.string,
     defaultValue: PropTypes.string,
-    required: PropTypes.bool
+    required: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default SelectField;

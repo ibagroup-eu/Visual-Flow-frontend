@@ -20,6 +20,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import { READ, WRITE, READWRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
@@ -29,18 +31,18 @@ import Ssl from '../helpers/Ssl';
 
 const DEFAULT_TTL = 0;
 
-const fields = [{ field: 'Host' }, { field: 'Port' }, { field: 'KeyColumn' }];
+const fields = [[{ field: 'host' }, { field: 'port' }], [{ field: 'keyColumn' }]];
 
-const field = [{ field: 'Password' }];
+const field = [{ field: 'password' }];
 
 const model = [
     {
         value: 'binary',
-        label: 'Binary'
+        label: 'binary'
     },
     {
         value: 'hash',
-        label: 'Hash'
+        label: 'hash'
     }
 ];
 
@@ -54,15 +56,23 @@ const readMode = [
         label: 'Pattern'
     }
 ];
-const RedisStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) => {
+const RedisStorage = ({
+    inputValues,
+    handleInputChange,
+    openModal,
+    ableToEdit,
+    connectionPage,
+    connection
+}) => {
     return (
         <>
             <ReadTextFields
-                fields={fields}
+                fields={fields[0]}
                 openModal={openModal}
                 inputValues={inputValues}
                 ableToEdit={ableToEdit}
                 handleInputChange={handleInputChange}
+                connection={connection}
             />
             <ReadTextFields
                 ableToEdit={ableToEdit}
@@ -70,27 +80,44 @@ const RedisStorage = ({ inputValues, handleInputChange, openModal, ableToEdit })
                 inputValues={inputValues}
                 handleInputChange={handleInputChange}
                 openModal={openModal}
+                connection={connection}
                 hidden
             />
             <Ssl
                 ableToEdit={ableToEdit}
                 value={inputValues.ssl}
                 handleInputChange={handleInputChange}
+                connection={connection}
             />
-            <SelectField
-                ableToEdit={ableToEdit}
-                label="jobDesigner:readConfiguration.Model"
-                name="model"
-                value={inputValues.model}
-                handleInputChange={handleInputChange}
-                menuItems={model}
-                type={READWRITE}
-            />
+
+            {!connectionPage && (
+                <>
+                    {!isEqual(connection, {}) && (
+                        <Divider style={{ marginTop: 8 }} />
+                    )}
+                    <ReadTextFields
+                        fields={fields[1]}
+                        openModal={openModal}
+                        inputValues={inputValues}
+                        ableToEdit={ableToEdit}
+                        handleInputChange={handleInputChange}
+                    />
+                    <SelectField
+                        ableToEdit={ableToEdit}
+                        label="jobDesigner:readConfiguration.model"
+                        name="model"
+                        value={inputValues.model}
+                        handleInputChange={handleInputChange}
+                        menuItems={model}
+                        type={READWRITE}
+                    />
+                </>
+            )}
             {inputValues.operation === READ && (
                 <>
                     <SelectField
                         ableToEdit={ableToEdit}
-                        label="jobDesigner:readConfiguration.ReadMode"
+                        label="jobDesigner:readConfiguration.readMode"
                         name="readMode"
                         value={inputValues.readMode}
                         handleInputChange={handleInputChange}
@@ -99,7 +126,7 @@ const RedisStorage = ({ inputValues, handleInputChange, openModal, ableToEdit })
                     />
                     {inputValues.readMode === 'pattern' && (
                         <ReadTextFields
-                            fields={[{ field: 'KeysPattern' }]}
+                            fields={[{ field: 'keysPattern' }]}
                             openModal={openModal}
                             inputValues={inputValues}
                             ableToEdit={ableToEdit}
@@ -110,7 +137,7 @@ const RedisStorage = ({ inputValues, handleInputChange, openModal, ableToEdit })
             )}
             {(inputValues.readMode === 'key' || inputValues.operation === WRITE) && (
                 <ReadTextFields
-                    fields={[{ field: 'Table' }]}
+                    fields={[{ field: 'table' }]}
                     openModal={openModal}
                     inputValues={inputValues}
                     ableToEdit={ableToEdit}
@@ -143,7 +170,9 @@ RedisStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
     openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default RedisStorage;

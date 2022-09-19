@@ -19,7 +19,7 @@
 
 import JsonCodec from '../mxgraph/sidebar/json-codec/JsonCodec';
 
-const getJsonModel = currentGraph => {
+export const getJsonModel = currentGraph => {
     const encoder = new JsonCodec();
     const jsonModel = encoder.decode(currentGraph.getModel());
     return {

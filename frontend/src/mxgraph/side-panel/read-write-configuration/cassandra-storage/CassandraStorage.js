@@ -20,6 +20,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import { WRITE, READWRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
@@ -38,34 +40,41 @@ const dropdownOptions = [
 ];
 
 const fields = [
-    { field: 'Keyspace' },
-    { field: 'Table' },
-    { field: 'Cluster' },
-    { field: 'Host' },
-    { field: 'Port' }
+    [
+        { field: 'keyspace' },
+        { field: 'cluster' },
+        { field: 'host' },
+        { field: 'port' }
+    ],
+    [{ field: 'table' }]
 ];
-const userFields = [{ field: 'Username' }];
 
-const field = [{ field: 'Password' }];
+const userFields = [{ field: 'username' }];
+
+const field = [{ field: 'password' }];
 
 const CassandraStorage = ({
     inputValues,
     handleInputChange,
     openModal,
-    ableToEdit
+    ableToEdit,
+    connectionPage,
+    connection
 }) => (
     <>
         <ReadTextFields
             ableToEdit={ableToEdit}
-            fields={fields}
+            fields={fields[0]}
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
         />
         <Ssl
             ableToEdit={ableToEdit}
             value={inputValues.ssl}
             handleInputChange={handleInputChange}
+            connection={connection}
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -73,6 +82,7 @@ const CassandraStorage = ({
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -80,24 +90,37 @@ const CassandraStorage = ({
             inputValues={inputValues}
             handleInputChange={handleInputChange}
             openModal={openModal}
+            connection={connection}
             hidden
         />
-        <SelectField
-            ableToEdit={ableToEdit}
-            label="jobDesigner:readConfiguration.PushdownEnabled"
-            name="pushdownEnabled"
-            value={inputValues.pushdownEnabled}
-            handleInputChange={handleInputChange}
-            menuItems={dropdownOptions}
-            type={READWRITE}
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={[{ field: 'Cert Data', rows: 6 }]}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-        />
+        {!connectionPage && (
+            <>
+                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={fields[1]}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                />
+                <SelectField
+                    ableToEdit={ableToEdit}
+                    label="jobDesigner:readConfiguration.pushdownEnabled"
+                    name="pushdownEnabled"
+                    value={inputValues.pushdownEnabled}
+                    handleInputChange={handleInputChange}
+                    menuItems={dropdownOptions}
+                    type={READWRITE}
+                />
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={[{ field: 'certData', rows: 6 }]}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                />
+            </>
+        )}
         {inputValues.operation === WRITE && (
             <WriteMode
                 disabled={!ableToEdit}
@@ -112,7 +135,9 @@ CassandraStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
     openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default CassandraStorage;

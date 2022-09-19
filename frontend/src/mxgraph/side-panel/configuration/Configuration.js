@@ -18,7 +18,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { isEqual, pickBy, get } from 'lodash';
+import { isEqual, pickBy, get, omit, has, keys, reduce } from 'lodash';
 import { Box, TextField, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -29,6 +29,7 @@ import styles from './Configuration.Styles';
 import SaveCancelButtons from '../buttons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
 import { JOIN, CDC } from '../../constants';
+import ConnectionsModal from '../read-write-configuration/connections-modal/ConnectionsModal';
 
 const Configuration = ({
     ableToEdit,
@@ -42,7 +43,8 @@ const Configuration = ({
     graph,
     sidePanelIsOpen,
     selectedStorage,
-    params
+    params,
+    connections
 }) => {
     const { t } = useTranslation();
     const [state, setState] = useState({ ...configuration });
@@ -52,9 +54,28 @@ const Configuration = ({
 
     const currentCell = graph.getSelectionCell();
     const inputEdges = graph.getIncomingEdges(currentCell);
-    const edgeLabels = inputEdges.map(edge =>
-        get(edge, 'source.value.attributes.name.value', '')
+    const edgeLabels = reduce(
+        inputEdges,
+        (result, edge) => ({
+            ...result,
+            [get(edge, 'value.attributes.text.value', '')]: get(
+                edge,
+                'source.value.attributes.name.value',
+                ''
+            )
+        }),
+        {}
     );
+    const [connectionPrevState, setConnectionState] = useState({});
+
+    const connection = state.connectionName
+        ? omit(
+              connections.find(
+                  obj => obj.connectionName === state.connectionName.slice(1, -1)
+              ),
+              ['id', 'connectionName']
+          ) || {}
+        : {};
 
     useEffect(() => {
         setState(configuration);
@@ -66,6 +87,26 @@ const Configuration = ({
             selectedStorage(state.storage);
         }
     }, [state]);
+
+    useEffect(() => {
+        if (state.operation === 'READ' || state.operation === 'WRITE') {
+            if (state.connectionName) {
+                setState({
+                    ...omit(state, keys(connectionPrevState)),
+                    ...connection
+                });
+                setConnectionState(connection);
+            } else if (state.connectionName === null) {
+                setState(
+                    omit(state, [
+                        'connectionName',
+                        ...keys(omit(connectionPrevState, 'storage'))
+                    ])
+                );
+                setConnectionState(connection);
+            }
+        }
+    }, [state.connectionName]);
 
     const handleChange = (key, value) =>
         setState(prevState =>
@@ -140,24 +181,34 @@ const Configuration = ({
         setSwap(false);
     };
 
+    const modalProps = () => ({
+        ableToEdit,
+        display: showModal,
+        onClose: () => setShowModal(false),
+        onSetValue: newValue => {
+            setShowModal(false);
+            setState({
+                ...state,
+                [fieldInModal]: `#${newValue}#`
+            });
+        },
+        onChange: handleChange,
+        currentValue: get(state, fieldInModal, '')
+    });
+
     return (
         <Box className={classes.root}>
-            <ParametersModal
-                display={showModal}
-                ableToEdit={ableToEdit}
-                onClose={() => setShowModal(false)}
-                onSetValue={newValue => {
-                    setShowModal(false);
-                    setState({
-                        ...state,
-                        [fieldInModal]: `#${newValue}#`
-                    });
-                }}
-                currentValue={get(state, fieldInModal, '')}
-            />
+            {fieldInModal === 'connectionName' ? (
+                <ConnectionsModal {...modalProps()} />
+            ) : (
+                <ParametersModal
+                    {...modalProps()}
+                    ableToEdit={ableToEdit && !has(connection, fieldInModal)}
+                />
+            )}
             <Box>
                 <TextField
-                    disabled={!ableToEdit}
+                    disabled={!ableToEdit || !sidePanelIsOpen}
                     label={t('jobDesigner:readConfiguration.Name')}
                     placeholder={t('jobDesigner:readConfiguration.Name')}
                     variant="outlined"
@@ -171,13 +222,14 @@ const Configuration = ({
                     required
                 />
                 <Component
-                    ableToEdit={ableToEdit}
+                    ableToEdit={ableToEdit && sidePanelIsOpen}
                     state={state}
                     onChange={handleChange}
                     openModal={openModal}
                     edgeLabels={edgeLabels}
                     handleSwap={handleSwap}
                     params={params}
+                    connection={connection}
                 />
             </Box>
             <SaveCancelButtons
@@ -202,12 +254,14 @@ Configuration.propTypes = {
     graph: PropTypes.object,
     sidePanelIsOpen: PropTypes.bool,
     selectedStorage: PropTypes.func,
-    params: PropTypes.array
+    params: PropTypes.array,
+    connections: PropTypes.array
 };
 
 const mapStateToProps = state => ({
     sidePanelIsOpen: state.mxGraph.sidePanelIsOpen,
-    params: state.pages.settingsParameters.data.params
+    params: state.pages.settingsParameters.data.params,
+    connections: state.pages.settingsConnections.connections
 });
 
 export default compose(withStyles(styles), connect(mapStateToProps))(Configuration);

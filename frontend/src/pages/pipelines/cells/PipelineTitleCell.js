@@ -28,6 +28,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './PipelineTitleCell.Styles';
 import TableTimeData from '../../../components/table-time-data';
+import TagsList from '../../../components/tags-list';
 
 const PipelineTitleCell = ({
     title,
@@ -36,6 +37,7 @@ const PipelineTitleCell = ({
     lastEdit,
     checked,
     onClick,
+    tags,
     classes
 }) => {
     const titleCell = () => (
@@ -54,6 +56,7 @@ const PipelineTitleCell = ({
                     lastFinished={lastFinished}
                     lastRun={lastRun}
                 />
+                <TagsList tags={tags} />
             </Typography>
         </Grid>
     );
@@ -76,6 +79,7 @@ PipelineTitleCell.propTypes = {
     lastEdit: PropTypes.string,
     checked: PropTypes.bool,
     onClick: PropTypes.func,
+    tags: PropTypes.array,
     classes: PropTypes.object
 };
 

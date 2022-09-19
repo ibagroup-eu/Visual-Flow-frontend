@@ -29,6 +29,7 @@ import {
     TRANSFORM,
     FILTER,
     CACHE,
+    SLICE,
     SORT
 } from './constants';
 
@@ -112,6 +113,17 @@ const jobStages = [
         }
     },
     {
+        operation: SLICE,
+        name: palette.SLICE,
+        color: '#EDF7ED',
+        validation: {
+            minIncomingConnections: 1,
+            maxIncomingConnections: 1,
+            minOutgoingConnections: 1,
+            maxOutgoingConnections: 1
+        }
+    },
+    {
         operation: JOIN,
         name: palette.JOIN,
         color: '#FFF5E5',
@@ -123,8 +135,8 @@ const jobStages = [
         }
     },
     {
-        operation: CDC,
-        name: palette.CDC,
+        operation: UNION,
+        name: palette.UNION,
         color: '#FFF5E5',
         validation: {
             minIncomingConnections: 1,
@@ -134,8 +146,8 @@ const jobStages = [
         }
     },
     {
-        operation: UNION,
-        name: palette.UNION,
+        operation: CDC,
+        name: palette.CDC,
         color: '#FFF5E5',
         validation: {
             minIncomingConnections: 1,

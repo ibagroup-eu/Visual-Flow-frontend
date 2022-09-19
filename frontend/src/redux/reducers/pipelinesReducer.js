@@ -42,7 +42,8 @@ import {
     COPY_PIPELINE_SUCCESS,
     COPY_PIPELINE_FAIL,
     SET_PIPELINES_LAST_RUN,
-    SET_PIPELINES_STATUS
+    SET_PIPELINES_STATUS,
+    SET_DEFAULT
 } from '../actions/types';
 
 const initialState = {
@@ -130,6 +131,12 @@ const pipelinesReducer = (state = initialState, action = {}) => {
             return {
                 ...state,
                 status: action.payload
+            };
+        case SET_DEFAULT:
+            return {
+                ...state,
+                lastRun: '',
+                status: ''
             };
         default:
             return state;

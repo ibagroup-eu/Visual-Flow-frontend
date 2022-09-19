@@ -19,8 +19,8 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import CustomTextField from './CustomTextField';
 import { MenuItem, TextField } from '@material-ui/core';
+import CustomTextField from './CustomTextField';
 
 describe('CustomTextField', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -52,7 +52,7 @@ describe('CustomTextField', () => {
     });
 
     it('should handle onChange with text', () => {
-        const [_, props] = init({}, true, mount);
+        const [, props] = init({}, true, mount);
 
         expect(props.onChange).toHaveBeenCalledWith({
             target: {
@@ -78,5 +78,16 @@ describe('CustomTextField', () => {
                 name: props.name
             }
         });
+    });
+
+    it('should calls useEffect with setCurrenValue', () => {
+        const [wrapper] = init({ value: '213m' }, false, mount);
+
+        expect(
+            wrapper
+                .find(TextField)
+                .at(1)
+                .prop('value')
+        ).toBe('m');
     });
 });

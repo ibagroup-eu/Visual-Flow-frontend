@@ -83,9 +83,11 @@ import stageLabels from './stageLabels';
 
 import history from '../utils/history';
 import JobsToolbar from './toolbar/jobs-toolbar';
-import RenderJobConfiguration from './side-panel/RenderJobConfiguration';
+import {
+    RenderPipelineConfiguration,
+    RenderJobConfiguration
+} from './side-panel/render-configuration';
 import PipelinesToolbar from './toolbar/pipelines-toolbar';
-import RenderPipelineConfiguration from './side-panel/RenderPipelineConfiguration';
 import {
     JOIN,
     CDC,
@@ -104,6 +106,7 @@ import {
 } from './constants';
 import LogsModal from '../pages/logs-modal';
 import { jobStagesByType } from './jobStages';
+import { pipelinesStagesByType } from './pipelinesStages';
 
 const {
     mxGraph,
@@ -133,7 +136,8 @@ class GraphDesigner extends Component {
             graph: {},
             jobId: '',
             nodeId: '',
-            undoManagerConfig: {}
+            undoManagerConfig: {},
+            stageCopy: null
         };
 
         this.createPopupMenu = this.popupMenu.bind(this);
@@ -162,8 +166,43 @@ class GraphDesigner extends Component {
         this.setState({ undoManagerConfig: configuration });
     };
 
+    pasteCopyHandler = (event, graph) => {
+        const { stageCopy } = this.state;
+        const currentPath = history.location.pathname.split('/')[1];
+        const stagesByType =
+            currentPath === 'jobs' ? jobStagesByType : pipelinesStagesByType;
+        const valuesCopy = Object.entries(stageCopy.value.attributes).reduce(
+            (acc, attrKey) => ({
+                ...acc,
+                [attrKey[1].nodeName]: attrKey[1].nodeValue
+            }),
+            {}
+        );
+        const newPoint = graph.getPointForEvent(event);
+        if (valuesCopy.operation === JOIN) {
+            delete valuesCopy.leftDataset;
+            delete valuesCopy.rightDataset;
+        } else if (valuesCopy.operation === CDC) {
+            delete valuesCopy.newDataset;
+            delete valuesCopy.oldDataset;
+        }
+        graph.insertVertex(
+            graph.getDefaultParent(),
+            stageCopy.target,
+            stageLabels(valuesCopy),
+            newPoint.x,
+            newPoint.y,
+            stageCopy.geometry.width,
+            stageCopy.geometry.height,
+            `fillColor=${
+                stagesByType[valuesCopy.operation].color
+            };rounded=1;strokeColor=#000000;arcSize=7`
+        );
+    };
+
     popupMenu = (graph, menu, cell, event) => {
         const { data, sidePanelIsOpen, setDirtyGraph, setPanel } = this.props;
+        const { stageCopy } = this.state;
         if (
             cell &&
             (!has(data, 'editable') || this.graphIsDisabled(data.editable))
@@ -179,6 +218,9 @@ class GraphDesigner extends Component {
                     this.props.setCell(cell.id);
                     setPanel(true);
                 });
+                menu.addItem('Copy child node', null, () => {
+                    this.setState({ stageCopy: cell });
+                });
                 menu.addItem('Delete child node', null, () => {
                     sidePanelIsOpen && setPanel(false);
                     this.props.setCell('');
@@ -187,6 +229,14 @@ class GraphDesigner extends Component {
                     setDirtyGraph(true);
                 });
             }
+        } else if (
+            stageCopy !== null &&
+            (!has(data, 'editable') || this.graphIsDisabled(data.editable))
+        ) {
+            menu.addItem('Paste child node', null, () => {
+                this.pasteCopyHandler(event, graph);
+                setDirtyGraph(true);
+            });
         }
     };
 
@@ -745,7 +795,7 @@ class GraphDesigner extends Component {
         const { graph } = this.state;
 
         const roundedValue = +val.toFixed(1);
-        if (roundedValue > 1.5 || roundedValue < 0.5) {
+        if (roundedValue > 1.5 || roundedValue < 0.2) {
             return;
         }
         graph.zoomTo(roundedValue);

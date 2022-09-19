@@ -68,6 +68,10 @@
                     "readMode": "key"
                 },
                 {
+                    "storage": "redshift",
+                    "customSql": "false"
+                },
+                {
                     "storage": "redshift-jdbc",
                     "customSql": "false"
                 }
@@ -87,6 +91,15 @@
                 {
                     "storage": "redis",
                     "readMode": "pattern"
+                }
+            ]
+        },
+        {
+            "field": "query",
+            "conditions": [
+                {
+                    "storage": "redshift",
+                    "customSql": "true"
                 }
             ]
         }

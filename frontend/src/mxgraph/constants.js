@@ -26,6 +26,7 @@ export const JOIN = 'JOIN';
 export const CDC = 'CDC';
 export const EDGE = 'EDGE';
 export const TRANSFORM = 'TRANSFORM';
+export const SLICE = 'SLICE';
 export const FILTER = 'FILTER';
 export const JOB = 'JOB';
 export const NOTIFICATION = 'NOTIFICATION';
@@ -107,6 +108,10 @@ export const STORAGES = {
     REDIS: {
         value: 'redis',
         label: 'Redis'
+    },
+    REDSHIFT: {
+        value: 'redshift',
+        label: 'Redshift'
     },
     REDSHIFTJDBC: {
         value: 'redshift-jdbc',

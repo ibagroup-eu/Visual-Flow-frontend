@@ -25,14 +25,16 @@ import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import MailOutlinedIcon from '@material-ui/icons/MailOutlined';
 import DeveloperModeOutlinedIcon from '@material-ui/icons/DeveloperModeOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import React from 'react';
+import SortOutlinedIcon from '@material-ui/icons/SortOutlined';
 import join16 from '../../../assets/join16.svg';
 import union16 from '../../../assets/union16.svg';
 import cdc16 from '../../../assets/cdc16.svg';
 import removeDuplicates16 from '../../../assets/removeDuplicates16.svg';
 import filter16 from '../../../assets/filter16.svg';
 import transform16 from '../../../assets/transform16.svg';
-import sort16 from '../../../assets/sort16.svg';
+
 import {
     READ,
     WRITE,
@@ -48,7 +50,8 @@ import {
     PIPELINE,
     CONTAINER,
     CACHE,
-    SORT
+    SORT,
+    SLICE
 } from '../../constants';
 
 const style = {
@@ -87,7 +90,15 @@ const stageIcon = stageName => {
         case CACHE:
             return <StorageOutlinedIcon style={style} />;
         case SORT:
-            return <img src={sort16} alt="sort" />;
+            return (
+                <SortOutlinedIcon
+                    style={{
+                        fontSize: '18px'
+                    }}
+                />
+            );
+        case SLICE:
+            return <DeleteSweepIcon style={style} />;
         default:
             return <></>;
     }

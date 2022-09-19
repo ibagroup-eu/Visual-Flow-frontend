@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { get, isEqual } from 'lodash';
@@ -100,6 +100,13 @@ const Users = ({
 
     React.useEffect(() => {
         setNewUsers(getNewUsers());
+        if (editMode) {
+            if (isEqual(getMappedUsers().sort(), usersAndRoles.sort())) {
+                setPristine();
+            } else {
+                setDirty();
+            }
+        }
     }, [usersAndRoles]);
 
     const searchFilter = (user, value) =>
@@ -127,6 +134,7 @@ const Users = ({
                 }))
         ]);
         setSearchNewUsersValue('');
+        setDirty();
     };
 
     const onSubmit = () => {
@@ -148,20 +156,12 @@ const Users = ({
         } else {
             setEditMode(false);
             setUsersAndRoles(getMappedUsers());
+            setPristine();
         }
     };
 
-    const saveButtonIsDisabled = () => {
-        useEffect(() => {
-            if (isEqual(getMappedUsers().sort(), usersAndRoles.sort())) {
-                setPristine();
-            } else {
-                setDirty();
-            }
-        });
-
-        return isEqual(getMappedUsers().sort(), usersAndRoles.sort());
-    };
+    const saveButtonIsDisabled = () =>
+        isEqual(getMappedUsers().sort(), usersAndRoles.sort());
 
     const filterUsers = () =>
         usersAndRoles.filter(user => searchFilter(user, searchValue));
@@ -190,8 +190,8 @@ const Users = ({
                     newUser
                 />
             </PopupForm>
-            <Grid item xs={3} />
-            <Grid item xs={6} className={classes.root}>
+            <Grid item xs={2} />
+            <Grid item xs={8} className={classes.root}>
                 <FormWrapper
                     title="usersAndRoles"
                     editMode={editMode}
@@ -202,7 +202,7 @@ const Users = ({
                     }}
                     onCancel={onCancel}
                     onSubmit={onSubmit}
-                    isSaveBtnDisabled={saveButtonIsDisabled}
+                    isSaveBtnDisabled={saveButtonIsDisabled()}
                 >
                     <Box
                         className={classNames(
@@ -211,14 +211,16 @@ const Users = ({
                             classes.paddedBottom
                         )}
                     >
-                        <SearchInput
-                            value={searchValue}
-                            onChange={event =>
-                                handleChangeSearch(event.target.value)
-                            }
-                            placeholder={t('main:search')}
-                        />
-
+                        <Box className={classes.search}>
+                            <SearchInput
+                                fullWidth
+                                value={searchValue}
+                                onChange={event =>
+                                    handleChangeSearch(event.target.value)
+                                }
+                                placeholder={t('main:search')}
+                            />
+                        </Box>
                         {editMode && !showModal && (
                             <Button
                                 variant="contained"
@@ -237,7 +239,7 @@ const Users = ({
                     />
                 </FormWrapper>
             </Grid>
-            <Grid item xs={3} />
+            <Grid item xs={2} />
             {Prompt}
         </Grid>
     );

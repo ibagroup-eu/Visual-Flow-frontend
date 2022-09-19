@@ -34,6 +34,7 @@ import PrivateRoute from '../components/routes/private';
 import JobDesigner from '../pages/job-designer';
 import PipelineDesigner from '../pages/pipeline-designer';
 import Import from '../pages/import';
+import Connections from '../pages/settings/connections';
 
 const Routes = () => (
     <Switch>
@@ -68,6 +69,11 @@ const Routes = () => (
             exact
             path="/:projectId/settings/users"
             component={withParams(Users)}
+        />
+        <PrivateRoute
+            exact
+            path="/:projectId/settings/connections"
+            component={withParams(Connections)}
         />
         <PrivateRoute exact path="/addProject" component={withParams(AddProject)} />
         <PrivateRoute

@@ -275,6 +275,67 @@ const getMongo = t => [
     getWriteMode(t)
 ];
 
+const getRedShift = t => [
+    {
+        title: t('ReadWrite:REDSHIFT.host.name'),
+        paragraph: t('ReadWrite:REDSHIFT.host.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.port.name'),
+        paragraph: t('ReadWrite:REDSHIFT.port.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.database.name'),
+        paragraph: t('ReadWrite:REDSHIFT.database.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.user.name'),
+        paragraph: t('ReadWrite:REDSHIFT.user.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.password.name'),
+        paragraph: t('ReadWrite:REDSHIFT.password.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.ssl.name'),
+        paragraph: t('ReadWrite:REDSHIFT.ssl.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.tempdir.name'),
+        paragraph: t('ReadWrite:REDSHIFT.tempdir.value'),
+        paragraph1: t('ReadWrite:REDSHIFT.tempdir.value1')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.accessKey.name'),
+        paragraph: t('ReadWrite:REDSHIFT.accessKey.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.secretKey.name'),
+        paragraph: t('ReadWrite:REDSHIFT.secretKey.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.extraCopyOptions.name'),
+        paragraph: t('ReadWrite:REDSHIFT.extraCopyOptions.value'),
+        paragraph1: t('ReadWrite:REDSHIFT.extraCopyOptions.value1')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.customSql.name'),
+        paragraph: t('ReadWrite:REDSHIFT.customSql.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.table.name'),
+        paragraph: t('ReadWrite:REDSHIFT.table.value')
+    },
+    {
+        title: t('ReadWrite:REDSHIFT.query.name'),
+        paragraph: t('ReadWrite:REDSHIFT.query.value'),
+        hide: [WRITE]
+    },
+
+    getWriteMode(t)
+];
+
 const getCassandra = t => [
     {
         title: t('ReadWrite:CASSANDRA.keyspace.name'),
@@ -389,6 +450,7 @@ const RWModal = props => {
             aws={getAws(t)}
             elastic={getElastic(t)}
             mongo={getMongo(t)}
+            redshift={getRedShift(t)}
             cassandra={getCassandra(t)}
             redis={getRedis(t)}
             stdout={getStdout(t)}

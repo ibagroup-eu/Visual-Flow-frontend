@@ -38,7 +38,7 @@ import useStyles from './SidebarHeader.Styles';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 import history from '../../../utils/history';
 
-const SidebarHeader = ({
+export const SidebarHeader = ({
     name,
     createNewJob,
     updateCurrentJob,
@@ -118,6 +118,17 @@ const SidebarHeader = ({
         history.push(`/${project}/${designer}${query}`);
     };
 
+    const confirmOrGoToLast = () => {
+        if (someDirty) {
+            confirmationWindow({
+                body: `${t('main:unsavedChanges.leaveWithUnsavedChanges')}`,
+                callback: () => goToLastPage()
+            });
+        } else {
+            goToLastPage();
+        }
+    };
+
     return (
         <AppBar
             position="fixed"
@@ -126,7 +137,7 @@ const SidebarHeader = ({
             })}
         >
             <Toolbar className={classes.toolbar}>
-                <IconButton onClick={() => goToLastPage()}>
+                <IconButton onClick={confirmOrGoToLast}>
                     <ArrowBackIcon fontSize="large" htmlColor="white" />
                 </IconButton>
                 <Typography variant="h5" noWrap className={classes.title}>
@@ -151,18 +162,7 @@ const SidebarHeader = ({
                                 size="large"
                                 color="inherit"
                                 className={classes.button}
-                                onClick={() => {
-                                    if (someDirty) {
-                                        confirmationWindow({
-                                            body: `${t(
-                                                'main:unsavedChanges.leaveWithUnsavedChanges'
-                                            )}`,
-                                            callback: () => goToLastPage()
-                                        });
-                                    } else {
-                                        goToLastPage();
-                                    }
-                                }}
+                                onClick={confirmOrGoToLast}
                             >
                                 {t('main:button.Exit')}
                             </Button>
@@ -198,7 +198,7 @@ const mapStateToProps = state => ({
     paramsIsDirty: state.mxGraph.paramsIsDirty,
     dirty: state.mxGraph.dirty,
     currentProject: state.projects.currentProject,
-    query: state.enhancedTable.search
+    query: state.pages.urlSearch.search
 });
 
 const mapDispatchToProps = {

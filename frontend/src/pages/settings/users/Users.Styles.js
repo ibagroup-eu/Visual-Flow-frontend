@@ -34,5 +34,8 @@ export default makeStyles(theme => ({
     },
     paddedBottom: {
         paddingBottom: theme.spacing(3)
+    },
+    search: {
+        width: '35%'
     }
 }));

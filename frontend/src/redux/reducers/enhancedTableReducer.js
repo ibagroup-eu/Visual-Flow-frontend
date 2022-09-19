@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import qs from 'qs';
 import {
     SET_CURRENT_PAGE,
     SET_ROWS_PER_PAGE,
@@ -25,48 +24,33 @@ import {
     SET_ORDER_BY
 } from '../actions/types';
 
-const withSearch = state => ({
-    ...state,
-    search: qs.stringify(
-        {
-            page: state.page,
-            rows: state.rowsPerPage,
-            order: state.order,
-            orderBy: state.orderBy
-        },
-        { addQueryPrefix: true }
-    ),
-    isInitial: false
-});
-
-const initialState = withSearch({
+const initialState = {
     page: 0,
     rowsPerPage: 5,
     orderBy: 'name',
-    order: 'asc',
-    isInitial: true
-});
+    order: 'asc'
+};
 
 const enhancedTableReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case SET_CURRENT_PAGE:
-            return withSearch({
+            return {
                 ...state,
                 page: action.payload
-            });
+            };
         case SET_ROWS_PER_PAGE:
-            return withSearch({
+            return {
                 ...state,
                 rowsPerPage: action.payload
-            });
+            };
         case SET_DEFAULT:
             return { ...initialState };
         case SET_ORDER_BY:
-            return withSearch({
+            return {
                 ...state,
                 orderBy: action.payload.orderBy,
                 order: action.payload.order
-            });
+            };
         default:
             return state;
     }

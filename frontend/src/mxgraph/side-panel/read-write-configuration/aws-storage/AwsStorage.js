@@ -20,6 +20,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Divider } from '@material-ui/core';
+import { isEqual } from 'lodash';
 import { READWRITE } from '../../../constants';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import CosProperties from '../common/CosProperties';
@@ -39,13 +41,20 @@ const anonymousAccess = [
 
 const ANONYMOUS_ACCESS_DEFAULT_VALUES = 'true';
 
-const endpointField = [{ field: 'Endpoint' }];
+const endpointField = [{ field: 'endpoint' }];
 
-const fields = [{ field: 'Bucket' }, { field: 'Path' }];
+const fields = [{ field: 'bucket' }, { field: 'path' }];
 
-const keyFields = [{ field: 'Access key' }, { field: 'Secret key' }];
+const keyFields = [{ field: 'accessKey' }, { field: 'secretKey' }];
 
-const AwsStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) => (
+const AwsStorage = ({
+    inputValues,
+    handleInputChange,
+    openModal,
+    ableToEdit,
+    connectionPage,
+    connection
+}) => (
     <>
         <ReadTextFields
             fields={endpointField}
@@ -53,22 +62,25 @@ const AwsStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
             inputValues={inputValues}
             ableToEdit={ableToEdit}
             handleInputChange={handleInputChange}
+            connection={connection}
         />
         <SelectField
             ableToEdit={ableToEdit}
-            label="jobDesigner:readConfiguration.AnonymousAccess"
+            label="jobDesigner:readConfiguration.anonymousAccess"
             name="anonymousAccess"
             value={inputValues.anonymousAccess}
             handleInputChange={handleInputChange}
             menuItems={anonymousAccess}
             type={READWRITE}
             defaultValue={ANONYMOUS_ACCESS_DEFAULT_VALUES}
+            connection={connection}
             required
         />
         <Ssl
             ableToEdit={ableToEdit}
             value={inputValues.ssl}
             handleInputChange={handleInputChange}
+            connection={connection}
         />
         {inputValues.anonymousAccess === 'false' && (
             <ReadTextFields
@@ -77,16 +89,22 @@ const AwsStorage = ({ inputValues, handleInputChange, openModal, ableToEdit }) =
                 inputValues={inputValues}
                 handleInputChange={handleInputChange}
                 openModal={openModal}
+                connection={connection}
                 hidden
             />
         )}
-        <CosProperties
-            fields={fields}
-            openModal={openModal}
-            inputValues={inputValues}
-            ableToEdit={ableToEdit}
-            handleInputChange={handleInputChange}
-        />
+        {!connectionPage && (
+            <>
+                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
+                <CosProperties
+                    fields={fields}
+                    openModal={openModal}
+                    inputValues={inputValues}
+                    ableToEdit={ableToEdit}
+                    handleInputChange={handleInputChange}
+                />
+            </>
+        )}
     </>
 );
 
@@ -94,7 +112,9 @@ AwsStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
     openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    connectionPage: PropTypes.bool,
+    connection: PropTypes.object
 };
 
 export default AwsStorage;
