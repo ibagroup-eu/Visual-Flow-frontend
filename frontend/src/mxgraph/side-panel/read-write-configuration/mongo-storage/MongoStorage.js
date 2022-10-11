@@ -28,10 +28,11 @@ import Ssl from '../helpers/Ssl';
 
 const fields = [
     [{ field: 'host' }, { field: 'port' }, { field: 'user' }],
-    [{ field: 'database' }, { field: 'collection' }]
+    [{ field: 'collection' }]
 ];
 
 const field = [{ field: 'password' }];
+const databaseField = [{ field: 'database' }];
 
 const MongoStorage = ({
     inputValues,
@@ -58,6 +59,14 @@ const MongoStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+        />
+        <ReadTextFields
+            ableToEdit={ableToEdit}
+            fields={databaseField}
+            inputValues={inputValues}
+            handleInputChange={handleInputChange}
+            openModal={openModal}
+            connection={connection}
         />
         <Ssl
             ableToEdit={ableToEdit}

@@ -38,5 +38,12 @@ export default makeStyles(theme => ({
     },
     refreshBtn: {
         justifyContent: 'flex-end'
+    },
+    searchItem: {
+        display: 'flex'
+    },
+    search: {
+        width: 378,
+        paddingRight: theme.spacing(0.5)
     }
 }));

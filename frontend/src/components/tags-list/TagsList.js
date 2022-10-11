@@ -19,86 +19,88 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { truncate } from 'lodash';
 import classNames from 'classnames';
-import { Avatar, Box, Chip, Menu, MenuItem, Tooltip } from '@material-ui/core';
+import {
+    Box,
+    Chip,
+    ClickAwayListener,
+    Grow,
+    Paper,
+    Popper
+} from '@material-ui/core';
 import useStyles from './TagsList.Styles';
+import TagsItem from '../tags-filter/tags-item/TagsItem';
 
-const TagsList = ({ tags, limit }) => {
+const checkItem = (checkedTags, tag) => {
+    const tagStatus = checkedTags.find(item => item[0] === tag);
+    return tagStatus ? tagStatus[1] : false;
+};
+
+const TagsList = ({ tags, limit, onCheckTags, checkedTags }) => {
     const classes = useStyles();
-
-    const showTags = tags.slice(0, limit);
-
     const [menuAnchor, setMenuAnchor] = useState(null);
+    const hiddenChecked = tags.slice(limit).find(tag => checkItem(checkedTags, tag));
 
     const openMenu = event => {
-        setMenuAnchor(event.target);
-    };
-
-    const closeMenu = () => {
-        setMenuAnchor(null);
-    };
-
-    const chipProps = {
-        className: classNames(classes.tag, classes.tagMargins),
-        variant: 'outlined',
-        size: 'small'
+        setMenuAnchor(menuAnchor ? null : event.currentTarget);
     };
 
     return (
-        <Box className={classes.tagsBox}>
-            {showTags.map(tag => (
-                <Tooltip
+        <Box className={classes.root}>
+            {tags.slice(0, limit).map(tag => (
+                <TagsItem
                     key={tag}
-                    title={tag.length > 9 ? tag : ''}
-                    arrow
-                    placement="bottom"
-                >
-                    <Chip
-                        {...chipProps}
-                        avatar={<Avatar className={classes.avatar}>#</Avatar>}
-                        label={truncate(tag, { length: 9 })}
-                    />
-                </Tooltip>
-            ))}
-            {tags.length > limit && (
-                <Chip
-                    {...chipProps}
-                    label={`+${tags.length - limit}`}
-                    onClick={openMenu}
+                    label={tag}
+                    checked={checkItem(checkedTags, tag)}
+                    setChecked={onCheckTags}
                 />
-            )}
-            <Menu anchorEl={menuAnchor} open={!!menuAnchor} onClose={closeMenu}>
-                {tags.map(
-                    (tag, i) =>
-                        i > limit - 1 && (
-                            <MenuItem
-                                key={tag}
-                                disabled
-                                className={classes.menuItem}
+            ))}
+            <ClickAwayListener onClickAway={() => setMenuAnchor(null)}>
+                <Box className={classes.hiddenTags}>
+                    {tags.length > limit && (
+                        <Chip
+                            className={classNames(classes.chip, {
+                                [classes.chipHover]: hiddenChecked,
+                                [classes.checkedChip]: hiddenChecked
+                            })}
+                            variant="outlined"
+                            size="small"
+                            label={`+${tags.length - limit}`}
+                            onClick={openMenu}
+                        />
+                    )}
+                    <Popper
+                        id="popper"
+                        open={!!menuAnchor}
+                        anchorEl={menuAnchor}
+                        placement="bottom-start"
+                        role={undefined}
+                        transition
+                    >
+                        {({ TransitionProps }) => (
+                            <Grow
+                                {...TransitionProps}
+                                style={{
+                                    transformOrigin: 'left top'
+                                }}
                             >
-                                <Chip
-                                    {...chipProps}
-                                    className={classNames(
-                                        classes.disabledTag,
-                                        classes.tagMargins
-                                    )}
-                                    avatar={
-                                        <Avatar
-                                            className={classNames(
-                                                classes.avatar,
-                                                classes.disabledAvatar
-                                            )}
-                                        >
-                                            #
-                                        </Avatar>
-                                    }
-                                    label={tag}
-                                />
-                            </MenuItem>
-                        )
-                )}
-            </Menu>
+                                <Paper className={classes.paper}>
+                                    <Box className={classes.tags}>
+                                        {tags.slice(limit).map(tag => (
+                                            <TagsItem
+                                                key={tag}
+                                                label={tag}
+                                                checked={checkItem(checkedTags, tag)}
+                                                setChecked={onCheckTags}
+                                            />
+                                        ))}
+                                    </Box>
+                                </Paper>
+                            </Grow>
+                        )}
+                    </Popper>
+                </Box>
+            </ClickAwayListener>
         </Box>
     );
 };
@@ -110,7 +112,9 @@ TagsList.defaultProps = {
 
 TagsList.propTypes = {
     tags: PropTypes.array,
-    limit: PropTypes.number
+    limit: PropTypes.number,
+    checkedTags: PropTypes.array,
+    onCheckTags: PropTypes.func
 };
 
 export default TagsList;

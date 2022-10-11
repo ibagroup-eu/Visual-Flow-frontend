@@ -32,11 +32,9 @@ const NotificationStage = ({ stage, params }) => {
     return (
         <div className={classes.root}>
             <Typography variant="body2" component="div" className={classes.title}>
-                <span>
-                    {stageIcon(stage.operation)}
-                    <span className={classes.name}>
-                        {makeTooltip(stage.name, stage.name)}
-                    </span>
+                {stageIcon(stage.operation)}
+                <span className={classes.name}>
+                    {makeTooltip(stage.name, stage.name)}
                 </span>
                 <StageWarning stage={stage} params={params} />
             </Typography>

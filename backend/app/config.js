@@ -19,30 +19,70 @@
 
 const path = require('path');
 
-const config = {
-    express: {
-        port: process.env.EXPRESS_PORT || 8888,
-        host:
-            process.env.NODE_ENV === 'production' ||
-            process.env.NODE_ENV === 'development'
-                ? '0.0.0.0'
-                : '127.0.0.1'
+const IS_LOCAL_ENV = !['production', 'development'].includes(
+    process.env.NODE_ENV
+);
+
+const CONFIG = {
+    EXPRESS: {
+        PORT: process.env.EXPRESS_PORT || 8888,
+        HOST: IS_LOCAL_ENV ? '127.0.0.1' : '0.0.0.0',
+        SESSION_STORE: process.env.SESSION_STORE || 'dynamic',
+        ENV: process.env.NODE_ENV,
+        IS_LOCAL_ENV
     },
-    app: {
-        baseUrl: process.env.BASE_URL || '/',
-        logoutUrl: process.env.LOGOUT_URL,
-        buildPath:
+    APP: {
+        BASE_URL: process.env.BASE_URL || '/',
+        LOGOUT_URL: process.env.LOGOUT_URL,
+        COOKIE_MAX_AGE: process.env.COOKIE_MAX_AGE || 3600 * 1000 * 8,
+        BUILD_PATH:
             process.env.BUILD_PATH ||
             path.join(__dirname, '../../frontend/public'),
-        proxy: {
-            apiServer: {
-                host: process.env.API_SERVER
+        PROXY: {
+            API_SERVER: {
+                HOST: process.env.API_SERVER
             },
-            mockServer: {
-                host: process.env.MOCK_SERVER
+            MOCK_SERVER: {
+                HOST: process.env.MOCK_SERVER
+            }
+        }
+    },
+    REDIS: {
+        PORT: process.env.REDIS_PORT || 6379,
+        HOST: process.env.REDIS_HOST,
+        PASSWORD: process.env.REDIS_PASSWORD,
+        DB: process.env.REDIS_DB || 0
+    },
+    AUTH: {
+        STRATEGY: process.env.STRATEGY,
+        PROVIDER: {
+            GITLAB: {
+                APP_ID: process.env.GITLAB_APP_ID,
+                APP_SECRET: process.env.GITLAB_APP_SECRET,
+                CALLBACK_URL: process.env.STRATEGY_CALLBACK_URL,
+                BASE_URL: process.env.STRATEGY_BASE_URL
+            },
+            GITHUB: {
+                APP_ID: process.env.GITHUB_APP_ID,
+                APP_SECRET: process.env.GITHUB_APP_SECRET,
+                CALLBACK_URL: process.env.STRATEGY_CALLBACK_URL,
+                BASE_URL: process.env.STRATEGY_BASE_URL
+            },
+            OIDC: {
+                ISSUER_URL: process.env.ISSUER_URL,
+                AUTHORIZATION_URL: process.env.AUTHORIZATION_URL,
+                TOKEN_URL: process.env.TOKEN_URL,
+                USERINFO_URL: process.env.USERINFO_URL,
+                CLIENT_ID: process.env.CLIENT_ID,
+                CLIENT_SECRET: process.env.CLIENT_SECRET,
+                CALLBACK_URL: process.env.CALLBACK_URL,
+                AVATAR: {
+                    URL: process.env.OIDC_AVATAR_URL || '',
+                    KEY: process.env.OIDC_AVATAR_KEY || ''
+                }
             }
         }
     }
 };
 
-module.exports = config;
+module.exports = CONFIG;

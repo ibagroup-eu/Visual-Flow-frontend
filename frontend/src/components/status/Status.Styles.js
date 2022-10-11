@@ -33,8 +33,8 @@ export default theme => ({
         borderColor: theme.palette.grey[600]
     },
     chipRunning: {
-        color: theme.palette.primary.main,
-        borderColor: theme.palette.primary.main
+        color: theme.palette.info.main,
+        borderColor: theme.palette.info.main
     },
     chipSucceeded: {
         color: theme.palette.success.main,

@@ -32,7 +32,15 @@ describe('Jobs', () => {
 
     beforeEach(() => {
         props = {
-            jobs: { loading: false, data: { jobs: [{ name: 'field' }] } },
+            jobs: {
+                loading: false,
+                data: {
+                    jobs: [
+                        { name: 'field', tags: 'tag1' },
+                        { name: 'field2', tags: 'tag2' }
+                    ]
+                }
+            },
             pipelines: { data: { pipelines: [] } },
             getJobs: jest.fn(),
             getPipelines: jest.fn(),
@@ -75,7 +83,6 @@ describe('Jobs', () => {
     });
 
     it('should calls onAddClick prop', () => {
-        wrapper = shallow(<Jobs {...props} />);
         wrapper.find(PageHeader).prop('onAddClick')();
     });
 
@@ -90,5 +97,19 @@ describe('Jobs', () => {
         wrapper.setProps({ projectId });
         expect(props.getJobs).toBeCalledWith(projectId);
         expect(props.getPipelines).toBeCalledWith(projectId);
+    });
+
+    it('should calls useEffect without jobs', () => {
+        wrapper = mount(<Jobs {...props} jobs={{ loading: false, data: {} }} />);
+    });
+
+    it('should calls resetTags prop', () => {
+        wrapper = mount(<Jobs {...props} />);
+        wrapper.find(PageHeader).prop('resetTags')();
+    });
+
+    it('should calls onCheckTags prop', () => {
+        wrapper = mount(<Jobs {...props} />);
+        wrapper.find(PageHeader).prop('onCheckTags')({ tag1: true });
     });
 });

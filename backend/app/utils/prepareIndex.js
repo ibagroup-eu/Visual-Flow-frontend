@@ -22,16 +22,16 @@ const logger = require('../logger')('utils');
 
 const prepareIndex = config => {
     fs.readFile(
-        `${config.app.buildPath}/template.html`,
+        `${config.APP.BUILD_PATH}/template.html`,
         'utf8',
         (err, data) => {
             if (err) {
                 logger.error(err);
                 return;
             }
-            const result = data.replace(/%BASE_URL%/g, config.app.baseUrl);
+            const result = data.replace(/%BASE_URL%/g, config.APP.BASE_URL);
             fs.writeFile(
-                `${config.app.buildPath}/index.html`,
+                `${config.APP.BUILD_PATH}/index.html`,
                 result,
                 'utf8',
                 error => {

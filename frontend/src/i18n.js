@@ -42,6 +42,7 @@ import filters from './translations/en/filters.json';
 import cache from './translations/en/stages/cache.json';
 import sort from './translations/en/stages/sort.json';
 import slice from './translations/en/stages/slice.json';
+import pipeline from './translations/en/stages/pipeline.json';
 
 export const resources = {
     en: {
@@ -65,7 +66,8 @@ export const resources = {
         filters,
         cache,
         sort,
-        slice
+        slice,
+        pipeline
     }
 };
 

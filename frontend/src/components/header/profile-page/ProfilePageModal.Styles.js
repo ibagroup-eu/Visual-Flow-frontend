@@ -55,5 +55,9 @@ export default makeStyles(theme => ({
         display: 'flex',
         fontWeight: 500,
         marginBottom: theme.spacing(10)
+    },
+    token: {
+        padding: theme.spacing(1),
+        marginLeft: theme.spacing(-1)
     }
 }));

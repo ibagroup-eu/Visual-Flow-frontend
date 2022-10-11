@@ -18,7 +18,7 @@
  */
 
 import { makeStyles } from '@material-ui/core/styles';
-import { darken } from '@material-ui/core';
+import { alpha, darken } from '@material-ui/core';
 
 const drawerWidth = 321;
 
@@ -59,14 +59,23 @@ export default makeStyles(theme => ({
         transform: `translateX(-${drawerWidth}px)`
     },
     toggleButton: {
+        padding: 0,
+        backgroundColor: theme.palette.background.default,
         color: theme.palette.text.secondary,
         position: 'fixed',
         top: '50%',
-        backgroundColor: theme.palette.secondary.light,
         border: `1px solid ${theme.palette.divider}`,
         zIndex: theme.zIndex.drawer + 1,
         '&:hover': {
-            backgroundColor: darken(theme.palette.secondary.light, 0.04)
+            backgroundColor: theme.palette.background.default
+        },
+        '& .MuiIconButton-label': {
+            padding: '3px',
+            backgroundColor: alpha(theme.palette.secondary.main, 0.5),
+            borderRadius: '50%',
+            '&:hover': {
+                backgroundColor: darken(theme.palette.secondary.main, 0.04)
+            }
         }
     },
     toggleButtonLabel: {

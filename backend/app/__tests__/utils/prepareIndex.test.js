@@ -57,9 +57,9 @@ describe('utils/prepareIndex.js', () => {
         // eslint-disable-next-line global-require
         const prepareIndex = require('../../utils/prepareIndex');
         prepareIndex({
-            app: {
-                buildPath: '',
-                baseUrl: '/path'
+            APP: {
+                BUILD_PATH: '',
+                BASE_URL: '/path'
             }
         });
 
@@ -80,9 +80,9 @@ describe('utils/prepareIndex.js', () => {
         // eslint-disable-next-line global-require
         const prepareIndex = require('../../utils/prepareIndex');
         prepareIndex({
-            app: {
-                buildPath: 'error',
-                baseUrl: '/path'
+            APP: {
+                BUILD_PATH: 'error',
+                BASE_URL: '/path'
             }
         });
 
@@ -98,9 +98,9 @@ describe('utils/prepareIndex.js', () => {
         // eslint-disable-next-line global-require
         const prepareIndex = require('../../utils/prepareIndex');
         prepareIndex({
-            app: {
-                buildPath: '',
-                baseUrl: '/error'
+            APP: {
+                BUILD_PATH: '',
+                BASE_URL: '/error'
             }
         });
 

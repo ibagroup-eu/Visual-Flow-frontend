@@ -18,13 +18,14 @@
  */
 
 import React from 'react';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography, Button, Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import useStyles from './PageHeader.Styles';
 import SearchInput from '../search-input';
+import TagsFilter from '../tags-filter';
 
 const PageHeader = ({
     header,
@@ -33,7 +34,11 @@ const PageHeader = ({
     onRefreshClick,
     onAddClick,
     searchValue,
-    onSearch
+    onSearch,
+    tagsData,
+    onCheckTags,
+    resetTags,
+    checkedTags
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -50,11 +55,20 @@ const PageHeader = ({
                     spacing={3}
                     className={classes.actions}
                 >
-                    <Grid item>
-                        <SearchInput
-                            value={searchValue}
-                            onChange={onSearch}
-                            placeholder={t('main:search')}
+                    <Grid className={classes.searchItem} item>
+                        <Box className={classes.search}>
+                            <SearchInput
+                                fullWidth
+                                value={searchValue}
+                                onChange={onSearch}
+                                placeholder={t('main:searchByName')}
+                            />
+                        </Box>
+                        <TagsFilter
+                            data={tagsData}
+                            onCheckTags={onCheckTags}
+                            resetTags={resetTags}
+                            checkedTags={checkedTags}
                         />
                     </Grid>
                     <Grid item>
@@ -97,7 +111,11 @@ PageHeader.propTypes = {
     onRefreshClick: PropTypes.func,
     onAddClick: PropTypes.func,
     searchValue: PropTypes.string,
-    onSearch: PropTypes.func
+    onSearch: PropTypes.func,
+    tagsData: PropTypes.object,
+    onCheckTags: PropTypes.func,
+    resetTags: PropTypes.func,
+    checkedTags: PropTypes.array
 };
 
 export default PageHeader;

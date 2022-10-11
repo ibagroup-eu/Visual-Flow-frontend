@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { alpha } from '@material-ui/core';
 import palette from '../translations/en/jobDesigner.json';
 import {
     READ,
@@ -33,11 +34,11 @@ import {
     SORT
 } from './constants';
 
-const jobStages = [
+const jobStages = theme => [
     {
         operation: READ,
         name: palette.READ,
-        color: '#E9F5FE',
+        color: theme.palette.info.background,
         validation: {
             minCount: 1,
             maxIncomingConnections: 0,
@@ -48,7 +49,7 @@ const jobStages = [
     {
         operation: WRITE,
         name: palette.WRITE,
-        color: '#E9F5FE',
+        color: theme.palette.info.background,
         validation: {
             minCount: 1,
             maxCount: 1,
@@ -60,7 +61,7 @@ const jobStages = [
     {
         operation: GROUP,
         name: palette.GROUP,
-        color: '#EDF7ED',
+        color: theme.palette.success.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -71,7 +72,7 @@ const jobStages = [
     {
         operation: REMOVE_DUPLICATES,
         name: palette.REMOVE_DUPLICATES,
-        color: '#EDF7ED',
+        color: theme.palette.success.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -82,7 +83,7 @@ const jobStages = [
     {
         operation: FILTER,
         name: palette.FILTER,
-        color: '#EDF7ED',
+        color: theme.palette.success.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -93,7 +94,7 @@ const jobStages = [
     {
         operation: TRANSFORM,
         name: palette.TRANSFORM,
-        color: '#EDF7ED',
+        color: theme.palette.success.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -104,7 +105,7 @@ const jobStages = [
     {
         operation: SORT,
         name: palette.SORT,
-        color: '#EDF7ED',
+        color: theme.palette.success.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -115,7 +116,7 @@ const jobStages = [
     {
         operation: SLICE,
         name: palette.SLICE,
-        color: '#EDF7ED',
+        color: theme.palette.success.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -126,7 +127,7 @@ const jobStages = [
     {
         operation: JOIN,
         name: palette.JOIN,
-        color: '#FFF5E5',
+        color: theme.palette.warning.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 2,
@@ -137,7 +138,7 @@ const jobStages = [
     {
         operation: UNION,
         name: palette.UNION,
-        color: '#FFF5E5',
+        color: theme.palette.warning.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 2,
@@ -148,7 +149,7 @@ const jobStages = [
     {
         operation: CDC,
         name: palette.CDC,
-        color: '#FFF5E5',
+        color: theme.palette.warning.background,
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 2,
@@ -159,7 +160,7 @@ const jobStages = [
     {
         operation: CACHE,
         name: palette.CACHE,
-        color: '#E6E6FA',
+        color: alpha(theme.palette.info.light, 0.8),
         validation: {
             minIncomingConnections: 1,
             maxIncomingConnections: 1,
@@ -169,9 +170,10 @@ const jobStages = [
     }
 ];
 
-const jobStagesByType = Object.assign(
-    {},
-    ...jobStages.map(stage => ({ [stage.operation]: stage }))
-);
+const jobStagesByType = theme =>
+    Object.assign(
+        {},
+        ...jobStages(theme).map(stage => ({ [stage.operation]: stage }))
+    );
 
 export { jobStages, jobStagesByType };

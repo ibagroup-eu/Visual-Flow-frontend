@@ -93,6 +93,7 @@ const CassandraStorage = ({
             connection={connection}
             hidden
         />
+
         {!connectionPage && (
             <>
                 {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
@@ -112,15 +113,15 @@ const CassandraStorage = ({
                     menuItems={dropdownOptions}
                     type={READWRITE}
                 />
-                <ReadTextFields
-                    ableToEdit={ableToEdit}
-                    fields={[{ field: 'certData', rows: 6 }]}
-                    inputValues={inputValues}
-                    handleInputChange={handleInputChange}
-                    openModal={openModal}
-                />
             </>
         )}
+        <ReadTextFields
+            ableToEdit={ableToEdit}
+            fields={[{ field: 'certData', rows: 6 }]}
+            inputValues={inputValues}
+            handleInputChange={handleInputChange}
+            openModal={openModal}
+        />
         {inputValues.operation === WRITE && (
             <WriteMode
                 disabled={!ableToEdit}

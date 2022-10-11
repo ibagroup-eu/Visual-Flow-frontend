@@ -36,7 +36,10 @@ describe('PipelineTitleCell', () => {
             projectId: 'vsw-frontend',
             pipelineId: '09ce421f-e632-4b91-9437-a853bf72cda8',
             status: 'Draft',
-            tags: []
+            tags: [],
+            onCheckTags: jest.fn(),
+            resetTags: jest.fn(),
+            checkedTags: [['test', true]]
         };
 
         wrapper = shallow(<PipelineTitleCell {...props} />);

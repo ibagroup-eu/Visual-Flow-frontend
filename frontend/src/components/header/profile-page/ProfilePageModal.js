@@ -43,7 +43,7 @@ const ProfilePageModal = ({ display, onClose, title }) => {
         userInfo?.emails[0].value,
         userInfo?.accessToken && (
             <CopyToClipboard text={userInfo?.accessToken}>
-                <IconButton>
+                <IconButton className={classes.token}>
                     <FileCopyOutlined color="secondary" fontSize="small" />
                 </IconButton>
             </CopyToClipboard>

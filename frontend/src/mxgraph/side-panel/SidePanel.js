@@ -24,7 +24,14 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/styles';
-import { Box, Drawer, Toolbar, Typography, IconButton } from '@material-ui/core';
+import {
+    Box,
+    Drawer,
+    Toolbar,
+    Typography,
+    IconButton,
+    withTheme
+} from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import { forEach, get, isEqual } from 'lodash';
@@ -182,7 +189,7 @@ class SidePanel extends React.Component {
             ...schema
         ]);
 
-        const { graph, currentCell, setDirty, setPanelDirty } = this.props;
+        const { graph, currentCell, setDirty, setPanelDirty, theme } = this.props;
         const { configuration: stateConfiguration } = this.state;
 
         const cell = graph.model.getCell(currentCell);
@@ -195,7 +202,9 @@ class SidePanel extends React.Component {
         if (cleanConfiguration.operation === EDGE) {
             graph.setCellStyles(
                 mxConstants.STYLE_STROKECOLOR,
-                cleanConfiguration.successPath === 'False' ? '#F44336' : '#4CAF50',
+                cleanConfiguration.successPath === 'False'
+                    ? theme.palette.error.light
+                    : theme.palette.success.light,
                 [cell]
             );
         } else {
@@ -214,12 +223,6 @@ class SidePanel extends React.Component {
         setPanelDirty(false);
         this.props.setSidePanel(false);
     };
-
-    selectStrokeColor = style =>
-        style
-            .match(/strokeColor=#[0-9a-fA-F]{6}/)[0]
-            .split('=')
-            .pop();
 
     storageValueHandler = currentState => {
         if (this.state.storageValue !== currentState) {
@@ -319,7 +322,8 @@ SidePanel.propTypes = {
     sidePanelIsDirty: PropTypes.bool,
     confirmationWindow: PropTypes.func.isRequired,
     undoManagerConfig: PropTypes.object,
-    setUndoManagerConfig: PropTypes.func
+    setUndoManagerConfig: PropTypes.func,
+    theme: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -338,6 +342,7 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+    withTheme,
     withStyles(styles),
     connect(mapStateToProps, mapDispatchToProps)
 )(withTranslation()(SidePanel));

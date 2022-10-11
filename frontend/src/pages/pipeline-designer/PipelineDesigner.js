@@ -29,6 +29,7 @@ import { fetchParameters } from '../../redux/actions/settingsParametersActions';
 import { fetchJobs } from '../../redux/actions/jobsActions';
 import { PIPELINE } from '../../mxgraph/constants';
 import fetchUsers from '../../redux/actions/usersActions';
+import { fetchPipelines } from '../../redux/actions/pipelinesActions';
 
 export const PipelineDesigner = ({
     projectId,
@@ -39,8 +40,8 @@ export const PipelineDesigner = ({
     getParameters,
     getJobs,
     getUsers,
-    t,
-    jobs
+    getPipelines,
+    t
 }) => {
     const isValidName = value => {
         const reg = /^[a-z0-9]([\w\\.-]*[a-z0-9])?$/i;
@@ -99,11 +100,12 @@ export const PipelineDesigner = ({
             getPipeline(projectId, pipelineId, t);
             getParameters(projectId);
             getJobs(projectId);
+            getPipelines(projectId);
             getUsers();
         }
     }, [projectId, pipelineId]);
 
-    return loading || jobs.loading ? (
+    return loading ? (
         <PageSkeleton />
     ) : (
         <GraphDesigner type={PIPELINE} projectId={projectId} />
@@ -118,14 +120,16 @@ PipelineDesigner.propTypes = {
     createFields: PropTypes.func,
     getParameters: PropTypes.func,
     getJobs: PropTypes.func,
+    getPipelines: PropTypes.func,
     t: PropTypes.func,
-    jobs: PropTypes.object,
     getUsers: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-    loading: state.mxGraph.loading,
-    jobs: state.pages.jobs
+    loading:
+        state.mxGraph.loading ||
+        state.pages.jobs.loading ||
+        state.pages.pipelines.loading
 });
 
 const mapDispatchToProps = {
@@ -133,7 +137,8 @@ const mapDispatchToProps = {
     createFields: setFields,
     getParameters: fetchParameters,
     getJobs: fetchJobs,
-    getUsers: fetchUsers
+    getUsers: fetchUsers,
+    getPipelines: fetchPipelines
 };
 
 export default connect(

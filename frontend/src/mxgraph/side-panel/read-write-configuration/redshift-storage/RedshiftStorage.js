@@ -29,12 +29,13 @@ import Ssl from '../helpers/Ssl';
 
 const fields = [
     [{ field: 'host' }, { field: 'port' }, { field: 'user' }],
-    [{ field: 'database' }, { field: 'bucket' }],
+    [{ field: 'bucket' }],
     [{ field: 'extraCopyOptions' }],
     [{ field: 'table' }]
 ];
 
 const keyFields = [{ field: 'accessKey' }, { field: 'secretKey' }];
+const dataBaseField = [{ field: 'database' }];
 
 const field = [{ field: 'password' }];
 
@@ -74,6 +75,14 @@ const RedshiftStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+        />
+        <ReadTextFields
+            ableToEdit={ableToEdit}
+            fields={dataBaseField}
+            inputValues={inputValues}
+            handleInputChange={handleInputChange}
+            openModal={openModal}
+            connection={connection}
         />
         <Ssl
             ableToEdit={ableToEdit}

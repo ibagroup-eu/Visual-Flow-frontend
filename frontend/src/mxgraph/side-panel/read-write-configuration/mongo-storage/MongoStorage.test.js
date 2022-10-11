@@ -70,7 +70,7 @@ describe('Mongo storage', () => {
 
     it('should render ReadWriteTextFields when connectionModal is false', () => {
         wrapper.setProps(connectionPageProps);
-        expect(wrapper.find(ReadWriteTextFields)).toHaveLength(3);
+        expect(wrapper.find(ReadWriteTextFields)).toHaveLength(4);
     });
 
     it('should render WriteMode when operation is WRITE', () => {

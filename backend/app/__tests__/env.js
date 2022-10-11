@@ -26,3 +26,4 @@ process.env.STRATEGY = 'GITLAB';
 process.env.GITHUB_APP_ID = 'GITHUB_APP_ID';
 process.env.GITHUB_APP_SECRET = 'GITHUB_APP_SECRET';
 process.env.GITHUB_STRATEGY_BASE_URL = 'https://strategy_callback_url';
+process.env.LOGOUT_URL = 'LOGOUT_URL';

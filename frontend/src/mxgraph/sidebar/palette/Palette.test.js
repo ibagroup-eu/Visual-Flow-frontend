@@ -50,6 +50,27 @@ describe('Palette', () => {
 
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
+            theme: {
+                palette: {
+                    info: {
+                        light: '#F3EAFF',
+                        background: '#E8F0FF'
+                    },
+                    secondary: {
+                        light: '#D8FFF9'
+                    },
+                    warning: {
+                        background: '#FFF5E3'
+                    },
+                    success: {
+                        light: '#81C784',
+                        background: '#F0FFED'
+                    },
+                    other: {
+                        border: 'green'
+                    }
+                }
+            },
             classes: {},
             t: x => x,
             setDirty: jest.fn()

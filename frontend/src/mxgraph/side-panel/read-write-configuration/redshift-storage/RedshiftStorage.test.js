@@ -51,7 +51,7 @@ describe('RedisStorage', () => {
             inputValues: { operation: READ, customSql: 'true' }
         };
         wrapper = shallow(<RedshiftStorage {...props} {...changedProps} />);
-        expect(wrapper.find(ReadTextFields)).toHaveLength(5);
+        expect(wrapper.find(ReadTextFields)).toHaveLength(6);
     });
 
     it('should render component with WRITE operation', () => {
@@ -59,7 +59,7 @@ describe('RedisStorage', () => {
             inputValues: { operation: WRITE }
         };
         wrapper = shallow(<RedshiftStorage {...props} {...changedProps} />);
-        expect(wrapper.find(ReadTextFields)).toHaveLength(5);
+        expect(wrapper.find(ReadTextFields)).toHaveLength(6);
         expect(wrapper.find(WriteMode)).toHaveLength(1);
     });
 

@@ -56,14 +56,14 @@ const HistoryPanel = ({
     loading,
     showLogsModal,
     setLogs,
+    jobId,
     projectId,
     getHistory
 }) => {
     const classes = useStyles();
     const sortByDate = sortHistory(historyData);
     const groupByDate = groupHistory(sortByDate);
-
-    const [logsId, setLogsId] = useState(null);
+    const [logsId, setLogsId] = useState(jobId);
     const [dateGroups, setDateGroups] = useState(groupByDate);
 
     useEffect(() => {
@@ -151,11 +151,11 @@ HistoryPanel.propTypes = {
     showLogsModal: PropTypes.bool,
     setLogs: PropTypes.func,
     projectId: PropTypes.string,
+    jobId: PropTypes.string,
     getHistory: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-    projectId: state.projects.currentProject,
     showLogsModal: state.mxGraph.showLogsModal,
     loading: state.pages.history.loading,
     historyData: state.pages.history.data

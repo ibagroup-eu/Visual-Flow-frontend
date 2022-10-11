@@ -28,13 +28,13 @@ export default makeStyles(theme => ({
         left: -100,
         top: -64,
         display: 'flex',
-        'white-space': 'normal',
+        whiteSpace: 'normal',
         width: 200,
-        'text-align': 'left',
+        textAlign: 'left',
         '& span': {
             overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
         }
     },
     keyCaption: {
@@ -51,16 +51,16 @@ export default makeStyles(theme => ({
     dots: {
         color: '#000',
         alignSelf: 'flex-end',
-        'white-space': 'pre'
+        whiteSpace: 'pre'
     },
     key: {
         backgroundColor: theme.palette.warning.dark,
         color: 'white',
-        'border-radius': 4,
+        borderRadius: 4,
         margin: '2px',
         padding: '0 2px',
         maxWidth: 90,
-        'text-overflow': 'ellipsis',
+        textOverflow: 'ellipsis',
         overflow: 'hidden'
     },
     joinType: {
@@ -69,7 +69,7 @@ export default makeStyles(theme => ({
         top: 44,
         backgroundColor: theme.palette.warning.light,
         color: 'white',
-        'border-radius': 4,
+        borderRadius: 4,
         width: 84
     }
 }));

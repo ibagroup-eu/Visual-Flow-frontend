@@ -137,8 +137,8 @@ export const SidebarHeader = ({
             })}
         >
             <Toolbar className={classes.toolbar}>
-                <IconButton onClick={confirmOrGoToLast}>
-                    <ArrowBackIcon fontSize="large" htmlColor="white" />
+                <IconButton className={classes.arrow} onClick={confirmOrGoToLast}>
+                    <ArrowBackIcon fontSize="large" />
                 </IconButton>
                 <Typography variant="h5" noWrap className={classes.title}>
                     {currentHeader()}

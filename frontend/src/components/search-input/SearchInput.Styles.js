@@ -23,6 +23,13 @@ export default makeStyles(theme => ({
     root: {
         '& .MuiOutlinedInput-root': {
             backgroundColor: theme.palette.background.default
+        },
+        '& .MuiOutlinedInput-inputMarginDense': {
+            paddingTop: theme.spacing(1.1),
+            paddingBottom: theme.spacing(1.1)
         }
+    },
+    icon: {
+        color: theme.palette.grey[700]
     }
 }));

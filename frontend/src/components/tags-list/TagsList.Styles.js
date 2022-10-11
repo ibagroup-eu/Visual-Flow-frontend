@@ -20,30 +20,39 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
-    tag: {
-        backgroundColor: theme.palette.grey[200],
-        borderColor: theme.palette.grey[300],
-        color: theme.palette.grey[500]
+    root: {
+        marginTop: theme.spacing(1),
+        display: 'flex',
+        flexWrap: 'wrap'
     },
-    disabledTag: {
-        backgroundColor: theme.palette.grey[300],
-        borderColor: theme.palette.grey[400]
-    },
-    tagMargins: {
+    chip: {
         marginRight: theme.spacing(0.5),
-        marginBottom: theme.spacing(0.5)
+        marginBottom: theme.spacing(0.5),
+        borderColor: theme.palette.grey[300],
+        color: theme.palette.grey[500],
+        backgroundColor: theme.palette.grey[200]
     },
-    avatar: {
-        color: `${theme.palette.common.white}!important`
+    chipHover: {
+        '&:hover': { backgroundColor: `${theme.palette.secondary.light}!important` }
     },
-    disabledAvatar: {
-        backgroundColor: `${theme.palette.grey[600]}!important`
+    checkedChip: {
+        '&:focus': { backgroundColor: `${theme.palette.secondary.light}!important` },
+        backgroundColor: theme.palette.secondary.light
     },
-    tagsBox: {
-        marginTop: theme.spacing(1)
+    paper: {
+        marginTop: theme.spacing(0.5),
+        maxWidth: 280,
+        border: `1px solid ${theme.palette.grey[300]}`,
+        borderRadius: theme.spacing(1.5)
     },
-    menuItem: {
-        padding: 0,
-        paddingLeft: theme.spacing(0.5)
+    tags: {
+        paddingTop: theme.spacing(0.5),
+        paddingLeft: theme.spacing(0.5),
+        overflowY: 'auto',
+        width: '100%',
+        maxHeight: '20vh'
+    },
+    hiddenTags: {
+        display: 'flex'
     }
 }));

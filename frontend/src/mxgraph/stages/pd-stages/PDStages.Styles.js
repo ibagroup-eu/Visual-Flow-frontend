@@ -18,6 +18,7 @@
  */
 
 import { makeStyles } from '@material-ui/core/styles';
+import { alpha } from '@material-ui/core';
 
 export default makeStyles(theme => ({
     root: {
@@ -26,40 +27,44 @@ export default makeStyles(theme => ({
     title: {
         position: 'absolute',
         left: -100,
-        top: -64,
+        top: -60,
         display: 'flex',
         flexWrap: 'nowrap',
-        'white-space': 'normal',
+        whiteSpace: 'normal',
         width: 204,
-        justifyContent: 'space-between',
         '& span': {
             overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            textAlign: 'left'
         }
     },
     name: {
         paddingLeft: theme.spacing(1),
-        overflow: 'hidden'
+        overflow: 'hidden',
+        flexGrow: 1
     },
     tooltip: {
         position: 'absolute',
-        left: -97,
-        top: -22,
+        left: -99,
+        top: -30,
         color: 'white',
-        'border-radius': 4,
+        borderRadius: 4,
         maxWidth: 190,
-        'text-overflow': 'ellipsis',
+        textOverflow: 'ellipsis',
         overflow: 'hidden',
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1)
     },
     image: {
-        backgroundColor: '#FFB74D',
+        backgroundColor: theme.palette.primary.border,
         whiteSpace: 'pre-wrap'
     },
     jobName: {
-        backgroundColor: 'rgba(77, 208, 225, 0.85)'
+        backgroundColor: alpha(theme.palette.secondary.dark, 0.8)
+    },
+    pipelineName: {
+        backgroundColor: theme.palette.warning.light
     },
     logIcon: {
         cursor: 'pointer',

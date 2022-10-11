@@ -34,10 +34,12 @@ export default theme => ({
         })
     },
     title: {
+        marginLeft: -theme.spacing(3),
         flexGrow: 1,
         display: 'none',
         [theme.breakpoints.up('sm')]: {
-            display: 'block'
+            alignSelf: 'center',
+            display: 'flex'
         }
     },
     link: {

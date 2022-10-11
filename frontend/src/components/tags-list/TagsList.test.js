@@ -18,15 +18,17 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Chip, Menu, MenuItem, Tooltip } from '@material-ui/core';
+import { mount, shallow } from 'enzyme';
+import { Chip, ClickAwayListener } from '@material-ui/core';
 import TagsList from './TagsList';
 
 describe('Tags list', () => {
     let wrapper;
     const defaultProps = {
         tags: ['1', '2', '3', '4', '5'],
-        limit: 3
+        limit: 3,
+        checkedTags: [['1', true]],
+        onCheckTags: jest.fn()
     };
 
     beforeEach(() => {
@@ -37,38 +39,15 @@ describe('Tags list', () => {
         expect(wrapper).toBeDefined();
     });
 
-    it('should render menu correctly for 5 tags', () => {
-        expect(wrapper.find(Menu)).toHaveLength(1);
-        expect(wrapper.find(MenuItem)).toHaveLength(2);
+    it('should calls onOpen prop', () => {
+        wrapper = mount(<TagsList {...defaultProps} />);
+        wrapper
+            .find(Chip)
+            .at(3)
+            .prop('onClick')({ currentTarget: {} });
     });
 
-    it('should render chips for every tag and extra chip', () => {
-        expect(wrapper.find(Chip)).toHaveLength(6);
-
-        const [, , , extraChip] = wrapper.find(Chip).map(chip => chip);
-        expect(extraChip.prop('label')).toEqual('+2');
-    });
-
-    it('should open menu', () => {
-        const [, , , extraChip] = wrapper.find(Chip).map(chip => chip);
-        extraChip.simulate('click', { target: {} });
-        expect(wrapper.find(Menu).prop('open')).toEqual(true);
-    });
-
-    it('should close menu', () => {
-        const [, , , extraChip] = wrapper.find(Chip).map(chip => chip);
-        extraChip.simulate('click', { target: {} });
-
-        wrapper.find(Menu).simulate('close');
-        expect(wrapper.find(Menu).prop('open')).toEqual(false);
-    });
-
-    it('should render Tooltip and truncate long tags', () => {
-        wrapper.setProps({ tags: ['very_long_tag', '2', '3', '4', '5'] });
-
-        expect(wrapper.find(Tooltip)).toHaveLength(3);
-
-        const [chip] = wrapper.find(Chip).map(chip => chip);
-        expect(chip.prop('label')).toEqual('very_l...');
+    it('should calls onClickAway prop', () => {
+        wrapper.find(ClickAwayListener).prop('onClickAway')();
     });
 });

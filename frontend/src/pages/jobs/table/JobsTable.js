@@ -95,7 +95,10 @@ const JobsTable = ({
     setStatus,
     setCurrentPage,
     currentPage,
-    rowsPerPage
+    rowsPerPage,
+    checkedTags,
+    onCheckTags,
+    resetTags
 }) => {
     const { t } = useTranslation();
     const classes = withStyles();
@@ -207,7 +210,11 @@ const JobsTable = ({
 
     return (
         <>
-            <HistoryPanel jobData={jobHistory} setPanelState={setJobHistory} />
+            <HistoryPanel
+                jobData={jobHistory}
+                projectId={projectId}
+                setPanelState={setJobHistory}
+            />
             <EnhancedTable
                 data={filterData(data, status, lastRun)}
                 actions={
@@ -218,6 +225,9 @@ const JobsTable = ({
                     { id: 'startedAt', name: t('filters:lastRun') },
                     { id: 'status', name: t('filters:status') }
                 ]}
+                tagsData={checkedTags}
+                onCheckTags={onCheckTags}
+                resetTags={resetTags}
                 filter={
                     <>
                         <ExportModalWindow
@@ -269,6 +279,8 @@ const JobsTable = ({
                             lastFinished={item.finishedAt}
                             lastEdit={item.lastModified}
                             tags={item.tags}
+                            checkedTags={checkedTags}
+                            onCheckTags={onCheckTags}
                         />
 
                         <DividerCell />
@@ -316,7 +328,10 @@ JobsTable.propTypes = {
     ableToEdit: PropTypes.bool,
     setCurrentPage: PropTypes.func,
     currentPage: PropTypes.number,
-    rowsPerPage: PropTypes.number
+    rowsPerPage: PropTypes.number,
+    checkedTags: PropTypes.array,
+    onCheckTags: PropTypes.func,
+    resetTags: PropTypes.func
 };
 
 const mapStateToProps = state => ({

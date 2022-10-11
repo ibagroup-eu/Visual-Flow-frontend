@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export default () => ({
+export default theme => ({
     root: {
         display: 'flex'
     },
@@ -26,7 +26,7 @@ export default () => ({
     },
     container: {
         overflow: 'hidden',
-        background: 'rgba(63, 81, 181, 0.08)',
+        background: theme.palette.primary.background,
         position: 'fixed',
         width: '100%',
         height: '100%'

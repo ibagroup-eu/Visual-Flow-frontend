@@ -32,6 +32,7 @@ import NotificationModal from '../modals/NotificationModal';
 import ContainerModal from '../modals/ContainerModal';
 import CacheModal from '../modals/CacheModal';
 import SortModal from '../modals/SortModal';
+import PipelineModal from '../modals/PipelineModal';
 import {
     READ,
     WRITE,
@@ -47,7 +48,8 @@ import {
     CONTAINER,
     CACHE,
     SLICE,
-    SORT
+    SORT,
+    PIPELINE
 } from '../../../mxgraph/constants';
 
 const StageModal = ({ stageName, ...restProps }) => {
@@ -73,6 +75,8 @@ const StageModal = ({ stageName, ...restProps }) => {
                 return <TransformerModal {...restProps} />;
             case JOB:
                 return <JobModal {...restProps} />;
+            case PIPELINE:
+                return <PipelineModal {...restProps} />;
             case NOTIFICATION:
                 return <NotificationModal {...restProps} />;
             case CONTAINER:

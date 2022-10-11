@@ -137,7 +137,7 @@ const ParametersModal = ({
                                                         )
                                                     }
                                                     value={key}
-                                                    color="primary"
+                                                    color="secondary"
                                                 />
                                             </TableCell>
                                         )}

@@ -38,6 +38,9 @@ const PipelineTitleCell = ({
     checked,
     onClick,
     tags,
+    resetTags,
+    onCheckTags,
+    checkedTags,
     classes
 }) => {
     const titleCell = () => (
@@ -56,7 +59,12 @@ const PipelineTitleCell = ({
                     lastFinished={lastFinished}
                     lastRun={lastRun}
                 />
-                <TagsList tags={tags} />
+                <TagsList
+                    tags={tags}
+                    resetTags={resetTags}
+                    onCheckTags={onCheckTags}
+                    checkedTags={checkedTags}
+                />
             </Typography>
         </Grid>
     );
@@ -80,7 +88,10 @@ PipelineTitleCell.propTypes = {
     checked: PropTypes.bool,
     onClick: PropTypes.func,
     tags: PropTypes.array,
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    resetTags: PropTypes.func,
+    onCheckTags: PropTypes.func,
+    checkedTags: PropTypes.array
 };
 
 export default withStyles(styles, { name: 'PipelineTitleCell' })(PipelineTitleCell);

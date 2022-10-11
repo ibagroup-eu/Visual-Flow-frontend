@@ -18,17 +18,18 @@
  */
 
 const express = require('express');
-const config = require('../../config');
+
+const CONFIG = require('../../config');
 const logger = require('../../logger')('static');
 
 const router = new express.Router();
 
-logger.info(`Serving static resources from: ${config.app.buildPath}`);
+logger.info(`Serving static resources from: ${CONFIG.APP.BUILD_PATH}`);
 // serve static resources
-router.use(express.static(config.app.buildPath));
+router.use(express.static(CONFIG.APP.BUILD_PATH));
 
 const frontendHandler = (req, res) => {
-    res.sendFile(`${config.app.buildPath}/index.html`);
+    res.sendFile(`${CONFIG.APP.BUILD_PATH}/index.html`);
 };
 
 // handles any other requests as frontend routes

@@ -9,6 +9,9 @@
         "Jobs": "Jobs",
         "search": "Search..."
     },
+    "pipelineModal": {
+        "Pipelines": "Pipelines"
+    },
     "containerConfiguration": {
         "Name": "Name",
         "Image": "Image link",
@@ -25,5 +28,8 @@
         "Password": "Password",
         "Registry": "Registry",
         "ImagePullSecretName": "Image pull secret name"
+    },
+    "pipelineConfiguration": {
+        "PipelineName": "Pipeline Name"
     }
 }

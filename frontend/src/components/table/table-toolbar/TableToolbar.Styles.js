@@ -19,12 +19,14 @@
 
 export default theme => ({
     root: {
-        paddingLeft: theme.spacing(2)
+        paddingLeft: theme.spacing(3.5)
     },
     sort: {
-        marginLeft: theme.spacing(2)
+        marginLeft: theme.spacing(1)
     },
     main: {
-        flexGrow: 1
+        display: 'flex',
+        flexGrow: 1,
+        alignItems: 'center'
     }
 });

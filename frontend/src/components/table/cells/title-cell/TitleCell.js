@@ -43,6 +43,8 @@ export const TitleCell = ({
     checked,
     onClick,
     tags,
+    checkedTags,
+    onCheckTags,
     classes
 }) => (
     <TableCell component="th" scope="row" className={classes.cell}>
@@ -83,7 +85,12 @@ export const TitleCell = ({
                         lastRun={lastRun}
                     />
                 </Typography>
-                <TagsList tags={tags} />
+                <TagsList
+                    tags={tags}
+                    checkedTags={checkedTags}
+                    onCheckTags={onCheckTags}
+                    resetTags={onCheckTags}
+                />
             </Grid>
         </Grid>
     </TableCell>
@@ -100,7 +107,9 @@ TitleCell.propTypes = {
     onClick: PropTypes.func,
     classes: PropTypes.object,
     pipelineId: PropTypes.string,
-    tags: PropTypes.array
+    tags: PropTypes.array,
+    checkedTags: PropTypes.array,
+    onCheckTags: PropTypes.func
 };
 
 export default withStyles(styles, { name: 'CellTitle' })(TitleCell);

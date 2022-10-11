@@ -92,7 +92,7 @@ export default makeStyles(theme => ({
         minWidth: 330
     },
     runInfoLabel: {
-        color: theme.palette.secondary.main
+        color: theme.palette.secondary.dark
     },
     runTimeLabel: {
         fontSize: 25,

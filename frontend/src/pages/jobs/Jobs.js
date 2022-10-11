@@ -23,6 +23,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+import { reduce } from 'lodash';
 import { fetchJobs, setJobSearchField } from '../../redux/actions/jobsActions';
 import { setCurrentTablePage } from '../../redux/actions/enhancedTableActions';
 import JobsTable from './table';
@@ -30,6 +31,22 @@ import PageHeader from '../../components/page-header';
 import history from '../../utils/history';
 import { PageSkeleton } from '../../components/skeleton';
 import { fetchPipelines } from '../../redux/actions/pipelinesActions';
+
+export const sortTags = dataArray =>
+    reduce(
+        dataArray,
+        (result, obj) => {
+            const objTags = reduce(
+                obj.tags,
+                (resultTags, tag) => ({ ...resultTags, [tag]: false }),
+                {}
+            );
+            return { ...result, ...objTags };
+        },
+        {}
+    );
+
+export const checkedTags = data => Object.entries(data).filter(tag => tag[1]);
 
 const Jobs = ({
     projectId,
@@ -44,26 +61,56 @@ const Jobs = ({
 }) => {
     const { t } = useTranslation();
     const [list, setList] = React.useState([]);
+    const [tags, setTags] = React.useState({});
 
     React.useEffect(() => {
         if (projectId) {
             getJobs(projectId);
             getPipelines(projectId);
         }
-        setList(jobs.data.jobs);
     }, [projectId]);
 
     React.useEffect(() => {
+        if (jobs.data.jobs) {
+            setList(jobs.data.jobs);
+            setTags(sortTags(jobs.data.jobs));
+        }
+    }, [jobs.data?.jobs]);
+
+    React.useEffect(() => {
         setList(
-            jobs.data.jobs?.filter(item =>
-                item?.name?.toUpperCase().includes(searchField.toUpperCase())
+            jobs.data.jobs?.filter(
+                item =>
+                    item?.name?.toUpperCase().includes(searchField.toUpperCase()) &&
+                    checkedTags(tags).every(r => item?.tags.includes(r[0]))
             )
         );
-    }, [jobs.data.jobs, searchField]);
+    }, [searchField, tags]);
 
     React.useEffect(() => {
         searchField.trim() && setCurrentPage(0);
     }, [searchField]);
+
+    React.useEffect(() => {
+        if (checkedTags(tags).length !== 0) {
+            setCurrentPage(0);
+        }
+    }, [checkedTags(tags)]);
+
+    const resetTags = () =>
+        setTags(
+            reduce(
+                Object.keys(tags),
+                (resultTags, tag) => ({ ...resultTags, [tag]: false }),
+                {}
+            )
+        );
+
+    const onCheckTags = changedTag =>
+        setTags({
+            ...tags,
+            ...changedTag
+        });
 
     return jobs.loading || loadingExport ? (
         <PageSkeleton />
@@ -79,6 +126,10 @@ const Jobs = ({
                         onSearch={event => setSearchField(event.target.value)}
                         onRefreshClick={() => getJobs(projectId)}
                         onAddClick={() => history.push(`/jobs/${projectId}`)}
+                        tagsData={tags}
+                        onCheckTags={onCheckTags}
+                        resetTags={resetTags}
+                        checkedTags={checkedTags(tags)}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -87,6 +138,9 @@ const Jobs = ({
                         pipelines={pipelines.data.pipelines}
                         projectId={projectId}
                         ableToEdit={jobs.data.editable}
+                        checkedTags={checkedTags(tags)}
+                        onCheckTags={onCheckTags}
+                        resetTags={resetTags}
                     />
                 </Grid>
             </Grid>

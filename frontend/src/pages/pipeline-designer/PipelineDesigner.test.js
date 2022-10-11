@@ -35,9 +35,9 @@ describe('PipelineDesigner', () => {
             createFields: jest.fn(),
             getParameters: jest.fn(),
             getJobs: jest.fn(),
+            getPipelines: jest.fn(),
             getUsers: jest.fn(),
-            t: jest.fn(),
-            jobs: { loading: false }
+            t: jest.fn()
         };
 
         wrapper = shallow(<PipelineDesigner {...props} />);
@@ -48,7 +48,7 @@ describe('PipelineDesigner', () => {
     });
 
     it('should render PageSkeleton', () => {
-        wrapper.setProps({ jobs: { loading: true }, loading: false });
+        wrapper.setProps({ loading: true });
         expect(wrapper.find(PageSkeleton)).toHaveLength(1);
     });
 
@@ -69,6 +69,7 @@ describe('PipelineDesigner', () => {
         );
         expect(props.getParameters).toBeCalledWith('newVswId');
         expect(props.getJobs).toBeCalledWith('newVswId');
+        expect(props.getPipelines).toBeCalledWith('newVswId');
         expect(props.getUsers).toHaveBeenCalled();
     });
 

@@ -26,7 +26,7 @@ export default theme => ({
         display: 'block'
     },
     top: {
-        color: theme.palette.primary.main,
+        color: theme.palette.info.main,
         animationDuration: '550ms',
         position: 'absolute',
         left: 0,

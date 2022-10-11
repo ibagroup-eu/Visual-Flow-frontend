@@ -20,9 +20,9 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import { EnhancedTable } from './EnhancedTable';
 import { useTranslation } from 'react-i18next';
 import { TableBody, TableRow, Typography } from '@material-ui/core';
+import { EnhancedTable } from './EnhancedTable';
 import TableToolbar from '../table-toolbar';
 
 jest.mock('react-i18next', () => ({
@@ -43,7 +43,10 @@ describe('EnhancedTable', () => {
             setTableOrderBy: jest.fn(),
             orderColumns: [],
             order: 'asc',
-            orderBy: 'name'
+            orderBy: 'name',
+            onCheckTags: jest.fn(),
+            resetTags: jest.fn(),
+            tagsData: [['test', true]]
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));
@@ -154,7 +157,7 @@ describe('EnhancedTable', () => {
             mount
         );
 
-        const onClick = props.children.mock.calls[0][0].onClick;
+        const { onClick } = props.children.mock.calls[0][0];
 
         onClick(undefined);
 

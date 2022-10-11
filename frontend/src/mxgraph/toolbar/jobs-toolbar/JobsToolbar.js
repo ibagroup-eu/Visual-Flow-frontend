@@ -20,12 +20,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { has } from 'lodash';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { IconButton, Divider, Typography, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Description, Save } from '@material-ui/icons';
-
-import { has } from 'lodash';
+import { Description, Save, HistoryOutlined } from '@material-ui/icons';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
 import useStyles from './JobsToolbar.Styles';
 import {
     runJobAndRefreshIt,
@@ -66,7 +66,7 @@ export const JobsToolbar = ({
     const currentJob = currentPath.slice(-1)[0];
 
     const stats = currentJob === id ? status : data.status;
-
+    const [jobHistory, setJobHistory] = React.useState({});
     const updateJobHandler = () => {
         update(graph, currentProject, currentJob, data);
     };
@@ -123,6 +123,20 @@ export const JobsToolbar = ({
                         <Description />
                     </Tooltip>
                 </IconButton>
+                <IconButton
+                    disabled={[DRAFT, PENDING].includes(status) || !data.startedAt}
+                    onClick={() => setJobHistory({ ...data, id: currentJob })}
+                >
+                    <Tooltip title={t('jobs:tooltip.History')} arrow>
+                        <HistoryOutlined />
+                    </Tooltip>
+                </IconButton>
+                <HistoryPanel
+                    projectId={currentProject}
+                    jobId={currentJob}
+                    jobData={jobHistory}
+                    setPanelState={setJobHistory}
+                />
             </div>
             <Divider orientation="vertical" flexItem />
             <EditDesignerButtons

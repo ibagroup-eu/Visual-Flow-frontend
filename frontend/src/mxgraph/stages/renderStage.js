@@ -18,6 +18,7 @@
  */
 
 import React from 'react';
+import { MuiThemeProvider } from '@material-ui/core';
 import ReadWriteStage from './read-stage';
 import GroupByStage from './groupby-stage';
 import RemoveDuplicatesStage from './remove-duplicates-stage';
@@ -36,29 +37,28 @@ import CacheStage from './cache-stage';
 import StageWarning from '../../components/stage-warning';
 import SortStage from './sort-stage';
 import {
-    READ,
-    WRITE,
-    UNION,
-    GROUP,
-    REMOVE_DUPLICATES,
-    JOIN,
-    SLICE,
-    CDC,
-    EDGE,
-    TRANSFORM,
-    FILTER,
-    JOB,
-    NOTIFICATION,
-    CONTAINER,
     CACHE,
+    CDC,
+    CONTAINER,
+    EDGE,
+    FILTER,
+    GROUP,
+    JOB,
+    JOIN,
+    NOTIFICATION,
     PIPELINE,
-    SORT
+    READ,
+    REMOVE_DUPLICATES,
+    SLICE,
+    SORT,
+    TRANSFORM,
+    UNION,
+    WRITE
 } from '../constants';
 
 const root = {
     position: 'relative',
-    width: 130,
-    border: 'none'
+    width: 130
 };
 
 const stageStyle = {
@@ -73,7 +73,7 @@ const textStyle = {
 };
 
 // eslint-disable-next-line complexity
-const renderStage = (stage, t, type, jobs, params) => {
+const renderContent = (stage, t, type, jobs, params, pipelines) => {
     // if have only stage.type (on first drag-and-drop)
     if (
         Object.keys(stage).length === 1 ||
@@ -88,7 +88,12 @@ const renderStage = (stage, t, type, jobs, params) => {
                     </div>
                 </div>
                 {type === PIPELINE && (
-                    <StageWarning stage={stage} jobs={jobs} params={params} />
+                    <StageWarning
+                        stage={stage}
+                        jobs={jobs}
+                        params={params}
+                        pipelines={pipelines}
+                    />
                 )}
             </div>
         );
@@ -126,6 +131,16 @@ const renderStage = (stage, t, type, jobs, params) => {
                     tooltipClass="jobName"
                 />
             );
+        case PIPELINE:
+            return (
+                <PDStages
+                    stage={stage}
+                    pipelines={pipelines}
+                    iconId={stage.pipelineId}
+                    tooltipName={stage.pipelineName}
+                    tooltipClass="pipelineName"
+                />
+            );
         case NOTIFICATION:
             return <NotificationStage stage={stage} params={params} />;
         case CONTAINER:
@@ -146,5 +161,11 @@ const renderStage = (stage, t, type, jobs, params) => {
             return null;
     }
 };
+
+const renderStage = (stage, t, type, jobs, params, pipelines, theme) => (
+    <MuiThemeProvider theme={theme}>
+        {renderContent(stage, t, type, jobs, params, pipelines)}
+    </MuiThemeProvider>
+);
 
 export default renderStage;

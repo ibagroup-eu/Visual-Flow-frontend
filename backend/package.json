@@ -23,20 +23,23 @@
         "supertest": "^6.1.6"
     },
     "dependencies": {
-        "axios": "^0.21.1",
-        "express": "^4.17.1",
-        "express-session": "^1.17.1",
-        "http-proxy-middleware": "^1.0.5",
+        "express": "^4.17.3",
+        "express-session": "^1.17.3",
+        "morgan": "^1.10.0",
+        "http-proxy-middleware": "^1.0.6",
         "lodash": "^4.17.21",
-        "log4js": "^6.1.2",
+        "log4js": "^6.6.1",
         "passport": "^0.6.0",
         "passport-github2": "^0.1.12",
         "passport-gitlab2": "^5.0.0",
-        "passport-openidconnect": "^0.1.1"
+        "passport-openidconnect": "^0.1.1",
+        "ioredis": "^5.2.3",
+        "connect-redis": "^6.1.3",
+        "axios": "^0.27.2"
     },
     "scripts": {
-        "start": "nodemon -w app --exec node -r dotenv/config --inspect app/server.js",
-        "start:prod": "node app/server.js",
+        "start": "nodemon -w app --exec node -r dotenv/config --inspect app/index.js",
+        "start:prod": "node app/index.js",
         "build": "echo \"No build is required\"",
         "owasp": "owasp-dependency-check --project backend --scan package-lock.json --scan package.json -f HTML --disableAssembly --failOnCVSS 8 --suppression dependency-check-suppression.xml",
         "test": "jest && npm run owasp",
@@ -68,7 +71,7 @@
             "!app/**/*.test.js",
             "!app/__tests__/**",
             "!app/__mocks__/**",
-            "app/setupTests.js"
+            "!app/index.js"
         ],
         "moduleNameMapper": {
             "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/app/__mocks__/fileMock.js",

@@ -18,6 +18,12 @@
     "Deleted": "Deleted successfully",
     "Loading": "Loading...",
     "Switch": "Switch projects",
+    "searchByName": "Search by Name...",
+    "searchByTags": "Filter by Tags...",
+    "reset": "Reset",
+    "tags": "Tags",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "sorted": {
         "descending": "sorted descending",
         "ascending": "sorted ascending"

@@ -20,36 +20,38 @@
 import palette from '../translations/en/jobDesigner.json';
 import { JOB, NOTIFICATION, PIPELINE, CONTAINER } from './constants';
 
-const pipelinesStages = [
-    {
-        operation: JOB,
-        name: palette.JOB,
-        color: '#E9F5FE',
-        show: true
-    },
-    {
-        operation: PIPELINE,
-        name: palette.PIPELINE,
-        color: '#FFF5E5',
-        show: false
-    },
-    {
-        operation: NOTIFICATION,
-        name: palette.NOTIFICATION,
-        color: '#EDF7ED',
-        show: true
-    },
-    {
-        operation: CONTAINER,
-        name: palette.CONTAINER,
-        color: '#FFF5E5',
-        show: true
-    }
-].filter(stage => stage.show);
+const pipelinesStages = theme =>
+    [
+        {
+            operation: JOB,
+            name: palette.JOB,
+            color: theme.palette.secondary.light,
+            show: true
+        },
+        {
+            operation: PIPELINE,
+            name: palette.PIPELINE,
+            color: theme.palette.warning.background,
+            show: false
+        },
+        {
+            operation: CONTAINER,
+            name: palette.CONTAINER,
+            color: theme.palette.info.background,
+            show: true
+        },
+        {
+            operation: NOTIFICATION,
+            name: palette.NOTIFICATION,
+            color: theme.palette.success.background,
+            show: true
+        }
+    ].filter(stage => stage.show);
 
-const pipelinesStagesByType = Object.assign(
-    {},
-    ...pipelinesStages.map(stage => ({ [stage.operation]: stage }))
-);
+const pipelinesStagesByType = theme =>
+    Object.assign(
+        {},
+        ...pipelinesStages(theme).map(stage => ({ [stage.operation]: stage }))
+    );
 
 export { pipelinesStages, pipelinesStagesByType };

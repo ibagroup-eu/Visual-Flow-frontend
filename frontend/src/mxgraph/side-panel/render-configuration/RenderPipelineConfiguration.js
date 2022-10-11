@@ -22,8 +22,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import NotificationConfiguration from '../notification-configuration';
-import JobConfiguration from '../job-configuration';
+import JobConfiguration from '../configuration/job-configuration';
 import Configuration from '../configuration';
+import PipelineConfiguration from '../configuration/pipeline-configuration';
 import ContainerConfiguration from '../container-configuration';
 import { findByProp } from '../../../components/helpers/JobsPipelinesTable';
 import {
@@ -80,7 +81,8 @@ const RenderPipelineConfiguration = ({
     saveCell,
     graph,
     jobs,
-    params
+    params,
+    pipelines
 }) => {
     const pipelinesConfigurationComponents = {
         NOTIFICATION: {
@@ -120,6 +122,20 @@ const RenderPipelineConfiguration = ({
                 saveCell,
                 graph
             }
+        },
+        PIPELINE: {
+            component: PipelineConfiguration,
+            props: {
+                isDisabled: inputValues =>
+                    !inputValues.name ||
+                    !inputValues.pipelineId ||
+                    !findByProp(pipelines, inputValues.pipelineId, 'id'),
+                ableToEdit,
+                setPanelDirty,
+                configuration,
+                saveCell,
+                graph
+            }
         }
     };
 
@@ -140,11 +156,13 @@ RenderPipelineConfiguration.propTypes = {
     saveCell: PropTypes.func,
     graph: PropTypes.object,
     jobs: PropTypes.array,
-    params: PropTypes.array
+    params: PropTypes.array,
+    pipelines: PropTypes.array
 };
 
 const mapStateToProps = state => ({
     jobs: state.pages.jobs.data.jobs,
+    pipelines: state.pages.pipelines.data.pipelines,
     params: state.pages.settingsParameters.data.params
 });
 

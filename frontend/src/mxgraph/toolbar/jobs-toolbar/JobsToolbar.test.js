@@ -164,6 +164,6 @@ describe('Jobs toolbar', () => {
             storeStatus: { status: PENDING }
         });
 
-        expect(wrapper.find(IconButton)).toHaveLength(1);
+        expect(wrapper.find(IconButton)).toHaveLength(2);
     });
 });

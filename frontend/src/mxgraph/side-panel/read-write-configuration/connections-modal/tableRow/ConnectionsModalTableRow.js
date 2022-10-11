@@ -70,7 +70,7 @@ const ConnectionsModalTableRow = ({
                                     setSelectedValue(event.target.value)
                                 }
                                 value={connectionName}
-                                color="primary"
+                                color="secondary"
                             />
                         </Box>
                     )}

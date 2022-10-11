@@ -29,7 +29,7 @@ import {
     validParamsContainer
 } from '../helpers/PipelinesValidation';
 
-const StageWarning = ({ stage, jobs, params }) => {
+const StageWarning = ({ stage, jobs, params, pipelines }) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const position = stage.name ? null : classes.stageWithoutName;
@@ -37,6 +37,10 @@ const StageWarning = ({ stage, jobs, params }) => {
     const stageNotFilled = () => {
         if (jobs && stage.operation === 'JOB') {
             return !findByProp(jobs, stage.jobId, 'id');
+        }
+
+        if (pipelines && stage.operation === 'PIPELINE') {
+            return !findByProp(pipelines, stage.pipelineId, 'id');
         }
 
         if (params && stage.operation === 'NOTIFICATION') {
@@ -60,7 +64,8 @@ const StageWarning = ({ stage, jobs, params }) => {
 StageWarning.propTypes = {
     stage: PropTypes.object,
     jobs: PropTypes.array,
-    params: PropTypes.array
+    params: PropTypes.array,
+    pipelines: PropTypes.array
 };
 
 export default StageWarning;

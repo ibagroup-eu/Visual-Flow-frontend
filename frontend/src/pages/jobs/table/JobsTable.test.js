@@ -76,7 +76,10 @@ describe('Jobs', () => {
             setCurrentPage: jest.fn(),
             currentPage: 0,
             rowsPerPage: 4,
-            getHistory: jest.fn()
+            getHistory: jest.fn(),
+            onCheckTags: jest.fn(),
+            resetTags: jest.fn(),
+            checkedTags: [['test', true]]
         };
 
         wrapper = shallow(<JobsTable {...props} />);

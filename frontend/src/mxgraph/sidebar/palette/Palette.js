@@ -26,6 +26,8 @@ import { compose } from 'redux';
 import { withStyles } from '@material-ui/styles';
 import { withTranslation } from 'react-i18next';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import { withTheme } from '@material-ui/core';
+
 import { jobStages, jobStagesByType } from '../../jobStages';
 import styles from './Palette.Styles';
 import StageWithIcon from '../stage-icon/StageWithIcon';
@@ -40,11 +42,15 @@ export class Palette extends React.Component {
     constructor(props) {
         super(props);
         const currentPath = history.location.pathname.split('/')[1];
+        const { theme } = this.props;
         this.state = {
             refSidebar: React.createRef(),
-            stages: currentPath === 'jobs' ? jobStages : pipelinesStages,
+            stages:
+                currentPath === 'jobs' ? jobStages(theme) : pipelinesStages(theme),
             stagesByType:
-                currentPath === 'jobs' ? jobStagesByType : pipelinesStagesByType,
+                currentPath === 'jobs'
+                    ? jobStagesByType(theme)
+                    : pipelinesStagesByType(theme),
             operationName: ''
         };
     }
@@ -67,7 +73,7 @@ export class Palette extends React.Component {
 
     // add new cells
     addCell = (graph, event, target, x, y, type) => {
-        const { setDirty } = this.props;
+        const { setDirty, theme } = this.props;
         const { stagesByType } = this.state;
         const stage = stagesByType[type];
         const obj = stageLabels({ operation: stage.operation });
@@ -82,7 +88,7 @@ export class Palette extends React.Component {
             y,
             130,
             72,
-            `fillColor=${stage.color};rounded=1;strokeColor=#000000;arcSize=7`
+            `fillColor=${stage.color};rounded=1;strokeColor=${theme.palette.other.border};arcSize=7`
         );
         setDirty(true);
         graph.setSelectionCell(cell);
@@ -185,7 +191,8 @@ Palette.propTypes = {
     graph: PropTypes.object,
     classes: PropTypes.object,
     setDirty: PropTypes.func,
-    t: PropTypes.func
+    t: PropTypes.func,
+    theme: PropTypes.object
 };
 
-export default compose(withStyles(styles), withTranslation())(Palette);
+export default compose(withTheme, withStyles(styles), withTranslation())(Palette);

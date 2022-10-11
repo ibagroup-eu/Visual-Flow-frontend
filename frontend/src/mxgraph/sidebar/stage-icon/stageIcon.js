@@ -23,11 +23,11 @@ import DynamicFeedIcon from '@material-ui/icons/DynamicFeed';
 import TransformOutlinedIcon from '@material-ui/icons/TransformOutlined';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import MailOutlinedIcon from '@material-ui/icons/MailOutlined';
-import DeveloperModeOutlinedIcon from '@material-ui/icons/DeveloperModeOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import React from 'react';
 import SortOutlinedIcon from '@material-ui/icons/SortOutlined';
+import { InboxOutlined } from '@material-ui/icons';
 import join16 from '../../../assets/join16.svg';
 import union16 from '../../../assets/union16.svg';
 import cdc16 from '../../../assets/cdc16.svg';
@@ -55,7 +55,9 @@ import {
 } from '../../constants';
 
 const style = {
-    fontSize: '16px'
+    fontSize: '24px',
+    flexShrink: 0,
+    opacity: 0.55
 };
 
 // eslint-disable-next-line complexity
@@ -86,7 +88,7 @@ const stageIcon = stageName => {
         case NOTIFICATION:
             return <MailOutlinedIcon style={style} />;
         case CONTAINER:
-            return <DeveloperModeOutlinedIcon style={style} />;
+            return <InboxOutlined style={style} />;
         case CACHE:
             return <StorageOutlinedIcon style={style} />;
         case SORT:

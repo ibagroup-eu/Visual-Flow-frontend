@@ -23,8 +23,14 @@ export default makeStyles(theme => ({
     appBar: {
         zIndex: theme.zIndex.drawer + 3
     },
+    arrow: {
+        color: theme.palette.primary.contrastText
+    },
     dirty: {
-        backgroundColor: theme.palette.warning.dark
+        backgroundColor: theme.palette.warning.light,
+        '& $arrow,& $title,& $button': {
+            color: theme.palette.grey[800]
+        }
     },
     toolbar: {
         padding: 0

@@ -29,7 +29,15 @@ import { DRAFT, PENDING, SKIPPED } from '../../constants';
 import StageWarning from '../../../components/stage-warning';
 import makeTooltip from '../helpers/makeTooltip';
 
-const PDStages = ({ stage, params, jobs, iconId, tooltipName, tooltipClass }) => {
+const PDStages = ({
+    stage,
+    params,
+    jobs,
+    pipelines,
+    iconId,
+    tooltipName,
+    tooltipClass
+}) => {
     const classes = useStyles();
     const visibleLogsIcon =
         stage.status && ![DRAFT, PENDING, SKIPPED].includes(stage.status);
@@ -37,16 +45,19 @@ const PDStages = ({ stage, params, jobs, iconId, tooltipName, tooltipClass }) =>
     return (
         <div className={classes.root}>
             <Typography variant="body2" component="div" className={classes.title}>
-                <span>
-                    {stageIcon(stage.operation)}
-                    <span className={classes.name}>
-                        {makeTooltip(stage.name, stage.name)}
-                    </span>
+                {stageIcon(stage.operation)}
+                <span className={classes.name}>
+                    {makeTooltip(stage.name, stage.name)}
                 </span>
                 {visibleLogsIcon && (
                     <DescriptionIcon id={iconId} className={classes.logIcon} />
                 )}
-                <StageWarning stage={stage} params={params} jobs={jobs} />
+                <StageWarning
+                    stage={stage}
+                    params={params}
+                    jobs={jobs}
+                    pipelines={pipelines}
+                />
             </Typography>
             <Typography
                 variant="caption"
@@ -63,6 +74,7 @@ PDStages.propTypes = {
     stage: PropTypes.object,
     params: PropTypes.array,
     jobs: PropTypes.array,
+    pipelines: PropTypes.array,
     iconId: PropTypes.string,
     tooltipName: PropTypes.string,
     tooltipClass: PropTypes.string

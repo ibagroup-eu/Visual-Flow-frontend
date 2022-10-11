@@ -20,11 +20,11 @@
 import React, { useState } from 'react';
 import {
     AppBar,
+    Box,
     Divider,
     Drawer,
     IconButton,
     Toolbar,
-    Typography,
     useTheme,
     withStyles
 } from '@material-ui/core';
@@ -41,6 +41,7 @@ import getMenu from '../menu/menu';
 import history from '../../utils/history';
 import SelectProject from '../select-project';
 import ProfileMenu from './profile-menu';
+import logo from '../../assets/logo.svg';
 
 export const Header = ({ classes }) => {
     const { t } = useTranslation();
@@ -100,11 +101,18 @@ export const Header = ({ classes }) => {
                             <Menu />
                         </IconButton>
                     )}
-                    <Typography variant="h5" noWrap className={classes.title}>
-                        <span onClick={goToProjectsPage} className={classes.link}>
-                            {t('main:title')}
-                        </span>
-                    </Typography>
+                    <div className={classes.title}>
+                        <Box
+                            className={classes.link}
+                            onClick={goToProjectsPage}
+                            component="img"
+                            sx={{
+                                height: 40
+                            }}
+                            alt={t('main:title')}
+                            src={logo}
+                        />
+                    </div>
                     {menu && <SelectProject />}
                     <Avatar
                         src={userInfo?.avatar}

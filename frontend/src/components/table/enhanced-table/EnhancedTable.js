@@ -41,6 +41,7 @@ import {
     updateOrderBy,
     setRowsPerPage
 } from '../../../redux/actions/enhancedTableActions';
+import TagsPanel from '../../tags-panel';
 
 export const EnhancedTable = ({
     data,
@@ -57,7 +58,10 @@ export const EnhancedTable = ({
     setRows,
     setTableOrderBy,
     orderBy,
-    order
+    order,
+    tagsData,
+    onCheckTags,
+    resetTags
 }) => {
     const [selected, setSelected] = React.useState([]);
 
@@ -137,6 +141,13 @@ export const EnhancedTable = ({
             >
                 {filter}
             </TableToolbar>
+            {tagsData.length !== 0 && (
+                <TagsPanel
+                    data={tagsData}
+                    onCheckTags={onCheckTags}
+                    resetTags={resetTags}
+                />
+            )}
             {data && data.length ? (
                 <TableContainer component={Paper}>
                     <Table>
@@ -190,7 +201,10 @@ EnhancedTable.propTypes = {
     setRows: PropTypes.func,
     setTableOrderBy: PropTypes.func,
     order: PropTypes.string,
-    orderBy: PropTypes.string
+    orderBy: PropTypes.string,
+    tagsData: PropTypes.array,
+    onCheckTags: PropTypes.func,
+    resetTags: PropTypes.func
 };
 
 EnhancedTable.defaultProps = {

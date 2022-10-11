@@ -20,9 +20,9 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { Checkbox, Grid, Tooltip, Typography } from '@material-ui/core';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import { TitleCell } from './TitleCell';
 import TableTimeData from '../../../table-time-data';
-import TimelineIcon from '@material-ui/icons/Timeline';
 
 describe('TitleCell', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -30,7 +30,9 @@ describe('TitleCell', () => {
             classes: {},
             title: 'title',
             pipelineId: 'pipelineId',
-            pipelines: [{ id: 'pipelineId', name: 'name' }]
+            pipelines: [{ id: 'pipelineId', name: 'name' }],
+            onCheckTags: jest.fn(),
+            checkedTags: [['test', true]]
         };
 
         const wrapper = func(<TitleCell {...defaultProps} {...props} />);

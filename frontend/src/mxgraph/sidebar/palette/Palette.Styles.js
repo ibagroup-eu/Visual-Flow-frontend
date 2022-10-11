@@ -22,7 +22,8 @@ export default theme => ({
         position: 'relative',
         border: '1px solid rgba(0, 0, 0, 0.12)',
         'border-radius': '15px',
-        boxShadow: 'none',
+        boxShadow:
+            '0px 3px 3px rgba(0, 0, 0, 0.2), 0px 3px 4px rgba(0, 0, 0, 0.14), 0px 1px 8px rgba(0, 0, 0, 0.12)',
         width: 120,
         height: 72,
         cursor: 'pointer',

@@ -23,6 +23,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+import { reduce } from 'lodash';
 import { fetchPipelines } from '../../redux/actions/pipelinesActions';
 import { setCurrentTablePage } from '../../redux/actions/enhancedTableActions';
 import PipelinesTable from './table';
@@ -31,6 +32,7 @@ import history from '../../utils/history';
 import { PageSkeleton } from '../../components/skeleton';
 import fetchJobs from '../../redux/actions/jobsActions';
 import { fetchParameters } from '../../redux/actions/settingsParametersActions';
+import { checkedTags, sortTags } from '../jobs/Jobs';
 
 const Pipelines = ({
     projectId,
@@ -46,6 +48,7 @@ const Pipelines = ({
     const { t } = useTranslation();
     const [search, setSearch] = React.useState('');
     const [list, setList] = React.useState([]);
+    const [tags, setTags] = React.useState({});
 
     React.useEffect(() => {
         if (projectId) {
@@ -53,20 +56,47 @@ const Pipelines = ({
             getJobs(projectId);
             getParameters(projectId);
         }
-        setList(data?.pipelines);
     }, [projectId]);
 
     React.useEffect(() => {
+        setList(data?.pipelines);
+        setTags(sortTags(data?.pipelines));
+    }, [data?.pipelines]);
+
+    React.useEffect(() => {
         setList(
-            data?.pipelines?.filter(item =>
-                item.name.toUpperCase().includes(search.toUpperCase())
+            data?.pipelines?.filter(
+                item =>
+                    item.name.toUpperCase().includes(search.toUpperCase()) &&
+                    checkedTags(tags).every(r => item?.tags.includes(r[0]))
             )
         );
-    }, [data?.pipelines, search]);
+    }, [search, tags]);
 
     React.useEffect(() => {
         search.trim() && setCurrentPage(0);
     }, [search]);
+
+    React.useEffect(() => {
+        if (checkedTags(tags).length !== 0) {
+            setCurrentPage(0);
+        }
+    }, [checkedTags(tags)]);
+
+    const resetTags = () =>
+        setTags(
+            reduce(
+                Object.keys(tags),
+                (resultTags, tag) => ({ ...resultTags, [tag]: false }),
+                {}
+            )
+        );
+
+    const onCheckTags = changedTag =>
+        setTags({
+            ...tags,
+            ...changedTag
+        });
 
     return loading || loadingExport ? (
         <PageSkeleton />
@@ -81,6 +111,10 @@ const Pipelines = ({
                     onSearch={event => setSearch(event.target.value)}
                     onRefreshClick={() => getPipelines(projectId)}
                     onAddClick={() => history.push(`/pipelines/${projectId}`)}
+                    tagsData={tags}
+                    resetTags={resetTags}
+                    onCheckTags={onCheckTags}
+                    checkedTags={checkedTags(tags)}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -90,6 +124,9 @@ const Pipelines = ({
                     projectId={projectId}
                     jobs={jobs}
                     params={params}
+                    resetTags={resetTags}
+                    onCheckTags={onCheckTags}
+                    checkedTags={checkedTags(tags)}
                 />
             </Grid>
         </Box>

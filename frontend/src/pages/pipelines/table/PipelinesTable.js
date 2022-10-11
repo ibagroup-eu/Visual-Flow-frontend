@@ -94,7 +94,10 @@ const PipelinesTable = ({
     currentPage,
     rowsPerPage,
     jobs,
-    params
+    params,
+    resetTags,
+    onCheckTags,
+    checkedTags
 }) => {
     const { t } = useTranslation();
     const classes = withStyles();
@@ -220,6 +223,9 @@ const PipelinesTable = ({
                     { id: 'startedAt', name: t('filters:lastRun') },
                     { id: 'status', name: t('filters:status') }
                 ]}
+                tagsData={checkedTags}
+                resetTags={resetTags}
+                onCheckTags={onCheckTags}
                 filter={
                     <>
                         <ExportModalWindow
@@ -268,6 +274,9 @@ const PipelinesTable = ({
                             lastFinished={item.finishedAt}
                             lastEdit={item.lastModified}
                             tags={item.tags}
+                            resetTags={resetTags}
+                            onCheckTags={onCheckTags}
+                            checkedTags={checkedTags}
                         />
 
                         <DividerCell />
@@ -317,7 +326,10 @@ PipelinesTable.propTypes = {
     currentPage: PropTypes.number,
     rowsPerPage: PropTypes.number,
     jobs: PropTypes.array,
-    params: PropTypes.array
+    params: PropTypes.array,
+    resetTags: PropTypes.func,
+    onCheckTags: PropTypes.func,
+    checkedTags: PropTypes.array
 };
 
 const mapStateToProps = state => ({

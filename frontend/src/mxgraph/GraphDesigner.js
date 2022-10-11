@@ -59,13 +59,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import mxgraph from 'mxgraph';
-import { isEqual, get, has, isEmpty, forEach } from 'lodash';
+import { forEach, get, has, isEmpty, isEqual, set } from 'lodash';
 import './common.css';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/styles';
 import ReactDOMServer from 'react-dom/server';
 import { withTranslation } from 'react-i18next';
 import classNames from 'classnames';
+import { withTheme } from '@material-ui/core';
+
 import {
     setCurrentCell,
     setGraphDirty,
@@ -84,29 +86,30 @@ import stageLabels from './stageLabels';
 import history from '../utils/history';
 import JobsToolbar from './toolbar/jobs-toolbar';
 import {
-    RenderPipelineConfiguration,
-    RenderJobConfiguration
+    RenderJobConfiguration,
+    RenderPipelineConfiguration
 } from './side-panel/render-configuration';
 import PipelinesToolbar from './toolbar/pipelines-toolbar';
 import {
-    JOIN,
     CDC,
-    EDGE,
-    JOB,
-    PIPELINE,
-    PENDING,
-    RUNNING,
-    SUCCEEDED,
-    FAILED,
     CONTAINER,
-    SKIPPED,
+    DRAFT,
+    EDGE,
     ERROR,
-    TERMINATED,
-    DRAFT
+    FAILED,
+    JOB,
+    JOIN,
+    PENDING,
+    PIPELINE,
+    RUNNING,
+    SKIPPED,
+    SUCCEEDED,
+    TERMINATED
 } from './constants';
 import LogsModal from '../pages/logs-modal';
 import { jobStagesByType } from './jobStages';
 import { pipelinesStagesByType } from './pipelinesStages';
+import { addStyles } from '../utils/mxgraph';
 
 const {
     mxGraph,
@@ -130,6 +133,7 @@ const {
 class GraphDesigner extends Component {
     constructor(props) {
         super(props);
+        const { theme } = this.props;
         this.refGraph = React.createRef();
 
         this.state = {
@@ -141,6 +145,8 @@ class GraphDesigner extends Component {
         };
 
         this.createPopupMenu = this.popupMenu.bind(this);
+        this.jobStages = jobStagesByType(theme);
+        this.pipelineStages = pipelinesStagesByType(theme);
     }
 
     componentDidMount() {
@@ -150,11 +156,21 @@ class GraphDesigner extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { data } = this.props;
+        const { data, sidePanelIsOpen } = this.props;
         const { graph } = this.state;
+
+        this.hasBeenConfigured(graph);
         this.changeBorder();
+
         if (!isEqual(data?.definition, prevProps.data?.definition)) {
             this.loadContent(data?.definition, graph);
+        }
+        if (graph) {
+            if (sidePanelIsOpen) {
+                this.activateCell(graph);
+            } else {
+                this.deactivateCell(graph);
+            }
         }
     }
 
@@ -168,9 +184,11 @@ class GraphDesigner extends Component {
 
     pasteCopyHandler = (event, graph) => {
         const { stageCopy } = this.state;
+        const { theme } = this.props;
+
         const currentPath = history.location.pathname.split('/')[1];
         const stagesByType =
-            currentPath === 'jobs' ? jobStagesByType : pipelinesStagesByType;
+            currentPath === 'jobs' ? this.jobStages : this.pipelineStages;
         const valuesCopy = Object.entries(stageCopy.value.attributes).reduce(
             (acc, attrKey) => ({
                 ...acc,
@@ -196,12 +214,18 @@ class GraphDesigner extends Component {
             stageCopy.geometry.height,
             `fillColor=${
                 stagesByType[valuesCopy.operation].color
-            };rounded=1;strokeColor=#000000;arcSize=7`
+            };rounded=1;strokeColor=${theme.palette.other.border};arcSize=7`
         );
     };
 
     popupMenu = (graph, menu, cell, event) => {
-        const { data, sidePanelIsOpen, setDirtyGraph, setPanel } = this.props;
+        const {
+            data,
+            sidePanelIsOpen,
+            setDirtyGraph,
+            setPanel,
+            projectId
+        } = this.props;
         const { stageCopy } = this.state;
         if (
             cell &&
@@ -214,6 +238,17 @@ class GraphDesigner extends Component {
                     mxEvent.consume(event);
                 });
             } else {
+                history.location.pathname.includes('pipelines') &&
+                    cell.value.attributes.jobId &&
+                    menu.addItem(
+                        `Open "${cell.value.attributes.jobName.nodeValue}" `,
+                        null,
+                        () => {
+                            history.push(
+                                `/jobs/${projectId}/${cell.value.attributes.jobId.nodeValue}`
+                            );
+                        }
+                    );
                 menu.addItem('Edit child node', null, () => {
                     this.props.setCell(cell.id);
                     setPanel(true);
@@ -265,7 +300,16 @@ class GraphDesigner extends Component {
 
     // main setting
     setGraphSetting = () => {
-        const { data, jobs, type, t, setPanel, params } = this.props;
+        const {
+            theme,
+            data,
+            jobs,
+            type,
+            t,
+            setPanel,
+            params,
+            pipelines
+        } = this.props;
         const { graph } = this.state;
         const that = this;
         graph.gridSize = 10;
@@ -300,13 +344,12 @@ class GraphDesigner extends Component {
         vertexStyle[mxConstants.STYLE_STROKECOLOR] = '#6482B9';
         vertexStyle[mxConstants.STYLE_FONTCOLOR] = '#000000';
         vertexStyle[mxConstants.HANDLE_FILLCOLOR] = '#80c6ee';
-        if (type === PIPELINE) {
-            vertexStyle[mxConstants.STYLE_STROKEWIDTH] = 4;
-        }
+        vertexStyle[mxConstants.STYLE_STROKEWIDTH] = theme.mxgraph.border.normal;
+
         graph.getStylesheet().putDefaultVertexStyle(vertexStyle);
 
         const edgeStyle = [];
-        edgeStyle[mxConstants.STYLE_STROKECOLOR] = '#4CAF50';
+        edgeStyle[mxConstants.STYLE_STROKECOLOR] = theme.palette.success.light;
         edgeStyle[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_CONNECTOR;
         edgeStyle[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
         edgeStyle[mxConstants.STYLE_VERTICAL_ALIGN] = mxConstants.ALIGN_MIDDLE;
@@ -349,7 +392,7 @@ class GraphDesigner extends Component {
                 }
                 // Returns a DOM for the label
                 return ReactDOMServer.renderToString(
-                    renderStage(results, t, type, jobs, params)
+                    renderStage(results, t, type, jobs, params, pipelines, theme)
                 );
             }
 
@@ -357,8 +400,12 @@ class GraphDesigner extends Component {
         };
 
         graph.addListener(mxEvent.EDITING_STARTED, (sender, event) => {
+            const { currentCell, sidePanelIsOpen } = this.props;
             const cell = event.getProperty('cell');
             if (cell?.vertex) {
+                if (sidePanelIsOpen && currentCell !== graph.getSelectionCell().id) {
+                    this.deactivateCell(graph);
+                }
                 this.props.setCell(graph.getSelectionCell().id);
                 setPanel(true);
             }
@@ -605,6 +652,9 @@ class GraphDesigner extends Component {
                 graph.connectionHandler.isConnectableCell(cell);
         }
 
+        // eslint-disable-next-line prefer-destructuring
+        const jobStages = this.jobStages;
+
         graph.getAllConnectionConstraints = function getConnections(
             terminal,
             source
@@ -621,11 +671,8 @@ class GraphDesigner extends Component {
             const targetIncomingEdges = terminalGraph.getIncomingEdges(
                 terminal.cell
             );
-            const targetValid = get(
-                jobStagesByType[targetNodeType],
-                'validation',
-                ''
-            );
+
+            const targetValid = get(jobStages[targetNodeType], 'validation', '');
 
             if (
                 (targetOutgoingEdges.length >= targetValid.maxOutgoingConnections &&
@@ -636,7 +683,7 @@ class GraphDesigner extends Component {
                 return null;
             }
 
-            if (terminal !== null && this.model.isVertex(terminal.cell)) {
+            if (this.model.isVertex(terminal.cell)) {
                 return [
                     new mxConnectionConstraint(new mxPoint(0.25, 0), true),
                     new mxConnectionConstraint(new mxPoint(0.5, 0), true),
@@ -820,36 +867,58 @@ class GraphDesigner extends Component {
         return color;
     };
 
+    hasBeenConfigured = graph => {
+        const { currentCell, theme, type } = this.props;
+
+        if (!isEmpty(currentCell) && type === PIPELINE) {
+            const cell = graph.model.getCell(currentCell);
+
+            if (get(cell, 'value.attributes.length', 0) > 1) {
+                const state = graph.view.getState(cell);
+
+                set(state.style, 'strokeWidth', theme.mxgraph.border.strong);
+
+                state.shape.apply(state);
+                state.shape.redraw();
+            }
+        }
+    };
+
     changeBorder = () => {
-        const { data, type, pipelineStatus } = this.props;
-        let newStyle;
-        if (type === PIPELINE) {
-            if (data?.definition?.graph) {
-                data.definition.graph.forEach(stage => {
-                    if (!stage.edge) {
-                        newStyle = stage.style.replace(
-                            /strokeColor=#[0-9a-fA-F]{6};/,
-                            'strokeColor=#bdbdbd;'
-                        );
-                        // eslint-disable-next-line no-param-reassign
-                        stage.style = newStyle;
-                    }
-                });
-                if (data?.jobsStatuses) {
-                    // eslint-disable-next-line no-restricted-syntax
-                    for (const key of Object.keys(data?.jobsStatuses)) {
-                        const currentStage = data?.definition.graph.find(
-                            item => item.id === key
-                        );
-                        const currentStageStatus = data?.jobsStatuses[key];
-                        newStyle = currentStage.style.replace(
-                            /strokeColor=#[0-9a-fA-F]{6};/,
-                            `strokeColor=${this.changeColor(
+        const { data, type, pipelineStatus, theme } = this.props;
+
+        if (data?.definition?.graph) {
+            data.definition.graph.forEach(stage => {
+                if (!stage.edge) {
+                    // eslint-disable-next-line no-param-reassign
+                    stage.style = addStyles(
+                        {
+                            strokeColor: theme.palette.other.border,
+                            strokeWidth:
+                                type === PIPELINE
+                                    ? theme.mxgraph.border.strong
+                                    : theme.mxgraph.border.normal
+                        },
+                        stage.style
+                    );
+                }
+            });
+            if (type === PIPELINE && data?.jobsStatuses) {
+                // eslint-disable-next-line no-restricted-syntax
+                for (const key of Object.keys(data?.jobsStatuses)) {
+                    const currentStage = data?.definition.graph.find(
+                        item => item.id === key
+                    );
+                    const currentStageStatus = data?.jobsStatuses[key];
+
+                    currentStage.style = addStyles(
+                        {
+                            strokeColor: this.changeColor(
                                 currentStageStatus || pipelineStatus
-                            )};`
-                        );
-                        currentStage.style = newStyle;
-                    }
+                            )
+                        },
+                        currentStage.style
+                    );
                 }
             }
         }
@@ -862,6 +931,34 @@ class GraphDesigner extends Component {
             return true; // new job, parameters are active
         }
         return status === PENDING || status === RUNNING ? false : value;
+    };
+
+    activateCell = graph => {
+        const { currentCell } = this.props;
+        if (!isEmpty(currentCell)) {
+            const cell = graph.model.getCell(currentCell);
+
+            const state = graph.view.getState(cell);
+
+            state.shape.node.style.filter =
+                'drop-shadow(0px 6px 6px rgba(0, 0, 0, 0.2)) drop-shadow(0px 10px 14px rgba(0, 0, 0, 0.14)) drop-shadow(0px 4px 18px rgba(0, 0, 0, 0.12))';
+            state.shape.apply(state);
+            state.shape.redraw();
+        }
+    };
+
+    deactivateCell = graph => {
+        const { currentCell } = this.props;
+
+        if (!isEmpty(currentCell)) {
+            const cell = graph.model.getCell(currentCell);
+
+            const state = graph.view.getState(cell);
+
+            state.shape.node.style.filter = null;
+            state.shape.apply(state);
+            state.shape.redraw();
+        }
     };
 
     render() {
@@ -970,11 +1067,13 @@ GraphDesigner.propTypes = {
     setLogs: PropTypes.func,
     setDirtyGraph: PropTypes.func,
     setPanel: PropTypes.func,
+    currentCell: PropTypes.string,
     setCell: PropTypes.func,
     setZoomValue: PropTypes.func,
     classes: PropTypes.object,
     data: PropTypes.object,
     jobStatus: PropTypes.string,
+    projectId: PropTypes.string,
     pipelineStatus: PropTypes.string,
     t: PropTypes.func,
     param: PropTypes.bool,
@@ -984,17 +1083,21 @@ GraphDesigner.propTypes = {
     panning: PropTypes.bool,
     showLogsModal: PropTypes.bool,
     jobs: PropTypes.array,
-    params: PropTypes.array
+    pipelines: PropTypes.array,
+    params: PropTypes.array,
+    theme: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     sidePanelIsOpen: state.mxGraph.sidePanelIsOpen,
+    currentCell: state.mxGraph.currentCell,
     data: state.mxGraph.data,
     jobStatus: state.jobStatus.status,
     pipelineStatus: state.pipelineStatus.status,
     param: state.pages.settingsParameters.data?.editable,
     zoomVal: state.mxGraph.zoomValue,
     jobs: state.pages.jobs.data.jobs,
+    pipelines: state.pages.pipelines.data.pipelines,
     panning: state.mxGraph.panning,
     showLogsModal: state.mxGraph.showLogsModal,
     params: state.pages.settingsParameters.data.params
@@ -1009,6 +1112,7 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+    withTheme,
     withStyles(styles),
     connect(mapStateToProps, mapDispatchToProps),
     withTranslation()

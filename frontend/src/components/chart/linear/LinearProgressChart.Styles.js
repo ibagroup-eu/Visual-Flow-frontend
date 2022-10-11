@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { alpha } from '@material-ui/core';
 
 export default theme => ({
     root: {
@@ -31,20 +32,20 @@ export default theme => ({
         backgroundColor: theme.palette.grey[300]
     },
     statusRunning: {
-        backgroundColor: '#9FD2EE'
+        backgroundColor: theme.palette.info.light
     },
     statusSucceeded: {
-        backgroundColor: theme.palette.success.light
+        backgroundColor: alpha(theme.palette.success.light, 0.6)
     },
     statusError: {
-        backgroundColor: '#FBB7B3'
+        backgroundColor: alpha(theme.palette.error.light, 0.6)
     },
 
     statusBarDraft: {
         backgroundColor: theme.palette.grey[600]
     },
     statusBarRunning: {
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.info.main
     },
     statusBarSucceeded: {
         backgroundColor: theme.palette.success.main
@@ -57,7 +58,7 @@ export default theme => ({
         color: theme.palette.grey[600]
     },
     statusColorRunning: {
-        color: theme.palette.primary.main
+        color: theme.palette.info.main
     },
     statusColorSucceeded: {
         color: theme.palette.success.main

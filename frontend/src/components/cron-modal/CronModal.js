@@ -125,8 +125,8 @@ export const CronModal = ({
     }, [pipelineId]);
 
     React.useEffect(() => {
-        cronInit(cronState.data.schedule, !cronState.data.suspend);
-    }, [cronState.data]);
+        cronInit(cronState?.data.schedule, !cronState?.data.suspend);
+    }, [cronState?.data]);
 
     const changeCronLabel = (index, value) =>
         setCronLabels(prevState =>
@@ -242,7 +242,7 @@ export const CronModal = ({
             isNotHelper
             minWidthClass="cronMinWidth"
         >
-            {cronState.loading ? (
+            {cronState?.loading ? (
                 <PageSkeleton />
             ) : (
                 <>

@@ -29,13 +29,13 @@ export default makeStyles(theme => ({
         textOverflow: 'ellipsis'
     },
     jobsAndPipelinesAvatar: {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.info.main,
         marginTop: -theme.spacing(9) / 2,
         width: theme.spacing(7.5),
         height: theme.spacing(7.5)
     },
     utilizationAvatar: {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.info.main,
         marginTop: -theme.spacing(9) / 2,
         width: theme.spacing(7),
         height: theme.spacing(7)

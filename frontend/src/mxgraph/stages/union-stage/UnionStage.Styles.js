@@ -19,7 +19,7 @@
 
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles(() => ({
+export default makeStyles(theme => ({
     root: {
         position: 'relative'
     },
@@ -28,22 +28,22 @@ export default makeStyles(() => ({
         left: -100,
         top: -64,
         display: 'flex',
-        'white-space': 'normal',
+        whiteSpace: 'normal',
         width: 200,
-        'text-align': 'left',
+        textAlign: 'left',
         '& span': {
             overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
         }
     },
     type: {
         position: 'absolute',
         left: 19,
         top: 44,
-        backgroundColor: '#FFB74D',
+        backgroundColor: theme.palette.warning.light,
         color: 'white',
-        'border-radius': 4,
+        borderRadius: 4,
         width: 84
     }
 }));

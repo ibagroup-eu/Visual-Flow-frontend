@@ -116,7 +116,10 @@ describe('PipelinesTable', () => {
                     value: 'test'
                 }
             ],
-            status: ''
+            status: '',
+            onCheckTags: jest.fn(),
+            resetTags: jest.fn(),
+            checkedTags: [['test', true]]
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));
@@ -246,13 +249,13 @@ describe('PipelinesTable', () => {
     it('should return correct actions with Play button', () => {
         const childrenFunc = wrapper.find(EnhancedTable).prop('children');
 
-        const children = childrenFunc({
+        const { children } = childrenFunc({
             item: { status: DRAFT },
             checked: false,
             onClick: jest.fn()
-        }).props.children;
+        }).props;
 
-        const actions = children[children.length - 1].props.actions;
+        const { actions } = children[children.length - 1].props;
 
         expect(actions.map(x => x.title)).toEqual([
             'pipelines:tooltip.Scheduling',
@@ -272,13 +275,13 @@ describe('PipelinesTable', () => {
     it('should return correct actions with Stop button', () => {
         const childrenFunc = wrapper.find(EnhancedTable).prop('children');
 
-        const children = childrenFunc({
+        const { children } = childrenFunc({
             item: { status: RUNNING },
             checked: false,
             onClick: jest.fn()
-        }).props.children;
+        }).props;
 
-        const actions = children[children.length - 1].props.actions;
+        const { actions } = children[children.length - 1].props;
 
         expect(actions.map(x => x.title)).toEqual([
             'pipelines:tooltip.Scheduling',
@@ -288,7 +291,7 @@ describe('PipelinesTable', () => {
             'pipelines:tooltip.Remove'
         ]);
 
-        const [_, stop, designer, copy, remove] = actions.map(x => x.onClick);
+        const [, stop, designer, copy, remove] = actions.map(x => x.onClick);
 
         stop();
 

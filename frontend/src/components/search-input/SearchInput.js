@@ -37,7 +37,7 @@ const SearchInput = ({ value, onChange, placeholder, fullWidth }) => {
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
-                        <Search />
+                        <Search className={classes.icon} />
                     </InputAdornment>
                 )
             }}

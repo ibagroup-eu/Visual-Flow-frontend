@@ -22,23 +22,60 @@ import { createTheme } from '@material-ui/core/styles';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#2196F3',
-            light: '#64B5F6'
+            main: '#546E7A',
+            light: '#607D8B',
+            dark: '#455A64',
+            background: 'rgba(245, 249, 244, 0.8)',
+            border: '#8799FA'
         },
         info: {
-            main: '#8021f3'
+            main: '#3F51B5',
+            light: '#F3EAFF',
+            background: '#E8F0FF'
         },
         secondary: {
-            main: '#4DD0E1',
-            light: '#E5FFFF'
+            main: '#17D9C2',
+            light: '#D8FFF9',
+            border: '#B3FF9E',
+            dark: '#16B19F'
+        },
+        warning: {
+            main: '#FF9800',
+            light: '#FFBB8A',
+            background: '#FFF5E3'
+        },
+        success: {
+            main: '#4CAF50',
+            light: '#81C784',
+            background: '#F0FFED'
+        },
+        error: {
+            main: '#F44336',
+            light: '#E57373'
+        },
+        other: {
+            border: 'rgba(0, 0, 0, 0.23)'
         }
     },
     MuiDrawer: {
         width: 240
+    },
+    mxgraph: {
+        border: {
+            strong: 4,
+            normal: 1
+        }
     }
 });
 
 theme.overrides = {
+    MuiTableRow: {
+        root: {
+            '&$selected, &$selected:hover': {
+                backgroundColor: theme.palette.secondary.light
+            }
+        }
+    },
     MuiTypography: {
         subtitle1: {
             color: theme.palette.text.secondary

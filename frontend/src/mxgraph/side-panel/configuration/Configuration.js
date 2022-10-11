@@ -70,9 +70,7 @@ const Configuration = ({
 
     const connection = state.connectionName
         ? omit(
-              connections.find(
-                  obj => obj.connectionName === state.connectionName.slice(1, -1)
-              ),
+              connections.find(obj => obj.connectionName === state.connectionName),
               ['id', 'connectionName']
           ) || {}
         : {};
@@ -199,7 +197,16 @@ const Configuration = ({
     return (
         <Box className={classes.root}>
             {fieldInModal === 'connectionName' ? (
-                <ConnectionsModal {...modalProps()} />
+                <ConnectionsModal
+                    {...modalProps()}
+                    onSetValue={newValue => {
+                        setShowModal(false);
+                        setState({
+                            ...state,
+                            [fieldInModal]: `${newValue}`
+                        });
+                    }}
+                />
             ) : (
                 <ParametersModal
                     {...modalProps()}

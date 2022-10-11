@@ -48,7 +48,7 @@ const JobsStats = ({ data, loading, setStatus, setCurrentPage }) => {
         {
             title: t('filters:statuses.Running'),
             Icon: PlayArrowIcon,
-            color: theme.palette.primary.main,
+            color: theme.palette.info.main,
             data: data?.jobsStat?.Running
         },
         {

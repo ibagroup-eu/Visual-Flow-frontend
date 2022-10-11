@@ -163,9 +163,7 @@ const ReadWriteConfiguration = ({
             />
 
             {state.connectionName ? (
-                <DividerWithText>
-                    {state.connectionName.slice(1, -1)}
-                </DividerWithText>
+                <DividerWithText>{state.connectionName}</DividerWithText>
             ) : (
                 <Divider />
             )}
