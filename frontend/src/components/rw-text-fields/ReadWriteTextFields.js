@@ -49,7 +49,7 @@ const ReadWriteTextFields = ({
     const { t } = useTranslation();
     const classes = useStyles();
     // eslint-disable-next-line complexity
-    return fields.map(({ field, rows = 1 }) => {
+    return fields.map(({ field, rows = 1, required: fieldRequired }) => {
         const fieldName = nameWIthPoint ? field : camelCase(field);
         const [visible, setVisibility] = React.useState(false);
         const hiddenField = visible ? <Visibility /> : <VisibilityOff />;
@@ -115,7 +115,7 @@ const ReadWriteTextFields = ({
                             </InputAdornment>
                         )
                     }}
-                    required={required}
+                    required={required || fieldRequired}
                 />
                 <ClearButton
                     name={fieldName}

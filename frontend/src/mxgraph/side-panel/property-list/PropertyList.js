@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
     IconButton,
     Tooltip,
@@ -31,9 +33,9 @@ import AddIcon from '@material-ui/icons/Add';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import RemoveIcon from '@material-ui/icons/Remove';
-import React from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import classNames from 'classnames';
+
 import styles from './PropertyList.Styles';
 import getMenuItems from '../helpers/getMenuItems';
 
@@ -46,7 +48,8 @@ export const PropertyList = ({
     classes,
     label,
     handleItemChange,
-    options
+    options,
+    required
 }) => {
     const { t } = useTranslation();
     const handleRemove = index => () =>
@@ -152,7 +155,9 @@ export const PropertyList = ({
                 <Typography
                     variant="body2"
                     color="textSecondary"
-                    className={classes.text}
+                    className={classNames(classes.text, {
+                        [classes.required]: required
+                    })}
                 >
                     {label}
                 </Typography>
@@ -162,12 +167,13 @@ export const PropertyList = ({
                     </IconButton>
                 </Tooltip>
             </div>
-            {items.map(renderRow)}
+            <div className={classes.rows}>{items.map(renderRow)}</div>
         </div>
     );
 };
 
 PropertyList.propTypes = {
+    required: PropTypes.bool,
     ableToEdit: PropTypes.bool,
     classes: PropTypes.object,
     defaultValue: PropTypes.string,
@@ -177,6 +183,10 @@ PropertyList.propTypes = {
     items: PropTypes.array,
     handleItemChange: PropTypes.func,
     options: PropTypes.array
+};
+
+PropertyList.defaultProps = {
+    required: false
 };
 
 export default withStyles(styles)(PropertyList);

@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
+import { MuiThemeProvider } from '@material-ui/core';
 import renderStage from './renderStage';
-import StageWarning from '../../components/stage-warning';
 import {
     CACHE,
     CDC,
@@ -31,16 +30,15 @@ import {
     JOB,
     JOIN,
     NOTIFICATION,
-    PIPELINE,
     READ,
     REMOVE_DUPLICATES,
     SLICE,
     SORT,
     TRANSFORM,
     UNION,
+    VALIDATE,
     WRITE
 } from '../constants';
-import { MuiThemeProvider } from '@material-ui/core';
 
 describe('should render the stage', () => {
     it.each([
@@ -59,16 +57,16 @@ describe('should render the stage', () => {
         SORT,
         JOB,
         NOTIFICATION,
-        CONTAINER
+        CONTAINER,
+        VALIDATE
     ])('should render "%s" stage', operation => {
         const columns = 'col_1,col_2';
-
         const stage = {
             operation,
+            columns,
             name: 'name',
             groupingColumns: columns,
-            keyColumns: columns,
-            columns
+            keyColumns: columns
         };
 
         const wrapper = shallow(renderStage(stage, jest.fn(), '', [], []));
@@ -86,18 +84,5 @@ describe('should render the stage', () => {
 
         const parent = wrapper.find(MuiThemeProvider);
         expect(parent.children()).toHaveLength(0);
-    });
-
-    it('should show a warning', () => {
-        const t = jest.fn();
-
-        const stage = {
-            operation: 'UNDEFINED'
-        };
-
-        const wrapper = mount(renderStage(stage, t, PIPELINE));
-
-        expect(wrapper.find(StageWarning).exists()).toBeTruthy();
-        expect(t).toHaveBeenCalledWith('jobDesigner:palette.UNDEFINED');
     });
 });

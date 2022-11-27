@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, Fade } from '@material-ui/core';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -84,6 +84,7 @@ export const Params = ({
     const classes = useStyles();
     const { t } = useTranslation();
     const params = { ...data.params, NAME: data.name };
+    const ref = useRef();
 
     const initialState = getFieldNames(fields).reduce(
         (acc, name) => set(acc, name, get(params, name, get(DEFAULT_PARAMS, name))),
@@ -119,6 +120,7 @@ export const Params = ({
         return (
             <FieldComponent
                 ableToEdit={ableToEdit}
+                parentRef={ref}
                 key={key}
                 name={key}
                 {...field}
@@ -142,7 +144,7 @@ export const Params = ({
     );
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} ref={ref}>
             <div className={classes.params}>
                 {entries(fields).map(([key, field]) =>
                     field.type === 'section'

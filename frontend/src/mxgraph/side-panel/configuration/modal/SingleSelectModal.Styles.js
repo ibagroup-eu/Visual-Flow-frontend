@@ -31,22 +31,6 @@ export default makeStyles(theme => ({
         overflow: 'auto',
         maxHeight: '45vh'
     },
-    cell: {
-        '&:first-child': {
-            paddingLeft: '8px !important'
-        },
-        '&:last-child': {
-            paddingRight: '8px !important'
-        },
-        '& div and not:(button)': {
-            backgroundColor: theme.palette.background.paper
-        },
-        backgroundColor: theme.palette.background.default,
-        padding: '8px 4px'
-    },
-    radioButtonCell: {
-        padding: theme.spacing(2)
-    },
     search: {
         display: 'flex',
         justifyContent: 'space-between',

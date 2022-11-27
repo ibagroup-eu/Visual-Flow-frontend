@@ -20,22 +20,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, Tooltip, Avatar, useTheme } from '@material-ui/core';
+import {
+    Box,
+    Typography,
+    Tooltip,
+    Avatar,
+    useTheme,
+    alpha
+} from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import PendingIcon from '@material-ui/icons/Update';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WarningOutlinedIcon from '@material-ui/icons/WarningOutlined';
 import DoneIcon from '@material-ui/icons/Done';
+import PauseCircleOutlineOutlinedIcon from '@material-ui/icons/PauseCircleOutlineOutlined';
+import SmsFailedOutlinedIcon from '@material-ui/icons/SmsFailedOutlined';
+import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
+import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 import useStyles from './HistoryHeader.Styles';
+
+const statusIcon = theme => ({
+    Succeeded: { Icon: DoneIcon, color: theme.palette.success.light },
+    Failed: { Icon: WarningOutlinedIcon, color: theme.palette.error.light },
+    Draft: { Icon: InfoOutlinedIcon, color: theme.palette.grey[500] },
+    Running: { Icon: PlayArrowIcon, color: alpha(theme.palette.info.main, 0.6) },
+    Terminated: {
+        Icon: IndeterminateCheckBoxOutlinedIcon,
+        color: theme.palette.warning.light
+    },
+    Error: { Icon: SmsFailedOutlinedIcon, color: theme.palette.error.light },
+    Pending: { Icon: PendingIcon, color: theme.palette.grey[400] },
+    Stopped: {
+        Icon: StopOutlinedIcon,
+        color: alpha(theme.palette.warning.main, 0.7)
+    },
+    Suspended: {
+        Icon: PauseCircleOutlineOutlinedIcon,
+        color: alpha(theme.palette.primary.light, 0.8)
+    }
+});
 
 const HistoryHeader = ({ status, name, startedBy }) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const theme = useTheme();
 
-    const statusIcon = {
-        Succeeded: { Icon: DoneIcon, color: theme.palette.success.light },
-        Failed: { Icon: WarningOutlinedIcon, color: theme.palette.error.light }
-    };
-
-    const { Icon, color } = statusIcon[status] || statusIcon.Failed;
+    const { Icon, color } = statusIcon(theme)[status] || statusIcon(theme).Failed;
 
     return (
         <Box className={classes.root}>
@@ -51,7 +81,7 @@ const HistoryHeader = ({ status, name, startedBy }) => {
             <Box className={classes.flexColumn}>
                 <Typography variant="h5">{name}</Typography>
                 <Typography variant="subtitle1">
-                    {`${t('jobs:history.LastRunBy')}: ${startedBy || 'Unknown'}`}
+                    {`${t('main:history.LastRunBy')}: ${startedBy || 'Unknown'}`}
                 </Typography>
             </Box>
         </Box>

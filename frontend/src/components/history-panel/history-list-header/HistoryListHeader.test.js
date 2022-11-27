@@ -23,7 +23,7 @@ import HistoryListHeader from './HistoryListHeader';
 
 describe('HistoryListHeader', () => {
     it('should render component', () => {
-        const wrapper = shallow(<HistoryListHeader />);
+        const wrapper = shallow(<HistoryListHeader type="job" />);
         expect(wrapper).toBeDefined();
     });
 });

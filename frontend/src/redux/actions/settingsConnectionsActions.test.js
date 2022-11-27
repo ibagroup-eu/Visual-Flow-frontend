@@ -22,7 +22,8 @@ import {
     createConnection,
     deleteConnection,
     fetchConnections,
-    updateConnection
+    updateConnection,
+    pingConnection
 } from './settingsConnectionsActions';
 import {
     CREATE_CONNECTION_FAIL,
@@ -36,7 +37,10 @@ import {
     FETCH_CONNECTIONS_SUCCESS,
     UPDATE_CONNECTION_FAIL,
     UPDATE_CONNECTION_START,
-    UPDATE_CONNECTION_SUCCESS
+    UPDATE_CONNECTION_SUCCESS,
+    PING_CONNECTION_START,
+    PING_CONNECTION_FAIL,
+    PING_CONNECTION_SUCCESS
 } from './types';
 
 describe('settingsConnectionsActions', () => {
@@ -87,10 +91,7 @@ describe('settingsConnectionsActions', () => {
                             type: FETCH_CONNECTIONS_SUCCESS,
                             payload: {
                                 ...data,
-                                connections: data.connections.map(c => ({
-                                    ...c.value,
-                                    id: c.value.connectionName
-                                }))
+                                connections: data.connections
                             }
                         }
                     ]
@@ -125,16 +126,22 @@ describe('settingsConnectionsActions', () => {
             jest.spyOn(api, 'updateProjectConnection').mockResolvedValue({});
         });
 
-        it('FETCH_CONNECTIONS_SUCCESS', () => {
-            return updateConnection('projectName', { id: '1', connectionName: '1' })(
-                dispatch
-            ).then(() => {
+        it('UPDATE_CONNECTION_SUCCESS', () => {
+            return updateConnection('projectName', {
+                key: '1',
+                value: { connectionName: '1' }
+            })(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: UPDATE_CONNECTION_START }],
                     [
                         {
                             type: UPDATE_CONNECTION_SUCCESS,
-                            payload: { connection: { id: '1', connectionName: '1' } }
+                            payload: {
+                                connection: {
+                                    key: '1',
+                                    value: { connectionName: '1' }
+                                }
+                            }
                         }
                     ]
                 ]);
@@ -150,7 +157,7 @@ describe('settingsConnectionsActions', () => {
             });
         });
 
-        it('FETCH_CONNECTIONS_FAIL', () => {
+        it('UPDATE_CONNECTION_FAIL', () => {
             jest.spyOn(api, 'updateProjectConnection').mockRejectedValue({
                 msg: 'Error'
             });
@@ -178,9 +185,12 @@ describe('settingsConnectionsActions', () => {
             jest.spyOn(api, 'createProjectConnection').mockResolvedValue({});
         });
 
-        it('FETCH_CONNECTIONS_SUCCESS', () => {
+        it('CREATE_CONNECTION_SUCCESS', () => {
             return createConnection('projectName', {
-                connectionName: 'connectionName'
+                key: 'connectionName',
+                value: {
+                    connectionName: 'connectionName'
+                }
             })(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: CREATE_CONNECTION_START }],
@@ -189,8 +199,10 @@ describe('settingsConnectionsActions', () => {
                             type: CREATE_CONNECTION_SUCCESS,
                             payload: {
                                 connection: {
-                                    id: 'connectionName',
-                                    connectionName: 'connectionName'
+                                    key: 'connectionName',
+                                    value: {
+                                        connectionName: 'connectionName'
+                                    }
                                 }
                             }
                         }
@@ -210,7 +222,7 @@ describe('settingsConnectionsActions', () => {
             });
         });
 
-        it('FETCH_CONNECTIONS_FAIL', () => {
+        it('CREATE_CONNECTION_FAIL', () => {
             jest.spyOn(api, 'createProjectConnection').mockRejectedValue({
                 msg: 'Error'
             });
@@ -238,24 +250,41 @@ describe('settingsConnectionsActions', () => {
             jest.spyOn(api, 'deleteProjectConnection').mockResolvedValue({});
         });
 
-        it('FETCH_CONNECTIONS_SUCCESS', () => {
+        it('DELETE_CONNECTION_START', () => {
+            return deleteConnection(
+                'projectName',
+                'connectionId'
+            )(dispatch).then(() => {
+                expect(dispatch).toHaveBeenCalledWith({
+                    type: DELETE_CONNECTION_START,
+                    payload: { key: 'connectionId' }
+                });
+            });
+        });
+
+        it('DELETE_CONNECTION_SUCCESS', () => {
             return deleteConnection(
                 'projectName',
                 'connectionId'
             )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: DELETE_CONNECTION_START }],
+                    [
+                        {
+                            type: DELETE_CONNECTION_START,
+                            payload: { key: 'connectionId' }
+                        }
+                    ],
                     [
                         {
                             type: DELETE_CONNECTION_SUCCESS,
-                            payload: { connectionId: 'connectionId' }
+                            payload: { key: 'connectionId' }
                         }
                     ]
                 ]);
             });
         });
 
-        it('FETCH_CONNECTIONS_FAIL', () => {
+        it('DELETE_CONNECTION_FAIL', () => {
             jest.spyOn(api, 'deleteProjectConnection').mockRejectedValue({
                 msg: 'Error'
             });
@@ -265,11 +294,16 @@ describe('settingsConnectionsActions', () => {
                 'connectionId'
             )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: DELETE_CONNECTION_START }],
+                    [
+                        {
+                            type: DELETE_CONNECTION_START,
+                            payload: { key: 'connectionId' }
+                        }
+                    ],
                     [
                         {
                             type: DELETE_CONNECTION_FAIL,
-                            payload: { error: { msg: 'Error' } }
+                            payload: { key: 'connectionId', error: { msg: 'Error' } }
                         }
                     ]
                 ]);
@@ -278,6 +312,70 @@ describe('settingsConnectionsActions', () => {
                     'projectName',
                     'connectionId'
                 );
+            });
+        });
+    });
+
+    describe('pingConnection', () => {
+        beforeEach(() => {
+            dispatch = jest.fn();
+            jest.spyOn(api, 'pingProjectConnection').mockResolvedValue({ data });
+        });
+
+        it('PING_CONNECTIONS_START', () => {
+            return pingConnection('projectName', { key: 'connectionId' })(
+                dispatch
+            ).then(() => {
+                expect(dispatch).toHaveBeenCalledWith({
+                    type: PING_CONNECTION_START,
+                    payload: { key: 'connectionId' }
+                });
+            });
+        });
+
+        it('PING_CONNECTIONS_SUCCESS', () => {
+            return pingConnection('projectName', { key: 'connectionId' })(
+                dispatch
+            ).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [
+                        {
+                            type: PING_CONNECTION_START,
+                            payload: { key: 'connectionId' }
+                        }
+                    ],
+                    [
+                        {
+                            type: PING_CONNECTION_SUCCESS,
+                            payload: { key: 'connectionId' }
+                        }
+                    ]
+                ]);
+            });
+        });
+
+        it('PING_CONNECTIONS_FAIL', () => {
+            jest.spyOn(api, 'pingProjectConnection').mockRejectedValue({
+                msg: 'Error'
+            });
+
+            return pingConnection('projectName', { key: 'connectionId' })(
+                dispatch
+            ).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [
+                        {
+                            type: PING_CONNECTION_START,
+                            payload: { key: 'connectionId' }
+                        }
+                    ],
+                    [
+                        {
+                            type: PING_CONNECTION_FAIL,
+                            payload: { key: 'connectionId', error: { msg: 'Error' } }
+                        }
+                    ]
+                ]);
             });
         });
     });

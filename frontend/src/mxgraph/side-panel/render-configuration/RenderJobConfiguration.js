@@ -33,76 +33,16 @@ import FilterConfiguration from '../filter-configuration';
 import CacheConfiguration from '../cache-configuration';
 import SortConfiguration from '../sort-configuration';
 import SliceConfiguration from '../slice-configuration';
-import { STORAGES } from '../../constants';
-
-const MIN_QUANTITY = 1;
-const MAX_QUANTITY = 2147483631;
-
-const isTruncateStorageDB2 = storage =>
-    [
-        STORAGES.DB2.value,
-        STORAGES.POSTGRE.value,
-        STORAGES.ORACLE.value,
-        STORAGES.MYSQL.value,
-        STORAGES.MSSQL.value,
-        STORAGES.REDSHIFTJDBC.value
-    ].includes(storage);
-
-// eslint-disable-next-line complexity
-export const checkReadWriteFields = ({
-    name,
-    storage,
-    anonymousAccess,
-    quantity,
-    writeMode,
-    truncateMode
-}) => {
-    if (!name || !storage) {
-        return true;
-    }
-    if (storage === 's3' && !anonymousAccess) {
-        return true;
-    }
-    if (
-        storage === 'stdout' &&
-        (!quantity || quantity < MIN_QUANTITY || quantity > MAX_QUANTITY)
-    ) {
-        return true;
-    }
-    return (
-        isTruncateStorageDB2(storage) && writeMode === 'Overwrite' && !truncateMode
-    );
-};
-
-export const checkTransformerFields = ({ name, mode, tableName, statement }) => {
-    if (!name || !statement || !mode) {
-        return true;
-    }
-    if (mode === 'Full_SQL' && !tableName) {
-        return true;
-    }
-    return false;
-};
-
-export const checkSortFields = state =>
-    !state.name ||
-    !state.sortType ||
-    !/^[^,]+?:/.test(state.orderColumns) ||
-    /,:/.test(state.orderColumns);
-
-export const checkGroupByFields = state =>
-    !state.name ||
-    !state.groupingColumns ||
-    !state.groupingCriteria ||
-    !!state.groupingCriteria
-        ?.split(',')
-        .find(column => !/.+?:.+?/.test(column.trim()));
-
-export const checkRemoveDuplicateFields = state =>
-    !state.name ||
-    !state.keyColumns ||
-    !state.orderColumns ||
-    !!state.orderColumns?.split(',').find(column => !/.+?:.+?/.test(column.trim()));
+import {
+    checkGroupByFields,
+    checkJoinFields,
+    checkReadWriteFields,
+    checkRemoveDuplicateFields,
+    checkSortFields,
+    checkTransformerFields,
+    isAnyEmpty
+} from './validation';
+import ValidateConfiguration from '../validate-configuration';
 
 const RenderJobConfiguration = ({
     configuration,
@@ -178,10 +118,7 @@ const RenderJobConfiguration = ({
             component: Configuration,
             props: {
                 Component: JoinConfiguration,
-                isDisabled: state =>
-                    !state.name ||
-                    !state.joinType ||
-                    (!state.columns && state.joinType !== 'cross'),
+                isDisabled: checkJoinFields,
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -194,7 +131,7 @@ const RenderJobConfiguration = ({
             component: Configuration,
             props: {
                 Component: CDCConfiguration,
-                isDisabled: state => !state.name || !state.keyColumns,
+                isDisabled: isAnyEmpty('name', 'keyColumns'),
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -207,7 +144,7 @@ const RenderJobConfiguration = ({
             component: Configuration,
             props: {
                 Component: UnionConfiguration,
-                isDisabled: state => !state.name || !state.type,
+                isDisabled: isAnyEmpty('name', 'type'),
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -231,7 +168,7 @@ const RenderJobConfiguration = ({
             component: Configuration,
             props: {
                 Component: FilterConfiguration,
-                isDisabled: state => !state.name || !state.condition,
+                isDisabled: isAnyEmpty('name', 'condition'),
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -243,7 +180,7 @@ const RenderJobConfiguration = ({
             component: Configuration,
             props: {
                 Component: CacheConfiguration,
-                isDisabled: state => !state.name,
+                isDisabled: isAnyEmpty('name'),
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -255,7 +192,7 @@ const RenderJobConfiguration = ({
             component: Configuration,
             props: {
                 Component: SliceConfiguration,
-                isDisabled: state => !state.name || !state.mode || !state.columns,
+                isDisabled: isAnyEmpty('name', 'mode', 'columns'),
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -268,6 +205,18 @@ const RenderJobConfiguration = ({
             props: {
                 Component: SortConfiguration,
                 isDisabled: checkSortFields,
+                ableToEdit,
+                setPanelDirty,
+                configuration,
+                saveCell,
+                graph
+            }
+        },
+        VALIDATE: {
+            component: Configuration,
+            props: {
+                Component: ValidateConfiguration,
+                isDisabled: isAnyEmpty('name'),
                 ableToEdit,
                 setPanelDirty,
                 configuration,

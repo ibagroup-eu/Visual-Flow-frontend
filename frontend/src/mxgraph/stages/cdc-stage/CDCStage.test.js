@@ -21,9 +21,10 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 import CDCStage from './CDCStage';
-import StageTag from '../../../components/stage-tag';
+import { JobStageTag } from '../../../components/stage-tag';
+import { TagsParameter } from '../parameters';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -59,42 +60,15 @@ describe('CDCStage', () => {
         expect(wrapper.find(Typography)).toBeDefined();
     });
 
-    it('should render stageIcon', () => {
-        expect(wrapper.find(stageIcon)).toBeDefined();
+    it('should render ConfiguredStageWithIcon', () => {
+        expect(wrapper.find(ConfiguredStageWithIcon)).toHaveLength(1);
     });
 
-    it('should render StageTag', () => {
-        expect(wrapper.find(StageTag)).toBeDefined();
+    it('should render JobStageTag', () => {
+        expect(wrapper.find(JobStageTag)).toBeDefined();
     });
 
-    it('should render Typography 3 times', () => {
-        expect(wrapper.find(Typography)).toHaveLength(3);
-    });
-
-    it('The first Typography text value to be "TEST"', () => {
-        expect(
-            wrapper
-                .find(Typography)
-                .at(0)
-                .text()
-        ).toBe('TEST');
-    });
-
-    it('The second Typography text value to be "jobDesigner:CDCConfiguration.Key:ser342e3"', () => {
-        expect(
-            wrapper
-                .find(Typography)
-                .at(1)
-                .text()
-        ).toBe('jobDesigner:CDCConfiguration.Key:ser342e3');
-    });
-
-    it('The third Typography text value to be "ser342e3"', () => {
-        expect(
-            wrapper
-                .find(Typography)
-                .at(2)
-                .text()
-        ).toBe('ser342e3');
+    it('should render TagsParameter', () => {
+        expect(wrapper.find(TagsParameter)).toHaveLength(1);
     });
 });

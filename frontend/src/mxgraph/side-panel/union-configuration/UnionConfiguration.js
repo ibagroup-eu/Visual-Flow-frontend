@@ -19,9 +19,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Divider } from '@material-ui/core';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
+import ConfigurationDivider from '../../../components/divider';
 
 const types = [
     {
@@ -34,23 +34,27 @@ const types = [
     }
 ];
 
-const UnionConfiguration = ({ state, ableToEdit, onChange }) => (
-    <>
-        <Divider />
-        {state.name && (
-            <SelectField
-                ableToEdit={ableToEdit}
-                label="jobDesigner:unionConfiguration.Mode"
-                name="type"
-                value={state.type}
-                handleInputChange={onChange}
-                menuItems={types}
-                type={OTHER}
-                required
-            />
-        )}
-    </>
-);
+const UnionConfiguration = ({ state, ableToEdit, onChange }) => {
+    return (
+        <>
+            {state.name && (
+                <>
+                    <ConfigurationDivider />
+                    <SelectField
+                        ableToEdit={ableToEdit}
+                        label="jobDesigner:unionConfiguration.Mode"
+                        name="type"
+                        value={state.type}
+                        handleInputChange={onChange}
+                        menuItems={types}
+                        type={OTHER}
+                        required
+                    />
+                </>
+            )}
+        </>
+    );
+};
 
 UnionConfiguration.propTypes = {
     state: PropTypes.object,

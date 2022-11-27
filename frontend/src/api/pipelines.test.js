@@ -22,7 +22,7 @@ import axiosInstance from './axiosInstance';
 
 describe('pipelines', () => {
     const projectId = 'some_id';
-    const pipelineId = 'some_id';
+    let pipelineId = 'some_id';
     const nodeId = 'some_id';
     const expected = { data: {} };
 
@@ -85,7 +85,7 @@ describe('pipelines', () => {
     });
 
     it('should get pipeline in project by id', () => {
-        const pipelineId = 'someid';
+        pipelineId = 'someid';
         const requestURL = `/project/${projectId}/pipeline/${pipelineId}`;
         const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
         return pipelines.getPipelineById(projectId, pipelineId).then(result => {
@@ -128,5 +128,14 @@ describe('pipelines', () => {
                 expect(result).toEqual(expected);
                 expect(spy).toHaveBeenCalledWith(requestURL);
             });
+    });
+
+    it('should get history', () => {
+        const requestURL = `/project/${projectId}/pipeline/${pipelineId}/history`;
+        const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return pipelines.getPipelineHistory(projectId, pipelineId).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
     });
 });

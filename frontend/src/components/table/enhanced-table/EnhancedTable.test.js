@@ -21,7 +21,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { TableBody, TableRow, Typography } from '@material-ui/core';
+import { Paper, TableBody, Typography } from '@material-ui/core';
 import { EnhancedTable } from './EnhancedTable';
 import TableToolbar from '../table-toolbar';
 
@@ -67,7 +67,7 @@ describe('EnhancedTable', () => {
             data: [{ id: 'id_1' }, { id: 'id_2' }]
         });
 
-        expect(wrapper.find(TableRow).length).toBe(2);
+        expect(wrapper.find(Paper).length).toBe(2);
     });
 
     it('should show "no items" message', () => {

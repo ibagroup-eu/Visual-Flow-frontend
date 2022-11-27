@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import TransformStage from './TransformStage';
+import { Parameter } from '../parameters';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -31,14 +31,16 @@ describe('TransformStage', () => {
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(Typography).exists()).toBeTruthy();
+        expect(wrapper).toBeDefined();
     });
-    it('should render without crashes', () => {
+
+    it('should render Parameter', () => {
         const wrapper = init();
         wrapper.setProps({
             stage: {
-                mode: 'Full'
+                mode: 'Full_SQL'
             }
         });
+        expect(wrapper.find(Parameter)).toHaveLength(1);
     });
 });

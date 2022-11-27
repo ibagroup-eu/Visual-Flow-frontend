@@ -26,7 +26,7 @@ export default makeStyles(theme => ({
     },
     storage: {
         width: '35%',
-        marginTop: theme.spacing(-1),
+        marginTop: theme.spacing(-1.35),
         padding: theme.spacing(0, 4)
     },
     search: {

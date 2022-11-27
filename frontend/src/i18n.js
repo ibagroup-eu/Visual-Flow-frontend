@@ -43,6 +43,8 @@ import cache from './translations/en/stages/cache.json';
 import sort from './translations/en/stages/sort.json';
 import slice from './translations/en/stages/slice.json';
 import pipeline from './translations/en/stages/pipeline.json';
+import wait from './translations/en/stages/wait.json';
+import validation from './translations/en/stages/validation.json';
 
 export const resources = {
     en: {
@@ -67,7 +69,9 @@ export const resources = {
         cache,
         sort,
         slice,
-        pipeline
+        pipeline,
+        wait,
+        validation
     }
 };
 

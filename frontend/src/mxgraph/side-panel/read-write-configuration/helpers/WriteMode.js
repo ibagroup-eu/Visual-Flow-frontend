@@ -22,37 +22,39 @@ import PropTypes from 'prop-types';
 import SelectField from '../../../../components/select-field';
 import { READWRITE } from '../../../constants';
 
-const writeModes = [
-    {
-        value: 'Append',
-        label: 'Append'
-    },
-    {
-        value: 'Overwrite',
-        label: 'Overwrite'
-    },
-    {
-        value: 'ErrorIfExists',
-        label: 'Error if table exists'
-    }
-];
-
-const WriteMode = ({ disabled, value, onChange }) => (
-    <SelectField
-        ableToEdit={!disabled}
-        label="jobDesigner:readConfiguration.writeMode"
-        name="writeMode"
-        value={value}
-        handleInputChange={onChange}
-        menuItems={writeModes}
-        type={READWRITE}
-    />
-);
+const WriteMode = ({ disabled, value, onChange, storage }) => {
+    const writeModes = [
+        {
+            value: 'Append',
+            label: 'Append'
+        },
+        {
+            value: 'Overwrite',
+            label: 'Overwrite'
+        },
+        storage !== 'clickHouse' && {
+            value: 'ErrorIfExists',
+            label: 'Error if table exists'
+        }
+    ];
+    return (
+        <SelectField
+            ableToEdit={!disabled}
+            label="jobDesigner:readConfiguration.writeMode"
+            name="writeMode"
+            value={value}
+            handleInputChange={onChange}
+            menuItems={writeModes}
+            type={READWRITE}
+        />
+    );
+};
 
 WriteMode.propTypes = {
     disabled: PropTypes.bool,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    storage: PropTypes.string
 };
 
 export default WriteMode;

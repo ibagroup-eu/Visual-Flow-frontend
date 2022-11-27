@@ -29,7 +29,7 @@ describe('TagsFilter', () => {
 
     beforeEach(() => {
         props = {
-            data: { test: true },
+            data: { test: true, test2: false },
             onCheckTags: jest.fn(),
             resetTags: jest.fn(),
             checkedTags: [['test', true]]
@@ -42,6 +42,10 @@ describe('TagsFilter', () => {
         expect(wrapper).toBeDefined();
     });
 
+    it('should calls useEffect', () => {
+        wrapper = mount(<TagsFilter {...props} />);
+    });
+
     it('should calls onOpen prop', () => {
         wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
     });
@@ -50,25 +54,71 @@ describe('TagsFilter', () => {
         wrapper.find(ClickAwayListener).prop('onClickAway')();
     });
 
-    it('should calls onChange prop', () => {
-        wrapper = mount(<TagsFilter {...props} />);
-        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: true });
+    it('should calls onOpen prop with setLastSearchValue', () => {
         wrapper
             .find(Popper)
             .props()
             .children({ TransitionProps: {} })
-            .props.children.props.children.at(0)
+            .props.children.props.children.props.children.props.children.at(0)
+            .props.onChange({ target: { value: 'test' } });
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
+    });
+
+    it('should calls onChange prop for SearchInput', () => {
+        wrapper
+            .find(Popper)
+            .props()
+            .children({ TransitionProps: {} })
+            .props.children.props.children.props.children.props.children.at(0)
             .props.onChange({ target: { value: 'test' } });
     });
 
-    it('should calls ref prop', () => {
-        wrapper = mount(<TagsFilter {...props} />);
-        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: true });
+    it('should calls onChange prop for SearchInput with setLastSearchValue', () => {
         wrapper
             .find(Popper)
             .props()
             .children({ TransitionProps: {} })
-            .props.children.props.children.at(1)
+            .props.children.props.children.props.children.props.children.at(0)
+            .props.onChange({ target: { value: 'test' } });
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
+        wrapper
+            .find(Popper)
+            .props()
+            .children({ TransitionProps: {} })
+            .props.children.props.children.props.children.props.children.at(0)
+            .props.onChange({ target: { value: 'test' } });
+    });
+
+    it('should render filteredTags', () => {
+        wrapper = mount(<TagsFilter {...props} />);
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
+        wrapper
+            .find(Popper)
+            .props()
+            .children({ TransitionProps: {} })
+            .props.children.props.children.props.children.props.children.at(0)
+            .props.onChange({ target: { value: '2' } });
+    });
+
+    it('should render filteredTags without classes.filteredTags', () => {
+        wrapper = mount(<TagsFilter {...props} />);
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
+        wrapper
+            .find(Popper)
+            .props()
+            .children({ TransitionProps: {} })
+            .props.children.props.children.props.children.props.children.at(0)
+            .props.onChange({ target: { value: 't' } });
+    });
+
+    it('should calls ref prop for collapse', () => {
+        wrapper = mount(<TagsFilter {...props} />);
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
+        wrapper
+            .find(Popper)
+            .props()
+            .children({ TransitionProps: {} })
+            .props.children.props.children.props.children.props.children.at(1)
             .props.children.at(1)
             .ref({ scrollHeight: 100 });
     });

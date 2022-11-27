@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import EventIcon from '@material-ui/icons/Event';
@@ -32,6 +32,8 @@ import ExportIcon from '@material-ui/icons/Publish';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { HistoryOutlined } from '@material-ui/icons';
+import { isEqual } from 'lodash';
 import PipelineTitleCell from '../cells/PipelineTitleCell';
 import DividerCell from '../../../components/table/cells/divider-cell';
 import PipelineStatusCell from '../cells/PipelineStatusCell';
@@ -41,12 +43,12 @@ import EnhancedTable from '../../../components/table/enhanced-table';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 import { setCurrentTablePage } from '../../../redux/actions/enhancedTableActions';
 import {
+    copyPipeline,
     deletePipeline,
     runPipeline,
-    stopPipeline,
-    copyPipeline,
     setPipelinesLastRun,
-    setPipelinesStatus
+    setPipelinesStatus,
+    stopPipeline
 } from '../../../redux/actions/pipelinesActions';
 import withStyles from './PipelinesTable.Styles';
 import timeRange from '../../../utils/timeRangeOptions';
@@ -55,13 +57,16 @@ import history from '../../../utils/history';
 import ExportModalWindow from '../../../components/export-modal-window';
 import { PENDING, PIPELINE_STATUSES, RUNNING } from '../../../mxgraph/constants';
 import {
-    runWithValidation,
+    joinDataNames,
     removeHandler,
-    joinDataNames
+    runWithValidation
 } from '../../../components/helpers/JobsPipelinesTable';
 import CronModal from '../../../components/cron-modal';
 import withPagination from '../../../routes/withPagination';
 import { filterData } from '../../jobs/table/JobsTable';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+import { fetchPipelineById } from '../../../redux/actions/mxGraphActions';
+import UnitConfig from '../../../unitConfig';
 
 const utilizationField = (t, lastRun, onChange, classname) => (
     <Grid item className={classname}>
@@ -97,7 +102,9 @@ const PipelinesTable = ({
     params,
     resetTags,
     onCheckTags,
-    checkedTags
+    checkedTags,
+    getPipeline,
+    pipelineData
 }) => {
     const { t } = useTranslation();
     const classes = withStyles();
@@ -107,67 +114,90 @@ const PipelinesTable = ({
         cronExists: false
     });
     const [selectedPipelines, setSelectedPipelines] = React.useState([]);
+    const [pipelineHistory, setPipelineHistory] = React.useState({ data: {} });
 
-    const getActions = item => [
-        {
-            title: t('pipelines:tooltip.Scheduling'),
-            Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
-            disable: !item.runnable,
-            onClick: () =>
-                setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
-        },
-        ![RUNNING, PENDING].includes(item.status)
-            ? {
-                  title: t('pipelines:tooltip.Play'),
-                  Icon: PlayArrowOutlinedIcon,
-                  disable: !item.runnable,
-                  onClick: () => {
-                      runWithValidation(
-                          projectId,
-                          item.id,
-                          { dataJobs: jobs, dataParams: params },
-                          run,
-                          t('main:validation.pipelineWithoutJobParams')
-                      );
-                  }
-              }
-            : {
-                  title: t('pipelines:tooltip.Stop'),
-                  Icon: StopOutlinedIcon,
-                  disable: !item.runnable || item.status === PENDING,
-                  onClick: () => {
-                      stop(projectId, item.id);
-                  }
-              },
-        {
-            title: t('pipelines:tooltip.pipelineDesigner'),
-            Icon: PaletteOutlinedIcon,
-            onClick: () => history.push(`/pipelines/${projectId}/${item.id}`)
-        },
-        {
-            title: t('pipelines:tooltip.Copy'),
-            Icon: FileCopyOutlinedIcon,
-            onClick: () => copy(projectId, item.id)
-        },
-        {
-            title: t('pipelines:tooltip.Remove'),
-            Icon: DeleteOutlinedIcon,
-            onClick: () =>
-                confirmationWindow({
-                    body: t('pipelines:confirm.delete', { name: item.name }),
-                    callback: () => {
-                        removeHandler(
-                            projectId,
-                            [item.id],
-                            data.length,
-                            { rowsPerPage, currentPage },
-                            remove,
-                            setCurrentPage
-                        );
-                    }
-                })
+    useEffect(() => {
+        if (!isEqual(pipelineHistory, {}) && pipelineData?.definition) {
+            setPipelineHistory({
+                ...pipelineHistory,
+                data: {
+                    ...pipelineHistory.data,
+                    definition: pipelineData.definition
+                }
+            });
         }
-    ];
+    }, [pipelineData]);
+
+    const getActions = item =>
+        [
+            {
+                title: t('pipelines:tooltip.Scheduling'),
+                Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
+                disable: !item.runnable,
+                onClick: () =>
+                    setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
+            },
+            ![RUNNING, PENDING].includes(item.status)
+                ? {
+                      title: t('pipelines:tooltip.Play'),
+                      Icon: PlayArrowOutlinedIcon,
+                      disable: !item.runnable,
+                      onClick: () => {
+                          runWithValidation(
+                              projectId,
+                              item.id,
+                              { dataJobs: jobs, dataParams: params },
+                              run,
+                              t('main:validation.pipelineWithoutJobParams')
+                          );
+                      }
+                  }
+                : {
+                      title: t('pipelines:tooltip.Stop'),
+                      Icon: StopOutlinedIcon,
+                      disable: !item.runnable || item.status === PENDING,
+                      onClick: () => {
+                          stop(projectId, item.id);
+                      }
+                  },
+            {
+                title: t('pipelines:tooltip.pipelineDesigner'),
+                Icon: PaletteOutlinedIcon,
+                onClick: () => history.push(`/pipelines/${projectId}/${item.id}`)
+            },
+            {
+                title: t('pipelines:tooltip.Copy'),
+                Icon: FileCopyOutlinedIcon,
+                onClick: () => copy(projectId, item.id)
+            },
+            {
+                title: t('pipelines:tooltip.History'),
+                Icon: HistoryOutlined,
+                visible: UnitConfig.PIPELINE.HISTORY,
+                onClick: () => {
+                    setPipelineHistory({ data: item, display: true });
+                    getPipeline(projectId, item.id);
+                }
+            },
+            {
+                title: t('pipelines:tooltip.Remove'),
+                Icon: DeleteOutlinedIcon,
+                onClick: () =>
+                    confirmationWindow({
+                        body: t('pipelines:confirm.delete', { name: item.name }),
+                        callback: () => {
+                            removeHandler(
+                                projectId,
+                                [item.id],
+                                data.length,
+                                { rowsPerPage, currentPage },
+                                remove,
+                                setCurrentPage
+                            );
+                        }
+                    })
+            }
+        ].filter(action => action.visible !== false);
 
     const getGlobalActions = () => [
         {
@@ -206,8 +236,20 @@ const PipelinesTable = ({
     const closeCronModal = () =>
         setCronPipeline({ pipelineId: '', cronExists: false });
 
+    const closeHistory = () =>
+        setPipelineHistory({ ...pipelineHistory, display: false });
+
     return (
         <>
+            {UnitConfig.PIPELINE.HISTORY && (
+                <HistoryPanel
+                    type="pipeline"
+                    data={pipelineHistory.data}
+                    display={pipelineHistory.display}
+                    onClose={closeHistory}
+                    projectId={projectId}
+                />
+            )}
             <CronModal
                 cronPipeline={cronPipeline}
                 onClose={closeCronModal}
@@ -329,14 +371,17 @@ PipelinesTable.propTypes = {
     params: PropTypes.array,
     resetTags: PropTypes.func,
     onCheckTags: PropTypes.func,
-    checkedTags: PropTypes.array
+    checkedTags: PropTypes.array,
+    getPipeline: PropTypes.func,
+    pipelineData: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     lastRun: state.pages.pipelines.lastRun,
     status: state.pages.pipelines.status,
     currentPage: state.enhancedTable.page,
-    rowsPerPage: state.enhancedTable.rowsPerPage
+    rowsPerPage: state.enhancedTable.rowsPerPage,
+    pipelineData: state.mxGraph.data
 });
 
 const mapDispatchToProps = {
@@ -347,7 +392,8 @@ const mapDispatchToProps = {
     setLastRun: setPipelinesLastRun,
     setStatus: setPipelinesStatus,
     setCurrentPage: setCurrentTablePage,
-    confirmationWindow: toggleConfirmationWindow
+    confirmationWindow: toggleConfirmationWindow,
+    getPipeline: fetchPipelineById
 };
 
 export default connect(

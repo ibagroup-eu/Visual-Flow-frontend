@@ -19,30 +19,27 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './UnionStage.Styles';
 import makeTooltip from '../helpers/makeTooltip';
 
-import StageTag from '../../../components/stage-tag';
+import { JobStageTag } from '../../../components/stage-tag';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const UnionStage = ({ stage }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.title}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <StageTag
-                className={classes.type}
-                content={t(`jobDesigner:unionConfiguration.${stage.type}`)}
-            />
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <JobStageTag className={classes.type}>
+                {t(`jobDesigner:unionConfiguration.${stage.type}`)}
+            </JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

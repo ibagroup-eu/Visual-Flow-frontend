@@ -20,29 +20,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+import ConfigurationDivider from '../../../components/divider';
 
 const FilterConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
     return (
         <>
-            <Divider />
             {state.name && (
-                <TextField
-                    disabled={!ableToEdit}
-                    label={t('jobDesigner:filterConfiguration.Filter')}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    multiline
-                    minRows={16}
-                    name="condition"
-                    value={state.condition || ''}
-                    onChange={event =>
-                        onChange(event.target.name, event.target.value)
-                    }
-                    required
-                />
+                <>
+                    <ConfigurationDivider />
+                    <TextField
+                        disabled={!ableToEdit}
+                        label={t('jobDesigner:filterConfiguration.Filter')}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        multiline
+                        minRows={16}
+                        name="condition"
+                        value={state.condition || ''}
+                        onChange={event =>
+                            onChange(event.target.name, event.target.value)
+                        }
+                        required
+                    />
+                </>
             )}
         </>
     );

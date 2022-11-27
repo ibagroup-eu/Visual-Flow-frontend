@@ -28,6 +28,9 @@ export default {
     getJobLogs: (projectId, jobId) =>
         axiosInstance.get(`/project/${projectId}/job/${jobId}/logs`),
 
+    getJobHistoryLogs: (projectId, jobId, logId) =>
+        axiosInstance.get(`/project/${projectId}/job/${jobId}/logsHistory/${logId}`),
+
     createJob: (projectId, job) =>
         axiosInstance.post(`/project/${projectId}/job`, job),
 
@@ -46,6 +49,6 @@ export default {
     copyJob: (projectId, jobId) =>
         axiosInstance.post(`/project/${projectId}/${jobId}/copyJob`),
 
-    getHistory: (projectId, jobId) =>
+    getJobHistory: (projectId, jobId) =>
         axiosInstance.get(`/project/${projectId}/job/${jobId}/history`)
 };

@@ -18,49 +18,9 @@
  */
 
 import { makeStyles } from '@material-ui/core/styles';
-import { CELL_HEIGHT, CELL_WIDTH } from '../../side-panel/SidePanel';
 
 export default makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        width: CELL_WIDTH,
-        height: CELL_HEIGHT,
-        padding: theme.spacing(1)
-    },
-    name: {
-        display: 'flex',
-        whiteSpace: 'normal',
-        flexShrink: 0,
-        marginBottom: 12,
-        '& span': {
-            overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
-        }
-    },
-    removeBy: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        overflow: 'hidden',
-        padding: '1px 0',
-        maxHeight: 95
-    },
-    dots: {
-        color: '#000',
-        alignSelf: 'flex-end',
-        'white-space': 'pre'
-    },
     key: {
-        color: theme.palette.getContrastText(theme.palette.success.dark),
-        backgroundColor: theme.palette.success.dark,
-        borderRadius: theme.spacing(0.5),
-        padding: theme.spacing(0, 0.5),
-        margin: theme.spacing(0.25),
-        minWidth: theme.spacing(3),
-        maxWidth: 90,
-        overflow: 'inherit',
-        'text-overflow': 'ellipsis'
+        backgroundColor: theme.palette.success.light
     }
 }));

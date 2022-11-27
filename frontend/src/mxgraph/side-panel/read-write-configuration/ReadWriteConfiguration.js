@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Box, Divider, IconButton, TextField } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Box, IconButton, Popper, TextField } from '@material-ui/core';
 
 import { get } from 'lodash';
 import { TuneOutlined } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
 import Db2Storage from './db2-storage';
 import CosStorage from './cos-storage';
 import AwsStorage from './aws-storage';
@@ -37,6 +37,10 @@ import RedShiftStorage from './redshift-storage';
 import StdoutStorage from './stdout-storage';
 import useStyles from './ReadWriteConfiguration.Styles';
 import DividerWithText from '../helpers/DividerWithText';
+import ClusterStorage from './cluster-storage';
+import DataframeStorage from './dataframe-storage/DataframeStorage';
+import ClickHouseStorage from './clickhouse-storage';
+import ConfigurationDivider from '../../../components/divider';
 
 const isTruncateStorage = storage =>
     [
@@ -79,6 +83,12 @@ export const getStorageComponent = name => {
             return RedShiftStorage;
         case STORAGES.STDOUT.value:
             return StdoutStorage;
+        case STORAGES.CLUSTER.value:
+            return ClusterStorage;
+        case STORAGES.DATAFRAME.value:
+            return DataframeStorage;
+        case STORAGES.CLICKHOUSE.value:
+            return ClickHouseStorage;
         default:
             throw new Error(`Unsupported storage: ${name}`);
     }
@@ -89,8 +99,10 @@ const ReadWriteConfiguration = ({
     ableToEdit,
     onChange,
     openModal,
-    connection
+    connection,
+    stageId
 }) => {
+    const ref = useRef();
     const { t } = useTranslation();
     const classes = useStyles();
 
@@ -109,23 +121,60 @@ const ReadWriteConfiguration = ({
         }
     }, [writeMode, storage, truncateMode]);
 
+    const changeStorage = value => {
+        onChange('storage', value || undefined);
+        if (state.connectionName) {
+            onChange('connectionName', null);
+        }
+        if (
+            state.path &&
+            (value === 'cluster' ||
+                (state.storage === 'cluster' && value !== 'cluster'))
+        ) {
+            onChange('path', null);
+        }
+    };
+
     const renderStorageComponent = name => {
         const Comp = getStorageComponent(name);
         return (
-            <Comp
-                ableToEdit={ableToEdit}
-                inputValues={state}
-                handleInputChange={event =>
-                    onChange(event.target.name, event.target.value)
-                }
-                openModal={openModal}
-                connection={connection}
-            />
+            <>
+                {state.connectionName ? (
+                    <DividerWithText>{state.connectionName}</DividerWithText>
+                ) : (
+                    <ConfigurationDivider />
+                )}
+                <Comp
+                    ableToEdit={ableToEdit}
+                    inputValues={state}
+                    handleInputChange={event =>
+                        onChange(event.target.name, event.target.value)
+                    }
+                    openModal={openModal}
+                    connection={connection}
+                    stageId={stageId}
+                />
+            </>
         );
     };
     return (
-        <>
+        <div ref={ref}>
             <Autocomplete
+                PopperComponent={props => (
+                    <Popper
+                        {...props}
+                        popperOptions={{
+                            positionFixed: true,
+                            modifiers: {
+                                preventOverflow: { enabled: false },
+                                hide: {
+                                    enabled: false
+                                }
+                            }
+                        }}
+                        container={ref?.current}
+                    />
+                )}
                 disabled={!ableToEdit}
                 name="storage"
                 options={Object.values(STORAGES).filter(
@@ -136,12 +185,7 @@ const ReadWriteConfiguration = ({
                     Object.values(STORAGES).find(el => el.value === state.storage) ||
                     null
                 }
-                onChange={(event, newValue) => {
-                    onChange('storage', newValue?.value || undefined);
-                    if (state.connectionName) {
-                        onChange('connectionName', null);
-                    }
-                }}
+                onChange={(event, newValue) => changeStorage(newValue?.value)}
                 renderInput={params => (
                     <Box className={classes.wrapper}>
                         <TextField
@@ -161,14 +205,8 @@ const ReadWriteConfiguration = ({
                     </Box>
                 )}
             />
-
-            {state.connectionName ? (
-                <DividerWithText>{state.connectionName}</DividerWithText>
-            ) : (
-                <Divider />
-            )}
             {state.storage && renderStorageComponent(state.storage)}
-        </>
+        </div>
     );
 };
 
@@ -177,7 +215,8 @@ ReadWriteConfiguration.propTypes = {
     ableToEdit: PropTypes.bool,
     onChange: PropTypes.func,
     openModal: PropTypes.func,
-    connection: PropTypes.object
+    connection: PropTypes.object,
+    stageId: PropTypes.string
 };
 
 export default ReadWriteConfiguration;

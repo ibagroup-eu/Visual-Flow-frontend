@@ -24,7 +24,6 @@ import GroupByStage from './groupby-stage';
 import RemoveDuplicatesStage from './remove-duplicates-stage';
 import TransformStage from './transform-stage';
 import FilterStage from './filter-stage';
-import stageIcon from '../sidebar/stage-icon/stageIcon';
 
 import UnionStage from './union-stage';
 import JoinStage from './join-stage';
@@ -34,7 +33,6 @@ import EdgeStage from './edge-stage';
 import NotificationStage from './notification-stage';
 import PDStages from './pd-stages/PDStages';
 import CacheStage from './cache-stage';
-import StageWarning from '../../components/stage-warning';
 import SortStage from './sort-stage';
 import {
     CACHE,
@@ -51,25 +49,18 @@ import {
     REMOVE_DUPLICATES,
     SLICE,
     SORT,
+    STAGE_WIDTH,
     TRANSFORM,
     UNION,
+    VALIDATE,
     WRITE
 } from '../constants';
+import { StageWithIcon } from '../sidebar/stage-icon';
+import ValidateStage from './validate-stage';
 
 const root = {
     position: 'relative',
-    width: 130
-};
-
-const stageStyle = {
-    display: 'inline-flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-};
-
-const textStyle = {
-    textAlign: 'left',
-    marginLeft: '4.8px'
+    width: STAGE_WIDTH
 };
 
 // eslint-disable-next-line complexity
@@ -81,20 +72,10 @@ const renderContent = (stage, t, type, jobs, params, pipelines) => {
     ) {
         return (
             <div style={root}>
-                <div style={stageStyle}>
-                    {stageIcon(stage.operation)}
-                    <div style={textStyle}>
-                        {t(`jobDesigner:palette.${stage.operation}`)}
-                    </div>
-                </div>
-                {type === PIPELINE && (
-                    <StageWarning
-                        stage={stage}
-                        jobs={jobs}
-                        params={params}
-                        pipelines={pipelines}
-                    />
-                )}
+                <StageWithIcon
+                    name={t(`jobDesigner:palette.${stage.operation}`)}
+                    operation={stage.operation}
+                />
             </div>
         );
     }
@@ -157,6 +138,8 @@ const renderContent = (stage, t, type, jobs, params, pipelines) => {
             return <CacheStage stage={stage} />;
         case SORT:
             return <SortStage stage={stage} />;
+        case VALIDATE:
+            return <ValidateStage stage={stage} />;
         default:
             return null;
     }
@@ -164,7 +147,9 @@ const renderContent = (stage, t, type, jobs, params, pipelines) => {
 
 const renderStage = (stage, t, type, jobs, params, pipelines, theme) => (
     <MuiThemeProvider theme={theme}>
-        {renderContent(stage, t, type, jobs, params, pipelines)}
+        <span className={stage.operation}>
+            {renderContent(stage, t, type, jobs, params, pipelines)}
+        </span>
     </MuiThemeProvider>
 );
 

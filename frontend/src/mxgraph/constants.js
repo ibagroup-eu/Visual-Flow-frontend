@@ -31,9 +31,11 @@ export const FILTER = 'FILTER';
 export const JOB = 'JOB';
 export const NOTIFICATION = 'NOTIFICATION';
 export const CONTAINER = 'CONTAINER';
+export const WAIT = 'WAIT';
 export const PIPELINE = 'PIPELINE';
 export const CACHE = 'CACHE';
 export const SORT = 'SORT';
+export const VALIDATE = 'VALIDATE';
 
 export const PENDING = 'Pending';
 export const RUNNING = 'Running';
@@ -46,6 +48,10 @@ export const TERMINATED = 'Terminated';
 const SUSPENDED = 'Suspended';
 const STOPPED = 'Stopped';
 const UNKNOWN = 'Unknown';
+
+export const OLD_STAGE_WIDTH = 130;
+export const STAGE_WIDTH = 120;
+export const STAGE_HEIGHT = 72;
 
 export const READWRITE = 'ReadWrite';
 export const OTHER = 'Other';
@@ -117,10 +123,23 @@ export const STORAGES = {
         value: 'redshift-jdbc',
         label: 'Redshift-jdbc'
     },
+    DATAFRAME: {
+        value: 'dataframe',
+        label: 'Dataframe',
+        hide: [WRITE]
+    },
+    CLUSTER: {
+        value: 'cluster',
+        label: 'Local File'
+    },
     STDOUT: {
         value: 'stdout',
         label: 'STDOUT',
         hide: [READ]
+    },
+    CLICKHOUSE: {
+        value: 'clickhouse',
+        label: 'Click House'
     }
 };
 

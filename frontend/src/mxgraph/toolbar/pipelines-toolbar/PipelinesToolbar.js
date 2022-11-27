@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { IconButton, Divider, Typography, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Save } from '@material-ui/icons';
+import { HistoryOutlined, Save } from '@material-ui/icons';
 
 import { has } from 'lodash';
 import useStyles from './PipelinesToolbar.Styles';
@@ -47,6 +47,8 @@ import {
     validParamsContainer
 } from '../../../components/helpers/PipelinesValidation';
 import CronButton from '../cron-button';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+import UnitConfig from '../../../unitConfig';
 
 const PipelinesToolbar = ({
     graph,
@@ -62,7 +64,6 @@ const PipelinesToolbar = ({
     setSidePanel,
     sidePanelIsOpen,
     setDirty,
-    sidePanelIsDirty,
     dirty,
     undoButtonsDisabling,
     jobs,
@@ -71,6 +72,7 @@ const PipelinesToolbar = ({
 }) => {
     const { t } = useTranslation();
     const classes = useStyles({ name: 'PipelineUtilizationCell' });
+    const [pipelineHistory, setPipelineHistory] = React.useState({ data: {} });
 
     const currentPath = history.location.pathname.split('/');
     const currentProject = currentPath.slice(-2, -1)[0];
@@ -112,19 +114,17 @@ const PipelinesToolbar = ({
         }
     };
 
-    const runAndUpdate = () => {
-        return run(currentProject, currentPipeline).then(() => {
+    const runAndUpdate = () =>
+        run(currentProject, currentPipeline).then(() => {
             getActualJobs(currentProject);
             getActualPipeline(currentProject, currentPipeline);
         });
-    };
 
-    const stopAndUpdate = () => {
-        return stop(currentProject, currentPipeline).then(() => {
+    const stopAndUpdate = () =>
+        stop(currentProject, currentPipeline).then(() => {
             getActualJobs(currentProject);
             getActualPipeline(currentProject, currentPipeline);
         });
-    };
 
     const enableViewMode = () =>
         data.status === PENDING || data.status === RUNNING ? false : data.editable;
@@ -134,7 +134,10 @@ const PipelinesToolbar = ({
         getActualPipeline(currentProject, currentPipeline);
     };
 
-    const changesNotSaved = () => sidePanelIsDirty || dirty || !validStages();
+    const changesNotSaved = () => dirty || !validStages();
+
+    const closeHistory = () =>
+        setPipelineHistory({ ...pipelineHistory, display: false });
 
     return (
         <>
@@ -174,12 +177,8 @@ const PipelinesToolbar = ({
                             runnable={data.runnable}
                             stopable={![PENDING].includes(statusValue)}
                             changesNotSaved={changesNotSaved()}
-                            run={() => {
-                                runAndUpdate();
-                            }}
-                            stop={() => {
-                                stopAndUpdate();
-                            }}
+                            run={runAndUpdate}
+                            stop={stopAndUpdate}
                         />
                         <CronButton
                             changesNotSaved={changesNotSaved()}
@@ -195,6 +194,29 @@ const PipelinesToolbar = ({
                             <Save />
                         </Tooltip>
                     </IconButton>
+                )}
+                {UnitConfig.PIPELINE.HISTORY && (
+                    <>
+                        <IconButton
+                            onClick={() =>
+                                setPipelineHistory({
+                                    data: { ...data, id: currentPipeline },
+                                    display: true
+                                })
+                            }
+                        >
+                            <Tooltip title={t('jobs:tooltip.History')} arrow>
+                                <HistoryOutlined />
+                            </Tooltip>
+                        </IconButton>
+                        <HistoryPanel
+                            type="pipeline"
+                            projectId={currentProject}
+                            data={pipelineHistory.data}
+                            display={pipelineHistory.display}
+                            onClose={closeHistory}
+                        />
+                    </>
                 )}
             </div>
             <Divider orientation="vertical" flexItem />
@@ -230,7 +252,6 @@ PipelinesToolbar.propTypes = {
     reversible: PropTypes.object,
     getActualPipeline: PropTypes.func,
     getActualJobs: PropTypes.func,
-    sidePanelIsDirty: PropTypes.bool,
     dirty: PropTypes.bool,
     undoButtonsDisabling: PropTypes.object,
     jobs: PropTypes.array,
@@ -240,8 +261,11 @@ PipelinesToolbar.propTypes = {
 
 const mapStateToProps = state => ({
     pipelineStatus: state.pipelineStatus,
-    sidePanelIsDirty: state.mxGraph.sidePanelIsDirty,
-    dirty: state.mxGraph.dirty,
+    dirty:
+        state.mxGraph.dirty ||
+        state.mxGraph.graphWithParamsIsDirty ||
+        state.mxGraph.paramsIsDirty ||
+        state.mxGraph.sidePanelIsDirty,
     jobs: state.pages.jobs.data.jobs,
     params: state.pages.settingsParameters.data.params
 });

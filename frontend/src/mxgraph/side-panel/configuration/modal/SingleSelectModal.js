@@ -21,24 +21,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
-import {
-    Box,
-    Paper,
-    Radio,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow,
-    TextField
-} from '@material-ui/core';
-
-import classNames from 'classnames';
+import { Box, Paper, Table, TableBody, TableContainer } from '@material-ui/core';
 import PopupForm from '../../../../components/popup-form';
 import SearchInput from '../../../../components/search-input';
 import { PageSkeleton } from '../../../../components/skeleton';
 import useStyles from './SingleSelectModal.Styles';
 import ModalConfirmButtons from '../../read-write-configuration/connections-modal/confirmButtons/ModalConfirmButtons';
+import SingleSelectModalRow from './modal-row/SingleSelectModalRow';
 
 const SingleSelectModal = ({
     title,
@@ -56,7 +45,6 @@ const SingleSelectModal = ({
     const [itemList, setItemList] = React.useState(_.sortBy(items, 'name'));
     const [searchValue, setSearchValue] = React.useState('');
     const [selectedValue, setSelectedValue] = React.useState('');
-    const itemSelected = items.find(item => item.id === selectedValue);
 
     React.useEffect(() => {
         setSelectedValue(currentValue);
@@ -96,47 +84,15 @@ const SingleSelectModal = ({
                         <Table>
                             <TableBody>
                                 {itemList.map(({ id, name }) => (
-                                    <TableRow key={id}>
-                                        {(!!itemSelected || ableToEdit) && (
-                                            <TableCell className={classes.cell}>
-                                                <Radio
-                                                    disabled={!ableToEdit}
-                                                    className={
-                                                        classes.radioButtonCell
-                                                    }
-                                                    checked={selectedValue === id}
-                                                    onChange={event =>
-                                                        setSelectedValue(
-                                                            event.target.value
-                                                        )
-                                                    }
-                                                    value={id}
-                                                    color="secondary"
-                                                />
-                                            </TableCell>
-                                        )}
-                                        <TableCell
-                                            className={classNames(
-                                                classes.cell,
-                                                classes.jobCell
-                                            )}
-                                        >
-                                            <TextField
-                                                disabled
-                                                variant="outlined"
-                                                fullWidth
-                                                value={name}
-                                                placeholder={t(
-                                                    'pipelineDesigner:jobConfiguration.Name'
-                                                )}
-                                                InputProps={{
-                                                    classes: {
-                                                        disabled: classes.paper
-                                                    }
-                                                }}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
+                                    <SingleSelectModalRow
+                                        key={id}
+                                        name={name}
+                                        id={id}
+                                        ableToEdit={ableToEdit}
+                                        selectedValue={selectedValue}
+                                        defaultSelected={currentValue === id}
+                                        setSelectedValue={setSelectedValue}
+                                    />
                                 ))}
                             </TableBody>
                         </Table>

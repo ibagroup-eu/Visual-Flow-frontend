@@ -18,31 +18,38 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@material-ui/core';
 import classNames from 'classnames';
 import useStyles from './HistoryListHeader.Styles';
 
-const HistoryListHeader = () => {
+const HistoryListHeader = ({ type }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
     return (
         <Box className={classes.root}>
             <Typography className={classNames(classes.startedHeader, classes.font)}>
-                {t('jobs:history.Started')}
+                {t('main:history.Started')}
             </Typography>
             <Typography className={classNames(classes.durationHeader, classes.font)}>
-                {t('jobs:history.Duration')}
+                {t('main:history.Duration')}
             </Typography>
             <Typography className={classNames(classes.runByHeader, classes.font)}>
-                {t('jobs:history.RunBy')}
+                {t('main:history.RunBy')}
             </Typography>
-            <Typography className={classNames(classes.logHeader, classes.font)}>
-                {t('jobs:history.Log')}
-            </Typography>
+            {type === 'job' && (
+                <Typography className={classNames(classes.logHeader, classes.font)}>
+                    {t('main:history.Log')}
+                </Typography>
+            )}
         </Box>
     );
+};
+
+HistoryListHeader.propTypes = {
+    type: PropTypes.string
 };
 
 export default HistoryListHeader;

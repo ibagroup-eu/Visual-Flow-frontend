@@ -23,8 +23,9 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Grid, Table, TableBody, TableContainer, Paper } from '@material-ui/core';
-import { reduce } from 'lodash';
+import { reduce, get, isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
+
 import FormWrapper from '../../../components/form-wrapper';
 import PropertySelect from '../../../components/property-select';
 import { fetchParameters } from '../../../redux/actions/settingsParametersActions';
@@ -32,7 +33,8 @@ import {
     createConnection,
     fetchConnections,
     updateConnection,
-    deleteConnection
+    deleteConnection,
+    pingConnection
 } from '../../../redux/actions/settingsConnectionsActions';
 import { PageSkeleton } from '../../../components/skeleton';
 import ConnectionsTableRow from '../components/connections-table-row';
@@ -44,7 +46,7 @@ import ConnectionsSearchAndSelect from '../../../mxgraph/side-panel/read-write-c
 export const selectConnections = reduce(
     STORAGES,
     (result, { value, label }) => {
-        if (value !== 'stdout') {
+        if (value !== 'stdout' && value !== 'cluster' && value !== 'dataframe') {
             result.push({ value, name: label });
         }
         return result;
@@ -58,9 +60,13 @@ const Connections = ({
     getParameters,
     getConnections,
     update,
+    ping,
     create,
     remove,
-    connections
+    connections,
+    pingingConnections,
+    deletingConnections,
+    uploading
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -72,31 +78,44 @@ const Connections = ({
     const [connectionConfig, setConnectionConfig] = useState(null);
     const [viewMode, setViewMode] = useState(false);
     const [title, setTitle] = useState('Configuration');
+    const [savingState, setSavingState] = useState(null);
 
     useEffect(() => {
         projectId && getParameters(projectId);
         projectId && getConnections(projectId);
     }, [projectId]);
 
-    useEffect(() => setProjectConnections(connections), [connections]);
-
-    const removeConnection = removedId => {
-        remove(projectId, removedId).then(() =>
-            setProjectConnections(prevState =>
-                prevState.filter(connection => connection.id !== removedId)
+    useEffect(() => {
+        setProjectConnections(connections);
+        if (
+            connections.find(
+                ({ key, value }) =>
+                    key === savingState?.value.connectionName &&
+                    isEqual(value, savingState?.value)
             )
-        );
-    };
+        ) {
+            setPanelState(false);
+            setSavingState(null);
+        }
+    }, [connections]);
+
+    const removeConnection = removedKey => remove(projectId, removedKey);
+
+    const handlePingConnection = connection => ping(projectId, connection);
 
     const handleClickNewFieldType = event => {
         setTitle('Configuration');
-        setConnectionConfig({ storage: event.target.value });
+        setConnectionConfig({ value: { storage: event.target.value } });
         setPanelState(true);
         setViewMode(false);
     };
 
-    const handleAddNewConnection = value =>
-        value.id ? update(projectId, value) : create(projectId, value);
+    const handleAddNewConnection = connection => {
+        setSavingState(connection);
+        title === 'Edit'
+            ? update(projectId, connection)
+            : create(projectId, connection);
+    };
 
     const handleOpenConnection = (connection, editMode) => {
         setTitle(editMode ? 'Edit' : 'View');
@@ -116,11 +135,11 @@ const Connections = ({
 
     const filterConnections = () =>
         projectConnections.filter(
-            connection =>
-                connection.connectionName
-                    ?.toLowerCase()
+            ({ value }) =>
+                value?.connectionName
+                    .toLowerCase()
                     .indexOf(searchValue.toLowerCase()) !== -1 &&
-                (!storageSelection || connection.storage === storageSelection)
+                (!storageSelection || value.storage === storageSelection)
         );
 
     const shouldAddButtonRepeat = () => {
@@ -160,19 +179,29 @@ const Connections = ({
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
-                                {filterConnections().map(connection => (
+                                {filterConnections().map(({ key, value }) => (
                                     <ConnectionsTableRow
-                                        key={connection.id}
+                                        key={key}
                                         connection={{
-                                            ...connection,
-                                            storageLabel: selectConnections.find(
-                                                item =>
-                                                    item.value === connection.storage
-                                            )?.name
+                                            key,
+                                            value: {
+                                                ...value,
+                                                storageLabel: selectConnections.find(
+                                                    item =>
+                                                        item.value === value.storage
+                                                )?.name
+                                            }
                                         }}
-                                        editMode
+                                        pinging={get(pingingConnections, key, false)}
+                                        deleting={get(
+                                            deletingConnections,
+                                            key,
+                                            false
+                                        )}
+                                        connections={projectConnections}
                                         handleRemoveConnection={removeConnection}
                                         handleOpenConnection={handleOpenConnection}
+                                        handlePingConnection={handlePingConnection}
                                     />
                                 ))}
                             </TableBody>
@@ -192,11 +221,15 @@ const Connections = ({
                     <ConnectionsPanel
                         panelTitle={title}
                         handleNewConnection={handleAddNewConnection}
+                        handlePingConnection={handlePingConnection}
                         panelIsOpen={panelIsOpen}
                         viewMode={viewMode}
                         newConnection={connectionConfig}
                         setPanelState={setPanelState}
                         selectConnections={selectConnections}
+                        connections={projectConnections}
+                        uploading={uploading}
+                        projectId={projectId}
                     />
                 </FormWrapper>
             </Grid>
@@ -208,7 +241,10 @@ const Connections = ({
 const mapStateToProps = state => ({
     projectId: state.projects.currentProject,
     loading: state.pages.settingsConnections.loading,
-    connections: state.pages.settingsConnections.connections
+    connections: state.pages.settingsConnections.connections,
+    pingingConnections: state.pages.settingsConnections.pingingConnections,
+    deletingConnections: state.pages.settingsConnections.deletingConnections,
+    uploading: state.pages.settingsConnections.uploading
 });
 
 const mapDispatchToProps = {
@@ -216,7 +252,8 @@ const mapDispatchToProps = {
     getConnections: fetchConnections,
     update: updateConnection,
     create: createConnection,
-    remove: deleteConnection
+    remove: deleteConnection,
+    ping: pingConnection
 };
 
 Connections.propTypes = {
@@ -227,7 +264,11 @@ Connections.propTypes = {
     update: PropTypes.func,
     create: PropTypes.func,
     remove: PropTypes.func,
-    connections: PropTypes.array
+    ping: PropTypes.func,
+    connections: PropTypes.array,
+    pingingConnections: PropTypes.object,
+    deletingConnections: PropTypes.object,
+    uploading: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Connections);

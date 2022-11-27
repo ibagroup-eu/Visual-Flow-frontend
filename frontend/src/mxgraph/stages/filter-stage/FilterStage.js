@@ -19,23 +19,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
-
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
-import useStyles from './FilterStage.Styles';
 
 import makeTooltip from '../helpers/makeTooltip';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const FilterStage = ({ stage }) => {
-    const classes = useStyles();
-
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        />
     );
 };
 

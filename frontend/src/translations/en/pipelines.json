@@ -9,7 +9,8 @@
         "Remove selected": "Remove selected",
         "Cron": "Cron",
         "Scheduling": "Scheduling",
-        "OnOff": "On/Off"
+        "OnOff": "On/Off",
+        "History": "History"
     },
     "confirm": {
         "delete": "Are you sure you want to delete {{name}} pipeline(s)?"

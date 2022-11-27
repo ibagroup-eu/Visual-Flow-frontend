@@ -34,6 +34,7 @@ import ReadTextFields from '../../../../components/rw-text-fields';
 import UseSchema from '../helpers/UseSchema';
 import useStyles from './CosProperties.Styles';
 
+// eslint-disable-next-line complexity
 const CosProperties = ({
     fields,
     openModal,
@@ -51,24 +52,29 @@ const CosProperties = ({
 
     return (
         <>
-            <ReadTextFields
-                ableToEdit={ableToEdit}
-                fields={fields}
-                inputValues={inputValues}
-                handleInputChange={handleInputChange}
-                openModal={openModal}
-            />
-            {inputValues.operation === WRITE && (
-                <WriteMode
-                    disabled={!ableToEdit}
-                    value={inputValues.writeMode}
-                    onChange={handleInputChange}
+            {fields && (
+                <ReadTextFields
+                    ableToEdit={ableToEdit}
+                    fields={fields}
+                    inputValues={inputValues}
+                    handleInputChange={handleInputChange}
+                    openModal={openModal}
+                    required
                 />
             )}
+            {inputValues.operation === WRITE &&
+                inputValues.storage !== 'cluster' && (
+                    <WriteMode
+                        disabled={!ableToEdit}
+                        value={inputValues.writeMode}
+                        onChange={handleInputChange}
+                    />
+                )}
             <FileFormat
                 disabled={!ableToEdit}
                 value={inputValues.format || ''}
                 onChange={handleInputChange}
+                required
             />
             {inputValues.format === 'csv' && (
                 <>
@@ -166,7 +172,8 @@ CosProperties.propTypes = {
         'option.header': PropTypes.string,
         'option.delimiter': PropTypes.string,
         'option.avroSchema': PropTypes.string,
-        partitionBy: PropTypes.string
+        partitionBy: PropTypes.string,
+        storage: PropTypes.string
     })
 };
 

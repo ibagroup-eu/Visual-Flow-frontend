@@ -19,7 +19,8 @@
 
 export default theme => ({
     root: {
-        paddingLeft: theme.spacing(3.5)
+        paddingLeft: theme.spacing(3.5),
+        paddingBottom: theme.spacing(0.5)
     },
     sort: {
         marginLeft: theme.spacing(1)

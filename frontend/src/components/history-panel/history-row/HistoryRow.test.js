@@ -42,10 +42,29 @@ describe('HistoryRow', () => {
                 finishedAt: moment().format(DATE_FORMAT_UTC),
                 startedBy: 'testbigbigemailwithname1-gomel-iba-by',
                 id: 'testId',
+                statuses: [
+                    {
+                        status: 'Succeeded',
+                        startedAt: moment()
+                            .subtract(2, 'm')
+                            .format(DATE_FORMAT_UTC),
+                        finishedAt: moment().format(DATE_FORMAT_UTC),
+                        id: '6ca1c341-88eb-4ebc-b5a6-90ed3493f09a'
+                    },
+                    {
+                        status: 'Failed',
+                        startedAt: moment()
+                            .subtract(70, 'm')
+                            .format(DATE_FORMAT_UTC),
+                        finishedAt: moment().format(DATE_FORMAT_UTC),
+                        id: '6ca1c341-88eb-4ebc-b5a6-90ed3493f09a2'
+                    }
+                ],
                 name: 'testName',
                 flag: 'pipeline'
             },
-            projectId: 'id'
+            projectId: 'id',
+            type: 'pipeline'
         };
 
         wrapper = shallow(<HistoryRow {...props} />);
@@ -60,6 +79,7 @@ describe('HistoryRow', () => {
     });
 
     it('should calls onClick prop for pipeline button', () => {
+        wrapper = shallow(<HistoryRow {...props} type="job" />);
         wrapper
             .find(IconButton)
             .at(0)
@@ -67,10 +87,16 @@ describe('HistoryRow', () => {
     });
 
     it('should calls onClick prop for logs button', () => {
+        wrapper = shallow(<HistoryRow {...props} type="job" />);
         wrapper
             .find(IconButton)
             .at(1)
             .invoke('onClick')();
+    });
+
+    it('should calls onClick prop for more button', () => {
+        wrapper = shallow(<HistoryRow {...props} />);
+        wrapper.find(IconButton).invoke('onClick')();
     });
 
     it('should render TimelineConnector component', () => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Typography } from '@material-ui/core';
 import SortStage from './SortStage';
 import { SORT_TYPES } from '../../constants';
 
@@ -10,14 +9,12 @@ describe('SortStage', () => {
             stage: { name: 'test', operation: 'test' }
         };
 
-        const wrapper = shallow(<SortStage {...defaultProps} />);
-
-        return wrapper;
+        return shallow(<SortStage {...defaultProps} />);
     };
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(Typography).exists()).toBeTruthy();
+        expect(wrapper).toBeDefined();
     });
     it('should render without crashes', () => {
         const wrapper = init();

@@ -20,14 +20,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField, IconButton, Box } from '@material-ui/core';
+import { TextField, IconButton, Box } from '@material-ui/core';
 import { TuneOutlined } from '@material-ui/icons';
 import { OTHER } from '../../constants';
 import { findParamByKey } from '../../../components/helpers/PipelinesValidation';
-
 import useStyles from './NotificationConfiguration.Styles';
-
 import ClearButton from '../helpers/ClearButton';
+import ConfigurationDivider from '../../../components/divider';
 
 const NotificationConfiguration = ({
     state,
@@ -41,66 +40,70 @@ const NotificationConfiguration = ({
 
     return (
         <>
-            <Divider />
             {state.name && (
-                <Box className={classes.wrapper}>
+                <>
+                    <ConfigurationDivider />
+                    <Box className={classes.wrapper}>
+                        <TextField
+                            disabled={!ableToEdit}
+                            label={t(
+                                'jobDesigner:notificationConfiguration.Addressees'
+                            )}
+                            placeholder={t(
+                                'jobDesigner:notificationConfiguration.Addressees'
+                            )}
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            multiline
+                            name="addressees"
+                            value={
+                                findParamByKey(params, [state.addressees])
+                                    ? state.addressees
+                                    : ''
+                            }
+                            onChange={event =>
+                                onChange(event.target.name, event.target.value)
+                            }
+                            InputProps={{
+                                endAdornment: (
+                                    <IconButton
+                                        className={classes.button}
+                                        onClick={() => openModal('addressees')}
+                                    >
+                                        <TuneOutlined />
+                                    </IconButton>
+                                )
+                            }}
+                            required
+                        />
+                        <ClearButton
+                            name="addressees"
+                            value={state.addressees}
+                            ableToEdit={ableToEdit}
+                            handleInputChange={onChange}
+                            type={OTHER}
+                        />
+                    </Box>
                     <TextField
                         disabled={!ableToEdit}
-                        label={t('jobDesigner:notificationConfiguration.Addressees')}
+                        label={t('jobDesigner:notificationConfiguration.Message')}
                         placeholder={t(
-                            'jobDesigner:notificationConfiguration.Addressees'
+                            'jobDesigner:notificationConfiguration.Message'
                         )}
                         variant="outlined"
                         margin="normal"
                         fullWidth
                         multiline
-                        name="addressees"
-                        value={
-                            findParamByKey(params, [state.addressees])
-                                ? state.addressees
-                                : ''
-                        }
+                        minRows={16}
+                        name="message"
+                        value={state.message || ''}
                         onChange={event =>
                             onChange(event.target.name, event.target.value)
                         }
-                        InputProps={{
-                            endAdornment: (
-                                <IconButton
-                                    className={classes.button}
-                                    onClick={() => openModal('addressees')}
-                                >
-                                    <TuneOutlined />
-                                </IconButton>
-                            )
-                        }}
                         required
                     />
-                    <ClearButton
-                        name="addressees"
-                        value={state.addressees}
-                        ableToEdit={ableToEdit}
-                        handleInputChange={onChange}
-                        type={OTHER}
-                    />
-                </Box>
-            )}
-            {state.name && (
-                <TextField
-                    disabled={!ableToEdit}
-                    label={t('jobDesigner:notificationConfiguration.Message')}
-                    placeholder={t('jobDesigner:notificationConfiguration.Message')}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    multiline
-                    minRows={16}
-                    name="message"
-                    value={state.message || ''}
-                    onChange={event =>
-                        onChange(event.target.name, event.target.value)
-                    }
-                    required
-                />
+                </>
             )}
         </>
     );

@@ -52,6 +52,6 @@ describe('HistoryHeader', () => {
                 .find(Typography)
                 .at(1)
                 .text()
-        ).toBe('jobs:history.LastRunBy: Unknown');
+        ).toBe('main:history.LastRunBy: Unknown');
     });
 });

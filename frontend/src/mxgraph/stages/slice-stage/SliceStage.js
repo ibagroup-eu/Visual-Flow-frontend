@@ -19,53 +19,33 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 
 import { useTranslation } from 'react-i18next';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './SliceStage.Style';
 import makeTooltip from '../helpers/makeTooltip';
+import { JobStageTag } from '../../../components/stage-tag';
 
-import StageTag from '../../../components/stage-tag';
+import { StageParameters, TagsParameter } from '../parameters';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const SliceStage = ({ stage }) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const sliceColumns = stage.columns?.split(',').map(el => el.trim());
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.caption}
-                color="textSecondary"
-            >
-                <>
-                    {t('jobDesigner:sliceConfiguration.Columns')}:
-                    {sliceColumns.slice(0, 5).map(value => (
-                        <Typography
-                            title={value}
-                            field={value}
-                            variant="caption"
-                            component="span"
-                            key={value}
-                            className={classes.column}
-                        >
-                            {value}
-                        </Typography>
-                    ))}
-                    <span className={classes.dots}>
-                        {sliceColumns.length > 5 &&
-                            makeTooltip(sliceColumns.join(', '), ' ...')}
-                    </span>
-                </>
-            </Typography>
-            <StageTag className={classes.mode} content={stage.mode} />
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <StageParameters>
+                <TagsParameter
+                    name={t('jobDesigner:sliceConfiguration.Columns')}
+                    values={sliceColumns}
+                    className={classes.key}
+                />
+            </StageParameters>
+            <JobStageTag className={classes.mode}>{stage.mode}</JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

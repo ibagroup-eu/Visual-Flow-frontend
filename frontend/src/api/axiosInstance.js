@@ -21,10 +21,6 @@ import axios from 'axios';
 import showNotification from '../components/notification/showNotification';
 import i18n from '../i18n';
 
-export const axiosInstance = axios.create({
-    baseURL: `${window.BASE_URL}backend/api`
-});
-
 export const getLocation = (pathname, baseUrl) =>
     `${baseUrl}login?redirect=${encodeURIComponent(
         pathname.startsWith(baseUrl) ? pathname.slice(baseUrl.length) : pathname
@@ -38,12 +34,12 @@ export const login = () => {
 const chooseNotification = data => {
     const { message, error: err, errors } = data;
     errors && errors.length
-        ? errors.forEach(el => showNotification(el.defaultMessage, 'error', true))
-        : showNotification(message || err || data, 'error', true);
+        ? errors.forEach(el => showNotification(el.defaultMessage, 'error'))
+        : showNotification(message || err || data, 'error');
 };
 
-axiosInstance.interceptors.response.use(
-    response => {
+const interceptors = {
+    success: response => {
         if (response.config.method !== 'get') {
             showNotification(
                 response.statusText === 'No Content'
@@ -54,19 +50,32 @@ axiosInstance.interceptors.response.use(
         }
         return response;
     },
-    error => {
+    error: error => {
         const { data, status } = error.response;
-        status === 401 ? login() : chooseNotification(data);
+        if (status === 401) {
+            login();
+        } else {
+            error.response.config?.responseType === 'blob'
+                ? data.text().then(message => chooseNotification({ message }))
+                : chooseNotification(data);
+        }
         return Promise.reject(error);
     }
-);
+};
 
-export const axiosMockInstance = axios.create({
-    baseURL: `${window.BASE_URL}mock/api`
-});
+const config = {
+    baseURL: `${window.BASE_URL}backend/api`
+};
 
-axiosMockInstance.interceptors.response.use(
+export const axiosInstance = axios.create(config);
+
+axiosInstance.interceptors.response.use(interceptors.success, interceptors.error);
+
+export const axiosSimpleInstance = axios.create(config);
+
+axiosSimpleInstance.interceptors.response.use(
     response => response,
-    error => Promise.reject(error)
+    interceptors.error
 );
+
 export default axiosInstance;

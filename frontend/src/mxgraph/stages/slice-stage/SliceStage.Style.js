@@ -19,57 +19,11 @@
 
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles({
-    root: {
-        position: 'relative'
-    },
-    name: {
-        position: 'absolute',
-        left: -100,
-        top: -64,
-        display: 'flex',
-        'white-space': 'normal',
-        width: 200,
-        'text-align': 'left',
-        '& span': {
-            overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
-        }
-    },
-    caption: {
-        position: 'absolute',
-        left: -100,
-        top: -35,
-        maxHeight: 72,
-        minWidth: 207,
-        display: 'flex',
-        flexWrap: 'wrap',
-        overflow: 'hidden',
-        padding: 2
-    },
-    dots: {
-        color: '#000',
-        alignSelf: 'flex-end',
-        'white-space': 'pre'
-    },
-    column: {
-        backgroundColor: '#2196F3',
-        color: 'white',
-        'border-radius': 4,
-        margin: '2px',
-        padding: '0 2px',
-        maxWidth: 90,
-        'text-overflow': 'ellipsis',
-        overflow: 'hidden'
+export default makeStyles(theme => ({
+    key: {
+        backgroundColor: theme.palette.success.light
     },
     mode: {
-        position: 'absolute',
-        left: 19,
-        top: 44,
-        backgroundColor: '#64B5F6',
-        color: 'white',
-        'border-radius': 4,
-        width: 84
+        backgroundColor: theme.palette.success.light
     }
-});
+}));

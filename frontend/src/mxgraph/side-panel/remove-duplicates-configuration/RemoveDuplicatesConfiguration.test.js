@@ -129,4 +129,26 @@ describe('RemoveDuplicatesConfiguration', () => {
 
         expect(shallow(input).prop(myProp)).toBe(myProp);
     });
+
+    it('should use default order columns when render items', () => {
+        const [wrapper] = init({
+            state: {
+                orderColumns: undefined,
+                keyColumns: ''
+            }
+        });
+
+        expect(wrapper.find(PropertyList).prop('items')).toEqual([]);
+    });
+
+    it('should use default key columns when render items', () => {
+        const [wrapper] = init({
+            state: {
+                orderColumns: '',
+                keyColumns: undefined
+            }
+        });
+
+        expect(wrapper.find(Autocomplete).prop('value')).toEqual([]);
+    });
 });

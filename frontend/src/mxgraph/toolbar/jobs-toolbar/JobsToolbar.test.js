@@ -29,6 +29,12 @@ import RunStopButtons from '../run-stop-buttons';
 import Status from '../../../components/status';
 import { PENDING } from '../../constants';
 import history from '../../../utils/history';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+
+jest.mock('../../../unitConfig', () => ({
+    JOB: { HISTORY: true },
+    PIPELINE: { HISTORY: true }
+}));
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -61,7 +67,6 @@ describe('Jobs toolbar', () => {
             sidePanelIsOpen: true,
             setDirty: jest.fn(),
             setShowModal: jest.fn(),
-            sidePanelIsDirty: true,
             dirty: true,
             undoButtonsDisabling: { undo: true, redo: true }
         };
@@ -165,5 +170,10 @@ describe('Jobs toolbar', () => {
         });
 
         expect(wrapper.find(IconButton)).toHaveLength(2);
+    });
+
+    it('should call onClose prop', () => {
+        const [wrapper] = init();
+        wrapper.find(HistoryPanel).prop('onClose')();
     });
 });

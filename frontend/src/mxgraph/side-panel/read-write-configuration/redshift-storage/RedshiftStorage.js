@@ -66,6 +66,7 @@ const RedshiftStorage = ({
             handleInputChange={handleInputChange}
             openModal={openModal}
             connection={connection}
+            required
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -75,6 +76,7 @@ const RedshiftStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+            required
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -83,6 +85,7 @@ const RedshiftStorage = ({
             handleInputChange={handleInputChange}
             openModal={openModal}
             connection={connection}
+            required
         />
         <Ssl
             ableToEdit={ableToEdit}
@@ -98,6 +101,7 @@ const RedshiftStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+            required
         />
 
         {!connectionPage && (
@@ -109,6 +113,7 @@ const RedshiftStorage = ({
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
+                    required
                 />
             </>
         )}

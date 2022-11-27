@@ -1,0 +1,10 @@
+{
+  "name": {
+    "name": "Name",
+    "value": "Provide Stage name."
+  },
+  "validationSchema": {
+    "name": "Schema",
+    "value": "Provide validation schema."
+  }
+}

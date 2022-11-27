@@ -26,16 +26,6 @@
         "Export selected": "Export selected",
         "History": "History"
     },
-    "history": {
-        "Started": "STARTED",
-        "Duration": "DURATION",
-        "RunBy":"RUN BY",
-        "Log":"LOG",
-        "LastRunBy": "Last Run by",
-        "Today": "Today",
-        "Yesterday": "Yesterday",
-        "At": "At"
-    },
     "noItems": "No items to display",
     "confirm": {
         "delete": "Are you sure you want to delete {{name}} job(s)?"

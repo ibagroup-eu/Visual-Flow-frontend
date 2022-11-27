@@ -24,6 +24,7 @@
     "tags": "Tags",
     "expand": "Expand",
     "collapse": "Collapse",
+    "noResult": "No result",
     "sorted": {
         "descending": "sorted descending",
         "ascending": "sorted ascending"
@@ -79,7 +80,11 @@
         "UseSchema": "Use Schema",
         "EditSchema": "Edit Schema",
         "AddConnection": "CREATE CONNECTION",
-        "Ping": "PING"
+        "Ping": "PING",
+        "CreateDataframe": "Create Dataframe",
+        "EditDataframe": "Edit Dataframe",
+        "AddValidation": "Add Validation",
+        "EditValidation": "Edit Validation"
     },
     "validation": {
         "3to40chars": "Wrong symbol or should be 3 to 40 characters long.",
@@ -93,11 +98,15 @@
         "pipelineWithoutJobParams": "Unable to run pipeline, missing job/parameter data.",
         "projectParameters": {
             "keyDuplication": "Key duplication",
-            "valueDuplication": "Value duplication",
             "keyLength": "Length must be in range 1-50",
             "keySymbols": "Only A-Z, a-z, 0-9, -, _ are allowed",
             "keyStartEnd": "Must start and end with an alphanumeric character",
             "valueEmpty": "Can’t be empty"
+        },
+        "projectConnections": {
+            "nameDuplication": "Name duplication",
+            "nameLength": "Length must be in range 1-50",
+            "nameSymbols": "Only A-Z, a-z, 0-9, -, _ are allowed"
         }
     },
     "confirm": {
@@ -156,5 +165,17 @@
     "export": {
         "note1": "Note: ",
         "note2": "The file will be exported to the default folder set in your browser."
+    },
+    "history": {
+        "Started": "STARTED",
+        "Duration": "DURATION",
+        "RunBy":"RUN BY",
+        "Name": "NAME",
+        "Log":"LOG",
+        "EmptyList": "History is empty",
+        "LastRunBy": "Last Run by",
+        "Today": "Today",
+        "Yesterday": "Yesterday",
+        "At": "At"
     }
 }

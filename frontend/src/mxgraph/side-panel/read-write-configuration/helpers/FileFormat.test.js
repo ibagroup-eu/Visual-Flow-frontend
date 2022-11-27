@@ -29,7 +29,8 @@ describe('FileFormat', () => {
         props = {
             value: 'test',
             onChange: jest.fn(),
-            disabled: false
+            disabled: false,
+            required: true
         };
 
         wrapper = shallow(<FileFormat {...props} />);

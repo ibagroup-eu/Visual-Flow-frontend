@@ -17,28 +17,34 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Box,
     Button,
-    Popper,
-    Paper,
-    ClickAwayListener,
     Fade,
-    Collapse
+    Collapse,
+    Typography,
+    Popper,
+    ClickAwayListener,
+    Paper,
+    Slide
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { partition } from 'lodash';
+import classNames from 'classnames';
 import useStyles from './TagsFilter.Styles';
 import SearchInput from '../search-input';
 import TagsItem from './tags-item/TagsItem';
 import TagsButton from './tags-button/TagsButton';
 import TagsResetButton from './tags-reset-button/TagsResetButton';
 
-const filteredTags = (tagsData, value) =>
-    tagsData.filter(
+const filteringTags = (tagsData, value) =>
+    partition(
+        tagsData,
         tag =>
-            tag[0].toLowerCase().indexOf(value.toLowerCase()) !== -1 && value !== ''
+            tag[0].toLowerCase().indexOf(value.trim().toLowerCase()) !== -1 &&
+            value.trim() !== ''
     );
 
 const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
@@ -47,22 +53,114 @@ const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [expand, setExpand] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const [lastSearchValue, setLastSearchValue] = useState('');
     const [expandSize, onExpandSize] = useState(0);
-    const [filterTags, setFilterTags] = useState([]);
     const arrayData = Object.entries(data);
+    const [filterTags, setFilterTags] = useState(
+        filteringTags(arrayData, searchValue)
+    );
+    const [foundTags, otherTags] = filterTags;
+
+    useEffect(() => {
+        setFilterTags(filteringTags(arrayData, searchValue || lastSearchValue));
+    }, [checkedTags, searchValue, lastSearchValue]);
 
     const onSearch = event => {
         setSearchValue(event.target.value);
-        setFilterTags(filteredTags(arrayData, event.target.value));
+        if (lastSearchValue) {
+            setLastSearchValue('');
+        }
     };
 
     const handleClick = event => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
+        if (searchValue) {
+            setLastSearchValue(searchValue);
+        }
         if (anchorEl === null) {
             setSearchValue('');
             setExpand(false);
         }
     };
+
+    const menuContent = ({ TransitionProps }) => (
+        <Fade {...TransitionProps}>
+            <Box>
+                <Slide {...TransitionProps}>
+                    <Paper
+                        className={classNames(
+                            classes.paper,
+                            !anchorEl && classes.paperClose
+                        )}
+                    >
+                        <SearchInput
+                            fullWidth
+                            value={searchValue}
+                            onChange={onSearch}
+                            placeholder={t('main:searchByTags')}
+                        />
+                        <Box className={classes.tags}>
+                            {(searchValue || lastSearchValue).trim() && (
+                                <Box
+                                    className={
+                                        otherTags.length !== 0
+                                            ? classes.filteredTags
+                                            : null
+                                    }
+                                >
+                                    {foundTags.length !== 0 ? (
+                                        foundTags.map(tag => (
+                                            <TagsItem
+                                                key={tag[0]}
+                                                label={tag[0]}
+                                                checked={tag[1]}
+                                                setChecked={onCheckTags}
+                                            />
+                                        ))
+                                    ) : (
+                                        <Typography className={classes.noResult}>
+                                            {t('main:noResult')}
+                                        </Typography>
+                                    )}
+                                </Box>
+                            )}
+                            {otherTags.length !== 0 && (
+                                <Collapse
+                                    in={expand}
+                                    collapsedSize={expandSize > 84 ? 80 : expandSize}
+                                    ref={e => onExpandSize(e?.scrollHeight)}
+                                    className={classes.collapse}
+                                >
+                                    {otherTags.map(tag => (
+                                        <TagsItem
+                                            key={tag[0]}
+                                            label={tag[0]}
+                                            checked={tag[1]}
+                                            setChecked={onCheckTags}
+                                        />
+                                    ))}
+                                </Collapse>
+                            )}
+                        </Box>
+                        {expandSize > 84 && (
+                            <Button
+                                size="small"
+                                className={classes.button}
+                                variant="text"
+                                onClick={() => setExpand(!expand)}
+                            >
+                                {t(expand ? 'main:collapse' : 'main:expand')}
+                            </Button>
+                        )}
+                        <TagsResetButton
+                            disabled={checkedTags.length === 0}
+                            resetTags={resetTags}
+                        />
+                    </Paper>
+                </Slide>
+            </Box>
+        </Fade>
+    );
 
     return (
         <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
@@ -73,70 +171,13 @@ const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
                     checkedCount={checkedTags.length}
                 />
                 <Popper
-                    id="popper"
                     open={!!anchorEl}
                     anchorEl={anchorEl}
                     placement="bottom-end"
                     role={undefined}
                     transition
                 >
-                    {({ TransitionProps }) => (
-                        <Fade {...TransitionProps}>
-                            <Paper className={classes.paper}>
-                                <SearchInput
-                                    fullWidth
-                                    value={searchValue}
-                                    onChange={onSearch}
-                                    placeholder={t('main:searchByTags')}
-                                />
-                                <Box className={classes.tags}>
-                                    {filterTags.length !== 0 && (
-                                        <Box className={classes.filteredTags}>
-                                            {filterTags.map(tag => (
-                                                <TagsItem
-                                                    key={tag[0]}
-                                                    label={tag[0]}
-                                                    checked={tag[1]}
-                                                    setChecked={onCheckTags}
-                                                />
-                                            ))}
-                                        </Box>
-                                    )}
-                                    <Collapse
-                                        in={expand}
-                                        collapsedSize={
-                                            expandSize > 84 ? 80 : expandSize
-                                        }
-                                        ref={e => onExpandSize(e?.scrollHeight)}
-                                        className={classes.collapse}
-                                    >
-                                        {arrayData.map(tag => (
-                                            <TagsItem
-                                                key={tag[0]}
-                                                label={tag[0]}
-                                                checked={tag[1]}
-                                                setChecked={onCheckTags}
-                                            />
-                                        ))}
-                                    </Collapse>
-                                </Box>
-                                {expandSize > 84 && (
-                                    <Button
-                                        size="small"
-                                        className={classes.button}
-                                        variant="text"
-                                        onClick={() => setExpand(!expand)}
-                                    >
-                                        {t(expand ? 'main:collapse' : 'main:expand')}
-                                    </Button>
-                                )}
-                                <TagsResetButton
-                                    disabled={checkedTags.length === 0}
-                                    resetTags={resetTags}
-                                />
-                            </Paper>
-                        </Fade>
-                    )}
+                    {menuContent}
                 </Popper>
             </Box>
         </ClickAwayListener>

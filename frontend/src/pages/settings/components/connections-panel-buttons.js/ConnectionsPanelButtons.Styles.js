@@ -33,5 +33,20 @@ export default makeStyles(theme => ({
     },
     cancelBtn: {
         background: theme.palette.grey[600]
+    },
+    circular: {
+        marginLeft: theme.spacing(1),
+        color: theme.palette.action.disabled
+    },
+    pingButton: {
+        display: 'flex'
+    },
+    buttonProgress: {
+        color: theme.palette.action.disabled,
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12
     }
 }));

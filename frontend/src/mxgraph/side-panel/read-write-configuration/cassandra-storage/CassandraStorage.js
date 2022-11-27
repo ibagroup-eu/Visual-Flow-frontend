@@ -41,12 +41,12 @@ const dropdownOptions = [
 
 const fields = [
     [
-        { field: 'keyspace' },
+        { field: 'keyspace', required: true },
         { field: 'cluster' },
-        { field: 'host' },
-        { field: 'port' }
+        { field: 'host', required: true },
+        { field: 'port', required: true }
     ],
-    [{ field: 'table' }]
+    [{ field: 'table', required: true }]
 ];
 
 const userFields = [{ field: 'username' }];
@@ -83,6 +83,7 @@ const CassandraStorage = ({
             handleInputChange={handleInputChange}
             openModal={openModal}
             connection={connection}
+            required
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -92,6 +93,7 @@ const CassandraStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+            required
         />
 
         {!connectionPage && (
@@ -103,6 +105,7 @@ const CassandraStorage = ({
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
+                    required
                 />
                 <SelectField
                     ableToEdit={ableToEdit}

@@ -35,7 +35,15 @@ export default makeStyles(theme => ({
         background: theme.palette.grey[600]
     },
     tableWrapper: {
-        maxHeight: 300,
-        overflow: 'auto'
+        overflow: 'auto',
+        maxHeight: 300
+    },
+    role: {
+        paddingRight: 16,
+        minWidth: 150,
+        height: 66
+    },
+    nonePaddingLeft: {
+        paddingLeft: 0
     }
 }));

@@ -18,7 +18,7 @@
  */
 
 import { IconButton, Radio } from '@material-ui/core';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import ConnectionsModalTableRow from './ConnectionsModalTableRow';
 
@@ -39,7 +39,8 @@ describe('ConnectionsModalTableRow', () => {
             },
             selectedValue: '',
             setSelectedValue: jest.fn(),
-            params: [{ key: 'key', value: 'testValue' }]
+            params: [{ key: 'key', value: 'testValue' }],
+            defaultSelected: false
         };
 
         wrapper = shallow(<ConnectionsModalTableRow {...props} />);
@@ -47,6 +48,17 @@ describe('ConnectionsModalTableRow', () => {
 
     it('should render component', () => {
         expect(wrapper).toBeDefined();
+    });
+
+    it('should calls useEffect', () => {
+        window.HTMLElement.prototype.scrollIntoView = jest.fn();
+        wrapper = mount(
+            <ConnectionsModalTableRow
+                {...props}
+                defaultSelected
+                ableToEdit={false}
+            />
+        );
     });
 
     it('should calls onChange prop for Radio', () => {

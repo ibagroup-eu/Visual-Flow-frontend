@@ -31,7 +31,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
-import { get, isEqual, pickBy } from 'lodash';
+import { get, isEmpty, isEqual, pickBy } from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useStyles from './ConnectionsPanel.Styles';
 import toggleConfirmationWindow from '../../../../redux/actions/modalsActions';
@@ -42,6 +42,25 @@ import { READ } from '../../../../mxgraph/constants';
 import { cleanUpConfiguration } from '../../../../mxgraph/side-panel/SidePanel';
 import ConnectionsPanelButtons from '../connections-panel-buttons.js/ConnectionsPanelButtons';
 
+const validateConnectionName = (connections, currentKey, nameState) => {
+    if (
+        connections?.find(
+            ({ key }) =>
+                nameState?.toLowerCase() === key.toLowerCase() && currentKey !== key
+        )
+    ) {
+        return 'main:validation.projectConnections.nameDuplication';
+    }
+    if (/[^A-Za-z0-9\-_]/g.test(nameState)) {
+        return 'main:validation.projectConnections.nameSymbols';
+    }
+    if (nameState?.length > 50) {
+        return 'main:validation.projectConnections.nameLength';
+    }
+    return '';
+};
+
+// eslint-disable-next-line complexity
 const ConnectionsPanel = ({
     panelIsOpen,
     setPanelState,
@@ -49,8 +68,12 @@ const ConnectionsPanel = ({
     viewMode,
     confirmationWindow,
     handleNewConnection,
+    handlePingConnection,
     selectConnections,
-    panelTitle
+    panelTitle,
+    connections,
+    uploading,
+    pingingConnections
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -58,6 +81,11 @@ const ConnectionsPanel = ({
     const [showModal, setShowModal] = useState(false);
     const [fieldInModal, setFieldInModal] = useState(null);
     const schema = get(schemas, READ, []);
+    const invalidConnectionName = validateConnectionName(
+        connections,
+        connectionState.key,
+        connectionState.value?.connectionName
+    );
 
     const openModal = openedField => {
         setFieldInModal(openedField);
@@ -74,42 +102,61 @@ const ConnectionsPanel = ({
         if (event.persist) {
             event.persist();
         }
-        setConnectionState(prevState =>
-            pickBy(
+        setConnectionState(prevState => ({
+            ...prevState,
+            value: pickBy(
                 {
-                    ...prevState,
+                    ...prevState.value,
                     [event.target.name]: event.target.value
                 },
                 v => v !== ''
             )
-        );
+        }));
     };
 
-    const saveConnection = () => {
-        handleNewConnection(cleanUpConfiguration(connectionState, schema));
-        setPanelState(false);
-    };
+    const saveConnection = () =>
+        handleNewConnection({
+            key:
+                panelTitle === 'Edit'
+                    ? connectionState.key
+                    : connectionState.value.connectionName,
+            value: cleanUpConfiguration(connectionState.value, schema)
+        });
+
+    const pingConnection = () =>
+        handlePingConnection({
+            key: connectionState.value?.connectionName,
+            value: connectionState.value
+        });
 
     const saveIsDisabled = () => {
-        if (
-            !connectionState.connectionName ||
-            (connectionState.storage === 's3' && !connectionState.anonymousAccess) ||
-            !connectionState.storage
-        ) {
-            return true;
-        }
-
+        const { value: connectionValue = {} } = connectionState;
+        const nameValidate =
+            !connectionValue.connectionName || !!invalidConnectionName;
+        const connectionValidate =
+            (connectionValue.storage === 's3' && !connectionValue.anonymousAccess) ||
+            !connectionValue.storage;
         return (
-            panelIsOpen &&
-            (isEqual(newConnection, cleanUpConfiguration(connectionState, schema)) ||
-                viewMode)
+            nameValidate ||
+            connectionValidate ||
+            isEqual(
+                newConnection.value,
+                cleanUpConfiguration(connectionValue, schema)
+            )
         );
     };
+
+    const isPingable = () =>
+        !isEmpty(connectionState.value?.connectionName) &&
+        !isEmpty(connectionState.value?.storage);
 
     const confirmCancel = () => {
         if (
             panelIsOpen &&
-            !isEqual(newConnection, cleanUpConfiguration(connectionState, schema))
+            !isEqual(
+                newConnection.value,
+                cleanUpConfiguration(connectionState.value, schema)
+            )
         ) {
             confirmationWindow({
                 body: `${t('main:unsavedChanges.leaveWithUnsavedChanges')}`,
@@ -129,8 +176,8 @@ const ConnectionsPanel = ({
 
         return (
             <Comp
-                ableToEdit={!viewMode && panelIsOpen}
-                inputValues={connectionState}
+                ableToEdit={!viewMode && panelIsOpen && !uploading}
+                inputValues={connectionState.value}
                 handleInputChange={handleChange}
                 openModal={openModal}
                 connectionPage
@@ -150,6 +197,7 @@ const ConnectionsPanel = ({
                             </Typography>
                             <IconButton
                                 className={classes.leftAuto}
+                                disabled={uploading}
                                 onClick={confirmCancel}
                             >
                                 <CloseIcon />
@@ -158,38 +206,53 @@ const ConnectionsPanel = ({
                         <Box className={classes.fieldsRoot}>
                             <ParametersModal
                                 display={showModal}
-                                ableToEdit={!viewMode}
+                                ableToEdit={!viewMode && !uploading}
                                 onClose={() => setShowModal(false)}
                                 onSetValue={newValue => {
                                     setShowModal(false);
                                     setConnectionState({
                                         ...connectionState,
-                                        [fieldInModal]: `#${newValue}#`
+                                        value: {
+                                            ...connectionState.value,
+                                            [fieldInModal]: `#${newValue}#`
+                                        }
                                     });
                                 }}
-                                currentValue={get(connectionState, fieldInModal, '')}
+                                currentValue={get(
+                                    connectionState.value,
+                                    fieldInModal,
+                                    ''
+                                )}
                             />
                             <Box>
                                 <TextField
-                                    disabled={viewMode || !panelIsOpen}
+                                    disabled={viewMode || uploading || !panelIsOpen}
                                     label={t('setting:connection.Name')}
                                     placeholder={t('setting:connection.Name')}
                                     variant="outlined"
                                     margin="normal"
                                     fullWidth
                                     name="connectionName"
-                                    value={connectionState.connectionName || ''}
+                                    value={
+                                        connectionState.value?.connectionName || ''
+                                    }
                                     onChange={handleChange}
+                                    error={!!invalidConnectionName && panelIsOpen}
+                                    helperText={
+                                        panelIsOpen ? t(invalidConnectionName) : ''
+                                    }
+                                    required
                                 />
                                 <Autocomplete
-                                    disabled={viewMode || !panelIsOpen}
+                                    disabled={viewMode || uploading || !panelIsOpen}
                                     name="storage"
                                     options={selectConnections}
                                     getOptionLabel={option => option.name || option}
                                     value={
                                         selectConnections.find(
                                             ({ value }) =>
-                                                value === connectionState.storage
+                                                value ===
+                                                connectionState.value?.storage
                                         ) || null
                                     }
                                     onChange={(e, newValue) =>
@@ -214,13 +277,25 @@ const ConnectionsPanel = ({
                                     )}
                                 />
                                 <Divider />
-                                {connectionState?.storage &&
-                                    renderStorageComponent(connectionState.storage)}
+                                {connectionState.value?.storage &&
+                                    renderStorageComponent(
+                                        connectionState.value.storage
+                                    )}
                             </Box>
                             <ConnectionsPanelButtons
                                 saveConnection={saveConnection}
-                                saveIsDisabled={saveIsDisabled() || !panelIsOpen}
+                                saveIsDisabled={
+                                    saveIsDisabled() || !panelIsOpen || viewMode
+                                }
+                                pingIsDisabled={!panelIsOpen || !isPingable()}
                                 confirmCancel={confirmCancel}
+                                pingConnection={pingConnection}
+                                pinging={get(
+                                    pingingConnections,
+                                    connectionState.value?.connectionName,
+                                    false
+                                )}
+                                uploading={uploading}
                             />
                         </Box>
                     </Box>
@@ -236,13 +311,21 @@ ConnectionsPanel.propTypes = {
     newConnection: PropTypes.object,
     viewMode: PropTypes.bool,
     confirmationWindow: PropTypes.func,
+    handlePingConnection: PropTypes.func,
     handleNewConnection: PropTypes.func,
     selectConnections: PropTypes.array,
-    panelTitle: PropTypes.string
+    panelTitle: PropTypes.string,
+    connections: PropTypes.array,
+    uploading: PropTypes.bool,
+    pingingConnections: PropTypes.object
 };
+
+const mapStateToProps = state => ({
+    pingingConnections: state.pages.settingsConnections.pingingConnections
+});
 
 const mapDispatchToProps = {
     confirmationWindow: toggleConfirmationWindow
 };
 
-export default connect(null, mapDispatchToProps)(ConnectionsPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectionsPanel);

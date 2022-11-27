@@ -33,7 +33,13 @@ describe('HistoryPanel', () => {
     beforeEach(() => {
         props = {
             setPanelState: jest.fn(),
-            jobData: { id: 'testId', name: 'testName', pipelineId: 'pipelineId' },
+            display: true,
+            data: {
+                id: 'testId',
+                name: 'testName',
+                pipelineId: 'pipelineId',
+                status: 'Draft'
+            },
             loading: false,
             historyData: [
                 {
@@ -49,10 +55,10 @@ describe('HistoryPanel', () => {
                     startedBy: 'testbigbigemailwithname1-gomel-iba-by'
                 }
             ],
-            showLogsModal: false,
-            setLogs: jest.fn(),
             projectId: 'id',
-            getHistory: jest.fn()
+            getJobHistory: jest.fn(),
+            getPipelineHistory: jest.fn(),
+            onClose: jest.fn()
         };
 
         wrapper = shallow(<HistoryPanel {...props} />);
@@ -64,6 +70,7 @@ describe('HistoryPanel', () => {
 
     it('should calls useEffect', () => {
         wrapper = mount(<HistoryPanel {...props} />);
+        expect(props.getJobHistory).toHaveBeenCalledWith('id', 'testId');
     });
 
     it('should render history drawer component', () => {
@@ -77,8 +84,31 @@ describe('HistoryPanel', () => {
     });
 
     it('should not render history drawer', () => {
-        wrapper = mount(<HistoryPanel {...props} jobData={{}} />);
+        wrapper = shallow(<HistoryPanel {...props} display={false} />);
         expect(wrapper.find(Drawer).prop('open')).toBe(false);
+    });
+
+    it('should calls useEffect with type !== job && !data.definition', () => {
+        wrapper = mount(<HistoryPanel {...props} type="pipeline" />);
+    });
+
+    it('should calls useEffect with display = false', () => {
+        wrapper = mount(<HistoryPanel {...props} display={false} />);
+    });
+
+    it('should calls useEffect with type !== job', () => {
+        wrapper = mount(<HistoryPanel {...props} type="pipeline" />);
+        expect(props.getPipelineHistory).toHaveBeenCalledWith('id', 'testId');
+    });
+
+    it('should not render without historyData', () => {
+        wrapper = mount(<HistoryPanel {...props} historyData={null} />);
+    });
+
+    it('should not render history list and HistoryListHeader', () => {
+        wrapper = mount(<HistoryPanel {...props} historyData={[]} />);
+        expect(wrapper.find(HistoryListHeader)).toHaveLength(0);
+        expect(wrapper.find(List)).toHaveLength(0);
     });
 
     it('should calls onClose prop', () => {
@@ -90,11 +120,37 @@ describe('HistoryPanel', () => {
     });
 
     it('should calls logsHandler prop', () => {
+        wrapper
+            .find(HistoryDaysRow)
+            .at(0)
+            .invoke('logsHandler')({ logId: 'logId', jobId: 'jobId' });
+        expect(wrapper.find(LogsModal).prop('jobId')).toBe('jobId');
+        expect(wrapper.find(LogsModal).prop('logId')).toBe('logId');
+    });
+
+    it('should calls findName prop', () => {
         wrapper = mount(<HistoryPanel {...props} />);
         wrapper
             .find(HistoryDaysRow)
             .at(0)
-            .invoke('logsHandler')('testId');
-        expect(wrapper.find(LogsModal).prop('jobId')).toBe('testId');
+            .invoke('findName')('id');
+    });
+
+    it('should calls findName prop with data.definition', () => {
+        wrapper = mount(
+            <HistoryPanel
+                {...props}
+                data={{
+                    ...props.data,
+                    definition: {
+                        graph: [{ value: { jobId: 'id', jobName: 'name' } }]
+                    }
+                }}
+            />
+        );
+        wrapper
+            .find(HistoryDaysRow)
+            .at(0)
+            .invoke('findName')('id');
     });
 });

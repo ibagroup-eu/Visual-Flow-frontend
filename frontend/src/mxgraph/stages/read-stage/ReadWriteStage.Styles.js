@@ -19,79 +19,8 @@
 
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles(() => ({
-    root: {
-        position: 'relative'
-    },
-    name: {
-        position: 'absolute',
-        left: -100,
-        top: -64,
-        display: 'flex',
-        'white-space': 'normal',
-        width: 200,
-        'text-align': 'left',
-        '& span': {
-            overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
-        }
-    },
-    schema: {
-        position: 'absolute',
-        left: -100,
-        top: -23,
-        width: 200,
-        'line-break': 'anywhere',
-        'line-height': 'normal',
-        'text-align': 'left',
-        overflow: 'hidden',
-        'text-overflow': 'ellipsis',
-        'white-space': 'nowrap'
-    },
-    table: {
-        position: 'absolute',
-        left: -100,
-        top: 5,
-        width: 200,
-        'line-break': 'anywhere',
-        'line-height': 'normal',
-        'text-align': 'left',
-        overflow: 'hidden',
-        'text-overflow': 'ellipsis',
-        'white-space': 'nowrap'
-    },
-    bucket: {
-        position: 'absolute',
-        left: -100,
-        top: -16,
-        width: 200,
-        'line-break': 'anywhere',
-        'line-height': 'normal',
-        'text-align': 'left',
-        overflow: 'hidden',
-        'text-overflow': 'ellipsis',
-        'white-space': 'nowrap'
-    },
-    pathInBucket: {
-        position: 'absolute',
-        left: -100,
-        top: 5,
-        width: 200,
-        'line-break': 'anywhere',
-        'line-height': 'normal',
-        'text-align': 'left',
-        overflow: 'hidden',
-        'text-overflow': 'ellipsis',
-        'white-space': 'nowrap'
-    },
+export default makeStyles(theme => ({
     storage: {
-        position: 'absolute',
-        left: 19,
-        top: 44,
-        backgroundColor: '#64B5F6',
-        color: 'white',
-        'border-radius': 4,
-        width: 84
+        backgroundColor: theme.palette.info.text
     }
 }));

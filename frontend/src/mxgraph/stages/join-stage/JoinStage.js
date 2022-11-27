@@ -19,54 +19,35 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 
 import { useTranslation } from 'react-i18next';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './JoinStage.Styles';
 import makeTooltip from '../helpers/makeTooltip';
 
-import StageTag from '../../../components/stage-tag';
+import { JobStageTag } from '../../../components/stage-tag';
+import { StageParameters, TagsParameter } from '../parameters';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const JoinStage = ({ stage }) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const columns = stage.columns?.split(',').map(el => el.trim());
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.keyCaption}
-                color="textSecondary"
-            >
-                {stage.joinType !== 'cross' && (
-                    <>
-                        {t('jobDesigner:joinConfiguration.Key')}:
-                        {columns.slice(0, 5).map(value => (
-                            <Typography
-                                title={value}
-                                key={value}
-                                variant="caption"
-                                component="span"
-                                className={classes.key}
-                            >
-                                {value}
-                            </Typography>
-                        ))}
-                        <span className={classes.dots}>
-                            {columns.length > 5 &&
-                                makeTooltip(columns.join(', '), ' ...')}
-                        </span>
-                    </>
-                )}
-            </Typography>
-            <StageTag className={classes.joinType} content={stage.joinType} />
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            {stage.joinType !== 'cross' && (
+                <StageParameters>
+                    <TagsParameter
+                        name={t('jobDesigner:joinConfiguration.Key')}
+                        values={columns}
+                        className={classes.key}
+                    />
+                </StageParameters>
+            )}
+            <JobStageTag className={classes.joinType}>{stage.joinType}</JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

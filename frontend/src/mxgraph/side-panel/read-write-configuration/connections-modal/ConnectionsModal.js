@@ -31,7 +31,6 @@ import ConnectionsModalTableRow from './tableRow/ConnectionsModalTableRow';
 import ConnectionsSearchAndSelect from './searchAndSelect/ConnectionsSearchAndSelect';
 import { selectConnections } from '../../../../pages/settings/connections/Connections';
 import ModalConfirmButtons from './confirmButtons/ModalConfirmButtons';
-import { valueIsLink } from '../../../../components/rw-text-fields/ReadWriteTextFields';
 
 const ConnectionsModal = ({
     ableToEdit,
@@ -50,28 +49,24 @@ const ConnectionsModal = ({
     const [projectConnections, setProjectConnections] = useState(connections);
     const [selectedValue, setSelectedValue] = useState('');
     const [storageSelection, setStorageSelection] = useState('');
-    const connectionSelected = connections.find(
-        param => param.connectionName === selectedValue
-    );
 
     useEffect(() => {
         setProjectConnections(connections);
     }, [connections]);
 
     useEffect(() => {
-        setSelectedValue(valueIsLink(currentValue) ? currentValue.slice(1, -1) : '');
-        setProjectConnections(connections);
+        setSelectedValue(currentValue);
         setSearchValue('');
         setStorageSelection('');
     }, [display]);
 
     const filterParameters = () =>
         projectConnections?.filter(
-            connection =>
-                connection.connectionName
-                    ?.toLowerCase()
+            ({ value }) =>
+                value?.connectionName
+                    .toLowerCase()
                     .indexOf(searchValue.toLowerCase()) !== -1 &&
-                (!storageSelection || connection?.storage === storageSelection)
+                (!storageSelection || value?.storage === storageSelection)
         );
 
     return (
@@ -99,19 +94,20 @@ const ConnectionsModal = ({
                     >
                         <Table>
                             <TableBody>
-                                {filterParameters().map(connection => (
+                                {filterParameters().map(({ key, value }) => (
                                     <ConnectionsModalTableRow
-                                        key={connection.id}
+                                        key={key}
                                         ableToEdit={ableToEdit}
                                         connection={{
-                                            ...connection,
+                                            ...value,
                                             storageLabel: selectConnections.find(
-                                                item =>
-                                                    item.value === connection.storage
+                                                item => item.value === value.storage
                                             )?.name
                                         }}
-                                        connectionSelected={!!connectionSelected}
                                         params={parameters.params}
+                                        defaultSelected={
+                                            currentValue === value.connectionName
+                                        }
                                         selectedValue={selectedValue}
                                         setSelectedValue={setSelectedValue}
                                     />

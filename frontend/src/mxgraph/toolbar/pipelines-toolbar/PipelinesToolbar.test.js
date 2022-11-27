@@ -29,6 +29,12 @@ import RunStopButtons from '../run-stop-buttons';
 import Status from '../../../components/status';
 import { PENDING } from '../../constants';
 import history from '../../../utils/history';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+
+jest.mock('../../../unitConfig', () => ({
+    JOB: { HISTORY: true },
+    PIPELINE: { HISTORY: true }
+}));
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -68,7 +74,6 @@ describe('Pipelines toolbar', () => {
             setSidePanel: jest.fn(),
             sidePanelIsOpen: true,
             setDirty: jest.fn(),
-            sidePanelIsDirty: true,
             dirty: true,
             undoButtonsDisabling: { undo: true, redo: true }
         };
@@ -135,16 +140,22 @@ describe('Pipelines toolbar', () => {
 
     it('should call update prop', () => {
         const [wrapper, props] = init();
-        const button = wrapper.find(IconButton);
+        const button = wrapper.find(IconButton).at(0);
         button.simulate('click');
         expect(props.update).toHaveBeenCalled();
     });
 
     it('should call create prop', () => {
         const [wrapper, props] = init({}, '');
-        const button = wrapper.find(IconButton);
+        const button = wrapper.find(IconButton).at(0);
         button.simulate('click');
         expect(props.create).toHaveBeenCalled();
+    });
+
+    it('should call history prop', () => {
+        const [wrapper] = init();
+        const button = wrapper.find(IconButton).at(1);
+        button.simulate('click');
     });
 
     it('should call run prop', () => {
@@ -163,5 +174,10 @@ describe('Pipelines toolbar', () => {
         const [wrapper, props] = init({}, '');
         wrapper.find(EditDesignerButtons).prop('refresh')();
         expect(props.getActualJobs).toHaveBeenCalled();
+    });
+
+    it('should call onClose prop', () => {
+        const [wrapper] = init();
+        wrapper.find(HistoryPanel).prop('onClose')();
     });
 });

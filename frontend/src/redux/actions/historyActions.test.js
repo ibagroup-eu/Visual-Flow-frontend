@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import api from '../../api/jobs';
-import fetchJobHistory from './historyActions';
+import jobApi from '../../api/jobs';
+import pipelineApi from '../../api/pipelines';
+import { fetchJobHistory, fetchPipelineHistory } from './historyActions';
 import {
+    FETCH_HISTORY_FAIL,
     FETCH_HISTORY_START,
-    FETCH_HISTORY_SUCCESS,
-    FETCH_HISTORY_FAIL
+    FETCH_HISTORY_SUCCESS
 } from './types';
 
 describe('History action', () => {
@@ -33,7 +34,7 @@ describe('History action', () => {
         beforeEach(() => {
             data = [];
             dispatch = jest.fn();
-            jest.spyOn(api, 'getHistory').mockResolvedValue({ data });
+            jest.spyOn(jobApi, 'getJobHistory').mockResolvedValue({ data });
         });
 
         it('should dispatch FETCH_HISTORY_START', () => {
@@ -51,8 +52,95 @@ describe('History action', () => {
         });
 
         it('should dispatch FETCH_LOGS_FAIL on failure', () => {
-            jest.spyOn(api, 'getHistory').mockRejectedValue({});
+            jest.spyOn(jobApi, 'getJobHistory').mockRejectedValue({});
             return fetchJobHistory()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: FETCH_HISTORY_START }],
+                    [{ type: FETCH_HISTORY_FAIL, payload: { error: {} } }]
+                ]);
+            });
+        });
+    });
+
+    describe('getPipelineHistory', () => {
+        let data;
+        beforeEach(() => {
+            data = [];
+            dispatch = jest.fn();
+            jest.spyOn(pipelineApi, 'getPipelineHistory').mockResolvedValue({
+                data
+            });
+        });
+
+        it('should dispatch FETCH_HISTORY_START', () => {
+            fetchPipelineHistory()(dispatch);
+            expect(dispatch).toHaveBeenCalledWith({ type: FETCH_HISTORY_START });
+        });
+
+        it('should dispatch FETCH_HISTORY_SUCCESS on success', () => {
+            jest.spyOn(pipelineApi, 'getPipelineHistory').mockResolvedValue({
+                data: [
+                    {
+                        id: '07062203-c65c-4ceb-add1-7458ece5912a',
+                        type: 'pipeline',
+                        startedAt: '2022-11-07T13:31:23.000Z',
+                        finishedAt: '2022-11-07T13:33:28.000Z',
+                        startedBy: 'uladzislaukhizhanok',
+                        status: 'Failed',
+                        nodes: [
+                            {
+                                id:
+                                    '07062203-c65c-4ceb-add1-7458ece5912a-2384349284',
+                                name: 'df1',
+                                operation: 'JOB',
+                                startedAt: '2022-11-07T13:31:23.000Z',
+                                finishedAt: '2022-11-07T13:32:21.000Z',
+                                status: 'Succeeded',
+                                logId: '1667828008509'
+                            }
+                        ]
+                    }
+                ]
+            });
+            return fetchPipelineHistory()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: FETCH_HISTORY_START }],
+                    [
+                        {
+                            type: FETCH_HISTORY_SUCCESS,
+                            payload: [
+                                {
+                                    id: '07062203-c65c-4ceb-add1-7458ece5912a',
+                                    type: 'pipeline',
+                                    startedAt: '2022-11-07T13:31:23.000Z',
+                                    finishedAt: '2022-11-07T13:33:28.000Z',
+                                    startedBy: 'uladzislaukhizhanok',
+                                    status: 'Failed',
+                                    uniqId: expect.any(String),
+                                    statuses: [
+                                        {
+                                            id:
+                                                '07062203-c65c-4ceb-add1-7458ece5912a-2384349284',
+                                            name: 'df1',
+                                            operation: 'JOB',
+                                            startedAt: '2022-11-07T13:31:23.000Z',
+                                            finishedAt: '2022-11-07T13:32:21.000Z',
+                                            status: 'Succeeded',
+                                            logId: '1667828008509',
+                                            uniqId: expect.any(String)
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                ]);
+            });
+        });
+
+        it('should dispatch FETCH_LOGS_FAIL on failure', () => {
+            jest.spyOn(pipelineApi, 'getPipelineHistory').mockRejectedValue({});
+            return fetchPipelineHistory()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: FETCH_HISTORY_START }],
                     [{ type: FETCH_HISTORY_FAIL, payload: { error: {} } }]

@@ -34,7 +34,6 @@ export default makeStyles(theme => ({
         alignItems: 'center'
     },
     divider: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(2)
+        marginTop: theme.spacing(2)
     }
 }));

@@ -19,12 +19,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Divider } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import useStyles from './SortConfiguration.Styles';
 import SelectField from '../../../components/select-field';
 import { OTHER, SORT_TYPES } from '../../constants';
 import PropertyList from '../property-list';
+import ConfigurationDivider from '../../../components/divider';
 
 const sortFunctions = [
     {
@@ -54,7 +53,6 @@ const sortFunctions = [
 ];
 
 const SortConfiguration = ({ ableToEdit, state, onChange }) => {
-    const classes = useStyles();
     const { t } = useTranslation();
     const DEFAULT_SORT_TYPE = 'fullSort';
 
@@ -73,9 +71,9 @@ const SortConfiguration = ({ ableToEdit, state, onChange }) => {
 
     return (
         <>
-            <Divider className={classes.divider} />
             {state.name && (
                 <>
+                    <ConfigurationDivider />
                     <SelectField
                         ableToEdit={ableToEdit}
                         label="jobDesigner:sortConfiguration.SortType"
@@ -87,8 +85,9 @@ const SortConfiguration = ({ ableToEdit, state, onChange }) => {
                         defaultValue={DEFAULT_SORT_TYPE}
                         required
                     />
-                    <Divider className={classes.divider} />
+                    <ConfigurationDivider />
                     <PropertyList
+                        required
                         ableToEdit={ableToEdit}
                         items={orderColumns}
                         defaultValue={sortFunctions[0].value}
@@ -99,9 +98,7 @@ const SortConfiguration = ({ ableToEdit, state, onChange }) => {
                             )
                         }
                         onChange={value => onChange('orderColumns', value.join(','))}
-                        label={`${t(
-                            'jobDesigner:sortConfiguration.OrderColumns'
-                        )} *`}
+                        label={t('jobDesigner:sortConfiguration.OrderColumns')}
                         handleItemChange={handleItemChange}
                         options={sortFunctions}
                     />

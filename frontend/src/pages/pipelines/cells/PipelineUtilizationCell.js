@@ -20,7 +20,6 @@
 import { Grid, TableCell, Typography, withStyles } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import LinearProgressChart from '../../../components/chart/linear';
 import styles from './PipelineUtilizationCell.Styles';
@@ -28,7 +27,7 @@ import styles from './PipelineUtilizationCell.Styles';
 const PipelineUtilizationCell = ({ progress = 0, status, classes, ...rest }) => {
     const { t } = useTranslation();
     return (
-        <TableCell className={classNames(classes.cell)} {...rest}>
+        <TableCell className={classes.cell} {...rest}>
             <Grid
                 container
                 alignItems="stretch"

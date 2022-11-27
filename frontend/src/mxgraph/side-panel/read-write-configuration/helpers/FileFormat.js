@@ -49,7 +49,7 @@ const fileFormat = [
     }
 ];
 
-const FileFormat = ({ disabled, value, onChange }) => (
+const FileFormat = ({ disabled, value, onChange, required }) => (
     <SelectField
         ableToEdit={!disabled}
         label="jobDesigner:readConfiguration.Fileformat"
@@ -58,13 +58,15 @@ const FileFormat = ({ disabled, value, onChange }) => (
         handleInputChange={onChange}
         menuItems={fileFormat}
         type={READWRITE}
+        required={required}
     />
 );
 
 FileFormat.propTypes = {
     disabled: PropTypes.bool,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    required: PropTypes.bool
 };
 
 export default FileFormat;

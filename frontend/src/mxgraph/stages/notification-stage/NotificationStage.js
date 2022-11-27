@@ -19,33 +19,30 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './NotificationStage.Styles';
 import StageWarning from '../../../components/stage-warning';
 import makeTooltip from '../helpers/makeTooltip';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import { PipelineStageTag } from '../../../components/stage-tag';
 
 const NotificationStage = ({ stage, params }) => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.title}>
-                {stageIcon(stage.operation)}
-                <span className={classes.name}>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={
+                <>
                     {makeTooltip(stage.name, stage.name)}
-                </span>
-                <StageWarning stage={stage} params={params} />
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.addressees}
-            >
+                    <StageWarning stage={stage} params={params} />
+                </>
+            }
+        >
+            <PipelineStageTag className={classes.addressees}>
                 {makeTooltip(stage.addressees, stage.addressees)}
-            </Typography>
-        </div>
+            </PipelineStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

@@ -19,39 +19,30 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
-import useStyles from './CacheStage.Styles';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 import makeTooltip from '../helpers/makeTooltip';
+import { StageParameters, Parameter } from '../parameters';
 
 const CacheStage = ({ stage }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.useDisk}
-                color="textSecondary"
-            >
-                {t('jobDesigner:cacheConfiguration.useDisk')}: {stage.useDisk}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.useMemory}
-                color="textSecondary"
-            >
-                {t('jobDesigner:cacheConfiguration.useMemory')}: {stage.useMemory}
-            </Typography>
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <StageParameters>
+                <Parameter name={t('jobDesigner:cacheConfiguration.useDisk')}>
+                    {' '}
+                    {stage.useDisk}
+                </Parameter>
+                <Parameter name={t('jobDesigner:cacheConfiguration.useMemory')}>
+                    {' '}
+                    {stage.useMemory}
+                </Parameter>
+            </StageParameters>
+        </ConfiguredStageWithIcon>
     );
 };
 

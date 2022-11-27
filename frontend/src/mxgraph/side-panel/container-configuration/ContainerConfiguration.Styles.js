@@ -26,5 +26,8 @@ export default makeStyles(() => ({
     wrapper: {
         display: 'flex',
         alignItems: 'center'
+    },
+    dividerMargin: {
+        marginTop: 8
     }
 }));

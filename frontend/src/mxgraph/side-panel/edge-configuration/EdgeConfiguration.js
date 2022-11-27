@@ -20,11 +20,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField, MenuItem, Box, Typography } from '@material-ui/core';
+import { TextField, MenuItem, Box, Typography } from '@material-ui/core';
 import { isEqual, pickBy } from 'lodash';
 import useStyles from './EdgeConfiguration.Styles';
 
 import SaveCancelButtons from '../buttons';
+import ConfigurationDivider from '../../../components/divider';
 
 const path = [
     {
@@ -98,7 +99,7 @@ const EdgeConfiguration = ({
                                 ?.nodeValue}
                     </Typography>
                 </Box>
-                <Divider />
+                <ConfigurationDivider />
                 <TextField
                     label={t('jobDesigner:edgeConfiguration.Successpath')}
                     placeholder={t('jobDesigner:edgeConfiguration.Successpath')}

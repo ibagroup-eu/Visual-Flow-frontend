@@ -19,21 +19,23 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { Box, Drawer, IconButton, List } from '@material-ui/core';
+import { Box, Drawer, IconButton, List, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
-import { groupBy, isEqual } from 'lodash';
+import { groupBy } from 'lodash';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import useStyles from './HistoryPanel.Styles';
 import HistoryHeader from './history-header/HistoryHeader';
 import { DATE_FORMAT } from '../../globalConstants';
 import { PageSkeleton } from '../skeleton';
 import LogsModal from '../../pages/logs-modal';
-import { setLogsModal } from '../../redux/actions/mxGraphActions';
 import HistoryListHeader from './history-list-header/HistoryListHeader';
 import HistoryDaysRow from './history-days-row/HistoryDaysRow';
-import fetchJobHistory from '../../redux/actions/historyActions';
+import {
+    fetchJobHistory,
+    fetchPipelineHistory
+} from '../../redux/actions/historyActions';
 
 const sortHistory = data =>
     data?.sort((a, b) =>
@@ -50,27 +52,34 @@ const groupHistory = data =>
     );
 
 const HistoryPanel = ({
-    jobData,
-    setPanelState,
+    data,
+    display,
+    onClose,
+    type = 'job',
     historyData,
     loading,
-    showLogsModal,
-    setLogs,
-    jobId,
     projectId,
-    getHistory
+    getJobHistory,
+    getPipelineHistory
 }) => {
+    const { t } = useTranslation();
     const classes = useStyles();
     const sortByDate = sortHistory(historyData);
     const groupByDate = groupHistory(sortByDate);
-    const [logsId, setLogsId] = useState(jobId);
+    const [logsModal, setLogsModal] = useState(false);
+    const [logId, setLogId] = useState(null);
+    const [jobId, setJobId] = useState(null);
     const [dateGroups, setDateGroups] = useState(groupByDate);
 
     useEffect(() => {
-        if (!isEqual(jobData, {})) {
-            getHistory(projectId, jobData.id);
+        if (display) {
+            if (type === 'job') {
+                getJobHistory(projectId, data.id);
+            } else {
+                getPipelineHistory(projectId, data.id);
+            }
         }
-    }, [jobData]);
+    }, [display]);
 
     useEffect(() => {
         if (historyData) {
@@ -78,65 +87,81 @@ const HistoryPanel = ({
         }
     }, [historyData]);
 
-    const confirmCancel = () => {
-        setPanelState({});
-    };
+    const findName = currentId =>
+        data?.definition?.graph.find(obj => obj.value.jobId === currentId)?.value
+            .name || '';
 
-    const setShowLogsModal = id => {
-        setLogsId(id);
-        setLogs(true);
+    const setShowLogsModal = logIds => {
+        setLogId(logIds.logId);
+        setJobId(logIds.jobId);
+        setLogsModal(true);
     };
 
     return (
         <div className={classes.root}>
-            <LogsModal
-                display={showLogsModal}
-                projectId={projectId}
-                jobId={logsId}
-                onClose={() => setLogs(false)}
-            />
             <Drawer
-                open={!isEqual(jobData, {})}
-                onClose={() => confirmCancel()}
+                open={display}
+                onClose={onClose}
                 anchor="right"
                 classes={{ paper: classes.drawer }}
             >
                 {loading ? (
                     <PageSkeleton />
                 ) : (
-                    <div className={classNames(classes.content)}>
-                        <Box className={classes.form}>
+                    <Box className={classes.form}>
+                        <LogsModal
+                            display={logsModal}
+                            projectId={projectId}
+                            jobId={jobId}
+                            logId={logId}
+                            onClose={() => setLogsModal(false)}
+                        />
+                        <Box className={classes.content}>
                             <Box className={classes.header}>
                                 <HistoryHeader
                                     status={
-                                        sortByDate[0] ? sortByDate[0].status : ''
+                                        sortByDate[0]
+                                            ? sortByDate[0].status
+                                            : data.status
                                     }
-                                    name={jobData.name}
+                                    name={data.name}
                                     startedBy={
                                         sortByDate[0] ? sortByDate[0].startedBy : ''
                                     }
                                 />
                                 <IconButton
                                     className={classes.closeIcon}
-                                    onClick={confirmCancel}
+                                    onClick={onClose}
                                 >
                                     <CloseIcon />
                                 </IconButton>
                             </Box>
-                            <HistoryListHeader />
-                            <List disablePadding className={classes.list}>
-                                {dateGroups.map((day, index) => (
-                                    <HistoryDaysRow
-                                        key={day[0]}
-                                        dayHistory={day[1]}
-                                        logsHandler={setShowLogsModal}
-                                        projectId={projectId}
-                                        isOpen={index < 2}
-                                    />
-                                ))}
-                            </List>
+                            {dateGroups.length === 0 ? (
+                                <Box className={classes.emptyList}>
+                                    <Typography variant="h6">
+                                        {t('main:history.EmptyList')}
+                                    </Typography>
+                                </Box>
+                            ) : (
+                                <>
+                                    <HistoryListHeader type={type} />
+                                    <List disablePadding className={classes.list}>
+                                        {dateGroups.map((day, index) => (
+                                            <HistoryDaysRow
+                                                key={day[0]}
+                                                type={type}
+                                                dayHistory={day[1]}
+                                                findName={findName}
+                                                logsHandler={setShowLogsModal}
+                                                projectId={projectId}
+                                                isOpen={index < 2}
+                                            />
+                                        ))}
+                                    </List>
+                                </>
+                            )}
                         </Box>
-                    </div>
+                    </Box>
                 )}
             </Drawer>
         </div>
@@ -144,26 +169,25 @@ const HistoryPanel = ({
 };
 
 HistoryPanel.propTypes = {
-    setPanelState: PropTypes.func,
-    jobData: PropTypes.object,
+    data: PropTypes.object,
+    type: PropTypes.string,
     loading: PropTypes.bool,
     historyData: PropTypes.array,
-    showLogsModal: PropTypes.bool,
-    setLogs: PropTypes.func,
     projectId: PropTypes.string,
-    jobId: PropTypes.string,
-    getHistory: PropTypes.func
+    getJobHistory: PropTypes.func,
+    getPipelineHistory: PropTypes.func,
+    display: PropTypes.bool,
+    onClose: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-    showLogsModal: state.mxGraph.showLogsModal,
-    loading: state.pages.history.loading,
+    loading: state.pages.history.loading || state.mxGraph.loading,
     historyData: state.pages.history.data
 });
 
 const mapDispatchToProps = {
-    setLogs: setLogsModal,
-    getHistory: fetchJobHistory
+    getJobHistory: fetchJobHistory,
+    getPipelineHistory: fetchPipelineHistory
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryPanel);

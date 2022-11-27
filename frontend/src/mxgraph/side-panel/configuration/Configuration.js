@@ -69,10 +69,9 @@ const Configuration = ({
     const [connectionPrevState, setConnectionState] = useState({});
 
     const connection = state.connectionName
-        ? omit(
-              connections.find(obj => obj.connectionName === state.connectionName),
-              ['id', 'connectionName']
-          ) || {}
+        ? omit(connections.find(({ key }) => key === state.connectionName)?.value, [
+              'connectionName'
+          ]) || {}
         : {};
 
     useEffect(() => {
@@ -237,6 +236,7 @@ const Configuration = ({
                     handleSwap={handleSwap}
                     params={params}
                     connection={connection}
+                    stageId={graph.getSelectionCell()?.id}
                 />
             </Box>
             <SaveCancelButtons

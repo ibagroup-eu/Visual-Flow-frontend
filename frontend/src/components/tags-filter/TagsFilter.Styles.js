@@ -24,7 +24,12 @@ export default makeStyles(theme => ({
         border: `1px solid ${theme.palette.grey[400]}`,
         width: 500,
         padding: theme.spacing(1.5),
-        marginTop: theme.spacing(0.5)
+        marginTop: theme.spacing(0.5),
+        transition: theme.transitions.create(['transform']),
+        transform: 'translateY(4px)'
+    },
+    paperClose: {
+        transform: 'translateY(4px) !important'
     },
     filteredTags: {
         paddingBottom: theme.spacing(1.5)
@@ -43,5 +48,9 @@ export default makeStyles(theme => ({
     collapse: {
         visibility: 'visible',
         maxHeight: '35vh'
+    },
+    noResult: {
+        paddingLeft: theme.spacing(1.5),
+        color: theme.palette.primary.main
     }
 }));

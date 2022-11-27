@@ -8,6 +8,10 @@
                     "customSql": "false"
                 },
                 {
+                    "storage": "clickhouse",
+                    "customSql": "false"
+                },
+                {
                     "storage": "postgresql",
                     "customSql": "false"
                 },
@@ -30,6 +34,9 @@
                 {
                     "storage": "redshift-jdbc",
                     "customSql": "false"
+                },
+                {
+                    "storage": "dataframe"
                 }
             ]
         },
@@ -38,6 +45,10 @@
             "conditions": [
                 {
                     "storage": "db2",
+                    "customSql": "false"
+                },
+                {
+                    "storage": "clickhouse",
                     "customSql": "false"
                 },
                 {
@@ -100,6 +111,22 @@
                 {
                     "storage": "redshift",
                     "customSql": "true"
+                }
+            ]
+        },
+        {
+            "field": "uploaded",
+            "conditions": [
+                {
+                    "storage": "cluster"
+                }
+            ]
+        },
+        {
+            "field": "data",
+            "conditions": [
+                {
+                    "storage": "dataframe"
                 }
             ]
         }

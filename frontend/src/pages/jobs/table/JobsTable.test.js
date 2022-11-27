@@ -38,8 +38,14 @@
 
 import { mount, shallow } from 'enzyme';
 import React from 'react';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
 import EnhancedTable from '../../../components/table/enhanced-table';
 import JobsTable from './JobsTable';
+
+jest.mock('../../../unitConfig', () => ({
+    JOB: { HISTORY: true },
+    PIPELINE: { HISTORY: true }
+}));
 
 jest.mock('../../../routes/withPagination', () => x => x);
 
@@ -186,5 +192,9 @@ describe('Jobs', () => {
                 .children({ item: { ...props.data[0], runnable: true } })
                 .props.children.at(6).props.actions
         ).toHaveLength(3);
+    });
+
+    it('should call onClose prop', () => {
+        wrapper.find(HistoryPanel).prop('onClose')();
     });
 });

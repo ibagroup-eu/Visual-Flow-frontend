@@ -20,20 +20,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import {
-    Box,
-    Chip,
-    Divider,
-    IconButton,
-    TextField,
-    Typography
-} from '@material-ui/core';
+import { Box, Chip, IconButton, TextField, Typography } from '@material-ui/core';
 import { SwapVert } from '@material-ui/icons';
 
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './JoinConfiguration.Styles';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
+import ConfigurationDivider from '../../../components/divider';
 
 const joinTypes = [
     {
@@ -88,75 +82,87 @@ const JoinConfiguration = ({
                 type={OTHER}
                 required
             />
-            <Divider className={classes.divider} />
             {state.joinType && (
                 <>
-                    <Typography variant="body2" color="textSecondary">
-                        {t('jobDesigner:joinConfiguration.LinkOrdering')}
-                    </Typography>
-                    <Box className={classes.wrapper}>
-                        <div>
-                            <div className={classes.row}>
-                                <Typography
-                                    variant="caption"
-                                    color="textSecondary"
-                                    className={classes.heading}
-                                >
-                                    {`${t('jobDesigner:joinConfiguration.Left')}: `}
-                                </Typography>
-                                <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels.Left}
-                                </Typography>
+                    <ConfigurationDivider />
+                    <div className={classes.divider}>
+                        <Typography variant="body2" color="textSecondary">
+                            {t('jobDesigner:joinConfiguration.LinkOrdering')}
+                        </Typography>
+                        <Box className={classes.wrapper}>
+                            <div>
+                                <div className={classes.row}>
+                                    <Typography
+                                        variant="caption"
+                                        color="textSecondary"
+                                        className={classes.heading}
+                                    >
+                                        {`${t(
+                                            'jobDesigner:joinConfiguration.Left'
+                                        )}: `}
+                                    </Typography>
+                                    <Typography variant="body2" color="textPrimary">
+                                        {edgeLabels.Left}
+                                    </Typography>
+                                </div>
+                                <div className={classes.row}>
+                                    <Typography
+                                        variant="caption"
+                                        color="textSecondary"
+                                        className={classes.heading}
+                                    >
+                                        {`${t(
+                                            'jobDesigner:joinConfiguration.Right'
+                                        )}: `}
+                                    </Typography>
+                                    <Typography variant="body2" color="textPrimary">
+                                        {edgeLabels.Right}
+                                    </Typography>
+                                </div>
                             </div>
-                            <div className={classes.row}>
-                                <Typography
-                                    variant="caption"
-                                    color="textSecondary"
-                                    className={classes.heading}
-                                >
-                                    {`${t('jobDesigner:joinConfiguration.Right')}: `}
-                                </Typography>
-                                <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels.Right}
-                                </Typography>
-                            </div>
-                        </div>
-                        <IconButton disabled={!ableToEdit} onClick={handleSwap}>
-                            <SwapVert />
-                        </IconButton>
-                    </Box>
-                    <Divider className={classes.divider} />
+                            <IconButton disabled={!ableToEdit} onClick={handleSwap}>
+                                <SwapVert />
+                            </IconButton>
+                        </Box>
+                    </div>
                     {state.joinType !== 'cross' && (
-                        <Autocomplete
-                            disabled={!ableToEdit}
-                            id="columns"
-                            multiple
-                            freeSolo
-                            autoSelect
-                            options={[]}
-                            value={state.columns?.split(',') || []}
-                            onChange={(event, value) =>
-                                onChange('columns', value?.join(','))
-                            }
-                            renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                    <Chip
-                                        variant="outlined"
-                                        label={option}
-                                        {...getTagProps({ index })}
-                                    />
-                                ))
-                            }
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    fullWidth
-                                    variant="outlined"
-                                    label={t('jobDesigner:joinConfiguration.Key')}
-                                    required
+                        <>
+                            <ConfigurationDivider />
+                            <div className={classes.divider}>
+                                <Autocomplete
+                                    disabled={!ableToEdit}
+                                    id="columns"
+                                    multiple
+                                    freeSolo
+                                    autoSelect
+                                    options={[]}
+                                    value={state.columns?.split(',') || []}
+                                    onChange={(event, value) =>
+                                        onChange('columns', value?.join(','))
+                                    }
+                                    renderTags={(value, getTagProps) =>
+                                        value.map((option, index) => (
+                                            <Chip
+                                                variant="outlined"
+                                                label={option}
+                                                {...getTagProps({ index })}
+                                            />
+                                        ))
+                                    }
+                                    renderInput={params => (
+                                        <TextField
+                                            {...params}
+                                            fullWidth
+                                            variant="outlined"
+                                            label={t(
+                                                'jobDesigner:joinConfiguration.Key'
+                                            )}
+                                            required
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
+                            </div>
+                        </>
                     )}
                 </>
             )}

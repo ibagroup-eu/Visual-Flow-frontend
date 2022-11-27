@@ -29,24 +29,48 @@ import {
     CREATE_CONNECTION_SUCCESS,
     DELETE_CONNECTION_START,
     DELETE_CONNECTION_FAIL,
-    DELETE_CONNECTION_SUCCESS
+    DELETE_CONNECTION_SUCCESS,
+    PING_CONNECTION_START,
+    PING_CONNECTION_SUCCESS,
+    PING_CONNECTION_FAIL
 } from '../actions/types';
 
 const initialState = {
     loading: false,
     connections: [],
-    editable: undefined
+    editable: undefined,
+    pingingConnections: {},
+    deletingConnections: {}
 };
-
+// eslint-disable-next-line complexity
 const settingsConnectionsReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case FETCH_CONNECTIONS_START:
-        case UPDATE_CONNECTION_START:
-        case CREATE_CONNECTION_START:
-        case DELETE_CONNECTION_START:
             return {
                 ...state,
                 loading: true
+            };
+        case UPDATE_CONNECTION_START:
+        case CREATE_CONNECTION_START:
+            return {
+                ...state,
+                uploading: true
+            };
+        case DELETE_CONNECTION_START:
+            return {
+                ...state,
+                deletingConnections: {
+                    ...state.deletingConnections,
+                    [action.payload.key]: true
+                }
+            };
+        case PING_CONNECTION_START:
+            return {
+                ...state,
+                pingingConnections: {
+                    ...state.pingingConnections,
+                    [action.payload.key]: true
+                }
             };
         case FETCH_CONNECTIONS_SUCCESS:
             return {
@@ -55,41 +79,74 @@ const settingsConnectionsReducer = (state = initialState, action = {}) => {
                 connections: action.payload?.connections,
                 editable: action.payload?.editable
             };
+        case CREATE_CONNECTION_SUCCESS:
+            return {
+                ...state,
+                uploading: false,
+                connections: [...state.connections, action.payload.connection]
+            };
+        case UPDATE_CONNECTION_SUCCESS:
+            return {
+                ...state,
+                uploading: false,
+                connections: state.connections.map(connection =>
+                    connection.key === action.payload.connection.key
+                        ? {
+                              key: action.payload.connection.value.connectionName,
+                              value: action.payload.connection.value
+                          }
+                        : connection
+                )
+            };
+        case DELETE_CONNECTION_SUCCESS:
+            return {
+                ...state,
+                deletingConnections: {
+                    ...state.deletingConnections,
+                    [action.payload.key]: false
+                },
+                connections: state.connections.filter(
+                    connection => connection.key !== action.payload.key
+                )
+            };
+        case PING_CONNECTION_SUCCESS:
+            return {
+                ...state,
+                pingingConnections: {
+                    ...state.pingingConnections,
+                    [action.payload.key]: false
+                }
+            };
         case FETCH_CONNECTIONS_FAIL:
-        case UPDATE_CONNECTION_FAIL:
-        case CREATE_CONNECTION_FAIL:
-        case DELETE_CONNECTION_FAIL:
             return {
                 ...state,
                 loading: false,
                 error: action.payload.error
             };
-        case UPDATE_CONNECTION_SUCCESS:
+        case CREATE_CONNECTION_FAIL:
+        case UPDATE_CONNECTION_FAIL:
             return {
                 ...state,
-                loading: false,
-                connections: state.connections.map(connection =>
-                    connection.id === action.payload.connection.id
-                        ? {
-                              ...action.payload.connection,
-                              id: action.payload.connection.connectionName
-                          }
-                        : connection
-                )
+                uploading: false,
+                error: action.payload.error
             };
-        case CREATE_CONNECTION_SUCCESS:
+        case DELETE_CONNECTION_FAIL:
             return {
                 ...state,
-                loading: false,
-                connections: [...state.connections, action.payload.connection]
+                deletingConnections: {
+                    ...state.deletingConnections,
+                    [action.payload.key]: false
+                },
+                error: action.payload.error
             };
-        case DELETE_CONNECTION_SUCCESS:
+        case PING_CONNECTION_FAIL:
             return {
                 ...state,
-                loading: false,
-                connections: state.connections.filter(
-                    connection => connection.id !== action.payload.connectionId
-                )
+                pingingConnections: {
+                    ...state.pingingConnections,
+                    [action.payload.key]: false
+                },
+                error: action.payload.error
             };
         default:
             return state;

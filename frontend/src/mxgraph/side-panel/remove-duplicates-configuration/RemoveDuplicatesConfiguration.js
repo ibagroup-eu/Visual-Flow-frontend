@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { Chip, Divider, TextField } from '@material-ui/core';
+import { Chip, TextField } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import useStyles from '../groupby-configuration/GroupByConfiguration.Styles';
+import useStyles from './RemoveDuplicatesConfiguration.Styles';
 import PropertyList from '../property-list';
+import ConfigurationDivider from '../../../components/divider';
 
 const orderBy = [
     {
@@ -54,7 +55,7 @@ const RemoveDuplicatesConfiguration = ({ ableToEdit, state, onChange }) => {
 
     return (
         <>
-            <Divider className={classes.divider} />
+            <ConfigurationDivider />
             <Autocomplete
                 disabled={!ableToEdit}
                 id="keyColumns"
@@ -84,8 +85,9 @@ const RemoveDuplicatesConfiguration = ({ ableToEdit, state, onChange }) => {
                     />
                 )}
             />
-            <Divider className={classes.divider} />
+            <ConfigurationDivider />
             <PropertyList
+                required
                 ableToEdit={ableToEdit}
                 items={orderColumns}
                 defaultValue={orderBy[0].value}

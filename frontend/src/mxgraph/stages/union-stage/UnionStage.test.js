@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import UnionStage from './UnionStage';
 
@@ -28,6 +27,6 @@ describe('UnionStage', () => {
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(Typography).exists()).toBeTruthy();
+        expect(wrapper).toBeDefined();
     });
 });

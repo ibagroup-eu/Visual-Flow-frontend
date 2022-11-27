@@ -44,8 +44,9 @@ describe('mxGraph Reducer', () => {
         data: {},
         dirty: false,
         paramsIsDirty: false,
+        graphWithParamsIsDirty: false,
         sidePanelIsDirty: false,
-        loading: true,
+        loading: false,
         fields: null,
         zoomValue: 1,
         panning: false,
@@ -92,7 +93,7 @@ describe('mxGraph Reducer', () => {
                     param1: 'value1'
                 }
             },
-            dirty: true
+            graphWithParamsIsDirty: true
         });
     });
 
@@ -125,6 +126,7 @@ describe('mxGraph Reducer', () => {
         expect(mxGraphReducer(undefined, action)).toEqual({
             ...initialState,
             dirty: false,
+            graphWithParamsIsDirty: false,
             loading: false,
             data: {}
         });

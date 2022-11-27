@@ -18,6 +18,7 @@
  */
 
 export default theme => ({
+    table: { borderCollapse: 'separate', borderSpacing: theme.spacing(0, 1.5) },
     row: {
         '& td, & th': {
             padding: theme.spacing(1.5)

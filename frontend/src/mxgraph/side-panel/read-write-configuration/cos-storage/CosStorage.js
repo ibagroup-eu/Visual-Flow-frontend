@@ -62,6 +62,7 @@ const CosStorage = ({
                 ableToEdit={ableToEdit}
                 handleInputChange={handleInputChange}
                 connection={connection}
+                required
             />
             <SelectField
                 ableToEdit={ableToEdit}
@@ -72,6 +73,7 @@ const CosStorage = ({
                 menuItems={authType}
                 type={READWRITE}
                 connection={connection}
+                required
             />
             {inputValues.authType === 'HMAC' && (
                 <ReadTextFields
@@ -82,6 +84,7 @@ const CosStorage = ({
                     openModal={openModal}
                     connection={connection}
                     hidden
+                    required
                 />
             )}
             {inputValues.authType === 'IAM' && (
@@ -93,6 +96,7 @@ const CosStorage = ({
                     openModal={openModal}
                     connection={connection}
                     hidden
+                    required
                 />
             )}
             {!connectionPage && (

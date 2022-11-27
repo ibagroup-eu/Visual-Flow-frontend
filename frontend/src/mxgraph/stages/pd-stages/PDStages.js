@@ -19,15 +19,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
-import classNames from 'classnames';
 
 import DescriptionIcon from '@material-ui/icons/Description';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
+
 import useStyles from './PDStages.Styles';
 import { DRAFT, PENDING, SKIPPED } from '../../constants';
 import StageWarning from '../../../components/stage-warning';
 import makeTooltip from '../helpers/makeTooltip';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import { PipelineStageTag } from '../../../components/stage-tag';
 
 const PDStages = ({
     stage,
@@ -43,30 +43,27 @@ const PDStages = ({
         stage.status && ![DRAFT, PENDING, SKIPPED].includes(stage.status);
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.title}>
-                {stageIcon(stage.operation)}
-                <span className={classes.name}>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={
+                <>
                     {makeTooltip(stage.name, stage.name)}
-                </span>
-                {visibleLogsIcon && (
-                    <DescriptionIcon id={iconId} className={classes.logIcon} />
-                )}
-                <StageWarning
-                    stage={stage}
-                    params={params}
-                    jobs={jobs}
-                    pipelines={pipelines}
-                />
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classNames(classes.tooltip, classes[tooltipClass])}
-            >
+                    {visibleLogsIcon && (
+                        <DescriptionIcon id={iconId} className={classes.logIcon} />
+                    )}
+                    <StageWarning
+                        stage={stage}
+                        params={params}
+                        jobs={jobs}
+                        pipelines={pipelines}
+                    />
+                </>
+            }
+        >
+            <PipelineStageTag className={classes[tooltipClass]}>
                 {makeTooltip(tooltipName, tooltipName) || ''}
-            </Typography>
-        </div>
+            </PipelineStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

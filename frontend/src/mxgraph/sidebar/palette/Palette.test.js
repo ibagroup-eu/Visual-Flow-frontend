@@ -25,6 +25,11 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Palette } from './Palette';
 import StageModal from '../../../components/stage-modals/stage';
 
+jest.mock('../../../unitConfig', () => ({
+    JOB: { STAGES: {} },
+    PIPELINE: { STAGES: {} }
+}));
+
 jest.mock('react', () => ({
     ...jest.requireActual('react'),
     createRef: jest.fn()
@@ -69,7 +74,8 @@ describe('Palette', () => {
                     other: {
                         border: 'green'
                     }
-                }
+                },
+                zIndex: { drawer: 1200 }
             },
             classes: {},
             t: x => x,
@@ -77,7 +83,7 @@ describe('Palette', () => {
         };
 
         createRef.mockImplementation(() => ({
-            current: { querySelectorAll: _ => ({}) }
+            current: { querySelectorAll: () => ({}) }
         }));
 
         const wrapper = func(<Palette {...defaultProps} {...props} />);

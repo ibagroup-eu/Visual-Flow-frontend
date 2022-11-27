@@ -19,40 +19,37 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './TransformStage.Styles';
 import makeTooltip from '../helpers/makeTooltip';
 
-import StageTag from '../../../components/stage-tag';
+import { JobStageTag } from '../../../components/stage-tag';
+import { Parameter, StageParameters } from '../parameters';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const TransformStage = ({ stage }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <>
-                {stage.mode === 'Full_SQL' ? (
-                    <Typography
-                        variant="caption"
-                        component="div"
-                        className={classes.tableName}
-                        color="textSecondary"
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            {stage.mode === 'Full_SQL' && (
+                <StageParameters>
+                    <Parameter
+                        name={t('jobDesigner:transformConfiguration.tableName')}
                     >
-                        {t('jobDesigner:transformConfiguration.tableName')}:{' '}
+                        {' '}
                         {makeTooltip(stage.tableName, stage.tableName)}
-                    </Typography>
-                ) : null}
-            </>
-            <StageTag className={classes.mode} content={stage.mode} />
-        </div>
+                    </Parameter>
+                </StageParameters>
+            )}
+
+            <JobStageTag className={classes.mode}>{stage.mode}</JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

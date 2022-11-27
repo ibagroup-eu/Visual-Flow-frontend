@@ -138,12 +138,10 @@ const UsersTable = ({
     }, [users]);
 
     const handleChangePage = (event, newPage) => setPage(newPage);
-
     const handleChangeRowsPerPage = event => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
     const handleClick = (event, username) => {
         const selectedIndex = selected.indexOf(username);
         let newSelected = [];
@@ -161,13 +159,11 @@ const UsersTable = ({
         }
         setSelected(newSelected);
     };
-
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
     const handleSelectAllClick = event => {
         if (event.target.checked) {
             const newSelected = users.map(n => n.username);
@@ -176,12 +172,10 @@ const UsersTable = ({
         }
         setSelected([]);
     };
-
     const handleSubmit = () => {
         onSubmit(role, selected);
         setRole(-1);
     };
-
     const updateUsers = updatedUsersAndRoles =>
         handleUpdateUsers(
             users.map(user =>
@@ -190,7 +184,6 @@ const UsersTable = ({
                     : user
             )
         );
-
     const handleDeleteUsers = () => {
         handleUpdateUsers(
             users.filter(user => selected.indexOf(user.username) === -1)
@@ -201,7 +194,6 @@ const UsersTable = ({
             setPage(lastPageAfterRemove);
         }
     };
-
     const renderSelect = (username, userRole) => (
         <Select
             value={userRole}
@@ -216,7 +208,6 @@ const UsersTable = ({
             ))}
         </Select>
     );
-
     const handleChangeRole = value =>
         handleUpdateUsers(
             users.map(user =>
@@ -225,7 +216,6 @@ const UsersTable = ({
                     : user
             )
         );
-
     const renderTableBody = () => (
         <TableBody>
             {stableSort(users, getComparator(order, orderBy))
@@ -256,13 +246,15 @@ const UsersTable = ({
                                 component="th"
                                 id={labelId}
                                 scope="row"
-                                padding="none"
+                                className={classes.nonePaddingLeft}
                             >
                                 {row.username}
                             </TableCell>
-                            <TableCell padding="none">{row.name}</TableCell>
+                            <TableCell className={classes.nonePaddingLeft}>
+                                {row.name}
+                            </TableCell>
                             {!newUser && (
-                                <TableCell align="right">
+                                <TableCell className={classes.role} align="right">
                                     {editMode && selected.length === 0
                                         ? renderSelect(row.username, row.role)
                                         : row.role}

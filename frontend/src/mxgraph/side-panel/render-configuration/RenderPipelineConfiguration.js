@@ -26,6 +26,7 @@ import JobConfiguration from '../configuration/job-configuration';
 import Configuration from '../configuration';
 import PipelineConfiguration from '../configuration/pipeline-configuration';
 import ContainerConfiguration from '../container-configuration';
+import { WAIT } from '../../constants';
 import { findByProp } from '../../../components/helpers/JobsPipelinesTable';
 import {
     findParamByKey,
@@ -139,11 +140,12 @@ const RenderPipelineConfiguration = ({
         }
     };
 
-    if (configuration.operation) {
-        const { component: Component, props } = pipelinesConfigurationComponents[
-            configuration.operation
-        ];
-        return <Component {...props} />;
+    if (configuration.operation && configuration.operation !== WAIT) {
+        const component = pipelinesConfigurationComponents[configuration.operation];
+        if (component) {
+            const { component: Component, props } = component;
+            return <Component {...props} />;
+        }
     }
 
     return null;

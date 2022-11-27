@@ -74,4 +74,10 @@ describe('ParamsSwitchField', () => {
         expect(wrapperNull.find(Switch).prop('checked')).toBe(false);
         expect(wrapperUndefined.find(Switch).prop('checked')).toBe(false);
     });
+
+    it('should set value', () => {
+        const [wrapper] = init({ value: true });
+
+        expect(wrapper.find(Switch).prop('checked')).toBeTruthy();
+    });
 });

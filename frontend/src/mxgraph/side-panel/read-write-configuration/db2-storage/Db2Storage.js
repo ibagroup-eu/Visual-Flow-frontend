@@ -95,6 +95,7 @@ const Db2Storage = ({
                 handleInputChange={handleInputChange}
                 openModal={openModal}
                 connection={connection}
+                required
             />
             <ReadTextFields
                 ableToEdit={ableToEdit}
@@ -104,6 +105,7 @@ const Db2Storage = ({
                 openModal={openModal}
                 connection={connection}
                 hidden
+                required
             />
             {!connectionPage && !isEqual(connection, {}) && (
                 <Divider style={{ marginTop: 8 }} />
@@ -126,6 +128,7 @@ const Db2Storage = ({
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
+                    required
                 />
             )}
             {inputValues.customSql === 'true' && (
@@ -146,6 +149,7 @@ const Db2Storage = ({
                         inputValues={inputValues}
                         handleInputChange={handleInputChange}
                         openModal={openModal}
+                        required
                     />
                     <WriteMode
                         disabled={!ableToEdit}

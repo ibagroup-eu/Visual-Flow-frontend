@@ -1,7 +1,7 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import NotificationStage from './NotificationStage';
+import { PipelineStageTag } from '../../../components/stage-tag';
 
 describe('NotificationStage', () => {
     const init = () => {
@@ -17,6 +17,11 @@ describe('NotificationStage', () => {
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(Typography).exists()).toBeTruthy();
+        expect(wrapper).toBeDefined();
+    });
+
+    it('should render PipelineStageTag', () => {
+        const wrapper = init();
+        expect(wrapper.find(PipelineStageTag)).toBeDefined();
     });
 });

@@ -19,13 +19,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './GroupByStage.Styles';
 
 import makeTooltip from '../helpers/makeTooltip';
+import { StageParameters, TagsParameter } from '../parameters';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const GroupByStage = ({ stage }) => {
     const { t } = useTranslation();
@@ -33,35 +33,18 @@ const GroupByStage = ({ stage }) => {
     const groupingColumns = stage.groupingColumns?.split(',').map(el => el.trim());
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.groupBy}
-                color="textSecondary"
-            >
-                {t('jobDesigner:groupByConfiguration.GroupBy')}:
-                {groupingColumns.slice(0, 5).map(value => (
-                    <Typography
-                        title={value}
-                        key={value}
-                        variant="caption"
-                        component="span"
-                        className={classes.key}
-                    >
-                        {value}
-                    </Typography>
-                ))}
-                <span className={classes.dots}>
-                    {groupingColumns.length > 5 &&
-                        makeTooltip(groupingColumns.join(', '), ' ...')}
-                </span>
-            </Typography>
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <StageParameters>
+                <TagsParameter
+                    name={t('jobDesigner:groupByConfiguration.GroupBy')}
+                    values={groupingColumns}
+                    className={classes.key}
+                />
+            </StageParameters>
+        </ConfiguredStageWithIcon>
     );
 };
 

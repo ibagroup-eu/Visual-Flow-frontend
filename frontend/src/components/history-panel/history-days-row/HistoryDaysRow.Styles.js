@@ -34,21 +34,18 @@ export default makeStyles(theme => ({
         userSelect: 'none'
     },
     headerIcon: {
-        padding: theme.spacing(0.75)
-    },
-    headerIconOpen: {
-        transition: theme.transitions.create('transform'),
-        transform: 'rotate(0deg)'
+        padding: theme.spacing(0.75),
+        marginRight: theme.spacing(1.25),
+        transition: theme.transitions.create('transform')
     },
     headerIconClose: {
-        transition: theme.transitions.create('transform'),
-        transform: 'rotate(90deg)'
+        transform: 'rotate(-90deg)'
     },
     collapsed: {
         width: '100%'
     },
     timeline: {
-        padding: theme.spacing(1.5, 1.4),
+        padding: theme.spacing(1.5, 1.2),
         paddingBottom: 0
     }
 }));

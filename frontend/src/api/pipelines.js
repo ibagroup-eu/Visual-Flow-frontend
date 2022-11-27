@@ -49,5 +49,8 @@ export default {
     getPipelineLogs: (projectId, pipelineId, nodeId) =>
         axiosInstance.get(
             `/project/${projectId}/pipeline/${pipelineId}/${nodeId}/logs`
-        )
+        ),
+
+    getPipelineHistory: (projectId, pipelineId) =>
+        axiosInstance.get(`/project/${projectId}/pipeline/${pipelineId}/history`)
 };

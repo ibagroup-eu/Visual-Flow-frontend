@@ -42,9 +42,7 @@ export default makeStyles(theme => ({
     buttonsGroup: {
         display: 'flex',
         flexDirection: 'row',
-        padding: '10px 6px !important'
-    },
-    btn: {
-        padding: theme.spacing(1.75)
+        paddingLeft: '2px',
+        backgroundColor: `${theme.palette.background.default} !important`
     }
 }));

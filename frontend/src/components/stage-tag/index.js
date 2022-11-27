@@ -17,6 +17,4 @@
  * limitations under the License.
  */
 
-import StageTag from './StageTag';
-
-export default StageTag;
+export { default as StageTag, JobStageTag, PipelineStageTag } from './StageTag';

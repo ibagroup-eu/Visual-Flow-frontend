@@ -25,15 +25,15 @@ export default makeStyles(theme => ({
         flexDirection: 'column'
     },
     drawer: {
-        minWidth: 755
+        minWidth: 500
     },
-    content: {
+    form: {
         height: '100%',
         display: 'flex',
         overflowY: 'hidden',
         overflowX: 'hidden'
     },
-    form: {
+    content: {
         width: '100%',
         padding: theme.spacing(2, 2, 2, 4)
     },
@@ -51,5 +51,8 @@ export default makeStyles(theme => ({
     },
     closeIcon: {
         padding: theme.spacing(1)
+    },
+    emptyList: {
+        paddingTop: theme.spacing(2)
     }
 }));

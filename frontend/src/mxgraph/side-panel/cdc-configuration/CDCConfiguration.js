@@ -20,20 +20,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import {
-    Divider,
-    TextField,
-    Box,
-    Typography,
-    IconButton,
-    Chip
-} from '@material-ui/core';
+import { TextField, Box, Typography, IconButton, Chip } from '@material-ui/core';
 
 import { SwapVert } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './CDCConfiguration.Styles';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
+import ConfigurationDivider from '../../../components/divider';
 
 const modes = [
     {
@@ -58,83 +52,91 @@ const CDCConfiguration = ({
 
     return (
         <>
-            <Divider className={classes.divider} />
             {state.name && state.operation === 'CDC' && (
                 <>
-                    <Typography variant="body2" color="textSecondary">
-                        {t('jobDesigner:CDCConfiguration.LinkOrdering')}
-                    </Typography>
-                    <Box className={classes.fieldWrapper}>
-                        <div>
-                            <div className={classes.fieldRow}>
-                                <Typography
-                                    variant="caption"
-                                    color="textSecondary"
-                                    className={classes.caption}
-                                >
-                                    {`${t('jobDesigner:CDCConfiguration.After')}: `}
-                                </Typography>
-                                <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels.After}
-                                </Typography>
+                    <ConfigurationDivider />
+                    <div className={classes.divider}>
+                        <Typography variant="body2" color="textSecondary">
+                            {t('jobDesigner:CDCConfiguration.LinkOrdering')}
+                        </Typography>
+                        <Box className={classes.fieldWrapper}>
+                            <div>
+                                <div className={classes.fieldRow}>
+                                    <Typography
+                                        variant="caption"
+                                        color="textSecondary"
+                                        className={classes.caption}
+                                    >
+                                        {`${t(
+                                            'jobDesigner:CDCConfiguration.After'
+                                        )}: `}
+                                    </Typography>
+                                    <Typography variant="body2" color="textPrimary">
+                                        {edgeLabels.After}
+                                    </Typography>
+                                </div>
+                                <div className={classes.fieldRow}>
+                                    <Typography
+                                        variant="caption"
+                                        color="textSecondary"
+                                        className={classes.caption}
+                                    >
+                                        {`${t(
+                                            'jobDesigner:CDCConfiguration.Before'
+                                        )}: `}
+                                    </Typography>
+                                    <Typography variant="body2" color="textPrimary">
+                                        {edgeLabels.Before}
+                                    </Typography>
+                                </div>
                             </div>
-                            <div className={classes.fieldRow}>
-                                <Typography
-                                    variant="caption"
-                                    color="textSecondary"
-                                    className={classes.caption}
-                                >
-                                    {`${t('jobDesigner:CDCConfiguration.Before')}: `}
-                                </Typography>
-                                <Typography variant="body2" color="textPrimary">
-                                    {edgeLabels.Before}
-                                </Typography>
-                            </div>
-                        </div>
-                        <IconButton disabled={!ableToEdit} onClick={handleSwap}>
-                            <SwapVert />
-                        </IconButton>
-                    </Box>
-                    <Divider className={classes.divider} />
-                    <Autocomplete
-                        disabled={!ableToEdit}
-                        id="keyColumns"
-                        multiple
-                        freeSolo
-                        autoSelect
-                        options={[]}
-                        value={state.keyColumns?.split(',') || []}
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
+                            <IconButton disabled={!ableToEdit} onClick={handleSwap}>
+                                <SwapVert />
+                            </IconButton>
+                        </Box>
+                    </div>
+                    <ConfigurationDivider />
+                    <div className={classes.divider}>
+                        <Autocomplete
+                            disabled={!ableToEdit}
+                            id="keyColumns"
+                            multiple
+                            freeSolo
+                            autoSelect
+                            options={[]}
+                            value={state.keyColumns?.split(',') || []}
+                            renderTags={(value, getTagProps) =>
+                                value.map((option, index) => (
+                                    <Chip
+                                        variant="outlined"
+                                        label={option}
+                                        {...getTagProps({ index })}
+                                    />
+                                ))
+                            }
+                            onChange={(event, value) =>
+                                onChange('keyColumns', value?.join(','))
+                            }
+                            renderInput={params => (
+                                <TextField
+                                    {...params}
+                                    fullWidth
                                     variant="outlined"
-                                    label={option}
-                                    {...getTagProps({ index })}
+                                    label={t('jobDesigner:CDCConfiguration.Key')}
+                                    required
                                 />
-                            ))
-                        }
-                        onChange={(event, value) =>
-                            onChange('keyColumns', value?.join(','))
-                        }
-                        renderInput={params => (
-                            <TextField
-                                {...params}
-                                fullWidth
-                                variant="outlined"
-                                label={t('jobDesigner:CDCConfiguration.Key')}
-                                required
-                            />
-                        )}
-                    />
-                    <SelectField
-                        ableToEdit={ableToEdit}
-                        label="jobDesigner:CDCConfiguration.Mode"
-                        name="mode"
-                        value={state.mode}
-                        handleInputChange={onChange}
-                        menuItems={modes}
-                        type={OTHER}
-                    />
+                            )}
+                        />
+                        <SelectField
+                            ableToEdit={ableToEdit}
+                            label="jobDesigner:CDCConfiguration.Mode"
+                            name="mode"
+                            value={state.mode}
+                            handleInputChange={onChange}
+                            menuItems={modes}
+                            type={OTHER}
+                        />
+                    </div>
                 </>
             )}
         </>

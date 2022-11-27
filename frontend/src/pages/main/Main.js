@@ -21,4 +21,5 @@ import React from 'react';
 import ProjectList from '../../components/project-list';
 
 const Main = () => <ProjectList />;
+
 export default Main;

@@ -20,9 +20,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import getMenuItems from '../helpers/getMenuItems';
-import useStyles from './CacheConfiguration.Styles';
+import ConfigurationDivider from '../../../components/divider';
 
 const values = [
     {
@@ -45,7 +45,6 @@ const cacheDefaultValues = [
 
 const CacheConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
     useEffect(() => {
         if (state.useDisk === undefined && state.name) {
             cacheDefaultValues.forEach(({ field, value }) => onChange(field, value));
@@ -54,7 +53,7 @@ const CacheConfiguration = ({ state, ableToEdit, onChange }) => {
 
     return (
         <>
-            <Divider className={classes.divider} />
+            {state.name && <ConfigurationDivider />}
             {state.name &&
                 cacheDefaultValues.map(({ field, value, props }, index) => (
                     <TextField

@@ -20,11 +20,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField, Chip } from '@material-ui/core';
+import { TextField, Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './SliceConfiguration.Styles';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
+import ConfigurationDivider from '../../../components/divider';
 
 const mode = [
     {
@@ -46,9 +47,9 @@ const SliceConfiguration = ({ state, ableToEdit, onChange }) => {
 
     return (
         <>
-            <Divider className={classes.divider} />
             {state.name && (
                 <>
+                    <ConfigurationDivider />
                     <SelectField
                         ableToEdit={ableToEdit}
                         label="jobDesigner:sliceConfiguration.Mode"

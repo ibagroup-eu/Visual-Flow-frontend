@@ -33,6 +33,7 @@ import ContainerModal from '../modals/ContainerModal';
 import CacheModal from '../modals/CacheModal';
 import SortModal from '../modals/SortModal';
 import PipelineModal from '../modals/PipelineModal';
+import WaitModal from '../modals/WaitModal';
 import {
     READ,
     WRITE,
@@ -49,8 +50,11 @@ import {
     CACHE,
     SLICE,
     SORT,
-    PIPELINE
+    PIPELINE,
+    WAIT,
+    VALIDATE
 } from '../../../mxgraph/constants';
+import ValidateModal from '../modals/ValidateModal';
 
 const StageModal = ({ stageName, ...restProps }) => {
     // eslint-disable-next-line complexity
@@ -87,6 +91,10 @@ const StageModal = ({ stageName, ...restProps }) => {
                 return <SortModal {...restProps} />;
             case SLICE:
                 return <SliceModal {...restProps} />;
+            case WAIT:
+                return <WaitModal {...restProps} />;
+            case VALIDATE:
+                return <ValidateModal {...restProps} />;
             default:
                 return null;
         }

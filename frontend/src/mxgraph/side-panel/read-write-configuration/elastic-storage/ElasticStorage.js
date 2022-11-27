@@ -50,6 +50,7 @@ const ElasticStorage = ({
             handleInputChange={handleInputChange}
             openModal={openModal}
             connection={connection}
+            required
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -59,6 +60,7 @@ const ElasticStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+            required
         />
         <Ssl
             ableToEdit={ableToEdit}
@@ -84,18 +86,18 @@ const ElasticStorage = ({
                     handleInputChange={handleInputChange}
                     openModal={openModal}
                     hidden
-                />
-                <ReadTextFields
-                    ableToEdit={ableToEdit}
-                    fields={[
-                        { field: 'certData', disabled: inputValues.ssl !== 'true' }
-                    ]}
-                    inputValues={inputValues}
-                    handleInputChange={handleInputChange}
-                    openModal={openModal}
+                    required
                 />
             </>
         )}
+        <ReadTextFields
+            ableToEdit={ableToEdit}
+            fields={[{ field: 'certData', disabled: inputValues.ssl !== 'true' }]}
+            inputValues={inputValues}
+            handleInputChange={handleInputChange}
+            openModal={openModal}
+            required
+        />
     </>
 );
 

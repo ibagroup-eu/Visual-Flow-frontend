@@ -113,7 +113,7 @@ describe('jobs', () => {
     it('should get job history', () => {
         const requestURL = `/project/${projectId}/job/${jobId}/history`;
         const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
-        return jobs.getHistory(projectId, jobId).then(result => {
+        return jobs.getJobHistory(projectId, jobId).then(result => {
             expect(result).toEqual(expected);
             expect(spy).toHaveBeenCalledWith(requestURL);
         });

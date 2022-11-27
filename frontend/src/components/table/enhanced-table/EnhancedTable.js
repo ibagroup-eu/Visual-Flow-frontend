@@ -149,8 +149,8 @@ export const EnhancedTable = ({
                 />
             )}
             {data && data.length ? (
-                <TableContainer component={Paper}>
-                    <Table>
+                <TableContainer>
+                    <Table className={classes.table}>
                         <TableBody>
                             {stableSort(data, getComparator(order, orderBy))
                                 .slice(
@@ -160,7 +160,8 @@ export const EnhancedTable = ({
                                 .map(item => {
                                     const checked = isSelected(item.id);
                                     return (
-                                        <TableRow
+                                        <Paper
+                                            component={TableRow}
                                             key={item.id}
                                             classes={{ root: classes.row }}
                                             selected={checked}
@@ -171,7 +172,7 @@ export const EnhancedTable = ({
                                                 onClick: event =>
                                                     handleClick(event, item.id)
                                             })}
-                                        </TableRow>
+                                        </Paper>
                                     );
                                 })}
                         </TableBody>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { shallow } from 'enzyme';
+import { Button } from '@material-ui/core';
 import { WRITE } from '../../../constants';
 import FileFormat from '../helpers/FileFormat';
 import WriteMode from '../helpers/WriteMode';
@@ -22,7 +23,7 @@ describe('CosProperties', () => {
             openModal: jest.fn(),
             handleInputChange: jest.fn(),
             fields: [{}],
-            inputValues: { operation: WRITE, format: 'csv' }
+            inputValues: { operation: WRITE, format: 'csv', storage: 'cluster' }
         };
         useTranslation.mockImplementation(() => ({ t: x => x }));
         const wrapper = func(<CosProperties {...defaultProps} {...props} />);
@@ -32,13 +33,43 @@ describe('CosProperties', () => {
 
     it('should render without crashes', () => {
         const [wrapper] = init({}, true);
-        expect(wrapper.find(WriteMode).exists()).toBeTruthy();
         expect(wrapper.find(Autocomplete).exists()).toBeTruthy();
     });
     it('SchemaModal should be render', () => {
-        const [wrapper] = init({ inputValues: { format: 'avro' } }, true);
+        const [wrapper] = init(
+            {
+                inputValues: {
+                    format: 'avro',
+                    useSchema: 'true'
+                }
+            },
+            true
+        );
         expect(wrapper.find(SchemaModal).exists()).toBeTruthy();
         wrapper.find(SchemaModal).prop('onClose')();
+        wrapper.find(Button).prop('onClick')();
+    });
+    it('Button should be render with EditSchema', () => {
+        const [wrapper] = init(
+            {
+                inputValues: {
+                    format: 'avro',
+                    useSchema: 'true',
+                    'option.avroSchema': 'schema'
+                }
+            },
+            true
+        );
+        expect(wrapper.find(SchemaModal).exists()).toBeTruthy();
+        wrapper.find(SchemaModal).prop('onClose')();
+        wrapper.find(Button).prop('onClick')();
+    });
+    it('WriteMode should be render', () => {
+        const [wrapper] = init(
+            { inputValues: { operation: WRITE, storage: null } },
+            true
+        );
+        expect(wrapper.find(WriteMode).exists()).toBeTruthy();
     });
     it('should call handleInputChange prop', () => {
         const [wrapper, props] = init({ inputValues: { operation: WRITE } }, true);

@@ -21,7 +21,7 @@ export default theme => ({
     title: {
         display: 'flex',
         alignItems: 'center',
-        marginTop: theme.spacing(0.5)
+        marginTop: theme.spacing(0.25)
     },
 
     text: {
@@ -31,6 +31,10 @@ export default theme => ({
     row: {
         display: 'flex',
         alignItems: 'center'
+    },
+
+    rows: {
+        marginTop: theme.spacing(-0.5)
     },
 
     icon: {
@@ -44,5 +48,12 @@ export default theme => ({
 
     orderColumn: {
         width: '75px'
+    },
+
+    required: {
+        '&::after': {
+            content: '"\\A0*"',
+            color: theme.palette.text.secondary
+        }
     }
 });

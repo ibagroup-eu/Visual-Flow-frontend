@@ -73,6 +73,7 @@ const RedisStorage = ({
                 ableToEdit={ableToEdit}
                 handleInputChange={handleInputChange}
                 connection={connection}
+                required
             />
             <ReadTextFields
                 ableToEdit={ableToEdit}
@@ -82,6 +83,7 @@ const RedisStorage = ({
                 openModal={openModal}
                 connection={connection}
                 hidden
+                required
             />
             <Ssl
                 ableToEdit={ableToEdit}
@@ -110,6 +112,7 @@ const RedisStorage = ({
                         handleInputChange={handleInputChange}
                         menuItems={model}
                         type={READWRITE}
+                        required
                     />
                 </>
             )}
@@ -123,6 +126,7 @@ const RedisStorage = ({
                         handleInputChange={handleInputChange}
                         menuItems={readMode}
                         type={READWRITE}
+                        required
                     />
                     {inputValues.readMode === 'pattern' && (
                         <ReadTextFields
@@ -131,6 +135,7 @@ const RedisStorage = ({
                             inputValues={inputValues}
                             ableToEdit={ableToEdit}
                             handleInputChange={handleInputChange}
+                            required
                         />
                     )}
                 </>
@@ -142,6 +147,7 @@ const RedisStorage = ({
                     inputValues={inputValues}
                     ableToEdit={ableToEdit}
                     handleInputChange={handleInputChange}
+                    required
                 />
             )}
             {inputValues.operation === WRITE && (

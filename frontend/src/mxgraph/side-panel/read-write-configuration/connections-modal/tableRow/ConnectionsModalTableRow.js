@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
@@ -46,21 +46,27 @@ const ConnectionsModalTableRow = ({
     selectedValue,
     setSelectedValue,
     params,
-    connectionSelected
+    defaultSelected
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-
+    const selectedRef = useRef(null);
     const [open, setOpen] = useState(false);
     const { connectionName, storageLabel, storage, id, ...rest } = connection;
+
+    useEffect(() => {
+        if (defaultSelected) {
+            selectedRef?.current?.scrollIntoView();
+        }
+    }, [defaultSelected]);
 
     const withRest = !isEqual(rest, {});
 
     return (
-        <TableRow>
+        <TableRow ref={defaultSelected ? selectedRef : null}>
             <TableCell className={classNames(classes.column, classes.tableCell)}>
                 <Box className={classes.row}>
-                    {(connectionSelected || ableToEdit) && (
+                    {(!!selectedValue || ableToEdit) && (
                         <Box className={classes.cell}>
                             <Radio
                                 disabled={!ableToEdit}
@@ -112,8 +118,7 @@ const ConnectionsModalTableRow = ({
                 <Collapse in={open} timeout="auto" unmountOnExit>
                     <List
                         className={classNames(classes.rest, classes.paper, {
-                            [classes.restNotEditable]:
-                                !ableToEdit && !connectionSelected
+                            [classes.restNotEditable]: !ableToEdit && !selectedValue
                         })}
                     >
                         {map(rest, (value, key) => (
@@ -151,7 +156,7 @@ ConnectionsModalTableRow.propTypes = {
     selectedValue: PropTypes.string,
     setSelectedValue: PropTypes.func,
     params: PropTypes.array,
-    connectionSelected: PropTypes.bool
+    defaultSelected: PropTypes.bool
 };
 
 export default ConnectionsModalTableRow;

@@ -39,7 +39,8 @@ const logsReducer = (state = initialState, action = {}) => {
             return {
                 ...state,
                 loading: false,
-                data: action.payload
+                data: action.payload,
+                error: null
             };
         case FETCH_LOGS_FAIL:
             return {

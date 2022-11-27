@@ -20,7 +20,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import StageWarning from './stageWarning';
-import { Box } from '@material-ui/core';
 
 describe('StageWarning', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -41,7 +40,7 @@ describe('StageWarning', () => {
     it('should render without crashes', () => {
         const [wrapper] = init();
 
-        expect(wrapper.find(Box).exists()).toBeTruthy();
+        expect(wrapper.find('span').exists()).toBeTruthy();
     });
 
     it('should check "NOTIFICATION" operation', () => {
@@ -54,7 +53,7 @@ describe('StageWarning', () => {
             }
         });
 
-        expect(wrapper.find(Box).exists()).toBeTruthy();
+        expect(wrapper.find('span').exists()).toBeTruthy();
     });
 
     it('should check "CONTAINER" operation', () => {
@@ -67,7 +66,7 @@ describe('StageWarning', () => {
             params: []
         });
 
-        expect(wrapper.find(Box).exists()).toBeTruthy();
+        expect(wrapper.find('span').exists()).toBeTruthy();
     });
 
     it('should check "None" operation', () => {
@@ -79,6 +78,6 @@ describe('StageWarning', () => {
             params: []
         });
 
-        expect(wrapper.find(Box).exists()).toBeFalsy();
+        expect(wrapper.find('span').exists()).toBeFalsy();
     });
 });

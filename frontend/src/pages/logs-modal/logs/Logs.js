@@ -24,8 +24,9 @@ import PropTypes from 'prop-types';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import {
-    fetchJobLogs,
-    fetchContainerLogs
+    fetchContainerLogs,
+    fetchJobHistoryLogs,
+    fetchJobLogs
 } from '../../../redux/actions/logsActions';
 import LogsList from '../logs-list';
 import LogsPageHeader from '../../../components/logs-page-header';
@@ -37,18 +38,25 @@ export const Logs = ({
     logs: { data, loading },
     getJobLogs,
     getContainerLogs,
+    getJobHistoryLogs,
     modal,
     pipelineId,
     nodeId,
+    logId,
     query
 }) => {
     const [search, setSearch] = React.useState('');
     const [levels, setLevels] = React.useState([]);
 
-    const callGetLogs = () =>
-        nodeId
+    const callGetLogs = () => {
+        if (logId) {
+            return getJobHistoryLogs(projId, jobId, logId);
+        }
+
+        return nodeId
             ? getContainerLogs(projId, pipelineId, nodeId)
             : getJobLogs(projId, jobId);
+    };
 
     React.useEffect(() => {
         callGetLogs();
@@ -117,7 +125,9 @@ Logs.propTypes = {
     logs: PropTypes.object,
     getJobLogs: PropTypes.func,
     getContainerLogs: PropTypes.func,
-    query: PropTypes.string
+    getJobHistoryLogs: PropTypes.func,
+    query: PropTypes.string,
+    logId: PropTypes.string
 };
 
 const mapStateToProps = state => ({
@@ -127,7 +137,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     getJobLogs: fetchJobLogs,
-    getContainerLogs: fetchContainerLogs
+    getContainerLogs: fetchContainerLogs,
+    getJobHistoryLogs: fetchJobHistoryLogs
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Logs);

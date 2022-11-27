@@ -19,14 +19,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 
 import { useTranslation } from 'react-i18next';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './CDCStage.Styles';
 import makeTooltip from '../helpers/makeTooltip';
-
-import StageTag from '../../../components/stage-tag';
+import { StageParameters, TagsParameter } from '../parameters';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import { JobStageTag } from '../../../components/stage-tag';
 
 const CDCStage = ({ stage }) => {
     const { t } = useTranslation();
@@ -34,36 +33,19 @@ const CDCStage = ({ stage }) => {
     const keyColumns = stage.keyColumns?.split(',').map(el => el.trim());
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.keyCaption}
-                color="textSecondary"
-            >
-                {t('jobDesigner:CDCConfiguration.Key')}:
-                {keyColumns.slice(0, 5).map(value => (
-                    <Typography
-                        title={value}
-                        key={value}
-                        variant="caption"
-                        component="span"
-                        className={classes.key}
-                    >
-                        {value}
-                    </Typography>
-                ))}
-                <span className={classes.dots}>
-                    {keyColumns.length > 5 &&
-                        makeTooltip(keyColumns.join(', '), ' ...')}
-                </span>
-            </Typography>
-            <StageTag className={classes.mode} content={stage.mode} />
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <StageParameters>
+                <TagsParameter
+                    name={t('jobDesigner:CDCConfiguration.Key')}
+                    values={keyColumns}
+                    className={classes.tag}
+                />
+            </StageParameters>
+            <JobStageTag className={classes.mode}>{stage.mode}</JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

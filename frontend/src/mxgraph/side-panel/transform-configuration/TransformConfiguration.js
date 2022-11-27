@@ -20,10 +20,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Divider, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
 import ReadTextFields from '../../../components/rw-text-fields';
+import ConfigurationDivider from '../../../components/divider';
 
 const mode = [
     {
@@ -49,9 +50,9 @@ const TransformConfiguration = ({
 
     return (
         <>
-            <Divider />
             {state.name && state.operation === 'TRANSFORM' && (
                 <>
+                    <ConfigurationDivider />
                     <SelectField
                         ableToEdit={ableToEdit}
                         label="jobDesigner:transformConfiguration.Mode"

@@ -17,11 +17,19 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Box, IconButton, Tooltip, Typography, useTheme } from '@material-ui/core';
 import {
+    Box,
+    Collapse,
+    IconButton,
+    Tooltip,
+    Typography,
+    useTheme
+} from '@material-ui/core';
+import {
+    Timeline,
     TimelineConnector,
     TimelineContent,
     TimelineDot,
@@ -33,13 +41,17 @@ import {
     CloseOutlined,
     DescriptionOutlined,
     DoneOutlined,
+    ExpandMoreOutlined,
     TimelineOutlined
 } from '@material-ui/icons';
 import moment from 'moment';
 import classNames from 'classnames';
+import { truncate } from 'lodash';
 import useStyles from './HistoryRow.Styles';
 import { DATE_FORMAT } from '../../../globalConstants';
 import history from '../../../utils/history';
+import HistoryRowDetails from '../history-row-details/HistoryRowDetails';
+import HistoryRowDetailsHeader from '../history-row-details-header/HistoryRowDetailsHeader';
 
 const duration = (finished, started) => {
     const timeDuration = moment.duration(
@@ -50,10 +62,16 @@ const duration = (finished, started) => {
     }${timeDuration.seconds()}s`;
 };
 
-const HistoryRow = ({ data, latest, logsHandler, projectId }) => {
+const sortRowHistory = data =>
+    data?.sort((a, b) =>
+        moment(b.startedAt, DATE_FORMAT).diff(moment(a.startedAt, DATE_FORMAT))
+    ) || [];
+
+const HistoryRow = ({ data, latest, logsHandler, projectId, type, findName }) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const theme = useTheme();
+    const [open, setOpen] = useState(false);
 
     const dotIcon = {
         Succeeded: { Icon: DoneOutlined, dotColor: theme.palette.success.light },
@@ -67,7 +85,7 @@ const HistoryRow = ({ data, latest, logsHandler, projectId }) => {
     };
 
     const formatTime = date =>
-        moment(date, DATE_FORMAT).format(`[${t('jobs:history.At')}] HH:mm`);
+        moment(date, DATE_FORMAT).format(`[${t('main:history.At')}] HH:mm`);
 
     return (
         <TimelineItem className={classes.root}>
@@ -82,44 +100,93 @@ const HistoryRow = ({ data, latest, logsHandler, projectId }) => {
                 {!latest && <TimelineConnector className={classes.connector} />}
             </TimelineSeparator>
             <TimelineContent className={classes.timelineContent}>
-                <Box className={classes.pipelineBox}>
-                    {data.flag === 'pipeline' && (
-                        <Tooltip title={data.pipelineName || ''} arrow>
+                <Box className={classes.mainContent}>
+                    <Box className={classes.pipelineBox}>
+                        {type === 'job' && data.flag === 'pipeline' && (
+                            <Tooltip title={data.pipelineName || ''} arrow>
+                                <IconButton
+                                    className={classes.pipelineIcon}
+                                    onClick={() => pipelineHandler()}
+                                >
+                                    <TimelineOutlined />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                        {data.statuses?.length > 0 && type !== 'job' && (
                             <IconButton
-                                className={classes.contentIcon}
-                                onClick={() => pipelineHandler()}
+                                className={classNames(classes.moreIcon, {
+                                    [classes.iconClose]: !open
+                                })}
+                                onClick={() => {
+                                    setOpen(!open);
+                                }}
                             >
-                                <TimelineOutlined />
+                                <ExpandMoreOutlined />
                             </IconButton>
-                        </Tooltip>
+                        )}
+                    </Box>
+                    <Typography
+                        className={classNames(
+                            classes.typography,
+                            classes.startedText
+                        )}
+                    >
+                        {formatTime(data.startedAt)}
+                    </Typography>
+                    <Typography
+                        className={classNames(
+                            classes.typography,
+                            classes.durationText
+                        )}
+                    >
+                        {duration(data.finishedAt, data.startedAt)}
+                    </Typography>
+                    <Tooltip
+                        arrow
+                        title={data.startedBy?.length > 32 ? data.startedBy : ''}
+                        interactive
+                    >
+                        <Typography
+                            className={classNames(
+                                classes.typography,
+                                classes.runByText
+                            )}
+                        >
+                            {truncate(data.startedBy, { length: 32 })}
+                        </Typography>
+                    </Tooltip>
+                    {type === 'job' && (
+                        <Box className={classes.logIconBox}>
+                            <Tooltip title={t('jobs:tooltip.Logs')} arrow>
+                                <IconButton
+                                    className={classes.logIcon}
+                                    onClick={() =>
+                                        logsHandler({
+                                            jobId: data.id,
+                                            logId: data.logId
+                                        })
+                                    }
+                                >
+                                    <DescriptionOutlined />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
                     )}
                 </Box>
-                <Typography
-                    className={classNames(classes.typography, classes.startedText)}
-                >
-                    {formatTime(data.startedAt)}
-                </Typography>
-                <Typography
-                    className={classNames(classes.typography, classes.durationText)}
-                >
-                    {duration(data.finishedAt, data.startedAt)}
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    className={classNames(classes.typography, classes.runByText)}
-                >
-                    {data.startedBy}
-                </Typography>
-                <Box className={classes.logIconBox}>
-                    <Tooltip title={t('jobs:tooltip.Logs')} arrow>
-                        <IconButton
-                            className={classes.contentIcon}
-                            onClick={() => logsHandler(data.id)}
-                        >
-                            <DescriptionOutlined />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
+                <Collapse in={open} timeout="auto" className={classes.collapsed}>
+                    <HistoryRowDetailsHeader />
+                    <Timeline className={classes.timeline}>
+                        {sortRowHistory(data.statuses).map((item, index) => (
+                            <HistoryRowDetails
+                                key={`${item.startedAt + index}details`}
+                                findName={findName}
+                                data={item}
+                                logsHandler={logsHandler}
+                                latest={index === data.statuses.length - 1}
+                            />
+                        ))}
+                    </Timeline>
+                </Collapse>
             </TimelineContent>
         </TimelineItem>
     );
@@ -129,7 +196,9 @@ HistoryRow.propTypes = {
     data: PropTypes.object,
     latest: PropTypes.bool,
     logsHandler: PropTypes.func,
-    projectId: PropTypes.string
+    projectId: PropTypes.string,
+    type: PropTypes.string,
+    findName: PropTypes.func
 };
 
 export default HistoryRow;

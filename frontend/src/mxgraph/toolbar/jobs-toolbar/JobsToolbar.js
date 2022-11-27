@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { has } from 'lodash';
@@ -39,6 +39,7 @@ import RunStopButtons from '../run-stop-buttons';
 import EditDesignerButtons from '../edit-designer-buttons';
 import { fetchJob } from '../../../redux/actions/mxGraphActions';
 import { DRAFT, PENDING, RUNNING } from '../../constants';
+import UnitConfig from '../../../unitConfig';
 
 export const JobsToolbar = ({
     graph,
@@ -54,7 +55,6 @@ export const JobsToolbar = ({
     sidePanelIsOpen,
     setDirty,
     setShowModal,
-    sidePanelIsDirty,
     dirty,
     undoButtonsDisabling
 }) => {
@@ -66,19 +66,19 @@ export const JobsToolbar = ({
     const currentJob = currentPath.slice(-1)[0];
 
     const stats = currentJob === id ? status : data.status;
-    const [jobHistory, setJobHistory] = React.useState({});
-    const updateJobHandler = () => {
-        update(graph, currentProject, currentJob, data);
-    };
+    const [jobHistory, setJobHistory] = useState({ data: {} });
 
-    const runAndUpdate = () => {
-        return run(currentProject, currentJob).then(() => {
+    const updateJobHandler = () => update(graph, currentProject, currentJob, data);
+
+    const runAndUpdate = () =>
+        run(currentProject, currentJob).then(() => {
             getActualJob(currentProject, currentJob);
         });
-    };
 
     const enableViewMode = () =>
         status === PENDING || status === RUNNING ? false : data.editable;
+
+    const closeHistory = () => setJobHistory({ ...jobHistory, display: false });
 
     return (
         <>
@@ -100,10 +100,8 @@ export const JobsToolbar = ({
                         isNotRunning={![RUNNING, PENDING].includes(stats)}
                         runnable={data.runnable}
                         stopable
-                        changesNotSaved={sidePanelIsDirty || dirty}
-                        run={() => {
-                            runAndUpdate();
-                        }}
+                        changesNotSaved={dirty}
+                        run={runAndUpdate}
                         stop={() => stop(currentProject, currentJob)}
                     />
                 )}
@@ -123,20 +121,28 @@ export const JobsToolbar = ({
                         <Description />
                     </Tooltip>
                 </IconButton>
-                <IconButton
-                    disabled={[DRAFT, PENDING].includes(status) || !data.startedAt}
-                    onClick={() => setJobHistory({ ...data, id: currentJob })}
-                >
-                    <Tooltip title={t('jobs:tooltip.History')} arrow>
-                        <HistoryOutlined />
-                    </Tooltip>
-                </IconButton>
-                <HistoryPanel
-                    projectId={currentProject}
-                    jobId={currentJob}
-                    jobData={jobHistory}
-                    setPanelState={setJobHistory}
-                />
+                {UnitConfig.JOB.HISTORY && (
+                    <>
+                        <IconButton
+                            onClick={() =>
+                                setJobHistory({
+                                    data: { ...data, id: currentJob },
+                                    display: true
+                                })
+                            }
+                        >
+                            <Tooltip title={t('jobs:tooltip.History')} arrow>
+                                <HistoryOutlined />
+                            </Tooltip>
+                        </IconButton>
+                        <HistoryPanel
+                            projectId={currentProject}
+                            data={jobHistory.data}
+                            display={jobHistory.display}
+                            onClose={closeHistory}
+                        />
+                    </>
+                )}
             </div>
             <Divider orientation="vertical" flexItem />
             <EditDesignerButtons
@@ -169,15 +175,17 @@ JobsToolbar.propTypes = {
     storeStatus: PropTypes.object,
     reversible: PropTypes.object,
     getActualJob: PropTypes.func,
-    sidePanelIsDirty: PropTypes.bool,
     dirty: PropTypes.bool,
     undoButtonsDisabling: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     storeStatus: state.jobStatus,
-    sidePanelIsDirty: state.mxGraph.sidePanelIsDirty,
-    dirty: state.mxGraph.dirty
+    dirty:
+        state.mxGraph.dirty ||
+        state.mxGraph.graphWithParamsIsDirty ||
+        state.mxGraph.paramsIsDirty ||
+        state.mxGraph.sidePanelIsDirty
 });
 
 const mapDispatchToProps = {

@@ -77,7 +77,7 @@ export const cleanUpConfiguration = (fields, schema) => {
     return result;
 };
 
-class SidePanel extends React.Component {
+export class SidePanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {

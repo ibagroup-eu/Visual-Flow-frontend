@@ -47,8 +47,7 @@ export default makeStyles(theme => ({
         width: '100%',
         height: '100%',
         display: 'flex',
-        overflowY: 'auto',
-        overflowX: 'hidden'
+        overflow: 'hidden'
     },
     showContent: {
         transition: theme.transitions.create('transform'),

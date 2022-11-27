@@ -63,6 +63,7 @@ const AwsStorage = ({
             ableToEdit={ableToEdit}
             handleInputChange={handleInputChange}
             connection={connection}
+            required
         />
         <SelectField
             ableToEdit={ableToEdit}
@@ -91,6 +92,7 @@ const AwsStorage = ({
                 openModal={openModal}
                 connection={connection}
                 hidden
+                required
             />
         )}
         {!connectionPage && (

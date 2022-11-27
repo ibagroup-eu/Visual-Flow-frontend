@@ -19,56 +19,63 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardContent, CardHeader, IconButton, Modal } from '@material-ui/core';
+import {
+    Backdrop,
+    Card,
+    CardContent,
+    CardHeader,
+    Fade,
+    IconButton,
+    Modal
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import classNames from 'classnames';
 
 import useStyles from './PopupForm.Styles';
 
-const PopupForm = ({
-    display,
-    title,
-    children,
-    onClose,
-    isNotHelper,
-    logs,
-    minWidthClass
-}) => {
+const PopupForm = ({ display, title, children, onClose, isNotHelper }) => {
     const classes = useStyles();
 
     return (
         <Modal
             open={display}
             onClose={onClose}
-            className={classNames(classes.root, classes[minWidthClass])}
-            styles={logs && 'minWidth: 60%'}
+            className={classes.root}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500
+            }}
         >
-            <Card className={classes.card}>
-                <CardHeader
-                    title={title}
-                    className={classes.header}
-                    action={
-                        !isNotHelper && (
-                            <IconButton aria-label="settings" onClick={onClose}>
-                                <CloseIcon />
-                            </IconButton>
-                        )
-                    }
-                />
-                <CardContent className={classes.content}>{children}</CardContent>
-            </Card>
+            <Fade in={display}>
+                <Card className={classes.card}>
+                    <CardHeader
+                        title={title}
+                        className={classes.header}
+                        action={
+                            !isNotHelper && (
+                                <IconButton
+                                    className={classes.header}
+                                    aria-label="settings"
+                                    onClick={onClose}
+                                >
+                                    <CloseIcon />
+                                </IconButton>
+                            )
+                        }
+                    />
+                    <CardContent className={classes.content}>{children}</CardContent>
+                </Card>
+            </Fade>
         </Modal>
     );
 };
 
 PopupForm.propTypes = {
-    logs: PropTypes.bool,
     children: PropTypes.any,
     title: PropTypes.string,
     display: PropTypes.bool,
     isNotHelper: PropTypes.bool,
-    onClose: PropTypes.func,
-    minWidthClass: PropTypes.string
+    onClose: PropTypes.func
 };
 
 export default PopupForm;

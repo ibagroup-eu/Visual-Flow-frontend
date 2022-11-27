@@ -30,34 +30,113 @@ import {
     FETCH_CONNECTIONS_SUCCESS,
     UPDATE_CONNECTION_FAIL,
     UPDATE_CONNECTION_START,
-    UPDATE_CONNECTION_SUCCESS
+    UPDATE_CONNECTION_SUCCESS,
+    PING_CONNECTION_START,
+    PING_CONNECTION_FAIL,
+    PING_CONNECTION_SUCCESS
 } from '../actions/types';
 
 describe('settingsConnectionsReducer', () => {
+    it('FETCH_CONNECTIONS_START', () => {
+        const action = { type: FETCH_CONNECTIONS_START };
+
+        expect(settingsConnectionsReducer(undefined, action)).toEqual({
+            loading: true,
+            connections: [],
+            editable: undefined,
+            pingingConnections: {},
+            deletingConnections: {}
+        });
+    });
+
     it('CONNECTIONS_START', () => {
-        [
-            FETCH_CONNECTIONS_START,
-            UPDATE_CONNECTION_START,
-            CREATE_CONNECTION_START,
-            DELETE_CONNECTION_START
-        ].forEach(type => {
+        [UPDATE_CONNECTION_START, CREATE_CONNECTION_START].forEach(type => {
             expect(settingsConnectionsReducer(undefined, { type })).toEqual({
-                loading: true,
+                uploading: true,
+                loading: false,
                 connections: [],
-                editable: undefined
+                editable: undefined,
+                pingingConnections: {},
+                deletingConnections: {}
             });
         });
     });
 
+    it('DELETE_CONNECTION_START', () => {
+        const actions = [
+            { type: DELETE_CONNECTION_START, payload: { key: '0' } },
+            { type: DELETE_CONNECTION_START, payload: { key: '1' } },
+            { type: DELETE_CONNECTION_START, payload: { key: '3' } }
+        ];
+
+        const initialState = actions.reduce(
+            (state, action) => settingsConnectionsReducer(state, action),
+            undefined
+        );
+
+        expect(initialState).toEqual({
+            loading: false,
+            connections: [],
+            editable: undefined,
+            pingingConnections: {},
+            deletingConnections: {
+                '0': true,
+                '1': true,
+                '3': true
+            }
+        });
+    });
+
+    it('PING CONNECTIONS_START', () => {
+        const actions = [
+            { type: PING_CONNECTION_START, payload: { key: '0' } },
+            { type: PING_CONNECTION_START, payload: { key: '1' } },
+            { type: PING_CONNECTION_START, payload: { key: '3' } }
+        ];
+
+        const initialState = actions.reduce(
+            (state, action) => settingsConnectionsReducer(state, action),
+            undefined
+        );
+
+        expect(initialState).toEqual({
+            loading: false,
+            connections: [],
+            editable: undefined,
+            pingingConnections: {
+                '0': true,
+                '1': true,
+                '3': true
+            },
+            deletingConnections: {}
+        });
+    });
+
+    it('FETCH_CONNECTIONS_FAIL', () => {
+        const action = {
+            type: FETCH_CONNECTIONS_FAIL,
+            payload: { error: { msg: 'Error!' } }
+        };
+
+        const initialState = {
+            uploading: false,
+            connections: [{ connectionName: 'AWS_2' }],
+            editable: undefined
+        };
+
+        expect(settingsConnectionsReducer(initialState, action)).toEqual({
+            uploading: false,
+            loading: false,
+            connections: [{ connectionName: 'AWS_2' }],
+            editable: undefined,
+            error: { msg: 'Error!' }
+        });
+    });
+
     it('CONNECTIONS_FAIL', () => {
-        [
-            FETCH_CONNECTIONS_FAIL,
-            UPDATE_CONNECTION_FAIL,
-            CREATE_CONNECTION_FAIL,
-            DELETE_CONNECTION_FAIL
-        ].forEach(type => {
+        [UPDATE_CONNECTION_FAIL, CREATE_CONNECTION_FAIL].forEach(type => {
             const initialState = {
-                loading: true,
+                uploading: false,
                 connections: [{ connectionName: 'AWS_2' }],
                 editable: undefined
             };
@@ -68,11 +147,53 @@ describe('settingsConnectionsReducer', () => {
                     payload: { error: { msg: 'Error!' } }
                 })
             ).toEqual({
-                loading: false,
+                uploading: false,
                 connections: [{ connectionName: 'AWS_2' }],
                 editable: undefined,
                 error: { msg: 'Error!' }
             });
+        });
+    });
+
+    it('DELETE_CONNECTION_FAIL', () => {
+        const action = {
+            type: DELETE_CONNECTION_FAIL,
+            payload: { key: '0', error: 'Error' }
+        };
+
+        const initialState = {
+            connections: [{ connectionName: 'AWS_2' }],
+            editable: undefined
+        };
+
+        expect(settingsConnectionsReducer(initialState, action)).toEqual({
+            connections: [{ connectionName: 'AWS_2' }],
+            editable: undefined,
+            error: 'Error',
+            deletingConnections: {
+                '0': false
+            }
+        });
+    });
+
+    it('PING_CONNECTIONS_FAIL', () => {
+        const action = {
+            type: PING_CONNECTION_FAIL,
+            payload: { key: '0', error: 'Something went wrong!' }
+        };
+
+        const initialState = {
+            connections: [{ connectionName: 'AWS_2' }],
+            editable: undefined
+        };
+
+        expect(settingsConnectionsReducer(initialState, action)).toEqual({
+            connections: [{ connectionName: 'AWS_2' }],
+            editable: undefined,
+            error: 'Something went wrong!',
+            pingingConnections: {
+                '0': false
+            }
         });
     });
 
@@ -99,24 +220,27 @@ describe('settingsConnectionsReducer', () => {
         const action = {
             type: UPDATE_CONNECTION_SUCCESS,
             payload: {
-                connection: { id: 'AWS_1', connectionName: 'AWS_3', ssl: false }
+                connection: {
+                    key: 'AWS_1',
+                    value: { connectionName: 'AWS_3', ssl: false }
+                }
             }
         };
 
         const initialState = {
-            loading: true,
+            uploading: true,
             connections: [
-                { id: 'AWS_1', connectionName: 'AWS_1' },
-                { id: 'AWS_2', connectionName: 'AWS_2' }
+                { key: 'AWS_1', value: { connectionName: 'AWS_1' } },
+                { key: 'AWS_2', value: { connectionName: 'AWS_2' } }
             ],
             editable: undefined
         };
 
         expect(settingsConnectionsReducer(initialState, action)).toEqual({
-            loading: false,
+            uploading: false,
             connections: [
-                { id: 'AWS_3', connectionName: 'AWS_3', ssl: false },
-                { id: 'AWS_2', connectionName: 'AWS_2' }
+                { key: 'AWS_3', value: { connectionName: 'AWS_3', ssl: false } },
+                { key: 'AWS_2', value: { connectionName: 'AWS_2' } }
             ],
             editable: undefined
         });
@@ -126,51 +250,86 @@ describe('settingsConnectionsReducer', () => {
         const action = {
             type: CREATE_CONNECTION_SUCCESS,
             payload: {
-                connection: { id: 'AWS_1', connectionName: 'AWS_3', ssl: false }
+                connection: {
+                    key: 'AWS_3',
+                    value: { connectionName: 'AWS_3', ssl: false }
+                }
             }
         };
 
         const initialState = {
-            loading: true,
+            uploading: true,
             connections: [
-                { id: 'AWS_1', connectionName: 'AWS_1' },
-                { id: 'AWS_2', connectionName: 'AWS_2' }
+                { key: 'AWS_1', value: { connectionName: 'AWS_1' } },
+                { key: 'AWS_2', value: { connectionName: 'AWS_2' } }
             ],
             editable: undefined
         };
 
         expect(settingsConnectionsReducer(initialState, action)).toEqual({
-            loading: false,
+            uploading: false,
             connections: [
-                { id: 'AWS_1', connectionName: 'AWS_1' },
-                { id: 'AWS_2', connectionName: 'AWS_2' },
-                { id: 'AWS_1', connectionName: 'AWS_3', ssl: false }
+                { key: 'AWS_1', value: { connectionName: 'AWS_1' } },
+                { key: 'AWS_2', value: { connectionName: 'AWS_2' } },
+                { key: 'AWS_3', value: { connectionName: 'AWS_3', ssl: false } }
             ],
             editable: undefined
         });
     });
 
     it('DELETE_CONNECTION_SUCCESS', () => {
-        const action = {
-            type: DELETE_CONNECTION_SUCCESS,
-            payload: {
-                connectionId: 'AWS_1'
-            }
-        };
+        const actions = [
+            { type: DELETE_CONNECTION_START, payload: { key: '0' } },
+            { type: DELETE_CONNECTION_START, payload: { key: '1' } },
+            { type: DELETE_CONNECTION_START, payload: { key: '3' } },
+            { type: DELETE_CONNECTION_SUCCESS, payload: { key: '1' } }
+        ];
 
-        const initialState = {
-            loading: true,
-            connections: [
-                { id: 'AWS_1', connectionName: 'AWS_1' },
-                { id: 'AWS_2', connectionName: 'AWS_2' }
-            ],
-            editable: undefined
-        };
+        const initialState = actions.reduce(
+            (state, action) => settingsConnectionsReducer(state, action),
+            undefined
+        );
 
-        expect(settingsConnectionsReducer(initialState, action)).toEqual({
+        expect(initialState).toEqual({
             loading: false,
-            connections: [{ id: 'AWS_2', connectionName: 'AWS_2' }],
-            editable: undefined
+            connections: [],
+            editable: undefined,
+            pingingConnections: {},
+            deletingConnections: {
+                '0': true,
+                '1': false,
+                '3': true
+            }
         });
+    });
+
+    it('PING_CONNECTION_SUCCESS', () => {
+        const actions = [
+            { type: PING_CONNECTION_START, payload: { key: '0' } },
+            { type: PING_CONNECTION_START, payload: { key: '1' } },
+            { type: PING_CONNECTION_START, payload: { key: '3' } },
+            { type: PING_CONNECTION_SUCCESS, payload: { key: '1' } }
+        ];
+
+        const initialState = actions.reduce(
+            (state, action) => settingsConnectionsReducer(state, action),
+            undefined
+        );
+
+        expect(initialState).toEqual({
+            loading: false,
+            connections: [],
+            editable: undefined,
+            pingingConnections: {
+                '0': true,
+                '1': false,
+                '3': true
+            },
+            deletingConnections: {}
+        });
+    });
+
+    it('should return default state', () => {
+        expect(settingsConnectionsReducer({}, {})).toEqual({});
     });
 });

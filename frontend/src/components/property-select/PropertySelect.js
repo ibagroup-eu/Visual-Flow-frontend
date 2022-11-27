@@ -54,7 +54,6 @@ const PropertySelect = ({
                         horizontal: 'left'
                     },
                     getContentAnchorEl: null,
-                    disableScrollLock: true,
                     style: {
                         maxHeight: 300,
                         maxWidth: 0

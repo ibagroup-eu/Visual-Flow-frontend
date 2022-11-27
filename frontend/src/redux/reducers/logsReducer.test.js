@@ -53,7 +53,8 @@ describe('Logs Reducer', () => {
         };
         expect(logsReducer(undefined, action)).toEqual({
             loading: false,
-            data: payload
+            data: payload,
+            error: null
         });
     });
 

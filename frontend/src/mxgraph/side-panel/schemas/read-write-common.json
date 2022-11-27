@@ -44,6 +44,9 @@
                 },
                 {
                     "storage": "s3"
+                },
+                {
+                    "storage": "cluster"
                 }
             ]
         },
@@ -55,6 +58,9 @@
                 },
                 {
                     "storage": "s3"
+                },
+                {
+                    "storage": "cluster"
                 }
             ]
         },
@@ -124,6 +130,10 @@
                 {
                     "storage": "s3",
                     "format": "csv"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv"
                 }
             ]
         },
@@ -137,6 +147,10 @@
                 {
                     "storage": "s3",
                     "format": "csv"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv"
                 }
             ]
         },
@@ -149,6 +163,27 @@
                 },
                 {
                     "storage": "s3",
+                    "format": "avro"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "avro"
+                }
+            ]
+        },
+        {
+            "field": "useSchema",
+            "conditions": [
+                {
+                    "storage": "cos",
+                    "format": "avro"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro"
+                },
+                {
+                    "storage": "cluster",
                     "format": "avro"
                 }
             ]
@@ -191,6 +226,9 @@
                     "storage": "db2"
                 },
                 {
+                    "storage": "clickhouse"
+                },
+                {
                     "storage": "postgresql"
                 },
                 {
@@ -221,6 +259,9 @@
             "conditions": [
                 {
                     "storage": "db2"
+                },
+                {
+                    "storage": "clickhouse"
                 },
                 {
                     "storage": "postgresql"
@@ -280,6 +321,10 @@
                 {
                     "storage": "redshift-jdbc",
                     "customSql": "true"
+                },
+                {
+                    "storage": "clickhouse",
+                    "customSql": "true"
                 }
             ]
         },
@@ -288,6 +333,9 @@
             "conditions": [
                 {
                     "storage": "db2"
+                },
+                {
+                    "storage": "clickhouse"
                 },
                 {
                     "storage": "postgresql"
@@ -386,6 +434,9 @@
                 },
                 {
                     "storage": "redshift"
+                },
+                {
+                    "storage": "clickhouse"
                 }
             ]
         },
@@ -405,6 +456,9 @@
                 },
                 {
                     "storage": "redshift"
+                },
+                {
+                    "storage": "clickhouse"
                 }
             ]
         },
@@ -430,6 +484,9 @@
                 },
                 {
                     "storage": "redshift"
+                },
+                {
+                    "storage": "clickhouse"
                 }
             ]
         },

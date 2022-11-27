@@ -26,5 +26,13 @@ export default makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         width: '100%'
+    },
+    tabs: {
+        zIndex: theme.zIndex.modal + 1,
+        backgroundColor: theme.palette.background.paper
+    },
+    content: {
+        overflowY: 'auto',
+        overflowX: 'hidden'
     }
 }));

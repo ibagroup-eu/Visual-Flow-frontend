@@ -63,6 +63,7 @@ import {
 } from '../../../components/helpers/JobsPipelinesTable';
 import withPagination from '../../../routes/withPagination';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+import UnitConfig from '../../../unitConfig';
 
 const withRunAction = (act, getActions) =>
     act.runnable ? getActions(act).slice(0, 3) : getActions(act).slice(1, 3);
@@ -104,7 +105,7 @@ const JobsTable = ({
     const classes = withStyles();
     const [showModal, setShowModal] = React.useState(false);
     const [selectedJobs, setSelectedJobs] = React.useState([]);
-    const [jobHistory, setJobHistory] = React.useState({});
+    const [jobHistory, setJobHistory] = React.useState({ data: {} });
 
     const projId = projectId;
     const resolveStatus = value => ({
@@ -145,76 +146,83 @@ const JobsTable = ({
         }
     ];
 
-    const getActions = item => [
-        ![RUNNING, PENDING].includes(item.status)
-            ? {
-                  title: t('jobs:tooltip.Play'),
-                  Icon: PlayArrowOutlinedIcon,
-                  disable: !item.runnable,
-                  onClick: () => run(projectId, item.id)
-              }
-            : {
-                  title: t('jobs:tooltip.Stop'),
-                  Icon: StopOutlinedIcon,
-                  disable: !!item.pipelineId,
-                  onClick: () => stop(projectId, item.id)
-              },
-        {
-            title: t('jobs:tooltip.jobDesigner'),
-            Icon: PaletteOutlinedIcon,
-            onClick: () => {
-                jobDesignerHendler(projectId, item, data, history);
+    const getActions = item =>
+        [
+            ![RUNNING, PENDING].includes(item.status)
+                ? {
+                      title: t('jobs:tooltip.Play'),
+                      Icon: PlayArrowOutlinedIcon,
+                      disable: !item.runnable,
+                      onClick: () => run(projectId, item.id)
+                  }
+                : {
+                      title: t('jobs:tooltip.Stop'),
+                      Icon: StopOutlinedIcon,
+                      disable: !!item.pipelineId,
+                      onClick: () => stop(projectId, item.id)
+                  },
+            {
+                title: t('jobs:tooltip.jobDesigner'),
+                Icon: PaletteOutlinedIcon,
+                onClick: () => {
+                    jobDesignerHendler(projectId, item, data, history);
+                }
+            },
+            {
+                title: t('jobs:tooltip.Logs'),
+                Icon: DescriptionOutlinedIcon,
+                disable: [DRAFT, PENDING].includes(item.status) || !item.startedAt,
+                onClick: () =>
+                    history.push(
+                        `/jobs/${item.id}/logs/${projId}/?backTo=jobsTable&jobName=${item.name}`
+                    )
+            },
+            {
+                title: t('jobs:tooltip.Copy'),
+                Icon: FileCopyOutlinedIcon,
+                disable: !!item.pipelineId,
+                onClick: () => copy(projectId, item.id)
+            },
+            {
+                title: t('jobs:tooltip.History'),
+                Icon: HistoryOutlined,
+                disable: !!item.pipelineId,
+                visible: UnitConfig.JOB.HISTORY,
+                onClick: () => setJobHistory({ data: item, display: true })
+            },
+            {
+                title: t('jobs:tooltip.Remove'),
+                Icon: DeleteOutlinedIcon,
+                disable: item.pipelineInstances?.length !== 0,
+                onClick: () =>
+                    confirmationWindow({
+                        body: t('jobs:confirm.delete', { name: item.name }),
+                        callback: () => {
+                            removeHandler(
+                                projectId,
+                                [item.id],
+                                data.length,
+                                { rowsPerPage, currentPage },
+                                remove,
+                                setCurrentPage
+                            );
+                        }
+                    })
             }
-        },
-        {
-            title: t('jobs:tooltip.Logs'),
-            Icon: DescriptionOutlinedIcon,
-            disable: [DRAFT, PENDING].includes(item.status) || !item.startedAt,
-            onClick: () =>
-                history.push(
-                    `/jobs/${item.id}/logs/${projId}/?backTo=jobsTable&jobName=${item.name}`
-                )
-        },
-        {
-            title: t('jobs:tooltip.Copy'),
-            Icon: FileCopyOutlinedIcon,
-            disable: !!item.pipelineId,
-            onClick: () => copy(projectId, item.id)
-        },
-        {
-            title: t('jobs:tooltip.History'),
-            Icon: HistoryOutlined,
-            disable: !item.finishedAt || !!item.pipelineId,
-            onClick: () => setJobHistory(item)
-        },
-        {
-            title: t('jobs:tooltip.Remove'),
-            Icon: DeleteOutlinedIcon,
-            disable: item.pipelineInstances?.length !== 0,
-            onClick: () =>
-                confirmationWindow({
-                    body: t('jobs:confirm.delete', { name: item.name }),
-                    callback: () => {
-                        removeHandler(
-                            projectId,
-                            [item.id],
-                            data.length,
-                            { rowsPerPage, currentPage },
-                            remove,
-                            setCurrentPage
-                        );
-                    }
-                })
-        }
-    ];
+        ].filter(action => action.visible !== false);
+
+    const closeHistory = () => setJobHistory({ ...jobHistory, display: false });
 
     return (
         <>
-            <HistoryPanel
-                jobData={jobHistory}
-                projectId={projectId}
-                setPanelState={setJobHistory}
-            />
+            {UnitConfig.JOB.HISTORY && (
+                <HistoryPanel
+                    data={jobHistory.data}
+                    display={jobHistory.display}
+                    onClose={closeHistory}
+                    projectId={projectId}
+                />
+            )}
             <EnhancedTable
                 data={filterData(data, status, lastRun)}
                 actions={

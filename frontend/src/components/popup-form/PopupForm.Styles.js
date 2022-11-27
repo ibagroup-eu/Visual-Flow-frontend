@@ -31,7 +31,8 @@ export default makeStyles(theme => ({
         height: 'max-content',
         overflow: 'auto',
         borderRadius: 10,
-        maxHeight: '85%'
+        maxHeight: '85%',
+        outline: 'none'
     },
     header: {
         background: theme.palette.primary.main,
@@ -39,8 +40,5 @@ export default makeStyles(theme => ({
     },
     content: {
         paddingTop: theme.spacing(3)
-    },
-    cronMinWidth: {
-        minWidth: 650
     }
 }));

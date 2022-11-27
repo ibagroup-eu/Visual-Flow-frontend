@@ -19,15 +19,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './ReadWriteStage.Styles';
 import { STORAGES } from '../../constants';
 import makeTooltip from '../helpers/makeTooltip';
 
-import StageTag from '../../../components/stage-tag';
+import { JobStageTag } from '../../../components/stage-tag';
+import { StageParameters, Parameter } from '../parameters';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const ReadWriteStage = ({ stage }) => {
     const { t } = useTranslation();
@@ -35,23 +35,14 @@ const ReadWriteStage = ({ stage }) => {
 
     const cosStageFields = () => (
         <>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.bucket}
-                color="textSecondary"
-            >
-                {t('jobDesigner:readConfiguration.bucket')}:{' '}
+            <Parameter name={t('jobDesigner:readConfiguration.bucket')}>
+                {' '}
                 {makeTooltip(stage.bucket, stage.bucket)}
-            </Typography>
-            <Typography
-                variant="caption"
-                component="div"
-                className={classes.pathInBucket}
-                color="textSecondary"
-            >
-                {t('jobDesigner:Path')}: {makeTooltip(stage.path, stage.path)}
-            </Typography>
+            </Parameter>
+            <Parameter name={t('jobDesigner:Path')}>
+                {' '}
+                {makeTooltip(stage.path, stage.path)}
+            </Parameter>
         </>
     );
 
@@ -64,39 +55,25 @@ const ReadWriteStage = ({ stage }) => {
             case STORAGES.MYSQL.value:
             case STORAGES.MSSQL.value:
             case STORAGES.REDSHIFTJDBC.value:
+            case STORAGES.CLICKHOUSE.value:
                 return (
                     <>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.schema}
-                            color="textSecondary"
-                        >
-                            {t('jobDesigner:readConfiguration.schema')}:{' '}
+                        <Parameter name={t('jobDesigner:readConfiguration.schema')}>
+                            {' '}
                             {makeTooltip(stage.schema, stage.schema)}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.table}
-                            color="textSecondary"
-                        >
-                            {t('jobDesigner:readConfiguration.table')}:{' '}
+                        </Parameter>
+                        <Parameter name={t('jobDesigner:readConfiguration.table')}>
+                            {' '}
                             {makeTooltip(stage.table, stage.table)}
-                        </Typography>
+                        </Parameter>
                     </>
                 );
             case STORAGES.ELASTIC.value:
                 return (
-                    <Typography
-                        variant="caption"
-                        component="div"
-                        className={classes.bucket}
-                        color="textSecondary"
-                    >
-                        {t('jobDesigner:readConfiguration.index')}:{' '}
+                    <Parameter name={t('jobDesigner:readConfiguration.index')}>
+                        {' '}
                         {makeTooltip(stage.index, stage.index)}
-                    </Typography>
+                    </Parameter>
                 );
             case STORAGES.COS.value:
             case STORAGES.AWS.value:
@@ -104,118 +81,97 @@ const ReadWriteStage = ({ stage }) => {
             case STORAGES.MONGO.value:
                 return (
                     <>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.schema}
-                            color="textSecondary"
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.database')}
                         >
-                            {t('jobDesigner:readConfiguration.database')}:{' '}
+                            {' '}
                             {makeTooltip(stage.database, stage.database)}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.table}
-                            color="textSecondary"
+                        </Parameter>
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.collection')}
                         >
-                            {t('jobDesigner:readConfiguration.collection')}:{' '}
+                            {' '}
                             {makeTooltip(stage.collection, stage.collection)}
-                        </Typography>
+                        </Parameter>
                     </>
                 );
             case STORAGES.REDSHIFT.value:
                 return (
                     <>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.schema}
-                            color="textSecondary"
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.database')}
                         >
-                            {t('jobDesigner:readConfiguration.database')}:{' '}
+                            {' '}
                             {makeTooltip(stage.database, stage.database)}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.table}
-                            color="textSecondary"
-                        >
-                            {t('jobDesigner:readConfiguration.bucket')}:{' '}
+                        </Parameter>
+                        <Parameter name={t('jobDesigner:readConfiguration.bucket')}>
+                            {' '}
                             {makeTooltip(stage.bucket, stage.bucket)}
-                        </Typography>
+                        </Parameter>
                     </>
                 );
             case STORAGES.CASSANDRA.value:
                 return (
                     <>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.schema}
-                            color="textSecondary"
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.keyspace')}
                         >
-                            {t('jobDesigner:readConfiguration.keyspace')}:{' '}
+                            {' '}
                             {makeTooltip(stage.keyspace, stage.keyspace)}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.table}
-                            color="textSecondary"
-                        >
-                            {t('jobDesigner:readConfiguration.table')}:{' '}
+                        </Parameter>
+                        <Parameter name={t('jobDesigner:readConfiguration.table')}>
+                            {' '}
                             {makeTooltip(stage.table, stage.table)}
-                        </Typography>
+                        </Parameter>
                     </>
                 );
             case STORAGES.REDIS.value:
                 return (
                     <>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.schema}
-                            color="textSecondary"
-                        >
-                            {t('jobDesigner:readConfiguration.host')}:{' '}
+                        <Parameter name={t('jobDesigner:readConfiguration.host')}>
+                            {' '}
                             {makeTooltip(stage.host, stage.host)}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            component="div"
-                            className={classes.table}
-                            color="textSecondary"
+                        </Parameter>
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.keyColumn')}
                         >
-                            {t('jobDesigner:readConfiguration.keyColumn')}:{' '}
+                            {' '}
                             {makeTooltip(stage.keyColumn, stage.keyColumn)}
-                        </Typography>
+                        </Parameter>
                     </>
                 );
             case STORAGES.STDOUT.value:
+            case STORAGES.DATAFRAME.value:
                 return null;
+            case STORAGES.CLUSTER.value:
+                return (
+                    <Parameter name={t('jobDesigner:readConfiguration.file')}>
+                        {' '}
+                        {makeTooltip(
+                            stage.path?.split('/')[3],
+                            stage.path?.split('/')[3]
+                        )}
+                    </Parameter>
+                );
             default:
                 throw new Error(`Unsupported storage: ${stage.storage}`);
         }
     };
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-            {stage.storage && renderStorageData()}
-            <StageTag
-                className={classes.storage}
-                content={
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <StageParameters>{stage.storage && renderStorageData()}</StageParameters>
+            <JobStageTag className={classes.storage}>
+                {
                     Object.values(STORAGES).find(
                         ({ value }) => value === stage.storage
                     )?.label
                 }
-            />
-        </div>
+            </JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

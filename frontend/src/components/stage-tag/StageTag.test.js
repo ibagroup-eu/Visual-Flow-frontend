@@ -25,7 +25,7 @@ import { Typography } from '@material-ui/core';
 describe('StageTag', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
-            content: 'content'
+            children: 'content'
         };
 
         const wrapper = func(<StageTag {...defaultProps} {...props} />);
@@ -36,6 +36,6 @@ describe('StageTag', () => {
     it('should render without crashes', () => {
         const [wrapper, props] = init({}, true);
 
-        expect(wrapper.find(Typography).text()).toBe(props.content);
+        expect(wrapper.find(Typography).text()).toBe(props.children);
     });
 });

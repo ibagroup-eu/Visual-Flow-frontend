@@ -23,18 +23,21 @@ export default makeStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
+        marginTop: theme.spacing(-2)
     },
     params: {
         flexGrow: 1
     },
     buttons: {
         whiteSpace: 'nowrap',
-        margin: theme.spacing(2, -2, 4)
+        display: 'flex',
+        gap: theme.spacing(2),
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(4)
     },
     button: {
-        minWidth: 100,
-        margin: theme.spacing(0, 2)
+        minWidth: 100
     },
     cancelBtn: {
         background: theme.palette.grey[600],

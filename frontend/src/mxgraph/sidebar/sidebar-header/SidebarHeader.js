@@ -58,6 +58,7 @@ export const SidebarHeader = ({
     const { t } = useTranslation();
     const classes = useStyles();
     const someDirty = dirty || !data.name || sidePanelIsDirty || paramsIsDirty;
+    const saveEnabled = dirty && !sidePanelIsDirty && !paramsIsDirty;
 
     const fetchJob = () => {
         const currentPath = history.location.pathname.split('/');
@@ -144,7 +145,7 @@ export const SidebarHeader = ({
                     {currentHeader()}
                 </Typography>
                 <div className={classes.buttons}>
-                    {dirty && (
+                    {saveEnabled && (
                         <>
                             {ableToEdit && (
                                 <Button
@@ -196,7 +197,7 @@ const mapStateToProps = state => ({
     data: state.mxGraph.data,
     sidePanelIsDirty: state.mxGraph.sidePanelIsDirty,
     paramsIsDirty: state.mxGraph.paramsIsDirty,
-    dirty: state.mxGraph.dirty,
+    dirty: state.mxGraph.dirty || state.mxGraph.graphWithParamsIsDirty,
     currentProject: state.projects.currentProject,
     query: state.pages.urlSearch.search
 });

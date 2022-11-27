@@ -51,12 +51,7 @@ const ProfilePageModal = ({ display, onClose, title }) => {
     ];
 
     return (
-        <PopupForm
-            display={display}
-            isNotHelper={false}
-            title={title}
-            onClose={onClose}
-        >
+        <PopupForm display={display} title={title} onClose={onClose}>
             <Box className={classes.header}>
                 <Avatar className={classes.avatar} src={userInfo?.avatar}>
                     <Person fontSize="large" />

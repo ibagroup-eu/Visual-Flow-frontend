@@ -17,23 +17,29 @@
  * limitations under the License.
  */
 
-import {
-    FETCH_HISTORY_START,
-    FETCH_HISTORY_SUCCESS,
-    FETCH_HISTORY_FAIL
-} from './types';
-import api from '../../api/jobs';
+import { omit, uniqueId } from 'lodash';
 
-const fetchJobHistory = (projectId, jobId) => dispatch => {
+import {
+    FETCH_HISTORY_FAIL,
+    FETCH_HISTORY_START,
+    FETCH_HISTORY_SUCCESS
+} from './types';
+import jobApi from '../../api/jobs';
+import pipelineApi from '../../api/pipelines';
+
+export const fetchJobHistory = (projectId, jobId) => dispatch => {
     dispatch({
         type: FETCH_HISTORY_START
     });
 
-    return api.getHistory(projectId, jobId).then(
+    return jobApi.getJobHistory(projectId, jobId).then(
         response =>
             dispatch({
                 type: FETCH_HISTORY_SUCCESS,
-                payload: response.data
+                payload: response.data.map(node => ({
+                    ...node,
+                    uniqId: uniqueId()
+                }))
             }),
         error =>
             dispatch({
@@ -43,4 +49,35 @@ const fetchJobHistory = (projectId, jobId) => dispatch => {
     );
 };
 
-export default fetchJobHistory;
+export const fetchPipelineHistory = (projectId, pipelineId) => dispatch => {
+    dispatch({
+        type: FETCH_HISTORY_START
+    });
+
+    return pipelineApi.getPipelineHistory(projectId, pipelineId).then(
+        response =>
+            dispatch({
+                type: FETCH_HISTORY_SUCCESS,
+                payload: response.data?.map(pipe =>
+                    omit(
+                        {
+                            ...pipe,
+                            uniqId: uniqueId(),
+                            statuses: pipe.nodes.map(node => ({
+                                ...node,
+                                uniqId: uniqueId()
+                            }))
+                        },
+                        ['nodes']
+                    )
+                )
+            }),
+        error =>
+            dispatch({
+                type: FETCH_HISTORY_FAIL,
+                payload: {
+                    error
+                }
+            })
+    );
+};

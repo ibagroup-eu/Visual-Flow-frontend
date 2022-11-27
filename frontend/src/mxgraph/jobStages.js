@@ -31,144 +31,171 @@ import {
     FILTER,
     CACHE,
     SLICE,
-    SORT
+    SORT,
+    VALIDATE
 } from './constants';
+import UnitConfig from '../unitConfig';
 
-const jobStages = theme => [
-    {
-        operation: READ,
-        name: palette.READ,
-        color: theme.palette.info.background,
-        validation: {
-            minCount: 1,
-            maxIncomingConnections: 0,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
+const jobStages = theme =>
+    [
+        {
+            operation: READ,
+            name: palette.READ,
+            color: theme.palette.info.background,
+            validation: {
+                minCount: 1,
+                maxIncomingConnections: 0,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.READ
+        },
+        {
+            operation: WRITE,
+            name: palette.WRITE,
+            color: theme.palette.info.background,
+            validation: {
+                minCount: 1,
+                maxCount: 1,
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                maxOutgoingConnections: 0
+            },
+            show: UnitConfig.JOB.STAGES.WRITE
+        },
+        {
+            operation: GROUP,
+            name: palette.GROUP,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.GROUP
+        },
+        {
+            operation: REMOVE_DUPLICATES,
+            name: palette.REMOVE_DUPLICATES,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.REMOVE_DUPLICATES
+        },
+        {
+            operation: FILTER,
+            name: palette.FILTER,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.FILTER
+        },
+        {
+            operation: TRANSFORM,
+            name: palette.TRANSFORM,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.TRANSFORM
+        },
+        {
+            operation: SORT,
+            name: palette.SORT,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.SORT
+        },
+        {
+            operation: SLICE,
+            name: palette.SLICE,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.SLICE
+        },
+        {
+            operation: JOIN,
+            name: palette.JOIN,
+            color: theme.palette.warning.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 2,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.JOIN
+        },
+        {
+            operation: UNION,
+            name: palette.UNION,
+            color: theme.palette.warning.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 2,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.UNION
+        },
+        {
+            operation: CDC,
+            name: palette.CDC,
+            color: theme.palette.warning.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 2,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.CDC
+        },
+        {
+            operation: CACHE,
+            name: palette.CACHE,
+            color: alpha(theme.palette.info.light, 0.8),
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 15
+            },
+            show: UnitConfig.JOB.STAGES.CACHE
+        },
+        {
+            operation: VALIDATE,
+            name: palette.VALIDATE,
+            color: alpha(theme.palette.info.light, 0.8),
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.VALIDATE
         }
-    },
-    {
-        operation: WRITE,
-        name: palette.WRITE,
-        color: theme.palette.info.background,
-        validation: {
-            minCount: 1,
-            maxCount: 1,
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            maxOutgoingConnections: 0
-        }
-    },
-    {
-        operation: GROUP,
-        name: palette.GROUP,
-        color: theme.palette.success.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: REMOVE_DUPLICATES,
-        name: palette.REMOVE_DUPLICATES,
-        color: theme.palette.success.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: FILTER,
-        name: palette.FILTER,
-        color: theme.palette.success.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: TRANSFORM,
-        name: palette.TRANSFORM,
-        color: theme.palette.success.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: SORT,
-        name: palette.SORT,
-        color: theme.palette.success.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: SLICE,
-        name: palette.SLICE,
-        color: theme.palette.success.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: JOIN,
-        name: palette.JOIN,
-        color: theme.palette.warning.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 2,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: UNION,
-        name: palette.UNION,
-        color: theme.palette.warning.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 2,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: CDC,
-        name: palette.CDC,
-        color: theme.palette.warning.background,
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 2,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 1
-        }
-    },
-    {
-        operation: CACHE,
-        name: palette.CACHE,
-        color: alpha(theme.palette.info.light, 0.8),
-        validation: {
-            minIncomingConnections: 1,
-            maxIncomingConnections: 1,
-            minOutgoingConnections: 1,
-            maxOutgoingConnections: 15
-        }
-    }
-];
+    ].filter(stage => stage.show !== false);
 
 const jobStagesByType = theme =>
     Object.assign(

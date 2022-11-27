@@ -20,30 +20,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
-    root: {
-        position: 'relative'
-    },
-    name: {
-        position: 'absolute',
-        left: -100,
-        top: -64,
-        display: 'flex',
-        'white-space': 'normal',
-        width: 215,
-        'text-align': 'left',
-        '& span': {
-            overflow: 'hidden',
-            'text-overflow': 'ellipsis',
-            'white-space': 'nowrap'
-        }
-    },
     sortType: {
-        position: 'absolute',
-        left: -27,
-        top: 44,
-        backgroundColor: theme.palette.warning.light,
-        color: 'white',
-        'border-radius': 4,
-        width: 130
+        backgroundColor: theme.palette.success.light
     }
 }));

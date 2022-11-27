@@ -26,11 +26,11 @@ describe('StageWithIcon', () => {
     it('should render without crashes', () => {
         const defaultProps = {
             name: 'name',
-            operation: undefined
+            operation: 'operation',
         };
 
         const wrapper = shallow(<StageWithIcon {...defaultProps} />);
 
-        expect(wrapper.find(Typography).text()).toBe(defaultProps.name);
+        expect(wrapper.find(Typography).text()).toContain(defaultProps.name);
     });
 });

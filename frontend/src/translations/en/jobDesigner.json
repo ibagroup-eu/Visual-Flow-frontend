@@ -17,11 +17,13 @@
         "CDC": "Change\nData Capture",
         "JOB": "Job",
         "PIPELINE": "Pipeline",
+        "WAIT": "Wait",
         "NOTIFICATION": "Notification",
         "CONTAINER": "Container",
         "CACHE": "Cache",
         "SLICE": "Slice",
-        "SORT": "Sort"
+        "SORT": "Sort",
+        "VALIDATE": "Validate"
     },
     "readConfiguration": {
         "Name": "Name",
@@ -44,7 +46,7 @@
         "password": "Password",
         "schema": "Schema",
         "table": "Table",
-        "certData": "CertData (optional)",
+        "certData": "CertData",
         "Fileformat": "File format",
         "port": "Port",
         "ssl": "SSL",
@@ -69,7 +71,10 @@
         "tableName": "Table name",
         "truncateMode": "Truncate Mode",
         "Type": "Type",
-        "SchemaRead": "Schema on read"
+        "SchemaRead": "Schema on read",
+        "filePath": "File Path",
+        "fileName": "File Name",
+        "file": "File"
     },
     "writeConfiguration": {
         "Header": "Header",
@@ -177,6 +182,65 @@
         },
         "search": {
             "placeholder": "Search ..."
+        }
+    },
+    "FileState": {
+        "Download": "Download",
+        "Upload": "Upload",
+        "Loading": "Loading"
+    },
+    "Dataframe": {
+        "modal": {
+            "title": "Dataframe"
+        },
+        "toolbar": {
+            "addColumn": "Add column",
+            "addRow": "Add row",
+            "remove": "Remove",
+            "columns": "Columns"
+        },
+        "columnMenu": {
+            "unsort": "Unsort",
+            "rename": "Rename",
+            "hide": "Hide",
+            "delete": "Delete"
+        },
+        "addColumn": {
+            "columnName": "Column Name",
+            "columnType": "Column Type",
+            "add": "Add",
+            "rename": "Rename"
+        },
+        "columns": {
+            "findColumn": "Find Column",
+            "columnTitle": "Column Title",
+            "showAll": "Show all",
+            "hideAll": "Hide all"
+        }
+    },
+    "Validate": {
+        "modal": {
+            "addValidation": "Add Validation",
+            "editValidation": "Edit Validation"
+        },
+        "toolbar": {
+            "column": "column"
+        },
+        "columnMenu": {
+            "rename": "Rename",
+            "delete": "Delete"
+        },
+        "header": {
+            "type": "TYPE",
+            "parameter": "PARAMETER",
+            "isError": "ISERROR"
+        },
+        "popupMenu": {
+            "columnName": "Column Name",
+            "ok": "Ok",
+            "type": "Type",
+            "isError": "isError",
+            "values": "Values"
         }
     }
 }

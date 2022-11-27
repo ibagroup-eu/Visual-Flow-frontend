@@ -31,7 +31,8 @@ const theme = createTheme({
         info: {
             main: '#3F51B5',
             light: '#F3EAFF',
-            background: '#E8F0FF'
+            background: '#E8F0FF',
+            text: '#64B5F6'
         },
         secondary: {
             main: '#17D9C2',
@@ -54,7 +55,14 @@ const theme = createTheme({
             light: '#E57373'
         },
         other: {
-            border: 'rgba(0, 0, 0, 0.23)'
+            border: 'rgba(0, 0, 0, 0.23)',
+            skipped: '#BDBDBD'
+        },
+        text: {
+            primary: 'rgba(0, 0, 0, 0.87)'
+        },
+        action: {
+            active: 'rgba(0, 0, 0, 0.54)'
         }
     },
     MuiDrawer: {

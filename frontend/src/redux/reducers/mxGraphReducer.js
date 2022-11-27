@@ -40,11 +40,12 @@ const initialState = {
     currentCell: '',
     sidePanelIsOpen: false,
     data: {},
-    loading: true,
+    loading: false,
     fields: null,
     dirty: false,
     sidePanelIsDirty: false,
     paramsIsDirty: false,
+    graphWithParamsIsDirty: false,
     zoomValue: 1,
     panning: false,
     showLogsModal: false
@@ -87,8 +88,8 @@ const mxGraphReducer = (state = initialState, action = {}) => {
             const { NAME, ...params } = action.payload;
             return {
                 ...state,
-                dirty: true,
                 paramsIsDirty: false,
+                graphWithParamsIsDirty: true,
                 data: {
                     ...state.data,
                     name: NAME,
@@ -107,6 +108,7 @@ const mxGraphReducer = (state = initialState, action = {}) => {
             return {
                 ...state,
                 dirty: false,
+                graphWithParamsIsDirty: false,
                 loading: false,
                 data: action.payload
             };

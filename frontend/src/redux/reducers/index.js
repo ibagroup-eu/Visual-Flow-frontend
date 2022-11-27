@@ -44,6 +44,7 @@ import settingsConnectionsReducer from './settingsConnectionsReducer';
 import urlSearchReducer from './urlSearchReducer';
 import profileReducer from './profileReducer';
 import historyReducer from './historyReducer';
+import filesReducer from './filesReducer';
 
 const combine = combineReducers({
     routing: routerReducer,
@@ -72,7 +73,8 @@ const combine = combineReducers({
         profile: profileReducer
     }),
     importExport: importExportReducer,
-    enhancedTable: enhancedTableReducer
+    enhancedTable: enhancedTableReducer,
+    files: filesReducer
 });
 
 const reducers = (state, action) =>

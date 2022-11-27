@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Drawer, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
@@ -33,10 +34,11 @@ describe('ConnectionsPanel', () => {
         props = {
             panelIsOpen: true,
             setPanelState: jest.fn(),
-            newConnection: { storage: 's3' },
+            newConnection: { value: { storage: 's3' } },
             viewMode: false,
             confirmationWindow: jest.fn(),
             handleNewConnection: jest.fn(),
+            handlePingConnection: jest.fn(),
             selectConnections: [{ value: 's3' }]
         };
 
@@ -49,6 +51,10 @@ describe('ConnectionsPanel', () => {
 
     it('should calls useEffect', () => {
         wrapper = mount(<ConnectionsPanel {...props} />);
+    });
+
+    it('should calls useEffect without newConnection', () => {
+        wrapper = mount(<ConnectionsPanel {...props} newConnection={null} />);
     });
 
     it('should calls openModal prop', () => {
@@ -75,15 +81,20 @@ describe('ConnectionsPanel', () => {
         wrapper.find(Autocomplete).invoke('onChange')({}, 'db2');
     });
 
-    it('should calls saveConnection prop with handleNewConnection and setPanelState', () => {
+    it('should calls saveConnection prop with handleNewConnection', () => {
+        wrapper = shallow(<ConnectionsPanel {...props} panelTitle="Edit" />);
         wrapper.find(ConnectionsPanelButtons).invoke('saveConnection')();
         expect(props.handleNewConnection).toBeCalledWith(props.newConnection);
-        expect(props.setPanelState).toBeCalledWith(false);
+    });
+
+    it('should calls saveConnection prop with handleNewConnection', () => {
+        wrapper.find(ConnectionsPanelButtons).invoke('saveConnection')();
+        expect(props.handleNewConnection).toBeCalledWith(props.newConnection);
     });
 
     it('should calls saveIsDisabled prop without anonymousAccess', () => {
         const newProps = {
-            newConnection: { storage: 's3', connectionName: 'test' }
+            newConnection: { value: { connectionsName: 'test', storage: 's3' } }
         };
         wrapper = shallow(<ConnectionsPanel {...props} {...newProps} />);
         expect(wrapper.find(ConnectionsPanelButtons).prop('saveIsDisabled')).toBe(
@@ -93,7 +104,7 @@ describe('ConnectionsPanel', () => {
 
     it('should calls saveIsDisabled prop without storage', () => {
         const newProps = {
-            newConnection: { connectionName: 'test' }
+            newConnection: { value: { connectionsName: 'test' } }
         };
         wrapper = shallow(<ConnectionsPanel {...props} {...newProps} />);
         expect(wrapper.find(ConnectionsPanelButtons).prop('saveIsDisabled')).toBe(
@@ -103,7 +114,7 @@ describe('ConnectionsPanel', () => {
 
     it('should calls saveIsDisabled prop with equal newConnection and connectionState', () => {
         const newProps = {
-            newConnection: { connectionName: 'test', storage: 'db2' }
+            newConnection: { value: { connectionsName: 'test', storage: 'db2' } }
         };
         wrapper = shallow(<ConnectionsPanel {...props} {...newProps} />);
         expect(wrapper.find(ConnectionsPanelButtons).prop('saveIsDisabled')).toBe(
@@ -114,9 +125,12 @@ describe('ConnectionsPanel', () => {
     it('should calls saveIsDisabled prop with not equal newConnection and connectionState', () => {
         const newProps = {
             newConnection: {
-                connectionName: 'test',
-                storage: 's3',
-                anonymousAccess: 'true'
+                key: 'test',
+                value: {
+                    connectionName: 'test',
+                    storage: 's3',
+                    anonymousAccess: 'true'
+                }
             },
             viewMode: true
         };
@@ -138,9 +152,11 @@ describe('ConnectionsPanel', () => {
     it('should calls confirmCancel prop with confirmationWindow', () => {
         const newProps = {
             newConnection: {
-                connectionName: 'test',
-                storage: 's3',
-                anonymousAccess: 'true'
+                value: {
+                    connectionName: 'test',
+                    storage: 's3',
+                    anonymousAccess: 'true'
+                }
             },
             viewMode: true
         };
@@ -151,5 +167,76 @@ describe('ConnectionsPanel', () => {
         });
         wrapper.find(ConnectionsPanelButtons).invoke('confirmCancel')();
         expect(props.confirmationWindow).toBeCalled();
+    });
+
+    it('should calls pingConnection prop', () => {
+        wrapper.find(ConnectionsPanelButtons).invoke('pingConnection')();
+        expect(props.handlePingConnection).toBeCalledWith(props.newConnection);
+    });
+
+    it('should calls component with !panelIsOpen', () => {
+        wrapper = shallow(<ConnectionsPanel {...props} panelIsOpen={false} />);
+        expect(wrapper.find(Drawer).prop('open')).toBe(false);
+    });
+
+    it('should calls error prop for name with not allowed symbols', () => {
+        wrapper = mount(
+            <ConnectionsPanel
+                {...props}
+                newConnection={{
+                    key: 'name',
+                    value: { connectionName: '&', storage: 's3' }
+                }}
+            />
+        );
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('error')
+        ).toBe(true);
+    });
+
+    it('should calls error prop for name with nameDuplication', () => {
+        wrapper = mount(
+            <ConnectionsPanel
+                {...props}
+                newConnection={{
+                    key: 'name',
+                    value: { connectionName: 'name1', storage: 's3' }
+                }}
+                connections={[{ key: 'name1', value: { connectionName: 'name1' } }]}
+            />
+        );
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('error')
+        ).toBe(true);
+    });
+
+    it('should calls error prop for name with name length > 50', () => {
+        wrapper = mount(
+            <ConnectionsPanel
+                {...props}
+                newConnection={{
+                    key: 'name',
+                    value: {
+                        connectionName:
+                            'aaaaaaaaaaaaaaaaaaaaaaaa' +
+                            'aaaaaaaaaaaaaaaaaaaaaaaa' +
+                            'aaaaaaaaaaaaaaaaaaaaaaaa',
+                        storage: 's3'
+                    }
+                }}
+            />
+        );
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('error')
+        ).toBe(true);
     });
 });

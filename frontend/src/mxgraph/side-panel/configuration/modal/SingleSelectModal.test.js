@@ -22,8 +22,8 @@ import React from 'react';
 import SingleSelectModal from './SingleSelectModal';
 import PopupForm from '../../../../components/popup-form';
 import { PageSkeleton } from '../../../../components/skeleton';
-import { Radio, TableRow, TextField } from '@material-ui/core';
 import SearchInput from '../../../../components/search-input';
+import SingleSelectModalRow from './modal-row/SingleSelectModalRow';
 
 describe('SingleSelectModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -56,14 +56,6 @@ describe('SingleSelectModal', () => {
         expect(wrapper.find(PageSkeleton).exists()).toBeFalsy();
     });
 
-    it('should hide a radio section if a user is not able to edit', () => {
-        const items = [{ pipelineId: null }];
-
-        const [wrapper] = init({ ableToEdit: false, loading: false, items });
-
-        expect(wrapper.find(Radio).exists()).toBeFalsy();
-    });
-
     it('should handle change search', () => {
         const items = [
             { name: 'first', pipelineId: null },
@@ -72,46 +64,29 @@ describe('SingleSelectModal', () => {
 
         const [wrapper] = init({ loading: false, items }, false, shallow);
 
-        expect(wrapper.find(TableRow).length).toBe(items.length);
+        expect(wrapper.find(SingleSelectModalRow).length).toBe(items.length);
 
         wrapper.find(SearchInput).simulate('change', { target: { value: 'SE' } });
 
         wrapper.update();
 
-        expect(wrapper.find(TableRow).length).toBe(items.length - 1);
+        expect(wrapper.find(SingleSelectModalRow).length).toBe(items.length - 1);
 
         expect(
             wrapper
-                .find(TableRow)
+                .find(SingleSelectModalRow)
                 .at(0)
-                .find(TextField)
-                .prop('value')
+                .prop('name')
         ).toBe('second');
-    });
-
-    it('should mark selected values as checked', () => {
-        const items = [{ id: 'job_1', pipelineId: null }];
-
-        const [wrapper] = init({ loading: false, items });
-
-        expect(wrapper.find(Radio).prop('checked')).toBeFalsy();
-
-        wrapper.find(Radio).simulate('change', { target: { value: 'job_1' } });
-
-        wrapper.update();
-
-        expect(wrapper.find(Radio).prop('checked')).toBeTruthy();
     });
 
     it('should call useEffect', () => {
         const items = [{ id: 'job_1', pipelineId: null }];
-
-        const [wrapper] = init(
+        window.HTMLElement.prototype.scrollIntoView = jest.fn();
+        init(
             { loading: false, currentValue: 'job_1', display: true, items },
             false,
             mount
         );
-
-        expect(wrapper.find(Radio).prop('checked')).toBeTruthy();
     });
 });

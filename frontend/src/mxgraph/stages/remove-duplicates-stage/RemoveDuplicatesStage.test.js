@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import RemoveDuplicatesStage from './RemoveDuplicatesStage';
+import { TagsParameter } from '../parameters';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -29,6 +29,11 @@ describe('RemoveDuplicatesStage', () => {
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(Typography).exists()).toBeTruthy();
+        expect(wrapper).toBeDefined();
+    });
+
+    it('should render TagsParameter', () => {
+        const wrapper = init();
+        expect(wrapper.find(TagsParameter)).toHaveLength(1);
     });
 });

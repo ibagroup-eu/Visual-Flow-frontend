@@ -240,7 +240,6 @@ export const CronModal = ({
             title={t('pipelines:tooltip.Scheduling')}
             onClose={onClose}
             isNotHelper
-            minWidthClass="cronMinWidth"
         >
             {cronState?.loading ? (
                 <PageSkeleton />

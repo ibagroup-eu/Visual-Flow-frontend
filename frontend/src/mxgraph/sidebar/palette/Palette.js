@@ -35,6 +35,7 @@ import stageLabels from '../../stageLabels';
 import { pipelinesStages, pipelinesStagesByType } from '../../pipelinesStages';
 import history from '../../../utils/history';
 import StageModal from '../../../components/stage-modals/stage';
+import { STAGE_HEIGHT, STAGE_WIDTH } from '../../constants';
 
 const { mxEvent, mxUtils, mxDragSource } = mxgraph();
 
@@ -73,7 +74,7 @@ export class Palette extends React.Component {
 
     // add new cells
     addCell = (graph, event, target, x, y, type) => {
-        const { setDirty, theme } = this.props;
+        const { setDirty } = this.props;
         const { stagesByType } = this.state;
         const stage = stagesByType[type];
         const obj = stageLabels({ operation: stage.operation });
@@ -86,9 +87,9 @@ export class Palette extends React.Component {
             obj,
             x,
             y,
-            130,
-            72,
-            `fillColor=${stage.color};rounded=1;strokeColor=${theme.palette.other.border};arcSize=7`
+            STAGE_WIDTH,
+            STAGE_HEIGHT,
+            `fillColor=${stage.color};`
         );
         setDirty(true);
         graph.setSelectionCell(cell);
@@ -96,7 +97,7 @@ export class Palette extends React.Component {
 
     // change stages to drag element
     makeDraggable = () => {
-        const { graph } = this.props;
+        const { graph, theme } = this.props;
         const tasksDrag = this.state.refSidebar.current.querySelectorAll('.stages');
         Array.prototype.slice.call(tasksDrag).forEach(elem => {
             const type = elem.getAttribute('data-type');
@@ -111,7 +112,7 @@ export class Palette extends React.Component {
                 graph.autoscroll,
                 true
             );
-            ds.dragElementZIndex = 1201;
+            ds.dragElementZIndex = theme.zIndex.drawer + 1;
             ds.createDragElement = mxDragSource.prototype.createDragElement;
         });
     };
@@ -146,7 +147,7 @@ export class Palette extends React.Component {
         const { refSidebar, stages, operationName } = this.state;
 
         return (
-            <div ref={refSidebar}>
+            <div className={classes.paletteContainer} ref={refSidebar}>
                 <StageModal
                     display={!!operationName}
                     stageName={operationName}

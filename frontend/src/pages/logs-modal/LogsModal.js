@@ -30,20 +30,17 @@ const LogsModal = ({
     projectId,
     jobId,
     pipelineId,
-    nodeId
+    nodeId,
+    logId
 }) => (
-    <PopupForm
-        logs
-        display={display}
-        onClose={onClose}
-        title={t('jobs:tooltip.Logs')}
-    >
+    <PopupForm display={display} onClose={onClose} title={t('jobs:tooltip.Logs')}>
         <Logs
+            modal
             projId={projectId}
             jobId={jobId}
-            modal={display}
             pipelineId={pipelineId}
             nodeId={nodeId}
+            logId={logId}
         />
     </PopupForm>
 );
@@ -52,6 +49,7 @@ LogsModal.propTypes = {
     projectId: PropTypes.string,
     jobId: PropTypes.string,
     pipelineId: PropTypes.string,
+    logId: PropTypes.string,
     nodeId: PropTypes.string,
     display: PropTypes.bool,
     onClose: PropTypes.func,

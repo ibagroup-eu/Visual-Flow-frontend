@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Box, Divider, IconButton, TextField } from '@material-ui/core';
+import { Box, IconButton, TextField } from '@material-ui/core';
 import TransformOutlinedIcon from '@material-ui/icons/TransformOutlined';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,7 @@ import PropTypes from 'prop-types';
 import useStyles from './PipelineConfiguration.Styles';
 import { TextSkeleton } from '../../../../components/skeleton';
 import SingleSelectModal from '../modal';
+import ConfigurationDivider from '../../../../components/divider';
 
 const Pipeline = ({ data, loading, ableToEdit, state, onStateChange }) => {
     const { t } = useTranslation();
@@ -70,7 +71,7 @@ const Pipeline = ({ data, loading, ableToEdit, state, onStateChange }) => {
                     }
                     required
                 />
-                <Divider />
+                <ConfigurationDivider />
                 {loading ? (
                     <TextSkeleton />
                 ) : (
@@ -101,7 +102,6 @@ const Pipeline = ({ data, loading, ableToEdit, state, onStateChange }) => {
                             }}
                             required
                         />
-                        <Divider />
                     </>
                 )}
             </Box>
@@ -119,8 +119,9 @@ Pipeline.propTypes = {
 
 const mapStateToProps = state => {
     const { data, loading } = state.pages.pipelines;
+    const { id } = state.mxGraph.data;
     return {
-        data: data.pipelines,
+        data: data.pipelines?.filter(item => item.id !== id),
         loading
     };
 };

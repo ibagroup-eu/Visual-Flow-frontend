@@ -18,7 +18,8 @@
  */
 
 import palette from '../translations/en/jobDesigner.json';
-import { JOB, NOTIFICATION, PIPELINE, CONTAINER } from './constants';
+import { JOB, NOTIFICATION, PIPELINE, CONTAINER, WAIT } from './constants';
+import UnitConfig from '../unitConfig';
 
 const pipelinesStages = theme =>
     [
@@ -26,27 +27,33 @@ const pipelinesStages = theme =>
             operation: JOB,
             name: palette.JOB,
             color: theme.palette.secondary.light,
-            show: true
+            show: UnitConfig.PIPELINE.STAGES.JOB
         },
         {
             operation: PIPELINE,
             name: palette.PIPELINE,
             color: theme.palette.warning.background,
-            show: false
+            show: UnitConfig.PIPELINE.STAGES.PIPELINE
         },
         {
             operation: CONTAINER,
             name: palette.CONTAINER,
             color: theme.palette.info.background,
-            show: true
+            show: UnitConfig.PIPELINE.STAGES.CONTAINER
         },
         {
             operation: NOTIFICATION,
             name: palette.NOTIFICATION,
             color: theme.palette.success.background,
-            show: true
+            show: UnitConfig.PIPELINE.STAGES.NOTIFICATION
+        },
+        {
+            operation: WAIT,
+            name: palette.WAIT,
+            color: theme.palette.info.light,
+            show: UnitConfig.PIPELINE.STAGES.WAIT
         }
-    ].filter(stage => stage.show);
+    ].filter(stage => stage.show !== false);
 
 const pipelinesStagesByType = theme =>
     Object.assign(

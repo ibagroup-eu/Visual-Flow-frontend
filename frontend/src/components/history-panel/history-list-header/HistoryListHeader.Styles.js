@@ -23,7 +23,7 @@ export default makeStyles(theme => ({
     root: {
         display: 'flex',
         alignItems: 'center',
-        border: '1px solid #e0e0e0',
+        border: `1px solid ${theme.palette.grey[300]}`,
         borderRadius: 4,
         padding: theme.spacing(0.75, 0),
         marginTop: theme.spacing(3),
@@ -42,7 +42,7 @@ export default makeStyles(theme => ({
         margin: theme.spacing(0, 5)
     },
     logHeader: {
-        marginLeft: theme.spacing(26.5),
+        marginLeft: theme.spacing(26.25),
         marginRight: theme.spacing(3)
     }
 }));

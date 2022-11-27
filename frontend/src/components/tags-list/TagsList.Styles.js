@@ -41,6 +41,7 @@ export default makeStyles(theme => ({
     },
     paper: {
         marginTop: theme.spacing(0.5),
+        marginBottom: theme.spacing(0.5),
         maxWidth: 280,
         border: `1px solid ${theme.palette.grey[300]}`,
         borderRadius: theme.spacing(1.5)

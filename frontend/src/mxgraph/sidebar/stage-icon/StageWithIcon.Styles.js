@@ -21,16 +21,32 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
     stage: {
+        position: 'relative',
         display: 'inline-flex',
         justifyContent: 'center',
         alignItems: 'center'
     },
     typography: {
-        marginLeft: theme.spacing(0.6),
-        marginTop: theme.spacing(0.3),
+        flexWrap: 'nowrap',
         whiteSpace: 'pre-line',
-        color: theme.palette.common.black,
-        lineHeight: 1.33,
-        fontWeight: 500
+        fontWeight: 500,
+        textAlign: 'left',
+        display: 'flex',
+        alignItems: 'center',
+        lineHeight: 'normal'
+    },
+    name: {
+        paddingLeft: theme.spacing(0.6),
+        overflow: 'hidden',
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+        '& > span:first-of-type': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            textAlign: 'left',
+            flexGrow: 1
+        }
     }
 }));

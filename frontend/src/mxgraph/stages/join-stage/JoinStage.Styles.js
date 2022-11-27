@@ -20,56 +20,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
-    root: {
-        position: 'relative'
-    },
-    name: {
-        position: 'absolute',
-        left: -100,
-        top: -64,
-        display: 'flex',
-        whiteSpace: 'normal',
-        width: 200,
-        textAlign: 'left',
-        '& span': {
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-        }
-    },
-    keyCaption: {
-        position: 'absolute',
-        left: -100,
-        top: -35,
-        maxHeight: 72,
-        minWidth: 207,
-        display: 'flex',
-        flexWrap: 'wrap',
-        overflow: 'hidden',
-        padding: 2
-    },
-    dots: {
-        color: '#000',
-        alignSelf: 'flex-end',
-        whiteSpace: 'pre'
-    },
     key: {
-        backgroundColor: theme.palette.warning.dark,
-        color: 'white',
-        borderRadius: 4,
-        margin: '2px',
-        padding: '0 2px',
-        maxWidth: 90,
-        textOverflow: 'ellipsis',
-        overflow: 'hidden'
+        backgroundColor: theme.palette.warning.light
     },
     joinType: {
-        position: 'absolute',
-        left: 19,
-        top: 44,
-        backgroundColor: theme.palette.warning.light,
-        color: 'white',
-        borderRadius: 4,
-        width: 84
+        backgroundColor: theme.palette.warning.light
     }
 }));

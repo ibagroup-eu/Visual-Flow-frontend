@@ -44,15 +44,6 @@ export default makeStyles(theme => ({
         backgroundColor: theme.palette.background.default,
         padding: '8px 4px'
     },
-    radioButtonCell: {
-        padding: theme.spacing(2)
-    },
-    keyCell: {
-        width: '30%'
-    },
-    valueCell: {
-        width: '100%'
-    },
     search: {
         display: 'flex',
         justifyContent: 'space-between',

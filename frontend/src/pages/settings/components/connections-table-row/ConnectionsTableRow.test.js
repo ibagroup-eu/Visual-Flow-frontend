@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { IconButton } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import React from 'react';
 import ConnectionsTableRow from './ConnectionsTableRow';
+import ActionButton from './action-button';
 
 describe('ConnectionsTableRow', () => {
     let wrapper;
@@ -29,16 +29,19 @@ describe('ConnectionsTableRow', () => {
     beforeEach(() => {
         props = {
             connection: {
-                connectionName: 'name',
-                storageLabel: 'Label',
-                storage: 'storage',
-                id: 'id',
-                endpoint: 'endpoint',
-                secketKey: '#key#'
+                key: 'name',
+                value: {
+                    connectionName: 'name',
+                    storageLabel: 'Label',
+                    storage: 'storage',
+                    endpoint: 'endpoint',
+                    secketKey: '#key#'
+                }
             },
             handleRemoveConnection: jest.fn(),
             confirmationWindow: jest.fn(),
-            handleOpenConnection: jest.fn()
+            handleOpenConnection: jest.fn(),
+            handlePingConnection: jest.fn()
         };
 
         wrapper = shallow(<ConnectionsTableRow {...props} />);
@@ -49,10 +52,9 @@ describe('ConnectionsTableRow', () => {
     });
 
     it('should calls onClick prop for IconButtons', () => {
-        wrapper
-            .find(IconButton)
-            .slice(0, -1)
-            .forEach(obj => obj.prop('onClick')());
+        wrapper.find(ActionButton).forEach(obj => obj.prop('onClick')());
         expect(props.handleOpenConnection).toBeCalledTimes(2);
+        expect(props.confirmationWindow).toBeCalledTimes(1);
+        expect(props.handlePingConnection).toBeCalledTimes(1);
     });
 });

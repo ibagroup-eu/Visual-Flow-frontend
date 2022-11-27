@@ -23,10 +23,9 @@
     },
     "truncateModeCascade": {
         "name": "Truncate mode",
-        "value1": "3. Cascade. The cascade truncation use to overcome fail, if the target table has a primary key", 
-        "value2" : "which is referenced as a foreign key in other tables. The cascade truncation that would not only",
-        "value3" : "delete the data from target table, but also from other tables that use target table's primary key as a foreign key constraint."
-
+        "value1": "3. Cascade. The cascade truncation use to overcome fail, if the target table has a primary key",
+        "value2": "which is referenced as a foreign key in other tables. The cascade truncation that would not only",
+        "value3": "delete the data from target table, but also from other tables that use target table's primary key as a foreign key constraint."
     },
     "truncateMode": {
         "name": "Truncate mode",
@@ -74,6 +73,47 @@
         "certData": {
             "name": "CertData (optional)",
             "value": "Enter certification data if needed."
+        }
+    },
+    "CLICKHOUSE": {
+        "host": {
+            "name": "Host",
+            "value": "ClickHouse hostname or IP address."
+        },
+        "port": {
+            "name": "Port",
+            "value": "ClickHouse port."
+        },
+        "user": {
+            "name": "User",
+            "value": "Name of the ClickHouse user."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password of the ClickHouse user."
+        },
+        "customSql": {
+            "name": "Custom SQL",
+            "value": "Displays the schema and the table fields, if you choose false. If you choose true, you will be able to write your own SQL code in the provided field."
+        },
+        "database": {
+            "name": "Database",
+            "value": "ClickHouse database name."
+        },
+        "schema": {
+            "name": "Schema",
+            "value": "Schema that the table used for reading belongs to."
+        },
+        "table": {
+            "name": "Table",
+            "value": "Database table name."
+        },
+        "optionDbtable": {
+            "name": "SQL statement",
+            "value": "The code of your own SQL query.",
+            "value1": "- You have to specify both schema name and table name in your custom SQL query.",
+            "value2": "- Column names must be surrounded by double quotes.",
+            "value3": "- Any syntactic error in SQL query wouldn't be highlighted."
         }
     },
     "COS": {
@@ -391,6 +431,39 @@
             "value1": "The default value is 10.",
             "value2": "The minimum value is 1.",
             "value3": "The maximum value is 2147483631."
+        }
+    },
+    "CLUSTER": {
+        "filePath": {
+            "name": "File Path",
+            "value": "File path."
+        },
+        "fileName": {
+            "name": "File Name",
+            "value": "File name."
+        },
+        "format": {
+            "name": "File format",
+            "value": "Spark DataFrame format.",
+            "value1": "For CSV, please, specify Header and Delimiter."
+        },
+        "avroSchema": {
+            "readName": "Schema on read",
+            "writeName": "Schema on write",
+            "value": "Avro can be used to define the data schema for a record's value.",
+            "value1": "This schema describes the fields allowed in the value, along with their data types."
+        },
+        "partitionBy": {
+            "name": "Partition By (optional)",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
+        }
+    },
+    "DATAFRAME": {
+        "dataframe": {
+            "name": "Spark Dataframe",
+            "value": "Represent data as a Spark dataframe."
         }
     }
 }

@@ -19,17 +19,30 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
+import classNames from 'classnames';
+import { Typography, withStyles } from '@material-ui/core';
+import jobStyles from './JobStageTag.Styles';
+import pipelineStyles from './PipelineStageTag.Styles';
 
-const StageTag = ({ className, content }) => (
-    <Typography variant="caption" component="div" className={className}>
-        {content}
+const StageTag = ({ className, classes, children }) => (
+    <Typography
+        variant="caption"
+        component="div"
+        className={classNames(classes?.root, className)}
+    >
+        {children}
     </Typography>
 );
 
 StageTag.propTypes = {
     className: PropTypes.string,
-    content: PropTypes.string
+    classes: PropTypes.object,
+    children: PropTypes.any
 };
 
 export default StageTag;
+
+export const JobStageTag = withStyles(jobStyles, { name: 'JobStageTag' })(StageTag);
+export const PipelineStageTag = withStyles(pipelineStyles, {
+    name: 'PipelineStageTag'
+})(StageTag);

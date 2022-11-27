@@ -19,12 +19,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
 import useStyles from './SortStage.Styles';
 import { SORT_TYPES } from '../../constants';
 import makeTooltip from '../helpers/makeTooltip';
-import StageTag from '../../../components/stage-tag';
+import { JobStageTag } from '../../../components/stage-tag';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const SortStage = ({ stage }) => {
     const classes = useStyles();
@@ -35,14 +34,12 @@ const SortStage = ({ stage }) => {
             : SORT_TYPES[1].label;
 
     return (
-        <div className={classes.root}>
-            <Typography variant="body2" component="div" className={classes.name}>
-                {stageIcon(stage.operation)}
-                {makeTooltip(stage.name, stage.name)}
-            </Typography>
-
-            <StageTag className={classes.sortType} content={sortType} />
-        </div>
+        <ConfiguredStageWithIcon
+            operation={stage.operation}
+            name={makeTooltip(stage.name, stage.name)}
+        >
+            <JobStageTag className={classes.sortType}>{sortType}</JobStageTag>
+        </ConfiguredStageWithIcon>
     );
 };
 

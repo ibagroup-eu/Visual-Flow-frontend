@@ -22,16 +22,15 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import {
     Box,
-    Typography,
-    IconButton,
     Collapse,
+    IconButton,
     ListItem,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@material-ui/core';
 import { Timeline } from '@material-ui/lab';
-import { ChevronRightOutlined } from '@material-ui/icons';
+import { ExpandMoreOutlined } from '@material-ui/icons';
 import moment from 'moment';
-import { uniqueId } from 'lodash';
 import classNames from 'classnames';
 import useStyles from './HistoryDaysRow.Styles';
 import { DATE_FORMAT } from '../../../globalConstants';
@@ -48,7 +47,14 @@ const yesterday = moment()
     .subtract(1, 'd')
     .endOf('day');
 
-const HistoryDaysRow = ({ dayHistory, isOpen, logsHandler, projectId }) => {
+const HistoryDaysRow = ({
+    dayHistory,
+    isOpen,
+    logsHandler,
+    projectId,
+    type,
+    findName
+}) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const [open, setOpen] = useState(isOpen);
@@ -60,10 +66,10 @@ const HistoryDaysRow = ({ dayHistory, isOpen, logsHandler, projectId }) => {
 
     const formatDays = date => {
         if (today.isSame(date, 'd')) {
-            return t('jobs:history.Today');
+            return t('main:history.Today');
         }
         if (yesterday.isSame(date, 'd')) {
-            return t('jobs:history.Yesterday');
+            return t('main:history.Yesterday');
         }
         return date.format('ddd MMM DD YYYY');
     };
@@ -77,12 +83,11 @@ const HistoryDaysRow = ({ dayHistory, isOpen, logsHandler, projectId }) => {
                 }}
             >
                 <IconButton
-                    className={classNames(
-                        classes.headerIcon,
-                        open ? classes.headerIconClose : classes.headerIconOpen
-                    )}
+                    className={classNames(classes.headerIcon, {
+                        [classes.headerIconClose]: !open
+                    })}
                 >
-                    <ChevronRightOutlined />
+                    <ExpandMoreOutlined />
                 </IconButton>
                 <Tooltip
                     title={dayTooltip(formatDate(dayHistory[0].startedAt))}
@@ -93,20 +98,17 @@ const HistoryDaysRow = ({ dayHistory, isOpen, logsHandler, projectId }) => {
                     </Typography>
                 </Tooltip>
             </Box>
-            <Collapse
-                in={open}
-                timeout="auto"
-                unmountOnExit
-                className={classes.collapsed}
-            >
+            <Collapse in={open} timeout="auto" className={classes.collapsed}>
                 <Timeline className={classes.timeline}>
                     {dayHistory.map((data, dateIndex) => (
                         <HistoryRow
-                            key={uniqueId()}
+                            key={data.uniqId}
+                            type={type}
                             data={data}
                             projectId={projectId}
                             logsHandler={logsHandler}
                             latest={dateIndex === dayHistory.length - 1}
+                            findName={findName}
                         />
                     ))}
                 </Timeline>
@@ -119,7 +121,9 @@ HistoryDaysRow.propTypes = {
     dayHistory: PropTypes.array,
     isOpen: PropTypes.bool,
     logsHandler: PropTypes.func,
-    projectId: PropTypes.string
+    projectId: PropTypes.string,
+    type: PropTypes.string,
+    findName: PropTypes.func
 };
 
 export default HistoryDaysRow;

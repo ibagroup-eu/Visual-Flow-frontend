@@ -34,6 +34,7 @@ import readWriteCommon from './read-write-common.json';
 import cache from './cache.json';
 import notification from './notification.json';
 import sort from './sort.json';
+import validate from './validate.json';
 
 const schemas = {
     ...commonSchema,
@@ -50,6 +51,7 @@ const schemas = {
     ...cache,
     ...notification,
     ...sort,
+    ...validate,
     READ: [...get(readWriteCommon, 'READ_WRITE'), ...get(read, 'READ')],
     WRITE: [...get(readWriteCommon, 'READ_WRITE'), ...get(write, 'WRITE')]
 };

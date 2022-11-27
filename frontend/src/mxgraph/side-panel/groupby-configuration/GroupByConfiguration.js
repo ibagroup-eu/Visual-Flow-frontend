@@ -17,19 +17,14 @@
  * limitations under the License.
  */
 
-import {
-    Checkbox,
-    Chip,
-    Divider,
-    FormControlLabel,
-    TextField
-} from '@material-ui/core';
+import { Checkbox, Chip, FormControlLabel, TextField } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useStyles from './GroupByConfiguration.Styles';
 import PropertyList from '../property-list';
+import ConfigurationDivider from '../../../components/divider';
 
 const aggregateFunctions = [
     {
@@ -76,7 +71,7 @@ const GroupByConfiguration = ({ ableToEdit, state, onChange }) => {
 
     return (
         <>
-            <Divider className={classes.divider} />
+            <ConfigurationDivider />
             <FormControlLabel
                 className={classes.divider}
                 control={
@@ -124,13 +119,15 @@ const GroupByConfiguration = ({ ableToEdit, state, onChange }) => {
                         {...params}
                         fullWidth
                         variant="outlined"
+                        margin="normal"
                         label={t('jobDesigner:groupByConfiguration.GroupBy')}
                         required
                     />
                 )}
             />
-            <Divider className={classes.divider} />
+            <ConfigurationDivider size="large" />
             <PropertyList
+                required
                 ableToEdit={ableToEdit}
                 items={groupingCriteria}
                 onAddItem={() =>

@@ -17,14 +17,7 @@
  * limitations under the License.
  */
 
-import {
-    Box,
-    Divider,
-    IconButton,
-    MenuItem,
-    TextField,
-    Typography
-} from '@material-ui/core';
+import { Box, IconButton, MenuItem, TextField, Typography } from '@material-ui/core';
 import TransformOutlinedIcon from '@material-ui/icons/TransformOutlined';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +26,7 @@ import PropTypes from 'prop-types';
 import { TextSkeleton } from '../../../../components/skeleton';
 import SingleSelectModal from '../modal';
 import useStyles from './JobConfiguration.Styles';
+import ConfigurationDivider from '../../../../components/divider';
 
 const jobStatuses = [
     {
@@ -97,40 +91,36 @@ const Job = ({
                     }
                     required
                 />
-                <Divider />
+                <ConfigurationDivider />
                 {loading ? (
                     <TextSkeleton />
                 ) : (
-                    <>
-                        <TextField
-                            disabled={!ableToEdit}
-                            label={t('pipelineDesigner:jobConfiguration.JobName')}
-                            placeholder={t(
-                                'pipelineDesigner:jobConfiguration.JobName'
-                            )}
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            name="jobId"
-                            value={jobNameById(state.jobId)}
-                            InputProps={{
-                                readOnly: true,
-                                endAdornment: (
-                                    <IconButton
-                                        className={classes.iconBtn}
-                                        onClick={() => setShowModal(true)}
-                                    >
-                                        <TransformOutlinedIcon />
-                                    </IconButton>
-                                )
-                            }}
-                            required
-                        />
-                        <Divider />
-                    </>
+                    <TextField
+                        disabled={!ableToEdit}
+                        label={t('pipelineDesigner:jobConfiguration.JobName')}
+                        placeholder={t('pipelineDesigner:jobConfiguration.JobName')}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        name="jobId"
+                        value={jobNameById(state.jobId)}
+                        InputProps={{
+                            readOnly: true,
+                            endAdornment: (
+                                <IconButton
+                                    className={classes.iconBtn}
+                                    onClick={() => setShowModal(true)}
+                                >
+                                    <TransformOutlinedIcon />
+                                </IconButton>
+                            )
+                        }}
+                        required
+                    />
                 )}
                 {outputPaths.length ? (
                     <>
+                        <ConfigurationDivider />
                         <Box className={classes.outputPaths}>
                             <Typography variant="body2" color="textSecondary">
                                 {t('pipelineDesigner:jobConfiguration.OutputPaths')}

@@ -41,6 +41,12 @@ import ExportModalWindow from '../../../components/export-modal-window';
 import { DRAFT, RUNNING } from '../../../mxgraph/constants';
 import history from '../../../utils/history';
 import { runWithValidation } from '../../../components/helpers/JobsPipelinesTable';
+import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+
+jest.mock('../../../unitConfig', () => ({
+    JOB: { HISTORY: true },
+    PIPELINE: { HISTORY: true }
+}));
 
 jest.mock('../../../components/helpers/JobsPipelinesTable', () => ({
     runWithValidation: jest.fn(),
@@ -119,7 +125,9 @@ describe('PipelinesTable', () => {
             status: '',
             onCheckTags: jest.fn(),
             resetTags: jest.fn(),
-            checkedTags: [['test', true]]
+            checkedTags: [['test', true]],
+            getPipeline: jest.fn(),
+            pipelineData: { definition: { graph: [] } }
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));
@@ -262,6 +270,7 @@ describe('PipelinesTable', () => {
             'pipelines:tooltip.Play',
             'pipelines:tooltip.pipelineDesigner',
             'pipelines:tooltip.Copy',
+            'pipelines:tooltip.History',
             'pipelines:tooltip.Remove'
         ]);
 
@@ -288,10 +297,11 @@ describe('PipelinesTable', () => {
             'pipelines:tooltip.Stop',
             'pipelines:tooltip.pipelineDesigner',
             'pipelines:tooltip.Copy',
+            'pipelines:tooltip.History',
             'pipelines:tooltip.Remove'
         ]);
 
-        const [, stop, designer, copy, remove] = actions.map(x => x.onClick);
+        const [, stop, designer, copy, , remove] = actions.map(x => x.onClick);
 
         stop();
 
@@ -308,5 +318,9 @@ describe('PipelinesTable', () => {
         remove();
 
         expect(props.confirmationWindow).toHaveBeenCalled();
+    });
+
+    it('should call onClose prop', () => {
+        wrapper.find(HistoryPanel).prop('onClose')();
     });
 });

@@ -19,7 +19,7 @@
 
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Chip, TextField } from '@material-ui/core';
+import { Chip, Popper, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { noop, get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
@@ -34,7 +34,8 @@ export const ParamsEmailsField = ({
     ableToEdit,
     currentUserEmail,
     userEmails,
-    loading
+    loading,
+    parentRef
 }) => {
     const classes = useStyles();
 
@@ -50,6 +51,19 @@ export const ParamsEmailsField = ({
 
     return (
         <Autocomplete
+            PopperComponent={props => (
+                <Popper
+                    {...props}
+                    popperOptions={{
+                        modifiers: {
+                            preventOverflow: {
+                                boundariesElement: parentRef?.current
+                            }
+                        }
+                    }}
+                    container={parentRef?.current}
+                />
+            )}
             className={classes.root}
             disabled={!ableToEdit}
             id="recipients"
@@ -85,7 +99,11 @@ ParamsEmailsField.propTypes = {
     ableToEdit: PropTypes.bool,
     currentUserEmail: PropTypes.string,
     userEmails: PropTypes.arrayOf(PropTypes.string),
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    parentRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    ])
 };
 
 export const mapStateToProps = state => ({

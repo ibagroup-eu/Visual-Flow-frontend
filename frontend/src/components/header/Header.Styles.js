@@ -47,7 +47,8 @@ export default theme => ({
     },
     user: {
         backgroundColor: 'currentColor',
-        marginLeft: theme.spacing(2)
+        marginLeft: theme.spacing(2),
+        cursor: 'pointer'
     },
     menuButton: {
         marginRight: theme.spacing(9) / 2

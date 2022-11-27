@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { fetchJobLogs, fetchContainerLogs } from './logsActions';
+import { fetchJobLogs, fetchContainerLogs, fetchJobHistoryLogs } from './logsActions';
 import apiJobs from '../../api/jobs';
 import apiPipelines from '../../api/pipelines';
 import { FETCH_LOGS_START, FETCH_LOGS_FAIL, FETCH_LOGS_SUCCESS } from './types';
@@ -83,6 +83,44 @@ describe('Logs action', () => {
         it('should dispatch FETCH_LOGS_FAIL on failure', () => {
             jest.spyOn(apiPipelines, 'getPipelineLogs').mockRejectedValue({});
             return fetchContainerLogs()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: FETCH_LOGS_START }],
+                    [{ type: FETCH_LOGS_FAIL, payload: { error: {} } }]
+                ]);
+            });
+        });
+    });
+
+    describe('getJobHistoryLogs', () => {
+        let data;
+
+        beforeEach(() => {
+            data = {};
+
+            dispatch = jest.fn();
+
+            jest.spyOn(apiJobs, 'getJobHistoryLogs').mockResolvedValue({
+                data
+            });
+        });
+
+        it('should dispatch FETCH_LOGS_START', () => {
+            fetchJobHistoryLogs()(dispatch);
+            expect(dispatch).toHaveBeenCalledWith({ type: FETCH_LOGS_START });
+        });
+
+        it('should dispatch FETCH_LOGS_SUCCESS on success', () => {
+            return fetchJobHistoryLogs()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: FETCH_LOGS_START }],
+                    [{ type: FETCH_LOGS_SUCCESS, payload: data }]
+                ]);
+            });
+        });
+
+        it('should dispatch FETCH_LOGS_FAIL on failure', () => {
+            jest.spyOn(apiJobs, 'getJobHistoryLogs').mockRejectedValue({});
+            return fetchJobHistoryLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_FAIL, payload: { error: {} } }]

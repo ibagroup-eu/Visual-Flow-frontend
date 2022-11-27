@@ -21,14 +21,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 
 import useStyles from './ConnectionsPanelButtons.Styles';
 
 const ConnectionsPanelButtons = ({
     saveConnection,
     saveIsDisabled,
-    confirmCancel
+    confirmCancel,
+    pinging,
+    pingConnection,
+    pingIsDisabled,
+    uploading
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -40,13 +44,17 @@ const ConnectionsPanelButtons = ({
                 size="large"
                 variant="contained"
                 color="primary"
-                disabled={saveIsDisabled}
+                disabled={saveIsDisabled || uploading}
                 className={classes.button}
             >
                 {t('main:button.Save')}
+                {uploading && (
+                    <CircularProgress className={classes.buttonProgress} size={25} />
+                )}
             </Button>
             <Button
                 onClick={confirmCancel}
+                disabled={uploading}
                 size="large"
                 variant="contained"
                 className={classNames(classes.button, classes.cancelBtn)}
@@ -54,13 +62,17 @@ const ConnectionsPanelButtons = ({
                 {t('main:button.Cancel')}
             </Button>
             <Button
+                onClick={pingConnection}
                 size="large"
                 variant="contained"
                 color="primary"
-                disabled
-                className={classNames(classes.button)}
+                disabled={pingIsDisabled || pinging || uploading}
+                className={classes.button}
             >
                 {t('main:button.Ping')}
+                {pinging && (
+                    <CircularProgress className={classes.buttonProgress} size={25} />
+                )}
             </Button>
         </div>
     );
@@ -69,7 +81,11 @@ const ConnectionsPanelButtons = ({
 ConnectionsPanelButtons.propTypes = {
     saveConnection: PropTypes.func,
     saveIsDisabled: PropTypes.bool,
-    confirmCancel: PropTypes.func
+    confirmCancel: PropTypes.func,
+    pingConnection: PropTypes.func,
+    pinging: PropTypes.bool,
+    pingIsDisabled: PropTypes.bool,
+    uploading: PropTypes.bool
 };
 
 export default ConnectionsPanelButtons;

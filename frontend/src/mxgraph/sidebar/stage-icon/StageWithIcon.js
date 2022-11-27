@@ -20,25 +20,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography } from '@material-ui/core';
-import stageIcon from './stageIcon';
+import classNames from 'classnames';
 import useStyles from './StageWithIcon.Styles';
+import StageIcon from './StageIcon';
 
-const StageWithIcon = ({ name, operation }) => {
+const StageWithIcon = ({
+    name,
+    operation,
+    children,
+    className,
+    variant = 'caption'
+}) => {
     const classes = useStyles();
 
     return (
         <Box className={classes.stage}>
-            {stageIcon(operation)}
-            <Typography variant="caption" className={classes.typography}>
-                {name}
+            <Typography
+                color="textPrimary"
+                variant={variant}
+                className={classNames(classes.typography, className)}
+            >
+                <StageIcon stageName={operation} />
+                <span className={classes.name}>{name}</span>
             </Typography>
+            {children}
         </Box>
     );
 };
 
 StageWithIcon.propTypes = {
-    name: PropTypes.string,
-    operation: PropTypes.string
+    name: PropTypes.any,
+    operation: PropTypes.string,
+    className: PropTypes.string,
+    children: PropTypes.any,
+    variant: PropTypes.string
 };
 
 export default StageWithIcon;

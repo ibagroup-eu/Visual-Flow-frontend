@@ -50,6 +50,7 @@ const MongoStorage = ({
             handleInputChange={handleInputChange}
             openModal={openModal}
             connection={connection}
+            required
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -59,6 +60,7 @@ const MongoStorage = ({
             openModal={openModal}
             connection={connection}
             hidden
+            required
         />
         <ReadTextFields
             ableToEdit={ableToEdit}
@@ -67,6 +69,7 @@ const MongoStorage = ({
             handleInputChange={handleInputChange}
             openModal={openModal}
             connection={connection}
+            required
         />
         <Ssl
             ableToEdit={ableToEdit}
@@ -84,6 +87,7 @@ const MongoStorage = ({
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
+                    required
                 />
                 {inputValues.operation === WRITE && (
                     <WriteMode

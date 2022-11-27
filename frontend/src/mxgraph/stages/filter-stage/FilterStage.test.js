@@ -1,7 +1,7 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import FilterStage from './FilterStage';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 describe('FilterStage', () => {
     const init = () => {
@@ -9,13 +9,11 @@ describe('FilterStage', () => {
             stage: { name: 'test', operation: 'test' }
         };
 
-        const wrapper = shallow(<FilterStage {...defaultProps} />);
-
-        return wrapper;
+        return shallow(<FilterStage {...defaultProps} />);
     };
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(Typography).exists()).toBeTruthy();
+        expect(wrapper.find(ConfiguredStageWithIcon).exists()).toBeTruthy();
     });
 });

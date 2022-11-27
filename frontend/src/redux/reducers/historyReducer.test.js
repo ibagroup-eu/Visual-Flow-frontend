@@ -31,7 +31,7 @@ describe('History Reducer', () => {
 
     it('should return the initial state', () => {
         expect(historyReducer(undefined)).toEqual({
-            loading: true,
+            loading: false,
             data: []
         });
     });

@@ -18,7 +18,7 @@
  */
 
 import { Box, ListItem, Typography } from '@material-ui/core';
-import { ChevronRightOutlined } from '@material-ui/icons';
+import { ExpandMoreOutlined } from '@material-ui/icons';
 import { shallow } from 'enzyme';
 import moment from 'moment';
 import React from 'react';
@@ -60,30 +60,8 @@ describe('HistoryDaysRow', () => {
         expect(wrapper.find(ListItem)).toHaveLength(1);
     });
 
-    it('should render Typography with Today text', () => {
-        expect(wrapper.find(Typography).text()).toBe('jobs:history.Today');
-    });
-
-    it('should render Typography with Yesterday text', () => {
-        const changedProps = {
-            dayHistory: [
-                {
-                    ...props.dayHistory[0],
-                    startedAt: moment()
-                        .subtract({ days: 1, minutes: 4, hours: 1 })
-                        .format(DATE_FORMAT_UTC),
-                    finishedAt: moment()
-                        .subtract(1, 'd')
-                        .format(DATE_FORMAT_UTC)
-                }
-            ]
-        };
-        wrapper = shallow(<HistoryDaysRow {...props} {...changedProps} />);
-        expect(wrapper.find(Typography).text()).toBe('jobs:history.Yesterday');
-    });
-
     it('should render ChevronRightOutlined component', () => {
         wrapper.find(Box).invoke('onClick')();
-        expect(wrapper.find(ChevronRightOutlined)).toHaveLength(1);
+        expect(wrapper.find(ExpandMoreOutlined)).toHaveLength(1);
     });
 });

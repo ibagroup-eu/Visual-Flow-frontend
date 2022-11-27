@@ -59,13 +59,13 @@ const PipelineTitleCell = ({
                     lastFinished={lastFinished}
                     lastRun={lastRun}
                 />
-                <TagsList
-                    tags={tags}
-                    resetTags={resetTags}
-                    onCheckTags={onCheckTags}
-                    checkedTags={checkedTags}
-                />
             </Typography>
+            <TagsList
+                tags={tags}
+                resetTags={resetTags}
+                onCheckTags={onCheckTags}
+                checkedTags={checkedTags}
+            />
         </Grid>
     );
     return (

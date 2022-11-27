@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from 'react';
-import { Drawer, IconButton, Toolbar } from '@material-ui/core';
+import { Box, Drawer, IconButton, Toolbar } from '@material-ui/core';
 import classNames from 'classnames';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PropTypes from 'prop-types';
@@ -33,7 +33,7 @@ const Sidebar = ({ graph = {}, name, ableToEdit }) => {
     const toggleDrawer = () => setOpened(prevState => !prevState);
 
     return (
-        <div className={classes.root}>
+        <Box className={classes.root}>
             <SidebarHeader graph={graph} name={name} ableToEdit={ableToEdit} />
             <Drawer
                 className={opened ? classes.drawerOpen : classes.drawerClose}
@@ -43,14 +43,14 @@ const Sidebar = ({ graph = {}, name, ableToEdit }) => {
                 }}
             >
                 <Toolbar />
-                <div
+                <Box
                     className={classNames(
                         classes.content,
                         opened ? classes.showContent : classes.hideContent
                     )}
                 >
                     <SidebarTabs name={name} graph={graph} ableToEdit={ableToEdit} />
-                </div>
+                </Box>
             </Drawer>
             <IconButton
                 aria-label="toggle drawer"
@@ -63,7 +63,7 @@ const Sidebar = ({ graph = {}, name, ableToEdit }) => {
             >
                 <ChevronLeftIcon fontSize="large" />
             </IconButton>
-        </div>
+        </Box>
     );
 };
 

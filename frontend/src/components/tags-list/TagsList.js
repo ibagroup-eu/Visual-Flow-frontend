@@ -42,7 +42,7 @@ const TagsList = ({ tags, limit, onCheckTags, checkedTags }) => {
     const hiddenChecked = tags.slice(limit).find(tag => checkItem(checkedTags, tag));
 
     const openMenu = event => {
-        setMenuAnchor(menuAnchor ? null : event.currentTarget);
+        setMenuAnchor(event.currentTarget);
     };
 
     return (
@@ -70,7 +70,6 @@ const TagsList = ({ tags, limit, onCheckTags, checkedTags }) => {
                         />
                     )}
                     <Popper
-                        id="popper"
                         open={!!menuAnchor}
                         anchorEl={menuAnchor}
                         placement="bottom-start"

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import axiosInstance from './axiosInstance';
+import axiosInstance, { axiosSimpleInstance } from './axiosInstance';
 
 export default {
     getProjects: () => axiosInstance.get('/project'),
@@ -45,5 +45,7 @@ export default {
             connection
         ),
     deleteProjectConnection: (projectName, connectionId) =>
-        axiosInstance.delete(`/project/${projectName}/connections/${connectionId}`)
+        axiosInstance.delete(`/project/${projectName}/connections/${connectionId}`),
+    pingProjectConnection: (projectName, connection) =>
+        axiosSimpleInstance.post(`/db/${projectName}/connections`, connection)
 };

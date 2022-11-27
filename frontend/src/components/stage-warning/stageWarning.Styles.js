@@ -22,7 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 export default makeStyles(() => ({
     stageWithoutName: {
         position: 'absolute',
-        top: -21,
+        top: -16,
         right: 7
     },
     icon: {

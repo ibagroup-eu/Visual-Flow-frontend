@@ -20,7 +20,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReportOutlinedIcon from '@material-ui/icons/ErrorOutlineOutlined';
-import { Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import useStyles from './stageWarning.Styles';
 import { findByProp } from '../helpers/JobsPipelinesTable';
@@ -55,9 +54,9 @@ const StageWarning = ({ stage, jobs, params, pipelines }) => {
     };
 
     return stageNotFilled() ? (
-        <Box title={t('main:validation.fieldsNotFilled')} className={position}>
+        <span title={t('main:validation.fieldsNotFilled')} className={position}>
             <ReportOutlinedIcon className={classes.icon} />
-        </Box>
+        </span>
     ) : null;
 };
 

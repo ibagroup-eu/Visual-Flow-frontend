@@ -21,7 +21,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Checkbox,
-    Divider,
     FormControlLabel,
     IconButton,
     TextField,
@@ -37,6 +36,7 @@ import SelectField from '../../../components/select-field';
 import ClearButton from '../helpers/ClearButton';
 import { OTHER } from '../../constants';
 import { findParamByKey } from '../../../components/helpers/PipelinesValidation';
+import ConfigurationDivider from '../../../components/divider';
 
 const ContainerConfiguration = ({
     state,
@@ -55,9 +55,9 @@ const ContainerConfiguration = ({
 
     return (
         <>
-            <Divider />
             {state.name && (
                 <>
+                    <ConfigurationDivider />
                     <Box className={classes.wrapper}>
                         <TextField
                             disabled={!ableToEdit}

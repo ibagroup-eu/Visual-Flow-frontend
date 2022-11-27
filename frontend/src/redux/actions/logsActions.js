@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FETCH_LOGS_START, FETCH_LOGS_FAIL, FETCH_LOGS_SUCCESS } from './types';
+import { FETCH_LOGS_FAIL, FETCH_LOGS_START, FETCH_LOGS_SUCCESS } from './types';
 import apiJobs from '../../api/jobs';
 import apiPipelines from '../../api/pipelines';
 
@@ -46,5 +46,22 @@ export const fetchContainerLogs = (projectId, pipelineId, nodeId) => dispatch =>
     return apiPipelines.getPipelineLogs(projectId, pipelineId, nodeId).then(
         response => dispatch({ type: FETCH_LOGS_SUCCESS, payload: response.data }),
         error => dispatch({ type: FETCH_LOGS_FAIL, payload: { error } })
+    );
+};
+
+export const fetchJobHistoryLogs = (projectId, jobId, logId) => dispatch => {
+    dispatch({ type: FETCH_LOGS_START });
+
+    return apiJobs.getJobHistoryLogs(projectId, jobId, logId).then(
+        response =>
+            dispatch({
+                type: FETCH_LOGS_SUCCESS,
+                payload: response.data
+            }),
+        error =>
+            dispatch({
+                type: FETCH_LOGS_FAIL,
+                payload: { error }
+            })
     );
 };

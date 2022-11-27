@@ -24,6 +24,7 @@ import Tab from '@material-ui/core/Tab';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Box } from '@material-ui/core';
 import Palette from '../palette';
 import Params from '../params';
 import useStyles from './SidebarTabs.Styles';
@@ -43,8 +44,8 @@ export const SidebarTabs = ({ name, graph = {}, setDirty, ableToEdit }) => {
     }, [ableToEdit]);
 
     return (
-        <div className={classes.root}>
-            <AppBar position="static" color="transparent">
+        <Box className={classes.root}>
+            <AppBar position="static" className={classes.tabs}>
                 <Tabs
                     value={ableToEdit ? value : 0}
                     onChange={(e, newValue) => setValue(ableToEdit ? newValue : 1)}
@@ -56,13 +57,15 @@ export const SidebarTabs = ({ name, graph = {}, setDirty, ableToEdit }) => {
                     <Tab label={t('jobDesigner:PARAMS')} />
                 </Tabs>
             </AppBar>
-            <TabPanel value={value} index={0}>
-                <Palette graph={graph} setDirty={setDirty} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Params ableToEdit={ableToEdit} />
-            </TabPanel>
-        </div>
+            <Box className={classes.content}>
+                <TabPanel value={value} index={0}>
+                    <Palette graph={graph} setDirty={setDirty} />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <Params ableToEdit={ableToEdit} />
+                </TabPanel>
+            </Box>
+        </Box>
     );
 };
 

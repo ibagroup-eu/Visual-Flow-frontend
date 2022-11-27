@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { CircularProgress } from '@material-ui/core';
 import { shallow } from 'enzyme';
 import React from 'react';
 import ConnectionsPanelButtons from './ConnectionsPanelButtons';
@@ -37,5 +38,10 @@ describe('ConnectionsPanelButtons', () => {
 
     it('should render component', () => {
         expect(wrapper).toBeDefined();
+    });
+
+    it('should render CircularProgress', () => {
+        wrapper = shallow(<ConnectionsPanelButtons {...props} pinging uploading />);
+        expect(wrapper.find(CircularProgress)).toHaveLength(2);
     });
 });

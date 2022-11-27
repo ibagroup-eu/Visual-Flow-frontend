@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Divider } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ReadWriteConfiguration, {
     getStorageComponent
@@ -27,6 +26,7 @@ import ReadWriteConfiguration, {
 import DividerWithText from '../helpers/DividerWithText';
 import Db2Storage from './db2-storage';
 import { STORAGES } from '../../constants';
+import ConfigurationDivider from '../../../components/divider';
 
 describe('ReadWriteConfiguration', () => {
     let wrapper;
@@ -42,7 +42,8 @@ describe('ReadWriteConfiguration', () => {
             ableToEdit: true,
             onChange: jest.fn(),
             openModal: jest.fn(),
-            connection: { connectionName: 'test' }
+            connection: { connectionName: 'test' },
+            stageId: 'test'
         };
 
         wrapper = shallow(<ReadWriteConfiguration {...props} />);
@@ -57,7 +58,7 @@ describe('ReadWriteConfiguration', () => {
             <ReadWriteConfiguration {...props} state={{ storage: 'db2' }} />
         );
         expect(wrapper.find(DividerWithText)).toHaveLength(0);
-        expect(wrapper.find(Divider)).toHaveLength(1);
+        expect(wrapper.find(ConfigurationDivider)).toHaveLength(1);
     });
 
     it('should calls useEffect', () => {
@@ -79,6 +80,23 @@ describe('ReadWriteConfiguration', () => {
         wrapper.find(Autocomplete).prop('onChange')({});
         expect(props.onChange).toBeCalledWith('storage', undefined);
         expect(props.onChange).toBeCalledWith('connectionName', null);
+    });
+
+    it('should calls onChange prop with null path', () => {
+        wrapper = shallow(
+            <ReadWriteConfiguration
+                {...props}
+                state={{
+                    ...props.state,
+                    path: 'testPath',
+                    storage: 'cluster',
+                    connectionName: null
+                }}
+            />
+        );
+        wrapper.find(Autocomplete).prop('onChange')({}, { value: 'test' });
+        expect(props.onChange).toBeCalledWith('storage', 'test');
+        expect(props.onChange).toBeCalledWith('path', null);
     });
 
     it('should calls onChange prop with test storage and without connectionName', () => {
@@ -114,7 +132,10 @@ describe('ReadWriteConfiguration', () => {
         STORAGES.CASSANDRA.value,
         STORAGES.REDIS.value,
         STORAGES.REDSHIFT.value,
-        STORAGES.STDOUT.value
+        STORAGES.STDOUT.value,
+        STORAGES.CLUSTER.value,
+        STORAGES.DATAFRAME.value,
+        STORAGES.CLICKHOUSE.value
     ];
     storages.forEach(storage => {
         it(`should render ${storage} storage`, () => {
@@ -123,5 +144,11 @@ describe('ReadWriteConfiguration', () => {
             );
             expect(getStorageComponent(storage)).toHaveLength(1);
         });
+    });
+
+    it('should throw error with unsupported storage', () => {
+        expect(() =>
+            mount(<ReadWriteConfiguration {...props} state={{ storage: 'test' }} />)
+        ).toThrow();
     });
 });

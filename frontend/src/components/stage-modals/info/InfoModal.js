@@ -40,6 +40,9 @@ const InfoModal = ({
     redis,
     redshift,
     stdout,
+    cluster,
+    dataframe,
+    clickhouse,
     display,
     title,
     onClose,
@@ -85,6 +88,12 @@ const InfoModal = ({
                 return redshift;
             case STORAGES.STDOUT.label:
                 return stdout;
+            case STORAGES.CLUSTER.label:
+                return cluster;
+            case STORAGES.DATAFRAME.label:
+                return dataframe;
+            case STORAGES.CLICKHOUSE.label:
+                return clickhouse;
             default:
                 return null;
         }
@@ -103,6 +112,23 @@ const InfoModal = ({
                 );
             })
             .map(({ hide, ...cleanValue }) => cleanValue);
+
+    const filteredStorages = data =>
+        data?.map(value => {
+            if (
+                !(
+                    (value === STORAGES.STDOUT.label && title === 'Read') ||
+                    (value === STORAGES.DATAFRAME.label && title === 'Write')
+                )
+            ) {
+                return (
+                    <option key={value} value={value}>
+                        {value}
+                    </option>
+                );
+            }
+            return null;
+        });
 
     return (
         <PopupForm display={display} title={title} onClose={onClose}>
@@ -167,17 +193,7 @@ const InfoModal = ({
                         value={storage}
                     >
                         <option aria-label="None" value="" />
-                        {storages?.map(
-                            value =>
-                                !(
-                                    value === STORAGES.STDOUT.label &&
-                                    title === 'Read'
-                                ) && (
-                                    <option key={value} value={value}>
-                                        {value}
-                                    </option>
-                                )
-                        )}
+                        {filteredStorages(storages)}
                     </Select>
                 </FormControl>
             )}
@@ -217,6 +233,7 @@ const InfoModal = ({
 InfoModal.propTypes = {
     content: PropTypes.array,
     storages: PropTypes.array,
+    clickhouse: PropTypes.array,
     db2: PropTypes.array,
     cos: PropTypes.array,
     aws: PropTypes.array,
@@ -226,6 +243,8 @@ InfoModal.propTypes = {
     redshift: PropTypes.array,
     elastic: PropTypes.array,
     stdout: PropTypes.array,
+    cluster: PropTypes.array,
+    dataframe: PropTypes.array,
     display: PropTypes.bool,
     title: PropTypes.string,
     onClose: PropTypes.func,

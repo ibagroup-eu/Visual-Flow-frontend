@@ -56,7 +56,9 @@ describe('ConnectionsModal', () => {
     it('should calls useEffect hook with setProjectConnections', () => {
         const addProps = {
             display: true,
-            connections: [{ connectionName: 'name', storage: 'db2' }]
+            connections: [
+                { key: 'name', value: { connectionName: 'name', storage: 'db2' } }
+            ]
         };
         wrapper = mount(<ConnectionsModal {...props} {...addProps} />);
         expect(wrapper.find(ConnectionsModalTableRow)).toHaveLength(1);
@@ -65,8 +67,10 @@ describe('ConnectionsModal', () => {
     it('should calls useEffect hook with setSelectedValue, setSearchValue, setStorageSelection', () => {
         const addProps = {
             display: true,
-            connections: [{ connectionName: 'name', storage: 'db2' }],
-            currentValue: '#test#'
+            connections: [
+                { key: 'name', value: { connectionName: 'name', storage: 'db2' } }
+            ],
+            currentValue: 'test'
         };
         wrapper = mount(<ConnectionsModal {...props} {...addProps} />);
         expect(wrapper.find(PopupForm).prop('display')).toBe(true);
@@ -88,9 +92,9 @@ describe('ConnectionsModal', () => {
         const addProps = {
             display: true,
             connections: [
-                { connectionName: 'name', storage: 'db2' },
-                { connectionName: 'name2', storage: 'db2' },
-                { connectionName: 'name3', storage: 's3' }
+                { key: 'name', value: { connectionName: 'name', storage: 'db2' } },
+                { key: 'name2', value: { connectionName: 'name', storage: 'db2' } },
+                { key: 'name3', value: { connectionName: 'name', storage: 's3' } }
             ]
         };
         wrapper = mount(<ConnectionsModal {...props} {...addProps} />);

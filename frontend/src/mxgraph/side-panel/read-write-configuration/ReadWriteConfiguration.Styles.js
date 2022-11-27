@@ -31,5 +31,8 @@ export default makeStyles(theme => ({
     divider: {
         marginTop: theme.spacing(0.5),
         marginBottom: theme.spacing(1)
+    },
+    dividerMargin16: {
+        marginTop: 16
     }
 }));

@@ -19,11 +19,9 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Radio, TextField } from '@material-ui/core';
 import ParametersModal from './ParametersModal';
 import { PageSkeleton } from '../../../../components/skeleton';
 import SearchInput from '../../../../components/search-input';
-import PasswordInput from '../../../../components/password-input';
 
 describe('ParametersModal', () => {
     let wrapper;
@@ -37,7 +35,7 @@ describe('ParametersModal', () => {
             onSetValue: jest.fn(),
             loading: false,
             parameters: { params: [{ key: 'test', secret: true }] },
-            currentValue: '#test#'
+            currentValue: ''
         };
 
         wrapper = shallow(<ParametersModal {...props} />);
@@ -53,7 +51,7 @@ describe('ParametersModal', () => {
     });
 
     it('should calls useEffect', () => {
-        wrapper = mount(<ParametersModal {...props} />);
+        wrapper = mount(<ParametersModal {...props} currentValue="#test1#" />);
     });
 
     it('should calls useEffect without parameters and currentValue', () => {
@@ -66,18 +64,5 @@ describe('ParametersModal', () => {
 
     it('should calls onChange prop for SearchInput', () => {
         wrapper.find(SearchInput).prop('onChange')({ target: { value: 'test' } });
-    });
-
-    it('should calls onChange prop for Radio', () => {
-        wrapper.find(Radio).prop('onChange')({ target: { value: 'test' } });
-    });
-
-    it('should render field without secret', () => {
-        const changedProps = {
-            parameters: { params: [{ key: 'test', secret: false }] }
-        };
-        wrapper = shallow(<ParametersModal {...props} {...changedProps} />);
-        expect(wrapper.find(TextField)).toHaveLength(2);
-        expect(wrapper.find(PasswordInput)).toHaveLength(0);
     });
 });

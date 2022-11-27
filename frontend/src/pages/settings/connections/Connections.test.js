@@ -42,16 +42,21 @@ describe('Connections', () => {
             getConnections: jest.fn(),
             create: jest.fn(),
             remove: jest.fn().mockImplementation(() => Promise.resolve()),
+            ping: jest.fn(),
             connections: [
                 {
-                    connectionName: 'name1',
-                    storage: 'storage',
-                    id: 'id1'
+                    key: 'name1',
+                    value: {
+                        connectionName: 'name1',
+                        storage: 'storage'
+                    }
                 },
                 {
-                    connectionName: 'name2',
-                    storage: 'stor',
-                    id: 'id2'
+                    key: 'name2',
+                    value: {
+                        connectionName: 'name2',
+                        storage: 'stor'
+                    }
                 }
             ]
         };
@@ -81,9 +86,8 @@ describe('Connections', () => {
         };
         times(8, num =>
             newProps.connections.push({
-                connectionName: `name${num}`,
-                storage: 'storage',
-                id: `name${num}`
+                key: `name${num}`,
+                value: { connectionName: `name${num}`, storage: 'storage' }
             })
         );
         wrapper = shallow(<Connections {...props} {...newProps} />);
@@ -138,11 +142,17 @@ describe('Connections', () => {
             projectId: 'newVswId'
         };
         wrapper = shallow(<Connections {...props} {...newProps} />);
+        wrapper
+            .find(ConnectionsTableRow)
+            .at(0)
+            .invoke('handleOpenConnection')({}, true);
         wrapper.find(ConnectionsPanel).invoke('handleNewConnection')({
-            id: 'test'
+            key: 'test',
+            value: { connectionName: 'test' }
         });
         expect(props.update).toBeCalledWith('newVswId', {
-            id: 'test'
+            key: 'test',
+            value: { connectionName: 'test' }
         });
     });
 
@@ -165,5 +175,47 @@ describe('Connections', () => {
             .find(ConnectionsTableRow)
             .at(0)
             .invoke('handleOpenConnection')({}, true);
+    });
+
+    it('should calls handleOpenConnection prop without edit mode', () => {
+        const newProps = {
+            loading: false
+        };
+        wrapper = shallow(<Connections {...props} {...newProps} />);
+        wrapper
+            .find(ConnectionsTableRow)
+            .at(0)
+            .invoke('handleOpenConnection')({}, false);
+    });
+
+    it('should calls handlePingConnection prop', () => {
+        const newProps = {
+            loading: false,
+            projectId: 'newVswId'
+        };
+        wrapper = shallow(<Connections {...props} {...newProps} />);
+        wrapper.find(ConnectionsPanel).invoke('handlePingConnection')('test');
+        expect(props.ping).toBeCalledWith('newVswId', 'test');
+    });
+
+    it('should calls useEffect with setPanelState', () => {
+        const newProps = {
+            loading: false,
+            projectId: 'newVswId'
+        };
+        wrapper = mount(<Connections {...props} {...newProps} />);
+        wrapper.find(ConnectionsPanel).invoke('handleNewConnection')({
+            key: 'name3',
+            value: { connectionName: 'name3', storage: 'storage2' }
+        });
+        wrapper.setProps({
+            connections: [
+                {
+                    key: 'name3',
+                    value: { connectionName: 'name3', storage: 'storage2' }
+                },
+                ...props.connections
+            ]
+        });
     });
 });

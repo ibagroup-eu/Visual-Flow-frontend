@@ -20,17 +20,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoModal from '../info';
-import { STORAGES, SHOW_DESCRIPTION } from '../../../mxgraph/constants';
+import { SHOW_DESCRIPTION, STORAGES } from '../../../mxgraph/constants';
 
 const READ = 'Read';
 const WRITE = 'Write';
 
-const getWriteMode = t => ({
+const getClickHouseWriteMode = t => ({
     title: t('ReadWrite:writeMode.name'),
     paragraph: t('ReadWrite:writeMode.value'),
     paragraph1: t('ReadWrite:writeMode.value1'),
     paragraph2: t('ReadWrite:writeMode.value2'),
-    paragraph3: t('ReadWrite:writeMode.value3'),
+    paragraph3: t('ReadWrite:writeMode.value3')
+});
+
+const getWriteMode = t => ({
+    ...getClickHouseWriteMode(t),
     paragraph4: t('ReadWrite:writeMode.value4'),
     paragraph5: t('ReadWrite:writeMode.value5'),
     hide: [READ]
@@ -57,7 +61,8 @@ const getTruncateModeCascade = t => ({
         STORAGES.DB2.label,
         STORAGES.MYSQL.label,
         STORAGES.MSSQL.label,
-        STORAGES.REDSHIFTJDBC.label
+        STORAGES.REDSHIFTJDBC.label,
+        STORAGES.CLICKHOUSE.label
     ]
 });
 
@@ -81,6 +86,15 @@ const getContent = t => [
         paragraph1: t('ReadWrite:storage.value1')
     }
 ];
+
+const getQuery = t => ({
+    title: t('ReadWrite:DB2.optionDbtable.name'),
+    paragraph: t('ReadWrite:DB2.optionDbtable.value'),
+    paragraph1: t('ReadWrite:DB2.optionDbtable.value1'),
+    paragraph2: t('ReadWrite:DB2.optionDbtable.value2'),
+    paragraph3: t('ReadWrite:DB2.optionDbtable.value3'),
+    hide: [WRITE]
+});
 
 const getCosInfo = (label, t) => [
     {
@@ -154,14 +168,7 @@ const getDB2 = t => [
         title: t('ReadWrite:DB2.table.name'),
         paragraph: t('ReadWrite:DB2.table.value')
     },
-    {
-        title: t('ReadWrite:DB2.optionDbtable.name'),
-        paragraph: t('ReadWrite:DB2.optionDbtable.value'),
-        paragraph1: t('ReadWrite:DB2.optionDbtable.value1'),
-        paragraph2: t('ReadWrite:DB2.optionDbtable.value2'),
-        paragraph3: t('ReadWrite:DB2.optionDbtable.value3'),
-        hide: [WRITE]
-    },
+    getQuery(t),
     getWriteMode(t),
     getTruncateMode(t),
     getTruncateModeCascade(t),
@@ -437,6 +444,88 @@ const getStdout = t => [
     }
 ];
 
+const getCluster = t => [
+    {
+        title: t('ReadWrite:CLUSTER.filePath.name'),
+        paragraph: t('ReadWrite:CLUSTER.filePath.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:CLUSTER.fileName.name'),
+        paragraph: t('ReadWrite:CLUSTER.fileName.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:CLUSTER.format.name'),
+        paragraph: t('ReadWrite:CLUSTER.format.value'),
+        paragraph1: t('ReadWrite:CLUSTER.format.value1')
+    },
+    {
+        title: t('ReadWrite:CLUSTER.avroSchema.writeName'),
+        paragraph: t('ReadWrite:CLUSTER.avroSchema.value'),
+        paragraph1: t('ReadWrite:CLUSTER.avroSchema.value1'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:CLUSTER.avroSchema.readName'),
+        paragraph: t('ReadWrite:CLUSTER.avroSchema.value'),
+        paragraph1: t('ReadWrite:CLUSTER.avroSchema.value1'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:CLUSTER.partitionBy.name'),
+        paragraph: t('ReadWrite:CLUSTER.partitionBy.value'),
+        paragraph1: t('ReadWrite:CLUSTER.partitionBy.value1'),
+        paragraph2: t('ReadWrite:CLUSTER.partitionBy.value2'),
+        hide: [READ]
+    }
+];
+
+const getDataframe = t => [
+    {
+        title: t('ReadWrite:DATAFRAME.dataframe.name'),
+        paragraph: t('ReadWrite:DATAFRAME.dataframe.value')
+    }
+];
+
+const getClickHouse = t => [
+    {
+        title: t('ReadWrite:CLICKHOUSE.host.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.host.value')
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.port.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.port.value')
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.user.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.user.value')
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.password.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.password.value')
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.database.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.database.value')
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.customSql.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.customSql.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.schema.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.schema.value')
+    },
+    {
+        title: t('ReadWrite:CLICKHOUSE.table.name'),
+        paragraph: t('ReadWrite:CLICKHOUSE.table.value')
+    },
+    getQuery(t),
+    getClickHouseWriteMode(t)
+];
+
 const RWModal = props => {
     const { t } = useTranslation();
 
@@ -454,6 +543,9 @@ const RWModal = props => {
             cassandra={getCassandra(t)}
             redis={getRedis(t)}
             stdout={getStdout(t)}
+            cluster={getCluster(t)}
+            dataframe={getDataframe(t)}
+            clickhouse={getClickHouse(t)}
             {...props}
         />
     );

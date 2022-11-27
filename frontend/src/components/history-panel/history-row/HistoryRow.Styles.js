@@ -28,27 +28,37 @@ export default makeStyles(theme => ({
     },
     pipelineBox: {
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'flex-start',
-        width: theme.spacing(9)
+        width: theme.spacing(8.75)
+    },
+    pipelineIcon: {
+        padding: 0,
+        marginLeft: theme.spacing(2.75),
+        marginTop: theme.spacing(-0.5)
     },
     timelineDotSize: {
-        fontSize: theme.spacing(1.25)
+        fontSize: '0.75rem'
     },
     timelineDot: {
         padding: 0,
-        margin: 0
+        margin: 0,
+        boxShadow: 'none'
     },
-    contentIcon: {
-        padding: 0
+    logIcon: {
+        padding: 0,
+        marginTop: theme.spacing(-1)
     },
     logIconBox: {
         marginRight: theme.spacing(3)
     },
     timelineContent: {
         display: 'flex',
-        marginTop: theme.spacing(-0.5),
+        flexDirection: 'column',
         padding: 0
+    },
+    mainContent: {
+        display: 'flex',
+        flexDirection: 'row'
     },
     startedText: {
         width: theme.spacing(10.5),
@@ -59,16 +69,34 @@ export default makeStyles(theme => ({
         width: theme.spacing(12)
     },
     runByText: {
-        '&::-webkit-scrollbar': {
-            display: 'none'
-        },
         marginRight: theme.spacing(3),
         width: theme.spacing(35),
-        overflow: 'auto',
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none'
+        overflow: 'hidden',
+        color: theme.palette.text.secondary
     },
     typography: {
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        lineHeight: 1.1,
+        height: 'min-content'
+    },
+    moreIcon: {
+        padding: theme.spacing(0.75),
+        marginLeft: theme.spacing(1.25),
+        marginTop: theme.spacing(-1.2),
+        transition: theme.transitions.create('transform')
+    },
+    iconClose: {
+        transform: 'rotate(-90deg)'
+    },
+    timeline: {
+        padding: theme.spacing(1.5, 0),
+        paddingLeft: theme.spacing(1.8),
+        paddingRight: theme.spacing(1.25),
+        paddingBottom: 0
+    },
+    collapsed: {
+        display: 'flex',
+        flexDirection: 'column',
+        paddingLeft: theme.spacing(0.7)
     }
 }));

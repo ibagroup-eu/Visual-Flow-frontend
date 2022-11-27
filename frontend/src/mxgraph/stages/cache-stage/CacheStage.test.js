@@ -21,8 +21,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
-import stageIcon from '../../sidebar/stage-icon/stageIcon';
+import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 import CacheStage from './CacheStage';
+import { Parameter } from '../parameters';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -59,38 +60,11 @@ describe('CacheStage', () => {
         expect(wrapper.find(Typography)).toBeDefined();
     });
 
-    it('should render stageIcon', () => {
-        expect(wrapper.find(stageIcon)).toBeDefined();
+    it('should render ConfiguredStageWithIcon', () => {
+        expect(wrapper.find(ConfiguredStageWithIcon)).toHaveLength(1);
     });
 
-    it('should render Typography 3 times', () => {
-        expect(wrapper.find(Typography)).toHaveLength(3);
-    });
-
-    it('The first Typography text value to be "Pavel"', () => {
-        expect(
-            wrapper
-                .find(Typography)
-                .at(0)
-                .text()
-        ).toBe('Pavel');
-    });
-
-    it('The second Typography text value to be "jobDesigner:cacheConfiguration.useDisk: "', () => {
-        expect(
-            wrapper
-                .find(Typography)
-                .at(1)
-                .text()
-        ).toBe('jobDesigner:cacheConfiguration.useDisk: ');
-    });
-
-    it('The third Typography text value to be "jobDesigner:cacheConfiguration.useMemory: "', () => {
-        expect(
-            wrapper
-                .find(Typography)
-                .at(2)
-                .text()
-        ).toBe('jobDesigner:cacheConfiguration.useMemory: ');
+    it('should render Parameter 2 times', () => {
+        expect(wrapper.find(Parameter)).toHaveLength(2);
     });
 });
