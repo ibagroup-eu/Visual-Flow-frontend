@@ -31,9 +31,6 @@ const ValidateTypeHeader = () => {
             <Typography className={classNames(classes.font, classes.type)}>
                 {t('jobDesigner:Validate.header.type')}
             </Typography>
-            <Typography className={classNames(classes.font, classes.error)}>
-                {t('jobDesigner:Validate.header.isError')}
-            </Typography>
             <Typography className={classNames(classes.font, classes.parameter)}>
                 {t('jobDesigner:Validate.header.parameter')}
             </Typography>

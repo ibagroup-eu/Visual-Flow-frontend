@@ -20,30 +20,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
 import useStyles from './SliceStage.Style';
 import makeTooltip from '../helpers/makeTooltip';
 import { JobStageTag } from '../../../components/stage-tag';
-
-import { StageParameters, TagsParameter } from '../parameters';
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const SliceStage = ({ stage }) => {
-    const { t } = useTranslation();
     const classes = useStyles();
-    const sliceColumns = stage.columns?.split(',').map(el => el.trim());
     return (
         <ConfiguredStageWithIcon
             operation={stage.operation}
             name={makeTooltip(stage.name, stage.name)}
         >
-            <StageParameters>
-                <TagsParameter
-                    name={t('jobDesigner:sliceConfiguration.Columns')}
-                    values={sliceColumns}
-                    className={classes.key}
-                />
-            </StageParameters>
             <JobStageTag className={classes.mode}>{stage.mode}</JobStageTag>
         </ConfiguredStageWithIcon>
     );

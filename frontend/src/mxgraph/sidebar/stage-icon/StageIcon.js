@@ -25,10 +25,17 @@ import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import MailOutlinedIcon from '@material-ui/icons/MailOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
-import ScheduleSharp from '@material-ui/icons/ScheduleSharp';
+import PlaylistAddCheckSharpIcon from '@material-ui/icons/PlaylistAddCheckSharp';
+import {
+    CachedOutlined,
+    CheckCircleOutlined,
+    InboxOutlined,
+    WrapText,
+    ScheduleOutlined
+} from '@material-ui/icons';
+import ViewWeekIcon from '@material-ui/icons/ViewWeek';
 import React from 'react';
 import SortOutlinedIcon from '@material-ui/icons/SortOutlined';
-import { CheckCircleOutlined, InboxOutlined } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import useStyles from './StageIcon.Styles';
 
@@ -50,7 +57,12 @@ import {
     TRANSFORM,
     UNION,
     WRITE,
-    VALIDATE
+    PIVOT,
+    STRING,
+    VALIDATE,
+    DATETIME,
+    WITH_COLUMN,
+    HANDLE_NULL
 } from '../../constants';
 
 import {
@@ -75,12 +87,17 @@ const icons = {
     [JOB]: TransformOutlinedIcon,
     [PIPELINE]: TimelineOutlinedIcon,
     [NOTIFICATION]: MailOutlinedIcon,
-    [WAIT]: ScheduleSharp,
+    [WAIT]: ScheduleOutlined,
     [CONTAINER]: InboxOutlined,
     [CACHE]: StorageOutlinedIcon,
     [SORT]: SortOutlinedIcon,
     [SLICE]: DeleteSweepIcon,
-    [VALIDATE]: CheckCircleOutlined
+    [STRING]: WrapText,
+    [VALIDATE]: CheckCircleOutlined,
+    [DATETIME]: ScheduleOutlined,
+    [WITH_COLUMN]: ViewWeekIcon,
+    [PIVOT]: CachedOutlined,
+    [HANDLE_NULL]: PlaylistAddCheckSharpIcon
 };
 
 const StageIcon = ({ stageName }) => {

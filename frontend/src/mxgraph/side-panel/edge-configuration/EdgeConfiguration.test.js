@@ -10,13 +10,15 @@ jest.mock('react-i18next', () => ({
     useTranslation: jest.fn()
 }));
 
-describe('CacheConfiguration', () => {
+describe('EdgeConfiguration', () => {
     let wrapper;
     let props;
 
     beforeEach(() => {
         props = {
             configuration: {},
+            state: {},
+            setState: jest.fn(),
             saveCell: jest.fn(),
             setPanelDirty: jest.fn(),
             sourceAndTarget: {},
@@ -34,15 +36,16 @@ describe('CacheConfiguration', () => {
     });
     it('should calls saveCell prop', () => {
         wrapper.find(SaveCancelButtons).invoke('saveCell')();
+        expect(props.saveCell).toHaveBeenCalled();
     });
-    it('should calls cancelChanges func', () => {
+    it('should cancel changes', () => {
         wrapper.find(SaveCancelButtons).invoke('cancelChanges')();
+        expect(props.setState).toHaveBeenCalled();
+        expect(props.setPanelDirty).toHaveBeenCalledWith(false);
     });
     it('should calls handleInputChange func', () => {
-        wrapper.find(TextField).invoke('onChange')({
-            pickBy: jest.fn(),
-            target: { name: 'test' },
-            setInputValues: jest.fn()
-        });
+        wrapper.find(TextField).invoke('onChange')({ target: { value: 'test' } });
+        expect(props.setState).toHaveBeenCalled();
+        expect(props.setPanelDirty).toHaveBeenCalledWith(true);
     });
 });

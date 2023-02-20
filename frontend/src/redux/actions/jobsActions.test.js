@@ -329,7 +329,10 @@ describe('Jobs action', () => {
 
         it('should dispatch FETCH_JOB_STATUS_START without using params', () => {
             fetchJobStatus()(dispatch);
-            expect(dispatch).toHaveBeenCalledWith({ type: FETCH_JOB_STATUS_START });
+            expect(dispatch).toHaveBeenCalledWith({
+                type: FETCH_JOB_STATUS_START,
+                payload: false
+            });
         });
 
         it('should dispatch STOP_JOB_START without using params', () => {

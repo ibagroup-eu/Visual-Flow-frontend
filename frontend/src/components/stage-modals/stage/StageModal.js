@@ -34,6 +34,8 @@ import CacheModal from '../modals/CacheModal';
 import SortModal from '../modals/SortModal';
 import PipelineModal from '../modals/PipelineModal';
 import WaitModal from '../modals/WaitModal';
+import PivotModal from '../modals/PivotModal';
+import StringFunctionsModal from '../modals/StringFunctionsModal';
 import {
     READ,
     WRITE,
@@ -52,9 +54,17 @@ import {
     SORT,
     PIPELINE,
     WAIT,
-    VALIDATE
+    PIVOT,
+    STRING,
+    VALIDATE,
+    WITH_COLUMN,
+    DATETIME,
+    HANDLE_NULL
 } from '../../../mxgraph/constants';
 import ValidateModal from '../modals/ValidateModal';
+import DatetimeModal from '../modals/DatetimeModal';
+import WithColumnModal from '../modals/WithColumnModal';
+import HandleNullModal from '../modals/HandleNullModal';
 
 const StageModal = ({ stageName, ...restProps }) => {
     // eslint-disable-next-line complexity
@@ -93,8 +103,18 @@ const StageModal = ({ stageName, ...restProps }) => {
                 return <SliceModal {...restProps} />;
             case WAIT:
                 return <WaitModal {...restProps} />;
+            case PIVOT:
+                return <PivotModal {...restProps} />;
+            case STRING:
+                return <StringFunctionsModal {...restProps} />;
             case VALIDATE:
                 return <ValidateModal {...restProps} />;
+            case WITH_COLUMN:
+                return <WithColumnModal {...restProps} />;
+            case DATETIME:
+                return <DatetimeModal {...restProps} />;
+            case HANDLE_NULL:
+                return <HandleNullModal {...restProps} />;
             default:
                 return null;
         }

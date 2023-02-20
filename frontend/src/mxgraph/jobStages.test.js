@@ -37,7 +37,12 @@ jest.mock('../unitConfig', () => ({
             UNION: true,
             CDC: true,
             CACHE: true,
-            VALIDATE: true
+            VALIDATE: true,
+            WITH_COLUMN: true,
+            PIVOT: true,
+            DATETIME: true,
+            STRING: true,
+            HANDLE_NULL: true
         }
     }
 }));
@@ -149,6 +154,42 @@ describe('jobStages', () => {
                 maxOutgoingConnections: 1
             }
         },
+        PIVOT: {
+            operation: 'PIVOT',
+            name: undefined,
+            show: expect.any(Boolean),
+            color: '0001',
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            }
+        },
+        WITH_COLUMN: {
+            operation: 'WITH_COLUMN',
+            name: undefined,
+            color: '0001',
+            show: expect.any(Boolean),
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            }
+        },
+        DATETIME: {
+            operation: 'DATETIME',
+            name: undefined,
+            show: expect.any(Boolean),
+            color: '0001',
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            }
+        },
         JOIN: {
             operation: 'JOIN',
             name: undefined,
@@ -189,7 +230,7 @@ describe('jobStages', () => {
             operation: 'CACHE',
             name: undefined,
             show: expect.any(Boolean),
-            color: 'rgba(243, 234, 255, 0.8)',
+            color: '#F3EAFF',
             validation: {
                 minIncomingConnections: 1,
                 maxIncomingConnections: 1,
@@ -201,7 +242,31 @@ describe('jobStages', () => {
             operation: 'VALIDATE',
             name: undefined,
             show: expect.any(Boolean),
-            color: 'rgba(243, 234, 255, 0.8)',
+            color: '#F3EAFF',
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            }
+        },
+        STRING: {
+            operation: 'STRING',
+            name: undefined,
+            color: '0001',
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: expect.any(Boolean)
+        },
+        HANDLE_NULL: {
+            operation: 'HANDLE_NULL',
+            name: undefined,
+            show: expect.any(Boolean),
+            color: '0001',
             validation: {
                 minIncomingConnections: 1,
                 maxIncomingConnections: 1,

@@ -18,10 +18,11 @@
  */
 
 import projects from './projects';
-import axiosInstance from './axiosInstance';
+import axiosInstance, { axiosSimpleInstance } from './axiosInstance';
 
 describe('projects', () => {
     const id = 'some_id';
+    const paramKey = 'param_key';
     const connectionID = 'connectionID';
     const expected = { data: {} };
 
@@ -68,12 +69,30 @@ describe('projects', () => {
         });
     });
 
-    it('should call post when updateProjectParameters', () => {
-        const params = [{ key: 'USER', value: 'NAME' }];
-        const expected = { data: { params } };
-        jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
-        return projects.updateProjectParameters(params).then(result => {
+    it('should delete project parameter', () => {
+        const requestURL = `/project/${id}/params/${paramKey}`;
+        const spy = jest.spyOn(axiosInstance, 'delete').mockResolvedValue(expected);
+        return projects.deleteProjectParameter(id, paramKey).then(result => {
             expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should create project parameter', () => {
+        const requestURL = `/project/${id}/params/${paramKey}`;
+        const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
+        return projects.createProjectParameter(id, paramKey, {}).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL, {});
+        });
+    });
+
+    it('should update project parameter', () => {
+        const requestURL = `/project/${id}/params/${paramKey}`;
+        const spy = jest.spyOn(axiosInstance, 'put').mockResolvedValue(expected);
+        return projects.updateProjectParameter(id, paramKey, {}).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL, {});
         });
     });
 
@@ -150,6 +169,15 @@ describe('projects', () => {
         return projects.deleteProjectConnection(id, connectionID).then(result => {
             expect(result).toEqual(expected);
             expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should ping project connection', () => {
+        const requestURL = `/db/${id}/connections`;
+        const spy = jest.spyOn(axiosSimpleInstance, 'post').mockResolvedValue(expected);
+        return projects.pingProjectConnection(id, {}).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL, {});
         });
     });
 });

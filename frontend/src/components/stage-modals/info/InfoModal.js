@@ -43,6 +43,7 @@ const InfoModal = ({
     cluster,
     dataframe,
     clickhouse,
+    operations,
     display,
     title,
     onClose,
@@ -50,12 +51,15 @@ const InfoModal = ({
 }) => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const storageValue = find(STORAGES, { value: currentStorage });
+    const operationNames = Object.keys(operations || {});
     const [storage, setStorage] = React.useState('');
 
     useEffect(() => {
-        if (currentStorage && !display) {
-            setStorage(storageValue.label);
+        if (currentStorage && display) {
+            setStorage(
+                find(STORAGES, { value: currentStorage })?.label ||
+                    t(`datetime:operationTypes.${currentStorage}.name`)
+            );
         }
         if (currentStorage === undefined) {
             setStorage('');
@@ -64,6 +68,10 @@ const InfoModal = ({
 
     // eslint-disable-next-line complexity
     const chosenStorage = () => {
+        if (operations) {
+            return operations[storage];
+        }
+
         switch (storage) {
             case STORAGES.DB2.label:
             case STORAGES.POSTGRE.label:
@@ -130,6 +138,13 @@ const InfoModal = ({
             return null;
         });
 
+    const operationsType = data =>
+        data.map(value => (
+            <option key={value} value={value}>
+                {value}
+            </option>
+        ));
+
     return (
         <PopupForm display={display} title={title} onClose={onClose}>
             {clearData(content)?.map(section => {
@@ -180,24 +195,32 @@ const InfoModal = ({
                     </Box>
                 );
             })}
-            {storages && (
+            {(storages || operations) && (
                 <FormControl variant="standard">
                     <InputLabel htmlFor="standard-age-native-simple">
-                        {t('ReadWrite:chooseStorage')}
+                        {storages
+                            ? t('ReadWrite:chooseStorage')
+                            : t('datetime:chooseOperation')}
                     </InputLabel>
                     <Select
                         native
                         onChange={event => setStorage(event.target.value)}
-                        label={t('ReadWrite:chooseStorage')}
+                        label={
+                            storages
+                                ? t('ReadWrite:chooseStorage')
+                                : t('datetime:chooseOperation')
+                        }
                         className={classNames(classes.selectButton)}
                         value={storage}
                     >
                         <option aria-label="None" value="" />
-                        {filteredStorages(storages)}
+                        {storages
+                            ? filteredStorages(storages)
+                            : operationsType(operationNames)}
                     </Select>
                 </FormControl>
             )}
-            {(title === 'Read' || title === 'Write') && (
+            {(title === 'Read' || title === 'Write' || title === 'Date/Time') && (
                 <Box className={classNames(classes.name, classes.wrapper)}>
                     {storage &&
                         clearData(chosenStorage())?.map(section => {
@@ -245,6 +268,7 @@ InfoModal.propTypes = {
     stdout: PropTypes.array,
     cluster: PropTypes.array,
     dataframe: PropTypes.array,
+    operations: PropTypes.object,
     display: PropTypes.bool,
     title: PropTypes.string,
     onClose: PropTypes.func,

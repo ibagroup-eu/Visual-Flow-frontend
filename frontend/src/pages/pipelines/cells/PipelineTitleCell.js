@@ -91,7 +91,7 @@ PipelineTitleCell.propTypes = {
     classes: PropTypes.object,
     resetTags: PropTypes.func,
     onCheckTags: PropTypes.func,
-    checkedTags: PropTypes.array
+    checkedTags: PropTypes.object
 };
 
 export default withStyles(styles, { name: 'PipelineTitleCell' })(PipelineTitleCell);

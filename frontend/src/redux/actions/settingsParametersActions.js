@@ -17,15 +17,24 @@
  * limitations under the License.
  */
 
+import { findIndex, get, omit, set } from 'lodash';
+
 import {
     FETCH_PARAMETERS_START,
     FETCH_PARAMETERS_SUCCESS,
     FETCH_PARAMETERS_FAIL,
-    UPDATE_PARAMETERS_START,
-    UPDATE_PARAMETERS_SUCCESS,
-    UPDATE_PARAMETERS_FAIL
+    DELETE_PARAMETER_START,
+    DELETE_PARAMETER_SUCCESS,
+    DELETE_PARAMETER_FAIL,
+    CREATE_PARAMETER_START,
+    CREATE_PARAMETER_SUCCESS,
+    CREATE_PARAMETER_FAIL,
+    UPDATE_PARAMETER_START,
+    UPDATE_PARAMETER_SUCCESS,
+    UPDATE_PARAMETER_FAIL
 } from './types';
 import api from '../../api/projects';
+import { ParametersAdapter } from './adapters';
 
 export const fetchParameters = id => dispatch => {
     dispatch({
@@ -36,7 +45,15 @@ export const fetchParameters = id => dispatch => {
         response =>
             dispatch({
                 type: FETCH_PARAMETERS_SUCCESS,
-                payload: response.data
+                payload: {
+                    ...response.data,
+                    params: response.data.params.map(param =>
+                        ParametersAdapter.deserialize({
+                            ...param,
+                            id: param.key
+                        })
+                    )
+                }
             }),
         error =>
             dispatch({
@@ -46,22 +63,89 @@ export const fetchParameters = id => dispatch => {
     );
 };
 
-export const updateParameters = (id, newParameters) => dispatch => {
-    dispatch({
-        type: UPDATE_PARAMETERS_START,
-        payload: newParameters
+export const updateParameter = (projectId, parameter) => (dispatch, getState) => {
+    const params = [...get(getState(), 'pages.settingsParameters.params', [])];
+
+    set(params, findIndex(params, { id: parameter.id }), {
+        ...parameter,
+        id: parameter.key
     });
 
-    return api.updateProjectParameters(id, newParameters.params).then(
+    dispatch({
+        type: UPDATE_PARAMETER_START,
+        payload: { id: parameter.id }
+    });
+
+    return api
+        .updateProjectParameter(
+            projectId,
+            parameter.id,
+            ParametersAdapter.serialize(omit(parameter, ['id']))
+        )
+        .then(
+            () =>
+                dispatch({
+                    type: UPDATE_PARAMETER_SUCCESS,
+                    payload: { params, id: parameter.id }
+                }),
+            error =>
+                dispatch({
+                    type: UPDATE_PARAMETER_FAIL,
+                    payload: { error, id: parameter.id }
+                })
+        );
+};
+
+export const createParameter = (projectId, parameter) => (dispatch, getState) => {
+    const params = [
+        ...get(getState(), 'pages.settingsParameters.params', []),
+        parameter
+    ];
+
+    dispatch({
+        type: CREATE_PARAMETER_START
+    });
+
+    return api
+        .createProjectParameter(
+            projectId,
+            parameter.key,
+            ParametersAdapter.serialize(omit(parameter, ['id']))
+        )
+        .then(
+            () =>
+                dispatch({
+                    type: CREATE_PARAMETER_SUCCESS,
+                    payload: { params }
+                }),
+            error =>
+                dispatch({
+                    type: CREATE_PARAMETER_FAIL,
+                    payload: { error }
+                })
+        );
+};
+
+export const deleteParameter = (projectId, parameter) => (dispatch, getState) => {
+    const params = [
+        ...get(getState(), 'pages.settingsParameters.params', [])
+    ].filter(param => param.id !== parameter.id);
+
+    dispatch({
+        type: DELETE_PARAMETER_START,
+        payload: { id: parameter.id }
+    });
+
+    return api.deleteProjectParameter(projectId, parameter.id).then(
         () =>
             dispatch({
-                type: UPDATE_PARAMETERS_SUCCESS,
-                payload: newParameters
+                type: DELETE_PARAMETER_SUCCESS,
+                payload: { params, id: parameter.id }
             }),
         error =>
             dispatch({
-                type: UPDATE_PARAMETERS_FAIL,
-                payload: { error }
+                type: DELETE_PARAMETER_FAIL,
+                payload: { error, id: parameter.id }
             })
     );
 };

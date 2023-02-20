@@ -35,13 +35,12 @@ const ParametersModal = ({
     display,
     onClose,
     onSetValue,
-    parameters,
+    params,
     loading,
     currentValue
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-    const { params = [] } = parameters || {};
 
     const [searchValue, setSearchValue] = React.useState('');
     const [projectParameters, setProjectParameters] = React.useState(params);
@@ -50,7 +49,7 @@ const ParametersModal = ({
 
     React.useEffect(() => {
         setProjectParameters(params);
-    }, [parameters]);
+    }, [params]);
 
     React.useEffect(() => {
         setSelectedValue(linkValue);
@@ -122,7 +121,7 @@ const ParametersModal = ({
 };
 
 const mapStateToProps = state => ({
-    parameters: state.pages.settingsParameters.data,
+    params: state.pages.settingsParameters.params,
     loading: state.pages.settingsParameters.loading
 });
 
@@ -131,9 +130,13 @@ ParametersModal.propTypes = {
     display: PropTypes.bool,
     onClose: PropTypes.func,
     onSetValue: PropTypes.func,
-    parameters: PropTypes.object,
+    params: PropTypes.array,
     loading: PropTypes.bool,
     currentValue: PropTypes.string
+};
+
+ParametersModal.defaultProps = {
+    params: []
 };
 
 export default connect(mapStateToProps)(ParametersModal);

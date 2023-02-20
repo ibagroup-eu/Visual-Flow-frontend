@@ -1,0 +1,90 @@
+{
+    "HANDLE_NULL": [
+        {
+            "field": "mode"
+        },
+        {
+            "field": "operationType"
+        },
+        {
+            "field": "option.dropType",
+            "conditions": [
+                {
+                    "mode": "DROP"
+                }
+            ]
+        },
+        {
+            "field": "option.dropChoice",
+            "conditions": [
+                {
+                    "mode": "DROP"
+                }
+            ]
+        },
+        {
+            "field": "option.dropColumns",
+            "conditions": [
+                {
+                    "mode": "DROP",
+                    "option.dropChoice": "names"
+                }
+            ]
+        },
+        {
+            "field": "option.fillValueType",
+            "conditions": [
+                {
+                    "mode": "fill"
+                }
+            ]
+        },
+        {
+            "field": "option.fillChoice",
+            "conditions": [
+                {
+                    "mode": "fill",
+                    "option.fillValueType": "custom"
+                }
+            ]
+        },
+        {
+            "field": "option.fillValues",
+            "conditions": [
+                {
+                    "mode": "fill",
+                    "option.fillValueType": "custom",
+                    "option.fillChoice": "all"
+                },
+                {
+                    "mode": "fill",
+                    "option.fillValueType": "custom",
+                    "option.fillChoice": "names"
+                }
+            ]
+        },
+        {
+            "field": "option.fillColumns",
+            "conditions": [
+                {
+                    "mode": "fill",
+                    "option.fillValueType": "custom",
+                    "option.fillChoice": "names"
+                },
+                {
+                    "mode": "fill",
+                    "option.fillValueType": "agg"
+                }
+            ]
+        },
+        {
+            "field": "option.fillStrategy",
+            "conditions": [
+                {
+                    "mode": "fill",
+                    "option.fillValueType": "agg"
+                }
+            ]
+        }
+    ]
+}

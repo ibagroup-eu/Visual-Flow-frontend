@@ -82,11 +82,12 @@ const JoinConfiguration = ({
                 type={OTHER}
                 required
             />
+
             {state.joinType && (
                 <>
                     <ConfigurationDivider />
                     <div className={classes.divider}>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="subtitle1" color="textSecondary">
                             {t('jobDesigner:joinConfiguration.LinkOrdering')}
                         </Typography>
                         <Box className={classes.wrapper}>

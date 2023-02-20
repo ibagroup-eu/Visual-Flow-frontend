@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { isEqual } from 'lodash';
 import NotificationConfiguration from '../notification-configuration';
 import JobConfiguration from '../configuration/job-configuration';
 import Configuration from '../configuration';
@@ -83,14 +84,15 @@ const RenderPipelineConfiguration = ({
     graph,
     jobs,
     params,
-    pipelines
+    pipelines,
+    sidePanelIsOpen
 }) => {
     const pipelinesConfigurationComponents = {
         NOTIFICATION: {
             component: Configuration,
             props: {
                 Component: NotificationConfiguration,
-                isDisabled: state => checkNotification(params, state),
+                isDisabled: inputValues => checkNotification(params, inputValues),
                 ableToEdit,
                 setPanelDirty,
                 configuration,
@@ -140,11 +142,28 @@ const RenderPipelineConfiguration = ({
         }
     };
 
-    if (configuration.operation && configuration.operation !== WAIT) {
-        const component = pipelinesConfigurationComponents[configuration.operation];
+    const [state, setState] = useState(configuration);
+
+    useEffect(() => {
+        setState(configuration);
+    }, [configuration, sidePanelIsOpen]);
+
+    useEffect(() => {
+        setPanelDirty(!isEqual(configuration, state));
+    }, [state]);
+
+    if (state.operation !== WAIT) {
+        const component = pipelinesConfigurationComponents[state.operation];
         if (component) {
             const { component: Component, props } = component;
-            return <Component {...props} />;
+            return (
+                <Component
+                    {...props}
+                    state={state}
+                    setState={setState}
+                    sidePanelIsOpen={sidePanelIsOpen}
+                />
+            );
         }
     }
 
@@ -159,13 +178,15 @@ RenderPipelineConfiguration.propTypes = {
     graph: PropTypes.object,
     jobs: PropTypes.array,
     params: PropTypes.array,
-    pipelines: PropTypes.array
+    pipelines: PropTypes.array,
+    sidePanelIsOpen: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     jobs: state.pages.jobs.data.jobs,
     pipelines: state.pages.pipelines.data.pipelines,
-    params: state.pages.settingsParameters.data.params
+    params: state.pages.settingsParameters.params,
+    sidePanelIsOpen: state.mxGraph.sidePanelIsOpen
 });
 
 export default connect(mapStateToProps)(RenderPipelineConfiguration);

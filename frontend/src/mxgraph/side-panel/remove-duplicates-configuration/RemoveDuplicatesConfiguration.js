@@ -26,7 +26,7 @@ import useStyles from './RemoveDuplicatesConfiguration.Styles';
 import PropertyList from '../property-list';
 import ConfigurationDivider from '../../../components/divider';
 
-const orderBy = [
+export const orderBy = [
     {
         value: 'asc',
         label: 'asc'

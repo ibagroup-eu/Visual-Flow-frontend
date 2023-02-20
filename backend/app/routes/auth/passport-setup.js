@@ -32,7 +32,17 @@ passport.serializeUser(passThrough);
 passport.deserializeUser(passThrough);
 
 const verify = (accessToken, refreshToken, profile, cb) => {
-    cb(null, { accessToken, refreshToken, profile });
+    cb(null, {
+        accessToken,
+        refreshToken,
+        profile: {
+            ...profile,
+            avatar:
+                CONFIG.AUTH.STRATEGY === 'GITHUB'
+                    ? _.get(profile, 'photos[0].value')
+                    : _.get(profile, 'avatarUrl')
+        }
+    });
 };
 
 const verifyOIDC = (template, key) => (

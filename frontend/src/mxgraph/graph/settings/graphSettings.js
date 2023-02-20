@@ -19,8 +19,9 @@
 
 /* eslint-disable no-param-reassign */
 
-import { mxRubberband, mxConstants } from '../graph';
+import { mxRubberband, mxConstants, mxGraph } from '../graph';
 import { getDefaultEdgeStyle, getDefaultVertexStyle } from '../styles';
+import MxExtVertexHandler from './mxExtVertexHandler';
 
 // eslint-disable-next-line import/prefer-default-export
 export const setGraphSettings = (graph, theme) => {
@@ -54,4 +55,13 @@ export const setGraphSettings = (graph, theme) => {
     graph.getStylesheet().putDefaultVertexStyle(getDefaultVertexStyle(theme));
 
     graph.getStylesheet().putDefaultEdgeStyle(getDefaultEdgeStyle(theme));
+
+    // eslint-disable-next-line func-names
+    graph.createHandler = function(state, ...rest) {
+        if (state != null && this.model.isVertex(state.cell)) {
+            return new MxExtVertexHandler(state);
+        }
+
+        return mxGraph.prototype.createHandler.apply(this, [state, ...rest]);
+    };
 };

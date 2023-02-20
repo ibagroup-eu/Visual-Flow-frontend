@@ -17,185 +17,145 @@
  * limitations under the License.
  */
 
-import React from 'react';
+/*
+ * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Grid, Table, TableBody, TableContainer, Paper } from '@material-ui/core';
-import { isEqual, uniqueId } from 'lodash';
+import { compose } from 'redux';
+import {
+    Grid,
+    Table,
+    TableBody,
+    TableContainer,
+    Paper,
+    withStyles
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { find, get } from 'lodash';
 
 import FormWrapper from '../../../components/form-wrapper';
 import PropertySelect from '../../../components/property-select';
-import SearchInput from '../../../components/search-input';
-import {
-    fetchParameters,
-    updateParameters
-} from '../../../redux/actions/settingsParametersActions';
 import { PageSkeleton } from '../../../components/skeleton';
+import styles from './Parameters.Styles';
+import ParametersTableRow from './table';
+import {
+    createParameter,
+    deleteParameter,
+    fetchParameters,
+    updateParameter
+} from '../../../redux/actions/settingsParametersActions';
+import ParametersPanel from './panel';
+import ParametersSearch from './search/ParametersSearch';
 
-import ParametersTableRow from '../components/parameters-table-row';
-import useStyles from './Parameters.Styles';
-import useUnsavedChangesWarning from '../useUnsavedChangesWarning';
+const PARAMETER_TYPES = [
+    { name: 'string', value: 'string', secret: false },
+    { name: 'secureString', value: 'secureString', secret: true }
+];
 
-const Parameters = ({ projectId, parameters, loading, getParameters, update }) => {
+export const Parameters = ({
+    projectId,
+    loading,
+    getParameters,
+    update,
+    create,
+    remove,
+    parameters,
+    editStatus,
+    deleteStatus,
+    saving,
+    classes
+}) => {
     const { t } = useTranslation();
-    const classes = useStyles();
-    const { params = [], editable } = parameters;
-    const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning();
 
-    const selectProperties = [
-        {
-            value: '',
-            name: 'string'
-        },
-        {
-            value: '1',
-            name: 'secureString'
-        }
-    ];
+    const [searchValue, setSearchValue] = useState('');
+    const [filterValue, setFilterValue] = useState('');
+    const [panelIsOpen, setPanelIsOpen] = useState(false);
+    const [selectedParam, setSelectedParam] = useState({});
+    const [title, setTitle] = useState('Create');
 
-    const parameterData = params.map(p => ({ ...p, id: uniqueId() }));
-
-    const [projectParameters, setProjectParameters] = React.useState(parameterData);
-    const [editMode, setEditMode] = React.useState(false);
-    const [searchValue, setSearchValue] = React.useState('');
-    const [errorParameters, setErrorParameters] = React.useState([]);
-
-    React.useEffect(() => {
+    useEffect(() => {
         projectId && getParameters(projectId);
-    }, [projectId, editMode]);
+    }, [projectId]);
 
-    React.useEffect(() => {
-        setProjectParameters(parameterData);
-    }, [parameters]);
+    const onClose = () => setPanelIsOpen(false);
 
-    const onSubmit = () => {
-        update(projectId, {
-            ...parameters,
-            params: projectParameters.map(({ id, ...p }) => p)
-        });
-        setEditMode(false);
-        setPristine();
+    const onFilter = ([search, filter]) => {
+        setSearchValue(search);
+        setFilterValue(filter);
     };
 
-    const onCancel = () => {
-        setEditMode(false);
-        setProjectParameters(parameterData);
-        setPristine();
+    const onEditPanel = param => () => {
+        setPanelIsOpen(true);
+        setTitle('Edit');
+        setSelectedParam(param);
     };
 
-    React.useEffect(() => {
-        if (
-            editMode &&
-            isEqual(projectParameters.map(({ id, ...p }) => p).sort(), params.sort())
-        ) {
-            setPristine();
-        }
-    }, [projectParameters]);
-
-    const handleChangeParameter = (event, changedId, field) => {
-        event.persist();
-        setProjectParameters(prevState =>
-            prevState.map(parameter =>
-                parameter.id === changedId
-                    ? { ...parameter, [field]: event.target.value }
-                    : parameter
-            )
-        );
-        setDirty();
+    const onCreatePanel = ({ target: { value } }) => {
+        setPanelIsOpen(true);
+        setTitle('Create');
+        setSelectedParam({ secret: find(PARAMETER_TYPES, { value }).secret });
     };
 
-    const removeParameter = removedId => {
-        setErrorParameters(prevParams => {
-            const index = prevParams.indexOf(removedId);
-            const tempParams = [...prevParams];
-            tempParams.splice(index, 1);
-            return tempParams;
-        });
-        setProjectParameters(prevState =>
-            prevState.filter(parameter => parameter.id !== removedId)
-        );
-        setDirty();
+    const onRemove = param => () => {
+        remove(projectId, param);
     };
 
-    const handleClickNewFieldType = event => {
-        setProjectParameters(prevState => [
-            ...prevState,
-            {
-                key: '',
-                value: '',
-                secret: Boolean(event.target.value),
-                id: uniqueId()
-            }
-        ]);
-        setDirty();
-    };
+    const onSave = param => {
+        const modify = title === 'Create' ? create : update;
 
-    const handleChangeSearch = value => {
-        setSearchValue(value);
+        modify(projectId, param).then(onClose);
     };
 
     const renderNewFieldDropdown = () => (
         <PropertySelect
-            className={classNames({
-                [classes.hidden]: !editMode
-            })}
-            handleChange={handleClickNewFieldType}
-            placeholder={t('main:button.addProperty')}
-            properties={selectProperties}
+            handleChange={onCreatePanel}
+            placeholder={t('main:button.AddParameter')}
+            properties={PARAMETER_TYPES}
+            isConnections
         />
     );
 
-    const saveButtonIsDisabled = () => !editable || Boolean(errorParameters.length);
+    const shouldAddButtonRepeat = () => {
+        const shownRows = window.innerHeight / 73 - 3.5;
+        return parameters.length > shownRows;
+    };
 
     const filterParameters = () =>
-        projectParameters.filter(
+        parameters.filter(
             parameter =>
-                parameter.key.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1
+                parameter.key.toLowerCase().includes(searchValue.toLowerCase()) &&
+                (!filterValue ||
+                    parameter.secret ===
+                        find(PARAMETER_TYPES, { value: filterValue })?.secret)
         );
-
-    const shouldAddButtonRepeat = () => {
-        // 73px - property row height; ~3.5 row sizes used by other interfaces
-        const shownRows = window.innerHeight / 73 - 3.5;
-        return projectParameters.length > shownRows;
-    };
-
-    const cardTitle = editMode ? 'editProjectParameters' : 'viewProjectParameters';
-
-    const errorParameterHandler = (err, id) => {
-        err &&
-            !errorParameters.includes(id) &&
-            setErrorParameters(prevParams => [...prevParams, id]);
-        !err &&
-            errorParameters.includes(id) &&
-            setErrorParameters(prevParams => {
-                const index = prevParams.indexOf(id);
-                const tempParams = [...prevParams];
-                tempParams.splice(index, 1);
-                return tempParams;
-            });
-    };
 
     return loading ? (
         <PageSkeleton />
     ) : (
         <Grid container>
             <Grid item xs={2} />
-            <Grid item xs={8} className={classes.root}>
-                <FormWrapper
-                    title={cardTitle}
-                    editable={editable}
-                    editMode={editMode}
-                    setEditMode={() => {
-                        handleChangeSearch('');
-                        setEditMode(true);
-                    }}
-                    onCancel={onCancel}
-                    onSubmit={onSubmit}
-                    isSaveBtnDisabled={saveButtonIsDisabled()}
-                >
+            <Grid item xs={8} className={classNames(classes.root)}>
+                <FormWrapper title="Parameters" editable editMode disableSaveButtons>
                     <Box
                         className={classNames(
                             classes.flex,
@@ -203,38 +163,37 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                             classes.paddedBottom
                         )}
                     >
-                        <Box className={classes.search}>
-                            <SearchInput
-                                fullWidth
-                                value={searchValue}
-                                onChange={event =>
-                                    handleChangeSearch(event.target.value)
-                                }
-                                placeholder={t('main:search')}
-                            />
-                        </Box>
+                        <ParametersSearch
+                            searchValue={searchValue}
+                            filterValue={filterValue}
+                            filterOptions={PARAMETER_TYPES.map(
+                                ({ name, value }) => ({
+                                    value,
+                                    label: name
+                                })
+                            )}
+                            onFilter={onFilter}
+                        />
                         {renderNewFieldDropdown()}
                     </Box>
 
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
-                                {filterParameters().map(parameter => (
+                                {filterParameters().map(param => (
                                     <ParametersTableRow
-                                        key={parameter.id}
-                                        parameter={parameter}
-                                        editMode={editMode}
-                                        handleChangeParameter={handleChangeParameter}
-                                        handleRemoveParameter={removeParameter}
-                                        isErrorParameter={errorParameterHandler}
-                                        parameters={projectParameters}
+                                        key={param.id}
+                                        parameter={param}
+                                        editing={get(editStatus, param.id, false)}
+                                        deleting={get(deleteStatus, param.id, false)}
+                                        handleEdit={onEditPanel(param)}
+                                        handleRemove={onRemove(param)}
                                     />
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-
-                    {shouldAddButtonRepeat() && editMode && (
+                    {shouldAddButtonRepeat() && (
                         <Box
                             className={classNames(
                                 classes.flex,
@@ -245,37 +204,66 @@ const Parameters = ({ projectId, parameters, loading, getParameters, update }) =
                             {renderNewFieldDropdown()}
                         </Box>
                     )}
+                    <ParametersPanel
+                        open={panelIsOpen}
+                        close={onClose}
+                        save={onSave}
+                        saving={saving}
+                        data={selectedParam}
+                        title={title}
+                        parameterTypes={PARAMETER_TYPES}
+                    />
                 </FormWrapper>
             </Grid>
             <Grid item xs={2} />
-            {Prompt}
         </Grid>
     );
 };
 
+Parameters.propTypes = {
+    projectId: PropTypes.string,
+    loading: PropTypes.bool,
+    getParameters: PropTypes.func,
+    create: PropTypes.func,
+    update: PropTypes.func,
+    remove: PropTypes.func,
+    classes: PropTypes.object,
+    parameters: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string,
+            key: PropTypes.string,
+            value: PropTypes.string,
+            secret: PropTypes.bool
+        })
+    ),
+    editStatus: PropTypes.object,
+    deleteStatus: PropTypes.object,
+    saving: PropTypes.bool
+};
+
+Parameters.defaultProps = {
+    parameters: [],
+    deleteStatus: {},
+    editStatus: {}
+};
+
 const mapStateToProps = state => ({
     projectId: state.projects.currentProject,
-    parameters: state.pages.settingsParameters.data,
-    loading: state.pages.settingsParameters.loading
+    parameters: state.pages.settingsParameters.params,
+    deleteStatus: state.pages.settingsParameters.deleteStatus,
+    editStatus: state.pages.settingsParameters.editStatus,
+    loading: state.pages.settingsParameters.loading,
+    saving: state.pages.settingsParameters.saving
 });
 
 const mapDispatchToProps = {
     getParameters: fetchParameters,
-    update: updateParameters
+    create: createParameter,
+    update: updateParameter,
+    remove: deleteParameter
 };
 
-Parameters.propTypes = {
-    projectId: PropTypes.string,
-    parameters: PropTypes.object,
-    loading: PropTypes.bool,
-    getParameters: PropTypes.func,
-    update: PropTypes.func
-};
-
-Parameters.defaultProps = {
-    parameters: {
-        params: []
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Parameters);
+export default compose(
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps)
+)(Parameters);

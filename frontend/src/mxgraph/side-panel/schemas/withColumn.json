@@ -1,0 +1,150 @@
+{
+    "WITH_COLUMN": [
+        {
+            "field": "column"
+        },
+        {
+            "field": "operationType"
+        },
+        {
+            "field": "option.expression",
+            "conditions": [
+                {
+                    "operationType": "deriveColumn"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "lag"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "lead"
+                }
+            ]
+        },
+        {
+            "field": "option.constant",
+            "conditions": [
+                {
+                    "operationType": "addConstant"
+                }
+            ]
+        },
+        {
+            "field": "option.columnType",
+            "conditions": [
+                {
+                    "operationType": "changeType"
+                }
+            ]
+        },
+        {
+            "field": "option.columnName",
+            "conditions": [
+                {
+                    "operationType": "renameColumn"
+                }
+            ]
+        },
+        {
+            "field": "option.conditions",
+            "conditions": [
+                {
+                    "operationType": "useConditions"
+                }
+            ]
+        },
+        {
+            "field": "option.otherwise",
+            "conditions": [
+                {
+                    "operationType": "useConditions"
+                }
+            ]
+        },
+        {
+            "field": "option.windowFunction",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction"
+                }
+            ]
+        },
+        {
+            "field": "option.partitionBy",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction"
+                }
+            ]
+        },
+        {
+            "field": "option.orderBy",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction"
+                }
+            ]
+        },
+        {
+            "field": "option.column",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "count"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "sum"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "avg"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "min"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "max"
+                }
+            ]
+        },
+        {
+            "field": "option.n",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "ntile"
+                }
+            ]
+        },
+        {
+            "field": "option.offset",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "lag"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "lead"
+                }
+            ]
+        },
+        {
+            "field": "option.defaultValue",
+            "conditions": [
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "lag"
+                },
+                {
+                    "operationType": "useWindowFunction",
+                    "option.windowFunction": "lead"
+                }
+            ]
+        }
+    ]
+}

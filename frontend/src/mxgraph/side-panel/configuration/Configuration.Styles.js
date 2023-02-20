@@ -17,11 +17,14 @@
  * limitations under the License.
  */
 
-export default () => ({
+export default theme => ({
     root: {
         display: 'flex',
         justifyContent: 'space-between',
         flexDirection: 'column',
-        height: '90%'
+        height: '100%'
+    },
+    fieldWrapper: {
+        marginTop: theme.spacing(2)
     }
 });

@@ -25,12 +25,15 @@ import {
     FormControl,
     InputLabel,
     MenuItem,
-    Checkbox
+    Checkbox,
+    Tooltip
 } from '@material-ui/core';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import PropTypes from 'prop-types';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
+import { TimerOffOutlined, TimerOutlined } from '@material-ui/icons';
 import SearchInput from '../search-input/SearchInput';
 import useStyles from './LogsHeader.Styles';
 
@@ -41,7 +44,10 @@ const LogsHeader = ({
     searchValue,
     onSelect,
     levels,
-    modal
+    modal,
+    autoRefresh,
+    onSetAutoRefresh,
+    autoRefreshDisabled
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -90,16 +96,42 @@ const LogsHeader = ({
                         </FormControl>
                     </Grid>
                     <Grid item>
-                        <Button
-                            className={classNames(
-                                classes.button,
-                                classes.refreshBtn
-                            )}
-                            variant="contained"
-                            color="primary"
-                            startIcon={<RefreshIcon />}
-                            onClick={onRefreshClick}
-                        />
+                        <Tooltip
+                            arrow
+                            title={
+                                autoRefreshDisabled
+                                    ? ''
+                                    : t('main:tooltip:AutoRefresh')
+                            }
+                        >
+                            <ToggleButton
+                                className={classes.autoRefresh}
+                                disabled={autoRefreshDisabled}
+                                size="small"
+                                value="check"
+                                selected={!autoRefreshDisabled && autoRefresh}
+                                onChange={onSetAutoRefresh}
+                            >
+                                {autoRefresh ? (
+                                    <TimerOutlined />
+                                ) : (
+                                    <TimerOffOutlined />
+                                )}
+                            </ToggleButton>
+                        </Tooltip>
+                    </Grid>
+                    <Grid item>
+                        <Tooltip arrow title={t('main:tooltip:Refresh')}>
+                            <Button
+                                className={classes.button}
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                onClick={onRefreshClick}
+                            >
+                                <RefreshIcon />
+                            </Button>
+                        </Tooltip>
                     </Grid>
                 </Grid>
             </Grid>
@@ -114,7 +146,10 @@ LogsHeader.propTypes = {
     onSelect: PropTypes.func,
     searchValue: PropTypes.string,
     levels: PropTypes.array,
-    modal: PropTypes.bool
+    modal: PropTypes.bool,
+    autoRefresh: PropTypes.bool,
+    onSetAutoRefresh: PropTypes.func,
+    autoRefreshDisabled: PropTypes.bool
 };
 
 export default LogsHeader;

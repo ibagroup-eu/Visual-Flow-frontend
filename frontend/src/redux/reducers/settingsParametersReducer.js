@@ -18,22 +18,32 @@
  */
 
 import {
+    CREATE_PARAMETER_FAIL,
+    CREATE_PARAMETER_START,
+    CREATE_PARAMETER_SUCCESS,
+    DELETE_PARAMETER_FAIL,
+    DELETE_PARAMETER_START,
+    DELETE_PARAMETER_SUCCESS,
     FETCH_PARAMETERS_FAIL,
     FETCH_PARAMETERS_START,
     FETCH_PARAMETERS_SUCCESS,
-    UPDATE_PARAMETERS_FAIL,
-    UPDATE_PARAMETERS_START,
-    UPDATE_PARAMETERS_SUCCESS
+    UPDATE_PARAMETER_FAIL,
+    UPDATE_PARAMETER_START,
+    UPDATE_PARAMETER_SUCCESS
 } from '../actions/types';
 
-const initialState = {
-    loading: true,
-    data: {}
+export const initialState = {
+    loading: false,
+    editable: false,
+    params: [],
+    saving: false,
+    editStatus: {},
+    deleteStatus: {}
 };
+
 const settingsParametersReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case FETCH_PARAMETERS_START:
-        case UPDATE_PARAMETERS_START:
             return {
                 ...state,
                 loading: true
@@ -41,8 +51,8 @@ const settingsParametersReducer = (state = initialState, action = {}) => {
         case FETCH_PARAMETERS_SUCCESS:
             return {
                 ...state,
-                loading: false,
-                data: action.payload
+                ...action.payload,
+                loading: false
             };
         case FETCH_PARAMETERS_FAIL:
             return {
@@ -50,18 +60,85 @@ const settingsParametersReducer = (state = initialState, action = {}) => {
                 loading: false,
                 error: action.payload.error
             };
-        case UPDATE_PARAMETERS_SUCCESS:
+
+        case DELETE_PARAMETER_START:
             return {
                 ...state,
-                data: action.payload,
-                loading: false
+                saving: true,
+                deleteStatus: {
+                    ...state.deleteStatus,
+                    [action.payload.id]: true
+                }
             };
-        case UPDATE_PARAMETERS_FAIL:
+        case DELETE_PARAMETER_SUCCESS:
+            return {
+                ...state,
+                params: action.payload.params,
+                saving: false,
+                deleteStatus: {
+                    ...state.deleteStatus,
+                    [action.payload.id]: false
+                }
+            };
+        case DELETE_PARAMETER_FAIL:
             return {
                 ...state,
                 error: action.payload.error,
-                loading: false
+                saving: false,
+                deleteStatus: {
+                    ...state.deleteStatus,
+                    [action.payload.id]: false
+                }
             };
+
+        case CREATE_PARAMETER_START:
+            return {
+                ...state,
+                saving: true
+            };
+        case CREATE_PARAMETER_SUCCESS:
+            return {
+                ...state,
+                params: action.payload.params,
+                saving: false
+            };
+        case CREATE_PARAMETER_FAIL:
+            return {
+                ...state,
+                error: action.payload.error,
+                saving: false
+            };
+
+        case UPDATE_PARAMETER_START:
+            return {
+                ...state,
+                saving: true,
+                editStatus: {
+                    ...state.editStatus,
+                    [action.payload.id]: true
+                }
+            };
+        case UPDATE_PARAMETER_SUCCESS:
+            return {
+                ...state,
+                params: action.payload.params,
+                saving: false,
+                editStatus: {
+                    ...state.editStatus,
+                    [action.payload.id]: false
+                }
+            };
+        case UPDATE_PARAMETER_FAIL:
+            return {
+                ...state,
+                error: action.payload.error,
+                saving: false,
+                editStatus: {
+                    ...state.editStatus,
+                    [action.payload.id]: false
+                }
+            };
+
         default:
             return state;
     }

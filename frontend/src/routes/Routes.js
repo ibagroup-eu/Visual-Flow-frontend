@@ -23,9 +23,7 @@ import NotFound from '../pages/not-found';
 import Overview from '../pages/overview';
 import Pipelines from '../pages/pipelines';
 import Jobs from '../pages/jobs';
-import Basic from '../pages/settings/basic';
-import Parameters from '../pages/settings/parameters';
-import Users from '../pages/settings/users';
+import { Basic, Parameters, Users, Connections } from '../pages/settings';
 import AddProject from '../pages/add-project';
 import Main from '../pages/main';
 import Logs from '../pages/logs-modal/logs';
@@ -34,7 +32,6 @@ import PrivateRoute from '../components/routes/private';
 import JobDesigner from '../pages/job-designer';
 import PipelineDesigner from '../pages/pipeline-designer';
 import Import from '../pages/import';
-import Connections from '../pages/settings/connections';
 
 const Routes = () => (
     <Switch>

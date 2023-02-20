@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { alpha } from '@material-ui/core';
 import palette from '../translations/en/jobDesigner.json';
 import {
     READ,
@@ -32,7 +31,12 @@ import {
     CACHE,
     SLICE,
     SORT,
-    VALIDATE
+    PIVOT,
+    STRING,
+    VALIDATE,
+    DATETIME,
+    WITH_COLUMN,
+    HANDLE_NULL
 } from './constants';
 import UnitConfig from '../unitConfig';
 
@@ -136,6 +140,66 @@ const jobStages = theme =>
             show: UnitConfig.JOB.STAGES.SLICE
         },
         {
+            operation: PIVOT,
+            name: palette.PIVOT,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.PIVOT
+        },
+        {
+            operation: WITH_COLUMN,
+            name: palette.WITH_COLUMN,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.WITH_COLUMN
+        },
+        {
+            operation: STRING,
+            name: palette.STRING,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.STRING
+        },
+        {
+            operation: DATETIME,
+            name: palette.DATETIME,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.DATETIME
+        },
+        {
+            operation: HANDLE_NULL,
+            name: palette.HANDLE_NULL,
+            color: theme.palette.success.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.HANDLE_NULL
+        },
+        {
             operation: JOIN,
             name: palette.JOIN,
             color: theme.palette.warning.background,
@@ -174,7 +238,7 @@ const jobStages = theme =>
         {
             operation: CACHE,
             name: palette.CACHE,
-            color: alpha(theme.palette.info.light, 0.8),
+            color: theme.palette.info.light,
             validation: {
                 minIncomingConnections: 1,
                 maxIncomingConnections: 1,
@@ -186,7 +250,7 @@ const jobStages = theme =>
         {
             operation: VALIDATE,
             name: palette.VALIDATE,
-            color: alpha(theme.palette.info.light, 0.8),
+            color: theme.palette.info.light,
             validation: {
                 minIncomingConnections: 1,
                 maxIncomingConnections: 1,

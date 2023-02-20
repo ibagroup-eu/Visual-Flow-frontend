@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Popper, TextField } from '@material-ui/core';
 
-import { get } from 'lodash';
+import { get, sortBy } from 'lodash';
 import { TuneOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import Db2Storage from './db2-storage';
@@ -177,7 +177,7 @@ const ReadWriteConfiguration = ({
                 )}
                 disabled={!ableToEdit}
                 name="storage"
-                options={Object.values(STORAGES).filter(
+                options={sortBy(STORAGES, 'label').filter(
                     st => !get(st, 'hide', []).includes(state.operation)
                 )}
                 getOptionLabel={option => option.label || option}
@@ -191,7 +191,6 @@ const ReadWriteConfiguration = ({
                         <TextField
                             {...params}
                             variant="outlined"
-                            margin="normal"
                             placeholder={t('jobDesigner:readConfiguration.Storage')}
                             label={t('jobDesigner:readConfiguration.Storage')}
                             required

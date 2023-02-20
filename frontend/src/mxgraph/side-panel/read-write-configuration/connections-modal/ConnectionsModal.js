@@ -104,7 +104,7 @@ const ConnectionsModal = ({
                                                 item => item.value === value.storage
                                             )?.name
                                         }}
-                                        params={parameters.params}
+                                        params={parameters}
                                         defaultSelected={
                                             currentValue === value.connectionName
                                         }
@@ -130,7 +130,7 @@ const ConnectionsModal = ({
 const mapStateToProps = state => ({
     loading: state.pages.settingsConnections.loading,
     connections: state.pages.settingsConnections.connections,
-    parameters: state.pages.settingsParameters.data
+    parameters: state.pages.settingsParameters.params
 });
 
 ConnectionsModal.propTypes = {
@@ -139,7 +139,7 @@ ConnectionsModal.propTypes = {
     onClose: PropTypes.func,
     onSetValue: PropTypes.func,
     connections: PropTypes.array,
-    parameters: PropTypes.object,
+    parameters: PropTypes.array,
     loading: PropTypes.bool,
     currentValue: PropTypes.string
 };

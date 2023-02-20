@@ -20,24 +20,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    IconButton,
-    Tooltip,
-    Typography,
     FormControl,
+    Input,
     Select,
     TextField,
-    Input,
     withStyles
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import RemoveIcon from '@material-ui/icons/Remove';
 import { useTranslation } from 'react-i18next';
-import classNames from 'classnames';
 
 import styles from './PropertyList.Styles';
 import getMenuItems from '../helpers/getMenuItems';
+import { PropertyListWrapper } from './PropertyListWrapper';
 
 export const PropertyList = ({
     ableToEdit,
@@ -52,14 +45,6 @@ export const PropertyList = ({
     required
 }) => {
     const { t } = useTranslation();
-    const handleRemove = index => () =>
-        onChange([...items.slice(0, index), ...items.slice(index + 1)]);
-
-    const handleMove = index => () => {
-        const result = [...items];
-        [result[index], result[index + 1]] = [result[index + 1], result[index]];
-        onChange(result);
-    };
 
     const splitItem = item => item?.split(':');
 
@@ -106,69 +91,17 @@ export const PropertyList = ({
         );
     };
 
-    const renderRow = (item, index) => (
-        <div key={index} className={classes.row}>
-            {renderItem(item, index)}
-            {index < items.length - 1 && (
-                <Tooltip title={t('main:tooltip.MoveDown')} arrow>
-                    <IconButton
-                        disabled={!ableToEdit}
-                        onClick={handleMove(index)}
-                        aria-label={t('main:tooltip.MoveDown')}
-                        className={classes.icon}
-                        size="small"
-                    >
-                        <ArrowDownwardIcon fontSize="inherit" />
-                    </IconButton>
-                </Tooltip>
-            )}
-            {index > 0 && (
-                <Tooltip title={t('main:tooltip.MoveUp')} arrow>
-                    <IconButton
-                        disabled={!ableToEdit}
-                        onClick={handleMove(index - 1)}
-                        aria-label={t('main:tooltip.MoveUp')}
-                        className={classes.icon}
-                        size="small"
-                    >
-                        <ArrowUpwardIcon fontSize="inherit" />
-                    </IconButton>
-                </Tooltip>
-            )}
-            <Tooltip title={t('main:tooltip.Delete')} arrow>
-                <IconButton
-                    disabled={!ableToEdit}
-                    onClick={handleRemove(index)}
-                    aria-label={t('main:tooltip.Delete')}
-                    className={classes.icon}
-                    size="small"
-                >
-                    <RemoveIcon fontSize="inherit" />
-                </IconButton>
-            </Tooltip>
-        </div>
-    );
-
     return (
-        <div className={classes.root}>
-            <div className={classes.title}>
-                <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    className={classNames(classes.text, {
-                        [classes.required]: required
-                    })}
-                >
-                    {label}
-                </Typography>
-                <Tooltip title={t('main:tooltip.Add')} placement="left" arrow>
-                    <IconButton disabled={!ableToEdit} onClick={onAddItem}>
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-            </div>
-            <div className={classes.rows}>{items.map(renderRow)}</div>
-        </div>
+        <PropertyListWrapper
+            ableToEdit={ableToEdit}
+            items={items}
+            onChange={onChange}
+            onAddItem={onAddItem}
+            label={label}
+            classes={classes}
+            required={required}
+            renderItem={renderItem}
+        />
     );
 };
 

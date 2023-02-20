@@ -43,7 +43,13 @@ import {
     COPY_PIPELINE_FAIL,
     SET_PIPELINES_LAST_RUN,
     SET_PIPELINES_STATUS,
-    SET_DEFAULT
+    SET_DEFAULT,
+    SUSPEND_PIPELINE_START,
+    SUSPEND_PIPELINE_SUCCESS,
+    SUSPEND_PIPELINE_FAIL,
+    RETRY_PIPELINE_FAIL,
+    RETRY_PIPELINE_START,
+    RETRY_PIPELINE_SUCCESS
 } from '../actions/types';
 
 const initialState = {
@@ -101,6 +107,7 @@ const pipelinesReducer = (state = initialState, action = {}) => {
                 success: action.payload.success
             };
         case RUN_PIPELINE_START:
+        case RETRY_PIPELINE_START:
         case RESUME_PIPELINE_START:
             return {
                 ...state,
@@ -108,14 +115,19 @@ const pipelinesReducer = (state = initialState, action = {}) => {
             };
         case RUN_PIPELINE_SUCCESS:
         case STOP_PIPELINE_SUCCESS:
-        case RESUME_PIPELINE_SUCCESS:
+        case RETRY_PIPELINE_SUCCESS:
         case STOP_PIPELINE_START:
+        case SUSPEND_PIPELINE_START:
+        case SUSPEND_PIPELINE_SUCCESS:
+        case RESUME_PIPELINE_SUCCESS:
             return {
                 ...state,
                 pipelineRun: false
             };
         case RUN_PIPELINE_FAIL:
         case STOP_PIPELINE_FAIL:
+        case RETRY_PIPELINE_FAIL:
+        case SUSPEND_PIPELINE_FAIL:
         case RESUME_PIPELINE_FAIL:
             return {
                 ...state,

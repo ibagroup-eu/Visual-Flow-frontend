@@ -24,7 +24,7 @@ export default makeStyles(theme => ({
         overflow: 'hidden',
         [theme.breakpoints.up('md')]: {
             minWidth: theme.spacing(35),
-            maxWidth: theme.spacing(59)
+            maxWidth: theme.spacing(88)
         }
     }
 }));

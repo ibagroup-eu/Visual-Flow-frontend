@@ -35,6 +35,11 @@ import cache from './cache.json';
 import notification from './notification.json';
 import sort from './sort.json';
 import validate from './validate.json';
+import pivot from './pivot.json';
+import stringFunctions from './stringFunctions.json';
+import datetime from './datetime.json';
+import withColumn from './withColumn.json';
+import handleNull from './handleNull.json';
 
 const schemas = {
     ...commonSchema,
@@ -52,6 +57,11 @@ const schemas = {
     ...notification,
     ...sort,
     ...validate,
+    ...datetime,
+    ...pivot,
+    ...stringFunctions,
+    ...withColumn,
+    ...handleNull,
     READ: [...get(readWriteCommon, 'READ_WRITE'), ...get(read, 'READ')],
     WRITE: [...get(readWriteCommon, 'READ_WRITE'), ...get(write, 'WRITE')]
 };

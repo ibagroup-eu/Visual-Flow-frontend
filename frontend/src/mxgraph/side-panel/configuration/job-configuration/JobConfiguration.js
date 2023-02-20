@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import { useTheme } from '@material-ui/core';
@@ -44,7 +44,9 @@ export const JobConfiguration = ({
     configuration,
     saveCell,
     setPanelDirty,
-    graph
+    graph,
+    state,
+    setState
 }) => {
     const [outputPaths, setOutputPaths] = React.useState([]);
     const theme = useTheme();
@@ -53,15 +55,18 @@ export const JobConfiguration = ({
         setOutputPaths(getOutputPaths(graph));
     }, [graph]);
 
-    const handleChangePathStatus = (id, value) => {
-        setOutputPaths(
-            outputPaths.map(edge => ({
-                ...edge,
-                successPath: edge.id === id ? value : edge.successPath
-            }))
-        );
-        setPanelDirty(outputPaths.find(e => e.id === id).successPath !== value);
-    };
+    const handleChangePathStatus = useCallback(
+        (id, value) => {
+            setOutputPaths(
+                outputPaths.map(edge => ({
+                    ...edge,
+                    successPath: edge.id === id ? value : edge.successPath
+                }))
+            );
+            setPanelDirty(outputPaths.find(e => e.id === id).successPath !== value);
+        },
+        [setOutputPaths, setPanelDirty, outputPaths]
+    );
 
     const saveConfiguration = inputValues => {
         const current = graph.getSelectionCell();
@@ -90,6 +95,16 @@ export const JobConfiguration = ({
         return saveCell(inputValues);
     };
 
+    const render = useCallback(
+        props => (
+            <Job
+                {...props}
+                outputPaths={outputPaths}
+                onChangeOutputPaths={handleChangePathStatus}
+            />
+        ),
+        [outputPaths, handleChangePathStatus]
+    );
     return (
         <ConfigurationWrapper
             configuration={configuration}
@@ -97,13 +112,9 @@ export const JobConfiguration = ({
             ableToEdit={ableToEdit}
             isDisabled={isDisabled}
             setPanelDirty={setPanelDirty}
-            render={props => (
-                <Job
-                    {...props}
-                    outputPaths={outputPaths}
-                    onChangeOutputPaths={handleChangePathStatus}
-                />
-            )}
+            state={state}
+            setState={setState}
+            render={render}
         />
     );
 };
@@ -114,7 +125,9 @@ JobConfiguration.propTypes = {
     configuration: PropTypes.object,
     saveCell: PropTypes.func,
     setPanelDirty: PropTypes.func,
-    graph: PropTypes.object
+    graph: PropTypes.object,
+    state: PropTypes.object,
+    setState: PropTypes.func
 };
 
 export default JobConfiguration;

@@ -96,13 +96,6 @@ describe('ValidateAddValidationButton', () => {
         wrapper.find(Autocomplete).prop('renderInput')();
     });
 
-    it('should calls onChange for TextField with isError', () => {
-        wrapper
-            .find(TextField)
-            .at(1)
-            .prop('onChange')({ target: { value: 'true' } });
-    });
-
     it('should calls onChange for TextField with type = dataType', () => {
         wrapper
             .find(TextField)
@@ -115,6 +108,28 @@ describe('ValidateAddValidationButton', () => {
             .find(TextField)
             .at(0)
             .prop('onChange')({ target: { value: 'minValue' } });
+    });
+
+    it('should calls onKeyDown for TextField with number value', () => {
+        wrapper
+            .find(TextField)
+            .at(0)
+            .prop('onChange')({ target: { value: 'minValue' } });
+        wrapper
+            .find(TextField)
+            .at(1)
+            .prop('onKeyDown')({ key: 'Backspace', preventDefault: jest.fn() });
+    });
+
+    it('should calls onKeyDown for TextField with not number value', () => {
+        wrapper
+            .find(TextField)
+            .at(0)
+            .prop('onChange')({ target: { value: 'minValue' } });
+        wrapper
+            .find(TextField)
+            .at(1)
+            .prop('onKeyDown')({ key: 'w', preventDefault: jest.fn() });
     });
 
     it('should calls onChange for TextField with type = text', () => {

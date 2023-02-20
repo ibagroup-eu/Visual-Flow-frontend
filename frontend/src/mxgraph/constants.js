@@ -27,15 +27,20 @@ export const CDC = 'CDC';
 export const EDGE = 'EDGE';
 export const TRANSFORM = 'TRANSFORM';
 export const SLICE = 'SLICE';
+export const PIVOT = 'PIVOT';
 export const FILTER = 'FILTER';
 export const JOB = 'JOB';
 export const NOTIFICATION = 'NOTIFICATION';
 export const CONTAINER = 'CONTAINER';
 export const WAIT = 'WAIT';
+export const STRING = 'STRING';
 export const PIPELINE = 'PIPELINE';
 export const CACHE = 'CACHE';
 export const SORT = 'SORT';
 export const VALIDATE = 'VALIDATE';
+export const DATETIME = 'DATETIME';
+export const WITH_COLUMN = 'WITH_COLUMN';
+export const HANDLE_NULL = 'HANDLE_NULL';
 
 export const PENDING = 'Pending';
 export const RUNNING = 'Running';
@@ -45,16 +50,38 @@ export const FAILED = 'Failed';
 export const ERROR = 'Error';
 export const SKIPPED = 'Skipped';
 export const TERMINATED = 'Terminated';
-const SUSPENDED = 'Suspended';
-const STOPPED = 'Stopped';
+export const SUSPENDED = 'Suspended';
 const UNKNOWN = 'Unknown';
 
 export const OLD_STAGE_WIDTH = 130;
 export const STAGE_WIDTH = 120;
 export const STAGE_HEIGHT = 72;
 
+export const AUTO_REFRESH_TIMER = 5;
+
 export const READWRITE = 'ReadWrite';
 export const OTHER = 'Other';
+
+export const DERIVE_COLUMN = 'deriveColumn';
+export const ADD_CONSTANT = 'addConstant';
+export const CHANGE_TYPE = 'changeType';
+export const RENAME_COLUMN = 'renameColumn';
+export const USE_CONDITIONS = 'useConditions';
+export const USE_WINDOW_FUNCTION = 'useWindowFunction';
+
+export const RANK = 'rank';
+export const DENSE_RANK = 'dense_rank';
+export const PERCENT_RANK = 'percent_rank';
+export const CUME_DIST = 'cume_dist';
+export const ROW_NUMBER = 'row_number';
+export const NTILE = 'ntile';
+export const LAG = 'lag';
+export const LEAD = 'lead';
+export const COUNT = 'count';
+export const SUM = 'sum';
+export const AVG = 'avg';
+export const MIN = 'min';
+export const MAX = 'max';
 
 export const JOB_STATUSES = [DRAFT, FAILED, PENDING, RUNNING, SUCCEEDED, UNKNOWN];
 
@@ -64,7 +91,6 @@ export const PIPELINE_STATUSES = [
     FAILED,
     PENDING,
     RUNNING,
-    STOPPED,
     SUCCEEDED,
     SUSPENDED,
     TERMINATED

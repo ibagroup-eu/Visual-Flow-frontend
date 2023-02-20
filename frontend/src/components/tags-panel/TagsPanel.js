@@ -20,6 +20,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
+import { map } from 'lodash';
 import useStyles from './TagsPanel.Styles';
 import TagsResetButton from '../tags-filter/tags-reset-button/TagsResetButton';
 import TagsItem from '../tags-filter/tags-item/TagsItem';
@@ -30,8 +31,8 @@ const TagsPanel = ({ data, onCheckTags, resetTags }) => {
     return (
         <Box className={classes.root}>
             <Box className={classes.tags}>
-                {data.map(tag => (
-                    <TagsItem key={tag[0]} label={tag[0]} setChecked={onCheckTags} />
+                {map(data, (value, key) => (
+                    <TagsItem key={key} label={key} setChecked={onCheckTags} />
                 ))}
             </Box>
             <TagsResetButton resetTags={resetTags} />
@@ -40,7 +41,7 @@ const TagsPanel = ({ data, onCheckTags, resetTags }) => {
 };
 
 TagsPanel.propTypes = {
-    data: PropTypes.array,
+    data: PropTypes.object,
     onCheckTags: PropTypes.func,
     resetTags: PropTypes.func
 };

@@ -73,16 +73,17 @@ describe('Logs', () => {
         );
     });
 
-    it('should call "getContainerLogs" & "getJobLogs" functions', () => {
+    it('should call "getContainerLogs" & "getJobLogs" & "getJobHistoryLogs" & "getJobStatus" functions', () => {
         const defaultProps = {
             projId: 'projId',
-            jobId: 'jobId',
             modal: true,
             pipelineId: 'pipelineId',
             nodeId: 'nodeId',
             logs: { data: [], loading: true },
             getContainerLogs: jest.fn(),
-            getJobLogs: jest.fn()
+            getJobLogs: jest.fn(),
+            getJobStatus: jest.fn(),
+            getJobHistoryLogs: jest.fn()
         };
 
         const mountedWrapper = mount(<Logs {...defaultProps} />);
@@ -93,15 +94,36 @@ describe('Logs', () => {
         expect(defaultProps.getContainerLogs).toHaveBeenCalledWith(
             defaultProps.projId,
             defaultProps.pipelineId,
-            'newNodeId'
+            'newNodeId',
+            undefined
         );
 
         // getJobLogs should be called
-        mountedWrapper.setProps({ nodeId: undefined });
+        mountedWrapper.setProps({ nodeId: undefined, jobId: 'newJobId' });
 
         expect(defaultProps.getJobLogs).toHaveBeenCalledWith(
             defaultProps.projId,
-            defaultProps.jobId
+            'newJobId',
+            undefined
+        );
+
+        // getJobHistoryLogs should be called
+        mountedWrapper.setProps({ nodeId: 'newNodeId', logId: 'logId' });
+
+        expect(defaultProps.getJobHistoryLogs).toHaveBeenCalledWith(
+            defaultProps.projId,
+            'newJobId',
+            'logId',
+            undefined
+        );
+
+        // getJobStatus should be called
+        mountedWrapper.setProps({ jobId: '', nodeId: 'newNodeId' });
+
+        expect(defaultProps.getJobStatus).toHaveBeenCalledWith(
+            defaultProps.projId,
+            defaultProps.nodeId,
+            true
         );
     });
 });

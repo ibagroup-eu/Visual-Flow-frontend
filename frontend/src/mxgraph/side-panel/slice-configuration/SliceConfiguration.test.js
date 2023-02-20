@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Chip, TextField } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import SliceConfiguration from './SliceConfiguration';
 import SelectField from '../../../components/select-field';
@@ -33,7 +33,7 @@ describe('SLICE configuration', () => {
             state: {
                 name: 'name',
                 columns: 'a,b,c',
-                mode: 'keep'
+                mode: 'Keep'
             },
             ableToEdit: true,
             onChange: jest.fn()
@@ -68,7 +68,7 @@ describe('SLICE configuration', () => {
         const props = {
             state: {
                 name: 'name',
-                mode: 'keep'
+                mode: 'Keep'
             }
         };
         wrapper = mount(<SliceConfiguration {...props} />);

@@ -31,6 +31,14 @@ jest.mock('../styles', () => ({
     getDefaultVertexStyle: jest.fn()
 }));
 
+const mockCreateSelectionShape = jest.fn();
+const MockVertexHandler = { createSelectionShape: mockCreateSelectionShape };
+jest.mock('./mxExtVertexHandler', () => {
+    return jest.fn().mockImplementation(() => {
+        return MockVertexHandler;
+    });
+});
+
 import { setGraphSettings } from './graphSettings';
 import { getDefaultEdgeStyle, getDefaultVertexStyle } from '../styles';
 import { mxConstants, mxRubberband } from '../graph';
@@ -63,7 +71,7 @@ describe('graphSettings', () => {
             setHtmlLabels: jest.fn(),
             setAllowDanglingEdges: jest.fn(),
             setDisconnectOnMove: jest.fn(),
-
+            model: { isVertex: jest.fn().mockReturnValue(true) },
             getStylesheet: () => ({
                 putDefaultVertexStyle,
                 putDefaultEdgeStyle
@@ -103,5 +111,8 @@ describe('graphSettings', () => {
 
         expect(putDefaultVertexStyle).toHaveBeenCalled();
         expect(putDefaultEdgeStyle).toHaveBeenCalled();
+
+        const v = graph.createHandler({});
+        expect(v).toBe(MockVertexHandler);
     });
 });

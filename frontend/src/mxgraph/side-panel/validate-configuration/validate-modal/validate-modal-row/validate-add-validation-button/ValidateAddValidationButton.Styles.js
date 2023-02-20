@@ -51,9 +51,6 @@ export default makeStyles(theme => ({
         marginBottom: theme.spacing(1)
     },
     typeField: {
-        width: 130
-    },
-    isErrorField: {
-        width: 82
+        width: 220
     }
 }));

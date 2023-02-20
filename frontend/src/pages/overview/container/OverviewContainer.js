@@ -20,18 +20,23 @@
 import { Divider, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
+import styles from './OverviewContainer.Styles';
 
-const OverviewContainer = ({ title, children }) => (
-    <>
-        <Grid item xs={12}>
-            <Divider light />
-        </Grid>
-        <Grid item xs={12}>
-            <Typography variant="h5">{title}</Typography>
-        </Grid>
-        {children}
-    </>
-);
+const OverviewContainer = ({ title, children }) => {
+    const classes = styles();
+
+    return (
+        <>
+            <Grid className={classes.divider} item xs={12}>
+                <Divider light />
+            </Grid>
+            <Grid className={classes.header} item xs={12}>
+                <Typography variant="h5">{title}</Typography>
+            </Grid>
+            {children}
+        </>
+    );
+};
 
 OverviewContainer.propTypes = {
     title: PropTypes.string,

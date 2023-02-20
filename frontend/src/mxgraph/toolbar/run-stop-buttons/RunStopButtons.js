@@ -33,8 +33,8 @@ const RunStopButtons = ({
 }) => {
     const PlayArrowColor = !runnable || changesNotSaved ? 'lightgrey' : 'green';
     const StopColor = stopable ? 'red' : 'lightgrey';
-    const Tip = changesNotSaved ? 'Please save your changes to run the job' : null;
     const { t } = useTranslation();
+    const Tip = changesNotSaved ? t('jobs:changesNotSaved') : null;
 
     return isNotRunning ? (
         <div title={Tip}>

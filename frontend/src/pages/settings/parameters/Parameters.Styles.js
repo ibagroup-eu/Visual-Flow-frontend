@@ -17,14 +17,9 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
-
-export default makeStyles(theme => ({
+export default theme => ({
     root: {
         paddingTop: 119
-    },
-    hidden: {
-        visibility: 'hidden'
     },
     flex: {
         display: 'flex'
@@ -44,4 +39,4 @@ export default makeStyles(theme => ({
     search: {
         width: '35%'
     }
-}));
+});

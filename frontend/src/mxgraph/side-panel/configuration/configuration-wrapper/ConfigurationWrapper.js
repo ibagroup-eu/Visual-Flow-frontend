@@ -17,10 +17,8 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
-import { isEqual } from 'lodash';
+import React from 'react';
 import { Box } from '@material-ui/core';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import useStyles from '../job-configuration/JobConfiguration.Styles';
 import SaveCancelButtons from '../../buttons';
@@ -31,29 +29,20 @@ const ConfigurationWrapper = ({
     isDisabled,
     onSave,
     setPanelDirty,
-    sidePanelIsOpen,
-    render: Component
+    render: Component,
+    state,
+    setState
 }) => {
     const classes = useStyles();
 
-    const [inputValues, setInputValues] = React.useState(configuration);
-
-    useEffect(() => {
-        setInputValues(configuration);
-    }, [configuration, sidePanelIsOpen]);
-
-    useEffect(() => {
-        setPanelDirty(!isEqual(configuration, inputValues));
-    }, [inputValues]);
-
     const handleInputChange = (key, value) =>
-        setInputValues(prevState => ({
+        setState(prevState => ({
             ...prevState,
             [key]: value
         }));
 
     const cancelChanges = () => {
-        setInputValues(configuration);
+        setState(configuration);
         setPanelDirty(false);
     };
 
@@ -61,14 +50,14 @@ const ConfigurationWrapper = ({
         <Box className={classes.root}>
             <Component
                 ableToEdit={ableToEdit}
-                state={inputValues}
+                state={state}
                 onStateChange={handleInputChange}
             />
             <SaveCancelButtons
                 ableToEdit={ableToEdit}
-                saveCell={() => onSave(inputValues)}
+                saveCell={() => onSave(state)}
                 cancelChanges={cancelChanges}
-                isDisabled={isDisabled(inputValues)}
+                isDisabled={isDisabled(state)}
             />
         </Box>
     );
@@ -80,12 +69,9 @@ ConfigurationWrapper.propTypes = {
     configuration: PropTypes.object,
     onSave: PropTypes.func,
     setPanelDirty: PropTypes.func,
-    sidePanelIsOpen: PropTypes.bool,
-    render: PropTypes.elementType
+    render: PropTypes.elementType,
+    state: PropTypes.object,
+    setState: PropTypes.func
 };
 
-const mapStateToProps = state => ({
-    sidePanelIsOpen: state.mxGraph.sidePanelIsOpen
-});
-
-export default connect(mapStateToProps)(ConfigurationWrapper);
+export default ConfigurationWrapper;

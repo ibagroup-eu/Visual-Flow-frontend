@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import { TextField, withStyles } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+
+import styles from './PropertyList.Styles';
+import { PropertyListWrapper } from './PropertyListWrapper';
+
+export const PairsList = ({
+    ableToEdit,
+    items,
+    onChange,
+    onAddItem,
+    classes,
+    label,
+    required
+}) => {
+    const { t } = useTranslation();
+
+    const handleItemChange = (index, value) => {
+        const copy = [...items];
+        copy[index] = value;
+        onChange(copy);
+    };
+
+    const renderItem = (item, index) => {
+        const [column = '', value = ''] = item;
+        return (
+            <>
+                <TextField
+                    disabled={!ableToEdit}
+                    value={column}
+                    onChange={event =>
+                        handleItemChange(index, [event.target.value, value])
+                    }
+                    label={t('jobDesigner:Column')}
+                    placeholder={t('jobDesigner:Column')}
+                    className={classes.column}
+                />
+                <TextField
+                    disabled={!ableToEdit}
+                    value={value}
+                    onChange={event =>
+                        handleItemChange(index, [column, event.target.value])
+                    }
+                    label={t('jobDesigner:Value')}
+                    placeholder={t('jobDesigner:Value')}
+                />
+            </>
+        );
+    };
+
+    return (
+        <PropertyListWrapper
+            ableToEdit={ableToEdit}
+            items={items}
+            onChange={onChange}
+            onAddItem={onAddItem}
+            label={label}
+            classes={classes}
+            required={required}
+            renderItem={renderItem}
+        />
+    );
+};
+
+PairsList.propTypes = {
+    required: PropTypes.bool,
+    ableToEdit: PropTypes.bool,
+    classes: PropTypes.object,
+    onChange: PropTypes.func,
+    onAddItem: PropTypes.func,
+    label: PropTypes.string,
+    items: PropTypes.array
+};
+
+PairsList.defaultProps = {
+    required: false
+};
+
+export default withStyles(styles)(PairsList);

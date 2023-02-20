@@ -44,7 +44,8 @@ const IconCard = ({ title, color, Icon, children, sizing, IconColor }) => {
     return (
         <Card className={classes.root}>
             <CardHeader
-                classes={{ content: classes.header }}
+                className={classes.header}
+                classes={{ content: classes.headerContent }}
                 disableTypography
                 avatar={
                     <Avatar
@@ -57,7 +58,7 @@ const IconCard = ({ title, color, Icon, children, sizing, IconColor }) => {
                 }
                 title={<Typography variant="h6">{title}</Typography>}
             />
-            <CardContent>{children}</CardContent>
+            <CardContent className={classes.cardContent}>{children}</CardContent>
         </Card>
     );
 };

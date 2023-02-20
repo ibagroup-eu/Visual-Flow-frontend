@@ -28,23 +28,28 @@ const UnitConfig = {
             TRANSFORM: true,
             SORT: true,
             SLICE: true,
+            PIVOT: true,
             JOIN: true,
             UNION: true,
             CDC: true,
             CACHE: true,
-            VALIDATE: false
+            VALIDATE: true,
+            WITH_COLUMN: true,
+            STRING: true,
+            DATETIME: true,
+            HANDLE_NULL: true
         },
         HISTORY: true
     },
     PIPELINE: {
         STAGES: {
             JOB: true,
-            PIPELINE: false,
+            PIPELINE: true,
             CONTAINER: true,
             NOTIFICATION: true,
             WAIT: true
         },
-        HISTORY: false
+        HISTORY: true
     }
 };
 

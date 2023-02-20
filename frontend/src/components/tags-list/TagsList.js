@@ -31,15 +31,10 @@ import {
 import useStyles from './TagsList.Styles';
 import TagsItem from '../tags-filter/tags-item/TagsItem';
 
-const checkItem = (checkedTags, tag) => {
-    const tagStatus = checkedTags.find(item => item[0] === tag);
-    return tagStatus ? tagStatus[1] : false;
-};
-
 const TagsList = ({ tags, limit, onCheckTags, checkedTags }) => {
     const classes = useStyles();
     const [menuAnchor, setMenuAnchor] = useState(null);
-    const hiddenChecked = tags.slice(limit).find(tag => checkItem(checkedTags, tag));
+    const hiddenChecked = tags.slice(limit).find(tag => checkedTags[tag]);
 
     const openMenu = event => {
         setMenuAnchor(event.currentTarget);
@@ -51,7 +46,7 @@ const TagsList = ({ tags, limit, onCheckTags, checkedTags }) => {
                 <TagsItem
                     key={tag}
                     label={tag}
-                    checked={checkItem(checkedTags, tag)}
+                    checked={checkedTags[tag] || false}
                     setChecked={onCheckTags}
                 />
             ))}
@@ -89,7 +84,7 @@ const TagsList = ({ tags, limit, onCheckTags, checkedTags }) => {
                                             <TagsItem
                                                 key={tag}
                                                 label={tag}
-                                                checked={checkItem(checkedTags, tag)}
+                                                checked={checkedTags[tag] || false}
                                                 setChecked={onCheckTags}
                                             />
                                         ))}
@@ -112,7 +107,7 @@ TagsList.defaultProps = {
 TagsList.propTypes = {
     tags: PropTypes.array,
     limit: PropTypes.number,
-    checkedTags: PropTypes.array,
+    checkedTags: PropTypes.object,
     onCheckTags: PropTypes.func
 };
 

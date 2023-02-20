@@ -23,7 +23,7 @@ import SelectField from '../../../../components/select-field';
 import { READWRITE } from '../../../constants';
 
 const WriteMode = ({ disabled, value, onChange, storage }) => {
-    const writeModes = [
+    const clickHouseWriteMode = [
         {
             value: 'Append',
             label: 'Append'
@@ -31,12 +31,16 @@ const WriteMode = ({ disabled, value, onChange, storage }) => {
         {
             value: 'Overwrite',
             label: 'Overwrite'
-        },
-        storage !== 'clickHouse' && {
+        }
+    ];
+    const writeModes = [
+        ...clickHouseWriteMode,
+        {
             value: 'ErrorIfExists',
             label: 'Error if table exists'
         }
     ];
+
     return (
         <SelectField
             ableToEdit={!disabled}
@@ -44,7 +48,7 @@ const WriteMode = ({ disabled, value, onChange, storage }) => {
             name="writeMode"
             value={value}
             handleInputChange={onChange}
-            menuItems={writeModes}
+            menuItems={storage !== 'clickHouse' ? writeModes : clickHouseWriteMode}
             type={READWRITE}
         />
     );

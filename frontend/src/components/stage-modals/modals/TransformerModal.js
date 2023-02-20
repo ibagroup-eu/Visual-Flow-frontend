@@ -26,16 +26,12 @@ const TransformerModal = props => {
     const content = [
         {
             title: t('transformer:note.name'),
-            paragraph1: t('transformer:note.value1'),
-            paragraph2: t('transformer:note.value2'),
-            paragraph3: t('transformer:note.value3'),
-            paragraph4: `${t('transformer:note.firstText')} 
+            paragraph1: `${t('transformer:note.value1')}
                          ${t('transformer:note.boldText')} 
-                         ${t('transformer:note.lastText')}   
-            `,
+                         ${t('transformer:note.lastText')}`,
             link1: {
-                title: t('transformer:note.value4.title'),
-                link: t('transformer:note.value4.link')
+                title: t('transformer:note.value2.title'),
+                link: t('transformer:note.value2.link')
             }
         },
         {
@@ -53,8 +49,7 @@ const TransformerModal = props => {
             example5: t('transformer:mode.value7'),
             paragraph4: t('transformer:mode.value8'),
             example6: t('transformer:mode.value9'),
-            paragraph5: t('transformer:mode.value10'),
-            paragraph6: t('transformer:mode.value11')
+            paragraph5: t('transformer:mode.value10')
         },
         {
             title: t('transformer:tableName.name'),

@@ -1,0 +1,260 @@
+{
+    "STRING": [
+        {
+            "field": "function"
+        },
+        {
+            "field": "option.sourceColumn",
+            "conditions": [
+                { "function": "ascii" },
+                { "function": "base64" },
+                { "function": "concat_ws" },
+                { "function": "decode" },
+                { "function": "encode" },
+                { "function": "format_number" },
+                { "function": "format_string" },
+                { "function": "title_case" },
+                { "function": "instr" },
+                { "function": "length" },
+                { "function": "lower" },
+                { "function": "locate" },
+                { "function": "lpad" },
+                { "function": "ltrim" },
+                { "function": "regexp_extract" },
+                { "function": "unbase64" },
+                { "function": "rpad" },
+                { "function": "repeat" },
+                { "function": "rtrim" },
+                { "function": "split" },
+                { "function": "substring" },
+                { "function": "substring_index" },
+                { "function": "trim" },
+                { "function": "upper" }
+            ]
+        },
+        {
+            "field": "option.targetColumn",
+            "conditions": [
+                {
+                    "function": "ascii"
+                },
+                {
+                    "function": "base64"
+                },
+                {
+                    "function": "concat_ws"
+                },
+                {
+                    "function": "decode"
+                },
+                {
+                    "function": "encode"
+                },
+                {
+                    "function": "format_number"
+                },
+                {
+                    "function": "format_string"
+                },
+                {
+                    "function": "title_case"
+                },
+                {
+                    "function": "instr"
+                },
+                {
+                    "function": "length"
+                },
+                {
+                    "function": "lower"
+                },
+                {
+                    "function": "locate"
+                },
+                {
+                    "function": "lpad"
+                },
+                {
+                    "function": "ltrim"
+                },
+                {
+                    "function": "regexp_extract"
+                },
+                {
+                    "function": "unbase64"
+                },
+                {
+                    "function": "rpad"
+                },
+                {
+                    "function": "repeat"
+                },
+                {
+                    "function": "rtrim"
+                },
+                {
+                    "function": "split"
+                },
+                {
+                    "function": "substring"
+                },
+                {
+                    "function": "substring_index"
+                },
+                {
+                    "function": "trim"
+                },
+                {
+                    "function": "upper"
+                }
+            ]
+        },
+        {
+            "field": "option.separator",
+            "conditions": [
+                {
+                    "function": "concat_ws"
+                }
+            ]
+        },
+        {
+            "field": "option.charset",
+            "conditions": [
+                {
+                    "function": "decode"
+                },
+                {
+                    "function": "encode"
+                }
+            ]
+        },
+        {
+            "field": "option.decimalPlaces",
+            "conditions": [
+                {
+                    "function": "format_number"
+                }
+            ]
+        },
+        {
+            "field": "option.formatString",
+            "conditions": [
+                {
+                    "function": "format_string"
+                }
+            ]
+        },
+        {
+            "field": "option.substring",
+            "conditions": [
+                {
+                    "function": "instr"
+                },
+                {
+                    "function": "locate"
+                }
+            ]
+        },
+        {
+            "field": "option.position",
+            "conditions": [
+                {
+                    "function": "locate"
+                },
+                {
+                    "function": "substring"
+                }
+            ]
+        },
+        {
+            "field": "option.length",
+            "conditions": [
+                {
+                    "function": "lpad"
+                },
+                {
+                    "function": "rpad"
+                },
+                {
+                    "function": "substring"
+                }
+            ]
+        },
+        {
+            "field": "option.pad",
+            "conditions": [
+                {
+                    "function": "lpad"
+                },
+                {
+                    "function": "rpad"
+                }
+            ]
+        },
+        {
+            "field": "option.trimString",
+            "conditions": [
+                {
+                    "function": "ltrim"
+                },
+                {
+                    "function": "rtrim"
+                },
+                {
+                    "function": "trim"
+                }
+            ]
+        },
+        {
+            "field": "option.regex",
+            "conditions": [
+                {
+                    "function": "regexp_extract"
+                },
+                {
+                    "function": "split"
+                }
+            ]
+        },
+        {
+            "field": "option.groupIndex",
+            "conditions": [
+                {
+                    "function": "regexp_extract"
+                }
+            ]
+        },
+        {
+            "field": "option.repeatNumber",
+            "conditions": [
+                {
+                    "function": "repeat"
+                }
+            ]
+        },
+        {
+            "field": "option.limit",
+            "conditions": [
+                {
+                    "storage": "split"
+                }
+            ]
+        },
+        {
+            "field": "option.delimiter",
+            "conditions": [
+                {
+                    "function": "substring_index"
+                }
+            ]
+        },
+        {
+            "field": "option.count",
+            "conditions": [
+                {
+                    "function": "substring_index"
+                }
+            ]
+        }
+    ]
+}

@@ -25,13 +25,15 @@ import Action from '../../action';
 
 export const ActionsCell = ({ actions, classes, ...rest }) => (
     <TableCell width={1} className={classes.cell} {...rest}>
-        {actions.map(action => (
-            <Action
-                key={action.title}
-                {...action}
-                classes={{ button: classes.button }}
-            />
-        ))}
+        <div className={classes.wrapper}>
+            {actions.map(action => (
+                <Action
+                    key={action.title}
+                    {...action}
+                    classes={{ button: classes.button }}
+                />
+            ))}
+        </div>
     </TableCell>
 );
 

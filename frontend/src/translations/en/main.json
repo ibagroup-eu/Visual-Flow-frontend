@@ -80,6 +80,7 @@
         "UseSchema": "Use Schema",
         "EditSchema": "Edit Schema",
         "AddConnection": "CREATE CONNECTION",
+        "AddParameter": "CREATE PARAMETER",
         "Ping": "PING",
         "CreateDataframe": "Create Dataframe",
         "EditDataframe": "Edit Dataframe",
@@ -143,7 +144,9 @@
         "MoveDown": "Move down",
         "MoveUp": "Move up",
         "Delete": "Delete",
-        "Add": "Add"
+        "Add": "Add",
+        "Refresh": "Refresh",
+        "AutoRefresh": "Auto Refresh"
     },
     "importPage": {
         "FilePath": "File Path",

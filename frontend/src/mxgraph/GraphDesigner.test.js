@@ -21,6 +21,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { useTranslation } from 'react-i18next';
 
+import { omit } from 'lodash';
+import ReactDOMServer from 'react-dom/server';
 import { GraphDesigner } from './GraphDesigner';
 
 import {
@@ -53,9 +55,7 @@ import {
 } from './graph';
 import SidePanel from './side-panel';
 import stageLabels from './stageLabels';
-import { omit } from 'lodash';
 import history from '../utils/history';
-import ReactDOMServer from 'react-dom/server';
 import renderStage from './stages/renderStage';
 
 jest.mock('./stages/renderStage', () => jest.fn());
@@ -121,7 +121,8 @@ jest.mock('./graph', () => ({
     },
     mxGraph: jest.fn().mockImplementation(() => ({
         popupMenuHandler: {
-            factoryMethod: undefined
+            factoryMethod: undefined,
+            destroy: jest.fn()
         },
         convertValueToString: undefined,
         addListener: jest.fn(),
@@ -132,7 +133,11 @@ jest.mock('./graph', () => ({
         getSelectionModel: jest.fn().mockImplementation(() => ({
             addListener: jest.fn()
         })),
-        zoomTo: jest.fn()
+        getModel: jest.fn().mockImplementation(() => ({
+            addListener: jest.fn()
+        })),
+        zoomTo: jest.fn(),
+        setEnabled: jest.fn()
     })),
     deactivateCell: jest.fn(),
     activateCell: jest.fn(),
@@ -326,7 +331,7 @@ describe('GraphDesigner', () => {
 
                 wrapper.update();
 
-                const pasteCopyHandler = wrapper.instance().pasteCopyHandler;
+                const { pasteCopyHandler } = wrapper.instance();
 
                 pasteCopyHandler({}, graph);
 
@@ -349,6 +354,28 @@ describe('GraphDesigner', () => {
     });
 
     describe('popupMenu', () => {
+        const menu = {
+            addItem: jest.fn(),
+            div: { classList: { add: jest.fn() } },
+            table: { classList: { add: jest.fn() } },
+            tbody: {
+                childNodes: [
+                    {
+                        classList: {
+                            add: jest.fn()
+                        },
+                        firstChild: {
+                            remove: jest.fn(),
+                            classList: { add: jest.fn() }
+                        },
+                        lastChild: {
+                            remove: jest.fn()
+                        }
+                    }
+                ]
+            }
+        };
+
         it('should return the popup menu for arrows', () => {
             const [wrapper] = init({ type: PIPELINE });
 
@@ -365,12 +392,21 @@ describe('GraphDesigner', () => {
                 getAttribute: () => READ
             };
 
-            const menu = { addItem: jest.fn() };
-
-            wrapper.instance().popupMenu({}, menu, cell, {});
+            wrapper
+                .instance()
+                .popupMenu({}, menu, cell, {}, null, null, null, null, true);
 
             expect(menu.addItem.mock.calls).toEqual([
-                ['Delete connection', null, expect.any(Function)]
+                [
+                    'Delete connection',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ]
             ]);
         });
         it('should return the popup menu for pipelines', () => {
@@ -389,15 +425,51 @@ describe('GraphDesigner', () => {
                 getAttribute: () => READ
             };
 
-            const menu = { addItem: jest.fn() };
-
-            wrapper.instance().popupMenu({}, menu, cell, {});
+            wrapper
+                .instance()
+                .popupMenu({}, menu, cell, {}, null, null, null, null, true);
 
             expect(menu.addItem.mock.calls).toEqual([
-                ['Open "MY_JOB"', null, expect.any(Function)],
-                ['Edit child node', null, expect.any(Function)],
-                ['Copy child node', null, expect.any(Function)],
-                ['Delete child node', null, expect.any(Function)]
+                [
+                    'Open "MY_JOB"',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    'Edit child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    'Copy child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    'Delete child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ]
             ]);
         });
 
@@ -410,37 +482,72 @@ describe('GraphDesigner', () => {
                 getAttribute: () => READ
             };
 
-            const menu = { addItem: jest.fn() };
-
-            wrapper.instance().popupMenu({}, menu, cell, {});
+            wrapper
+                .instance()
+                .popupMenu({}, menu, cell, {}, null, null, null, null, true);
 
             expect(menu.addItem.mock.calls).toEqual([
-                ['Edit child node', null, expect.any(Function)],
-                ['Copy child node', null, expect.any(Function)],
-                ['Delete child node', null, expect.any(Function)]
+                [
+                    'Edit child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    'Copy child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ],
+                [
+                    'Delete child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ]
             ]);
         });
 
         it('should show "Paste child node" option', () => {
             const [wrapper] = init({ type: JOB });
 
-            const menu = { addItem: jest.fn() };
-
             wrapper.setState({ stageCopy: {} });
 
             wrapper.update();
 
-            wrapper.instance().popupMenu({}, menu, undefined, {});
+            wrapper
+                .instance()
+                .popupMenu({}, menu, undefined, {}, null, null, null, null, true);
 
             expect(menu.addItem.mock.calls).toEqual([
-                ['Paste child node', null, expect.any(Function)]
+                [
+                    'Paste child node',
+                    null,
+                    expect.any(Function),
+                    null,
+                    null,
+                    null,
+                    null,
+                    true
+                ]
             ]);
         });
 
         it('should handle "Delete connection"', () => {
             const [wrapper, props] = init({ type: JOB }, true);
 
-            const menu = { addItem: jest.fn() };
             const graph = { removeCells: jest.fn() };
             const cell = {
                 value: {},
@@ -462,7 +569,6 @@ describe('GraphDesigner', () => {
         it('should handle "Open"', () => {
             const [wrapper] = init({ type: PIPELINE });
 
-            const menu = { addItem: jest.fn() };
             const graph = { removeCells: jest.fn() };
             const cell = {
                 value: {
@@ -489,7 +595,6 @@ describe('GraphDesigner', () => {
         it('should handle "Edit child node"', () => {
             const [wrapper, props] = init({ type: JOB }, true);
 
-            const menu = { addItem: jest.fn() };
             const graph = { removeCells: jest.fn() };
             const cell = {
                 id: 0,
@@ -511,7 +616,6 @@ describe('GraphDesigner', () => {
         it('should handle "Copy child node"', () => {
             const [wrapper] = init({ type: JOB });
 
-            const menu = { addItem: jest.fn() };
             const graph = { removeCells: jest.fn() };
             const cell = {
                 id: 0,
@@ -537,7 +641,6 @@ describe('GraphDesigner', () => {
                 true
             );
 
-            const menu = { addItem: jest.fn() };
             const graph = { removeCells: jest.fn() };
             const cell = {
                 id: 0,
@@ -561,8 +664,6 @@ describe('GraphDesigner', () => {
 
         it('Paste child node"', () => {
             const [wrapper, props] = init({ type: JOB }, true);
-
-            const menu = { addItem: jest.fn() };
 
             wrapper.setState({ stageCopy: { value: { attributes: {} } } });
 
@@ -601,7 +702,8 @@ describe('GraphDesigner', () => {
                 popupMenuHandler: {
                     hideMenu: jest.fn()
                 },
-                removeCells: jest.fn()
+                removeCells: jest.fn(),
+                setEnabled: jest.fn()
             };
 
             wrapper.setState({ graph });
@@ -637,6 +739,10 @@ describe('GraphDesigner', () => {
                 getSelectionCell: jest.fn(() => ({ id: 0 })),
                 cellEditor: {
                     stopEditing: jest.fn()
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -673,6 +779,10 @@ describe('GraphDesigner', () => {
                 getSelectionCell: jest.fn(() => ({ id: 0 })),
                 cellEditor: {
                     stopEditing: jest.fn()
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -722,7 +832,11 @@ describe('GraphDesigner', () => {
 
             const graph = {
                 removeCells: jest.fn(),
-                insertEdge: jest.fn()
+                insertEdge: jest.fn(),
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
+                }
             };
 
             wrapper.setState({ graph });
@@ -751,7 +865,11 @@ describe('GraphDesigner', () => {
 
             const graph = {
                 removeCells: jest.fn(),
-                insertEdge: jest.fn()
+                insertEdge: jest.fn(),
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
+                }
             };
 
             wrapper.setState({ graph });
@@ -1002,7 +1120,8 @@ describe('GraphDesigner', () => {
                     factoryMethod: jest.fn()
                 },
                 convertValueToString: undefined,
-                addListener: jest.fn()
+                addListener: jest.fn(),
+                setEnabled: jest.fn()
             };
 
             const instance = wrapper.instance();
@@ -1079,6 +1198,10 @@ describe('GraphDesigner', () => {
                         getAttribute
                     })),
                     setValue: jest.fn()
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -1109,7 +1232,11 @@ describe('GraphDesigner', () => {
                 addListener: jest.fn(),
                 getSelectionCell: jest.fn(() => ({
                     edge: false
-                }))
+                })),
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
+                }
             };
 
             const instance = wrapper.instance();
@@ -1176,6 +1303,10 @@ describe('GraphDesigner', () => {
                         getAttribute
                     })),
                     setValue: jest.fn()
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -1268,6 +1399,10 @@ describe('GraphDesigner', () => {
                         getAttribute
                     })),
                     setValue: jest.fn()
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -1279,7 +1414,7 @@ describe('GraphDesigner', () => {
 
             instance.selectionChange();
 
-            const [_, callback] = graph.addListener.mock.calls[0];
+            const [, callback] = graph.addListener.mock.calls[0];
 
             callback();
 
@@ -1300,6 +1435,10 @@ describe('GraphDesigner', () => {
             const graph = {
                 connectionHandler: {
                     connectImage: undefined
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -1334,6 +1473,10 @@ describe('GraphDesigner', () => {
                 getAllConnectionConstraints: undefined,
                 model: {
                     isVertex: () => true
+                },
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
                 }
             };
 
@@ -1382,7 +1525,11 @@ describe('GraphDesigner', () => {
                 connectionHandler: {
                     connectImage: undefined
                 },
-                getAllConnectionConstraints: undefined
+                getAllConnectionConstraints: undefined,
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
+                }
             };
 
             const instance = wrapper.instance();
@@ -1425,7 +1572,11 @@ describe('GraphDesigner', () => {
                 },
                 getAllConnectionConstraints: undefined,
                 createEdge: jest.fn(() => 'EDGE'),
-                addListener: jest.fn()
+                addListener: jest.fn(),
+                setEnabled: jest.fn(),
+                popupMenuHandler: {
+                    factoryMethod: undefined
+                }
             };
 
             const instance = wrapper.instance();
@@ -1441,7 +1592,7 @@ describe('GraphDesigner', () => {
             expect(graph.createEdge).toHaveBeenCalled();
             expect(graph.addListener).toHaveBeenCalled();
 
-            const [_, callback] = graph.addListener.mock.calls[0];
+            const [, callback] = graph.addListener.mock.calls[0];
 
             callback();
 
@@ -1461,7 +1612,15 @@ describe('GraphDesigner', () => {
 
             const instance = wrapper.instance();
 
-            instance.setState({ graph: { zoomTo: graphZoomTo } });
+            instance.setState({
+                graph: {
+                    zoomTo: graphZoomTo,
+                    setEnabled: jest.fn(),
+                    popupMenuHandler: {
+                        factoryMethod: undefined
+                    }
+                }
+            });
 
             wrapper.update();
 
@@ -1479,7 +1638,15 @@ describe('GraphDesigner', () => {
 
             const instance = wrapper.instance();
 
-            instance.setState({ graph: { zoomTo: graphZoomTo } });
+            instance.setState({
+                graph: {
+                    zoomTo: graphZoomTo,
+                    setEnabled: jest.fn(),
+                    popupMenuHandler: {
+                        factoryMethod: undefined
+                    }
+                }
+            });
 
             wrapper.update();
 

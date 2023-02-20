@@ -1,0 +1,15 @@
+{
+    "Status": "Статус",
+    "tooltip": {
+        "Play": "Запустить",
+        "Stop": "Остановить",
+        "Copy": "Скопировать",
+        "History": "История",
+        "Remove": "Удалить",
+        "jobDesigner": "Job Designer",
+        "Logs": "Logs",
+        "Remove selected": "Удалить выбранные",
+        "Export selected": "Экспорт выбранных"
+    },
+    "noItems": "Данных не найдено"
+}

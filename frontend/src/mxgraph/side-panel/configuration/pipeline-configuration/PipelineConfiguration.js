@@ -27,7 +27,9 @@ export const PipelineConfiguration = ({
     ableToEdit,
     configuration,
     setPanelDirty,
-    saveCell
+    saveCell,
+    state,
+    setState
 }) => {
     return (
         <ConfigurationWrapper
@@ -36,6 +38,8 @@ export const PipelineConfiguration = ({
             ableToEdit={ableToEdit}
             isDisabled={isDisabled}
             setPanelDirty={setPanelDirty}
+            state={state}
+            setState={setState}
             render={Pipeline}
         />
     );
@@ -46,7 +50,9 @@ PipelineConfiguration.propTypes = {
     ableToEdit: PropTypes.bool,
     configuration: PropTypes.object,
     saveCell: PropTypes.func,
-    setPanelDirty: PropTypes.func
+    setPanelDirty: PropTypes.func,
+    state: PropTypes.object,
+    setState: PropTypes.func
 };
 
 export default PipelineConfiguration;

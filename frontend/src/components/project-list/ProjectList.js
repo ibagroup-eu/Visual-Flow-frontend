@@ -38,7 +38,7 @@ export const ProjectList = ({ projects: { data, loading }, getProjects }) => {
     return (
         <Box p={3}>
             <Grid container align="stretch" direction="row" spacing={3}>
-                {(loading ? Array.from(new Array(12)) : projectsWithAdd()).map(
+                {(loading ? Array.from(new Array(12)) : projectsWithAdd())?.map(
                     (project, index) => (
                         <Grid
                             item

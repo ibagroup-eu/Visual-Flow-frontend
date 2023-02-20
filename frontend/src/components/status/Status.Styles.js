@@ -52,6 +52,10 @@ export default theme => ({
         borderColor: theme.palette.error.main
     },
     chipTerminated: {
+        color: theme.palette.error.main,
+        borderColor: theme.palette.error.main
+    },
+    chipSuspended: {
         color: theme.palette.warning.main,
         borderColor: theme.palette.warning.main
     }

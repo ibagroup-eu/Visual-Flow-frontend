@@ -46,13 +46,15 @@ describe('HistoryPanel', () => {
                     status: 'Succeeded',
                     startedAt: '2022-08-08 21:05:55 +0000',
                     finishedAt: '2022-08-08 21:06:34 +0000',
-                    startedBy: 'testbigbigemailwithname1-gomel-iba-by'
+                    startedBy: 'testbigbigemailwithname1-gomel-iba-by',
+                    id: 'testId'
                 },
                 {
                     status: 'Succeeded',
                     startedAt: '2022-08-17 21:05:55 +0000',
                     finishedAt: '2022-08-17 21:06:34 +0000',
-                    startedBy: 'testbigbigemailwithname1-gomel-iba-by'
+                    startedBy: 'testbigbigemailwithname1-gomel-iba-by',
+                    id: 'testId'
                 }
             ],
             projectId: 'id',
@@ -133,7 +135,7 @@ describe('HistoryPanel', () => {
         wrapper
             .find(HistoryDaysRow)
             .at(0)
-            .invoke('findName')('id');
+            .invoke('findName')('testId');
     });
 
     it('should calls findName prop with data.definition', () => {

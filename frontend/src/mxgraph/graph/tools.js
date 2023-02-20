@@ -19,7 +19,7 @@
 
 /* eslint-disable no-param-reassign */
 
-import { get, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { get, set, isEmpty, isEqual, isNil, omit } from 'lodash';
 
 import { addStyles, toObject } from './utils';
 import {
@@ -208,14 +208,14 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
             .filter(({ value }) => value)
             .forEach(node => {
                 const xmlNode = jsonEncoder.encode(node.value);
-
+                const { points } = node.geometry;
                 if (xmlNode.getAttribute('operation') === EDGE) {
                     const edgeColor =
                         xmlNode.getAttribute('successPath') === 'false'
                             ? theme.palette.error.light
                             : theme.palette.success.light;
 
-                    graph.insertEdge(
+                    const edge = graph.insertEdge(
                         parent,
                         node.id,
                         xmlNode,
@@ -223,6 +223,8 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
                         vertices[node.target],
                         addStyles({ strokeColor: edgeColor }, node.style)
                     );
+
+                    set(edge, 'geometry.points', points);
                 }
             });
     } finally {

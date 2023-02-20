@@ -133,7 +133,7 @@ export const Params = ({
     const getSection = (key, field) => (
         <Fade key={key} in>
             <div className={classes.section}>
-                <DividerWithText>{field.label}</DividerWithText>
+                <DividerWithText type="res">{field.label}</DividerWithText>
                 <div className={classes.section}>
                     {entries(field.fields).map(
                         ([k, v]) => isVisible(v) && getField(k, v)

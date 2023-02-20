@@ -34,6 +34,10 @@ const initialState = {
 const oneJobStatusReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case FETCH_JOB_STATUS_START:
+            return {
+                ...state,
+                loading: !action.payload
+            };
         case UPDATE_JOB_STATUS_START:
             return {
                 ...state,

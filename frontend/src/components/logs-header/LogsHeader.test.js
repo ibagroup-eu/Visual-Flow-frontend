@@ -19,8 +19,9 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import LogsHeader from './LogsHeader';
 import { Button, FormControl, MenuItem, Select } from '@material-ui/core';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import LogsHeader from './LogsHeader';
 import SearchInput from '../search-input';
 
 describe('LogsHeader', () => {
@@ -30,7 +31,10 @@ describe('LogsHeader', () => {
             onSearch: jest.fn(),
             onSelect: jest.fn(),
             dropList: ['value_1', 'value_2'],
-            levels: []
+            levels: [],
+            onSetAutoRefresh: jest.fn(),
+            autoRefresh: true,
+            autoRefreshDisabled: false
         };
 
         const wrapper = func(<LogsHeader {...defaultProps} {...props} />);
@@ -67,5 +71,13 @@ describe('LogsHeader', () => {
         wrapper.find(Button).simulate('click');
 
         expect(props.onRefreshClick).toHaveBeenCalled();
+    });
+
+    it('should handle "onSetAutoRefresh"', () => {
+        const [wrapper, props] = init({ autoRefresh: false }, true);
+
+        wrapper.find(ToggleButton).simulate('change');
+
+        expect(props.onSetAutoRefresh).toHaveBeenCalled();
     });
 });

@@ -17,17 +17,36 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { ListItemText, MenuItem, Menu, ListItemIcon } from '@material-ui/core';
-import { ExitToAppSharp, FaceSharp } from '@material-ui/icons';
+import { connect } from 'react-redux';
+import {
+    ListItemText,
+    MenuItem,
+    Menu,
+    ListItemIcon,
+    Divider
+} from '@material-ui/core';
+import { ExitToAppSharp, FaceSharp, LocalOffer } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
+
 import ProfilePageModal from '../profile-page';
 import api from '../../../api/auth';
+import { fetchVersion } from '../../../redux/actions/appSettingsActions';
 
-const ProfileMenu = ({ anchorEl, open, handleClose }) => {
+export const ProfileMenu = ({
+    anchorEl,
+    open,
+    handleClose,
+    getVersion,
+    version
+}) => {
     const { t } = useTranslation();
     const [openProfilePage, setOpenProfilePage] = useState(false);
+
+    useEffect(() => {
+        !version && getVersion();
+    }, []);
 
     const handleOpenProfilePage = () => {
         setOpenProfilePage(true);
@@ -36,6 +55,7 @@ const ProfileMenu = ({ anchorEl, open, handleClose }) => {
     const handleCloseProfilePage = () => {
         setOpenProfilePage(false);
     };
+
     return (
         <>
             <Menu
@@ -45,7 +65,6 @@ const ProfileMenu = ({ anchorEl, open, handleClose }) => {
                 PaperProps={{
                     style: {
                         width: 200,
-                        height: 112,
                         borderRadius: 8
                     }
                 }}
@@ -62,6 +81,17 @@ const ProfileMenu = ({ anchorEl, open, handleClose }) => {
                     </ListItemIcon>
                     <ListItemText>{t('main:profileMenu.logOut')}</ListItemText>
                 </MenuItem>
+                {version && (
+                    <div>
+                        <Divider />
+                        <MenuItem>
+                            <ListItemIcon>
+                                <LocalOffer fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Version: {version}</ListItemText>
+                        </MenuItem>
+                    </div>
+                )}
             </Menu>
 
             <ProfilePageModal
@@ -76,7 +106,13 @@ const ProfileMenu = ({ anchorEl, open, handleClose }) => {
 ProfileMenu.propTypes = {
     anchorEl: PropTypes.any,
     open: PropTypes.bool,
-    handleClose: PropTypes.func
+    handleClose: PropTypes.func,
+    getVersion: PropTypes.func,
+    version: PropTypes.string
 };
 
-export default ProfileMenu;
+const mapStateToProps = state => ({
+    version: state.appSettings.version
+});
+
+export default connect(mapStateToProps, { getVersion: fetchVersion })(ProfileMenu);

@@ -25,7 +25,7 @@ export default makeStyles(theme => ({
         flexDirection: 'row',
         justifyContent: 'center',
         marginTop: theme.spacing(3),
-        paddingBottom: 44
+        paddingBottom: 64
     },
     button: {
         margin: '0 16px',

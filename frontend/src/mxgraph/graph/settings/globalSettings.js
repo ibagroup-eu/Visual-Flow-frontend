@@ -17,13 +17,7 @@
  * limitations under the License.
  */
 
-import {
-    mxEdgeHandler,
-    mxEvent,
-    mxGraphHandler,
-    mxGuide,
-    mxVertexHandler
-} from '../graph';
+import { mxEdgeHandler, mxEvent, mxGraphHandler, mxGuide } from '../graph';
 
 // eslint-disable-next-line import/prefer-default-export
 export const setGlobalSettings = () => {
@@ -33,12 +27,4 @@ export const setGlobalSettings = () => {
     mxGuide.prototype.isEnabledForEvent = event => !mxEvent.isAltDown(event);
     // Specifies if waypoints should snap to the routing centers of terminals
     mxEdgeHandler.prototype.snapToTerminals = true;
-
-    const { createSelectionShape } = mxVertexHandler.prototype;
-
-    mxVertexHandler.prototype.createSelectionShape = bounds => {
-        const shape = createSelectionShape.call(mxVertexHandler.prototype, bounds);
-        shape.isRounded = true;
-        return shape;
-    };
 };

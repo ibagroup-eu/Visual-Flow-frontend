@@ -17,25 +17,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
+
 <html lang="en">
-    <head>
-        <base href="%BASE_URL%" />
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="description" content="VisualFlow" />
-        <link rel="manifest" href="resources/manifest.json" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-        <link rel="stylesheet" href="dist/index.css" />
-        <title>Visual Flow</title>
-    </head>
-    <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <script>
-            var BASE_URL="%BASE_URL%";
-        </script>
-        <div id="root"></div>
-        <script src="dist/index.js"></script>
-    </body>
+<head>
+    <base href="%BASE_URL%" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="VisualFlow" />
+    <link rel="manifest" href="resources/manifest.json" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="icon" type="image/x-icon" href="resources/favicon/favicon-32x32.ico" sizes="32x32">
+    <link rel="icon" type="image/x-icon" href="resources/favicon/favicon-16x16.ico" sizes="16x16">
+    <link rel="stylesheet" href="dist/index.css" />
+    <title>Visual Flow</title>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<script>
+    var BASE_URL="%BASE_URL%";
+    var mxLoadStylesheets = false;
+</script>
+<div id="root"></div>
+<script src="dist/index.js"></script>
+</body>
 </html>

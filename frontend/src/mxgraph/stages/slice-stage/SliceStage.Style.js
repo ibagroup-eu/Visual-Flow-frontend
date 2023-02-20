@@ -20,9 +20,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
-    key: {
-        backgroundColor: theme.palette.success.light
-    },
     mode: {
         backgroundColor: theme.palette.success.light
     }

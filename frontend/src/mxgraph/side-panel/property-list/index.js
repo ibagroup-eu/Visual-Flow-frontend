@@ -19,4 +19,6 @@
 
 import PropertyList from './PropertyList';
 
+export { default as PairsList } from './PairsList';
+
 export default PropertyList;

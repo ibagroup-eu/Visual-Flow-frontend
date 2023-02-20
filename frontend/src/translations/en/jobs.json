@@ -27,6 +27,7 @@
         "History": "History"
     },
     "noItems": "No items to display",
+    "changesNotSaved": "Please save your changes to run the job",
     "confirm": {
         "delete": "Are you sure you want to delete {{name}} job(s)?"
     },

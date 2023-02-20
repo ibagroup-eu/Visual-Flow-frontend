@@ -17,21 +17,40 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import {
     checkCassandraRequiredFields,
     checkClickHouseRequiredFields,
     checkCosRequiredFields,
+    checkDatatimeFields,
     checkElasticsearchRequiredFields,
     checkGroupByFields,
     checkMongoRequiredFields,
+    checkPivotFields,
     checkReadWriteFields,
     checkRemoveDuplicateFields,
     checkSortFields,
     checkTransformerFields,
-    isAnyEmpty
+    checkWithColumnFields,
+    isAnyEmpty,
+    windowFunctionRequiredFields,
+    checkStringFunctionsFields,
+    checkHandleNullFields
 } from './validation';
-import { READ, WRITE } from '../../constants';
+import {
+    ADD_CONSTANT,
+    CHANGE_TYPE,
+    DERIVE_COLUMN,
+    LAG,
+    MIN,
+    NTILE,
+    PIVOT,
+    RANK,
+    DATETIME,
+    READ,
+    RENAME_COLUMN,
+    USE_CONDITIONS,
+    WRITE
+} from '../../constants';
 
 describe('validation', () => {
     describe('checkReadWriteFields', () => {
@@ -198,32 +217,82 @@ describe('validation', () => {
         expect(checkMongoRequiredFields(fields)).toBeTruthy();
     });
 
-    it('should check empty values for Elasticsearch storage', () => {
-        const fields = {
-            nodes: '',
-            port: 'port',
-            user: 'user',
-            password: 'pw',
-            index: 'index',
-            certData: 'cert'
-        };
-        expect(checkElasticsearchRequiredFields(fields)).toBeTruthy();
+    describe('checkElasticsearchRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    nodes: 'nodes',
+                    port: 'port',
+                    user: 'user',
+                    password: 'pw',
+                    certData: 'cert',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
+            {
+                source: {
+                    nodes: '',
+                    port: 'port',
+                    user: 'user',
+                    password: 'pw',
+                    index: 'index',
+                    certData: 'cert'
+                },
+                expected: true
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkElasticsearchRequiredFields(source)).toBe(expected);
+            }
+        );
     });
 
-    it('should check empty values for Cassandra storage', () => {
-        const fields = {
-            keyspace: '',
-            host: '',
-            port: 'port',
-            username: 'user',
-            password: 'pw',
-            table: 'table'
-        };
-        expect(checkCassandraRequiredFields(fields)).toBeTruthy();
+    describe('checkCassandraRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    keyspace: 'key',
+                    host: 'host',
+                    port: 'port',
+                    username: 'user',
+                    password: 'pw',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
+            {
+                source: {
+                    keyspace: 'key',
+                    host: 'host',
+                    port: 'port',
+                    username: 'user',
+                    password: 'pw',
+                    table: 'table'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkCassandraRequiredFields(source)).toBe(expected);
+            }
+        );
     });
 
     describe('checkCosRequiredFields', () => {
         it.each([
+            {
+                source: {
+                    endpoint: 'endpoint',
+                    authType: 'IAM',
+                    iamApiKey: 'iamApiKey',
+                    iamServiceId: 'iamServiceId',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
             {
                 source: {
                     endpoint: 'endpoint',
@@ -309,6 +378,7 @@ describe('validation', () => {
                     operation: READ,
                     ...common,
                     customSql: 'true',
+                    database: 'database',
                     'option.dbtable': 'option.dbtable'
                 },
                 expected: false
@@ -341,6 +411,358 @@ describe('validation', () => {
             'should return $expected when called with $source',
             ({ source, expected }) => {
                 expect(checkClickHouseRequiredFields(source)).toEqual(expected);
+            }
+        );
+    });
+
+    describe('checkWithColumnFields ', () => {
+        const name = 'name';
+        it.each([
+            { source: {}, expected: true },
+            { source: { name }, expected: true },
+            { source: { name, column: 'column' }, expected: true },
+            { source: { name, operationType: RENAME_COLUMN }, expected: true },
+            {
+                source: { name, column: 'column', operationType: RENAME_COLUMN },
+                expected: true
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
+                    operationType: RENAME_COLUMN,
+                    'option.columnName': 'col2'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
+                    operationType: DERIVE_COLUMN,
+                    'option.expression': 'a+b'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
+                    operationType: ADD_CONSTANT,
+                    'option.constant': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
+                    operationType: CHANGE_TYPE,
+                    'option.columnType': 'double'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
+                    operationType: USE_CONDITIONS,
+                    'option.conditions': 'test'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkWithColumnFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('windowFunctionRequiredFields', () => {
+        it.each([
+            { source: { 'option.windowFunction': MIN }, expected: true },
+            {
+                source: { 'option.windowFunction': MIN, 'option.column': 'a' },
+                expected: false
+            },
+            { source: { 'option.windowFunction': RANK }, expected: true },
+            {
+                source: {
+                    'option.windowFunction': RANK,
+                    'option.orderBy': 'a:desc'
+                },
+                expected: false
+            },
+            { source: { 'option.windowFunction': NTILE }, expected: true },
+            {
+                source: {
+                    'option.windowFunction': NTILE,
+                    'option.n': '3',
+                    'option.orderBy': 'a:desc'
+                },
+                expected: false
+            },
+            {
+                source: { 'option.windowFunction': LAG, 'option.orderBy': 'a' },
+                expected: true
+            },
+            {
+                source: {
+                    'option.windowFunction': LAG,
+                    'option.orderBy': 'a:desc',
+                    'option.expression': 'test'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(windowFunctionRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkPivotFields ', () => {
+        it.each([
+            { source: {}, expected: true },
+            { source: { name: 'test' }, expected: true },
+            { source: { name: 'test', operation: PIVOT }, expected: true },
+            { source: { name: 'test', operationType: 'pivot' }, expected: true },
+            {
+                source: {
+                    name: 'test',
+                    operation: PIVOT,
+                    operationType: 'unpivot',
+                    'option.unchangedColumns': 'test',
+                    'option.unpivotColumns': 'test',
+                    'option.unpivotNames': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    name: 'test',
+                    operation: PIVOT,
+                    operationType: 'pivot',
+                    'option.groupBy': 'test',
+                    'option.pivotColumn': 'test',
+                    'option.aggregation': 'test()'
+                },
+                expected: true
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkPivotFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkStringFunctionsFields', () => {
+        const common = {
+            name: 'name',
+            'option.sourceColumn': 'test',
+            'option.targetColumn': 'test'
+        };
+
+        it.each([
+            {
+                source: {
+                    function: 'base64',
+                    ...common
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'concat_ws',
+                    ...common,
+                    'option.separator': ','
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'decode' || 'encode',
+                    ...common,
+                    'option.charset': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'format_number',
+                    ...common,
+                    'option.decimalPlaces': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'format_string',
+                    ...common,
+                    'option.formatString': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'instr' || 'locate',
+                    ...common,
+                    'option.substring': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'repeat',
+                    ...common,
+                    'option.repeatNumber': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'lpad' || 'rpad',
+                    ...common,
+                    'option.pad': 'test',
+                    'option.length': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'regexp_extract',
+                    ...common,
+                    'option.regex': 'test',
+                    'option.groupIndex': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'substring',
+                    ...common,
+                    'option.position': 'test',
+                    'option.length': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    function: 'substring_index',
+                    ...common,
+                    'option.delimiter': 'test',
+                    'option.count': 'test'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkStringFunctionsFields(source)).toEqual(expected);
+            }
+        );
+    });
+
+    describe('checkDatatimeFields', () => {
+        it.each([
+            {
+                source: {
+                    operation: DATETIME,
+                    name: 'test',
+                    function: 'test',
+                    'option.targetColumn': 'test'
+                },
+                expected: false
+            },
+            {
+                source: { operation: DATETIME, name: 'test', function: 'test' },
+                expected: true
+            },
+            {
+                source: { operation: DATETIME },
+                expected: true
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkDatatimeFields(source)).toEqual(expected);
+            }
+        );
+    });
+
+    describe('checkHandleNullFields', () => {
+        it.each([
+            {
+                source: {
+                    mode: 'DROP',
+                    name: 'test',
+                    'option.dropType': 'column'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    mode: 'DROP',
+                    name: 'test',
+                    'option.dropType': 'column',
+                    'option.dropChoice': 'all'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    mode: 'DROP',
+                    name: 'test',
+                    'option.dropType': 'column',
+                    'option.dropChoice': 'names'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'custom'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'custom',
+                    'option.fillChoice': 'all',
+                    'option.fillValues': 'test'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'custom',
+                    'option.fillChoice': 'names',
+                    'option.fillColumns': 'a,b'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'agg',
+                    'option.fillStrategy': 'mean',
+                    'option.fillColumns': 'a,b'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkHandleNullFields(source)).toEqual(expected);
             }
         );
     });

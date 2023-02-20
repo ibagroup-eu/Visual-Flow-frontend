@@ -2,10 +2,15 @@
     "parameter": {
         "tooltip": {
             "string": "String",
-            "secureString": "Secure string"
+            "secureString": "Secure string",
+            "Edit": "Edit Parameter",
+            "Delete": "Delete Parameter"
         },
         "Name": "Name",
-        "Value": "Value"
+        "Value": "Value",
+        "Create": "New Parameter",
+        "Edit": "Edit Parameter",
+        "Type": "Type"
     },
     "connection": {
         "tooltip": {

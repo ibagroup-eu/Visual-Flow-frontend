@@ -28,9 +28,7 @@ import CronModal from '../../../components/cron-modal';
 
 const CronButton = ({ projectId, pipeline, refresh, changesNotSaved }) => {
     const { t } = useTranslation();
-    const Tip = changesNotSaved
-        ? 'Please save pipeline changes to change cron'
-        : null;
+    const Tip = changesNotSaved ? t('pipelines:changesNotSaved') : null;
 
     const [cronPipeline, setCronPipeline] = React.useState({
         pipelineId: '',

@@ -43,7 +43,13 @@ import {
     COPY_PIPELINE_SUCCESS,
     COPY_PIPELINE_FAIL,
     SET_PIPELINES_LAST_RUN,
-    SET_PIPELINES_STATUS
+    SET_PIPELINES_STATUS,
+    SUSPEND_PIPELINE_START,
+    SUSPEND_PIPELINE_FAIL,
+    SUSPEND_PIPELINE_SUCCESS,
+    RETRY_PIPELINE_START,
+    RETRY_PIPELINE_SUCCESS,
+    RETRY_PIPELINE_FAIL
 } from './types';
 import api from '../../api/pipelines';
 import history from '../../utils/history';
@@ -146,22 +152,22 @@ export const stopPipeline = (projectId, pipelineId, action) => dispatch => {
 export const stopPipelineAndRefreshIt = (projectId, pipelineId) =>
     stopPipeline(projectId, pipelineId, fetchPipelineStatus(projectId, pipelineId));
 
-export const resumePipeline = (projectId, pipelineId) => dispatch => {
+export const retryPipeline = (projectId, pipelineId) => dispatch => {
     dispatch({
-        type: RESUME_PIPELINE_START
+        type: RETRY_PIPELINE_START
     });
 
-    return api.resumePipeline(projectId, pipelineId).then(
+    return api.retryPipeline(projectId, pipelineId).then(
         response => {
             dispatch({
-                type: RESUME_PIPELINE_SUCCESS,
+                type: RETRY_PIPELINE_SUCCESS,
                 payload: response.data
             });
             setTimeout(() => dispatch(fetchPipelines(projectId)), 2000);
         },
         error =>
             dispatch({
-                type: RESUME_PIPELINE_FAIL,
+                type: RETRY_PIPELINE_FAIL,
                 payload: { error }
             })
     );
@@ -261,3 +267,45 @@ export const setPipelinesStatus = val => ({
     type: SET_PIPELINES_STATUS,
     payload: val
 });
+
+export const suspendPipeline = (projectId, pipelineId) => dispatch => {
+    dispatch({
+        type: SUSPEND_PIPELINE_START
+    });
+
+    return api.suspendPipeline(projectId, pipelineId).then(
+        response => {
+            dispatch({
+                type: SUSPEND_PIPELINE_SUCCESS,
+                payload: response.data
+            });
+            dispatch(fetchPipelines(projectId));
+        },
+        error =>
+            dispatch({
+                type: SUSPEND_PIPELINE_FAIL,
+                payload: { error }
+            })
+    );
+};
+
+export const resumePipeline = (projectId, pipelineId) => dispatch => {
+    dispatch({
+        type: RESUME_PIPELINE_START
+    });
+
+    return api.resumePipeline(projectId, pipelineId).then(
+        response => {
+            dispatch({
+                type: RESUME_PIPELINE_SUCCESS,
+                payload: response.data
+            });
+            dispatch(fetchPipelines(projectId));
+        },
+        error =>
+            dispatch({
+                type: RESUME_PIPELINE_FAIL,
+                payload: { error }
+            })
+    );
+};

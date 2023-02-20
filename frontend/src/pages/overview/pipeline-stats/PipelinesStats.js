@@ -18,13 +18,12 @@
  */
 
 import React from 'react';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import PauseCircleOutlineOutlinedIcon from '@material-ui/icons/PauseCircleOutlineOutlined';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import PauseSharpIcon from '@material-ui/icons/PauseSharp';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WarningOutlinedIcon from '@material-ui/icons/WarningOutlined';
-import SmsFailedOutlinedIcon from '@material-ui/icons/SmsFailedOutlined';
-import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
-import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
+import ErrorOutlineOutlinedIcon from '@material-ui/icons/ErrorOutlineOutlined';
+import StopTwoToneIcon from '@material-ui/icons/StopTwoTone';
 import DoneIcon from '@material-ui/icons/Done';
 import { useTheme } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -38,7 +37,7 @@ const PipelinesStats = ({ data, loading, setStatus, setCurrentPage }) => {
     const items = [
         {
             title: t('filters:statuses.Draft'),
-            Icon: InfoOutlinedIcon,
+            Icon: AssignmentIcon,
             color: theme.palette.grey[600],
             data: data?.pipelinesStat?.Draft
         },
@@ -68,27 +67,21 @@ const PipelinesStats = ({ data, loading, setStatus, setCurrentPage }) => {
             data: data?.pipelinesStat?.Failed
         },
         {
-            title: t('filters:statuses.Stopped'),
-            Icon: StopOutlinedIcon,
-            color: theme.palette.warning.main,
-            data: data?.pipelinesStat?.Stopped
-        },
-        {
             title: t('filters:statuses.Error'),
-            Icon: SmsFailedOutlinedIcon,
+            Icon: ErrorOutlineOutlinedIcon,
             color: theme.palette.error.main,
             data: data?.pipelinesStat?.Error
         },
         {
             title: t('filters:statuses.Suspended'),
-            Icon: PauseCircleOutlineOutlinedIcon,
-            color: theme.palette.primary.light,
+            Icon: PauseSharpIcon,
+            color: theme.palette.warning.main,
             data: data?.pipelinesStat?.Suspended
         },
         {
             title: t('filters:statuses.Terminated'),
-            Icon: IndeterminateCheckBoxOutlinedIcon,
-            color: theme.palette.warning.light,
+            Icon: StopTwoToneIcon,
+            color: theme.palette.error.main,
             data: data?.pipelinesStat?.Terminated
         }
     ];

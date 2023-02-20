@@ -24,7 +24,8 @@ import {
     FETCH_JOB_STATUS_SUCCESS,
     FETCH_JOB_STATUS_FAIL,
     UPDATE_JOB_STATUS_START,
-    UPDATE_JOB_STATUS_SUCCESS, UPDATE_JOB_STATUS_FAIL
+    UPDATE_JOB_STATUS_SUCCESS,
+    UPDATE_JOB_STATUS_FAIL
 } from './types';
 
 describe('One Job Status action', () => {
@@ -43,7 +44,10 @@ describe('One Job Status action', () => {
 
         it('should dispatch FETCH_JOB_STATUS_START without using params', () => {
             fetchJobStatus(projectId, jobId)(dispatch);
-            expect(dispatch).toHaveBeenCalledWith({ type: FETCH_JOB_STATUS_START });
+            expect(dispatch).toHaveBeenCalledWith({
+                type: FETCH_JOB_STATUS_START,
+                payload: false
+            });
         });
 
         it('should dispatch jobId with FETCH_JOB_STATUS_SUCCESS on success', () => {
@@ -53,7 +57,7 @@ describe('One Job Status action', () => {
                 jobId
             )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_JOB_STATUS_START }],
+                    [{ type: FETCH_JOB_STATUS_START, payload: false }],
                     [
                         {
                             type: FETCH_JOB_STATUS_SUCCESS,
@@ -73,7 +77,7 @@ describe('One Job Status action', () => {
                 jobId
             )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_JOB_STATUS_START }],
+                    [{ type: FETCH_JOB_STATUS_START, payload: false }],
                     [{ type: FETCH_JOB_STATUS_FAIL, payload: { error: 'error' } }]
                 ]);
             });

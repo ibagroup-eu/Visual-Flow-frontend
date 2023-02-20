@@ -25,8 +25,8 @@ import FormWrapper from '../../../components/form-wrapper';
 import PropertySelect from '../../../components/property-select';
 import { PageSkeleton } from '../../../components/skeleton';
 import ConnectionsSearchAndSelect from '../../../mxgraph/side-panel/read-write-configuration/connections-modal/searchAndSelect/ConnectionsSearchAndSelect';
-import ConnectionsPanel from '../components/connections-panel/ConnectionsPanel';
-import ConnectionsTableRow from '../components/connections-table-row';
+import ConnectionsPanel from './panel';
+import ConnectionsTableRow from './table';
 import Connections from './Connections';
 
 describe('Connections', () => {

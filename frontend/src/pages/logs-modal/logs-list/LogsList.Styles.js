@@ -28,20 +28,18 @@ export default makeStyles(theme => ({
         width: '85vw',
         maxWidth: '100%'
     },
-    list: {
-        wordBreak: 'break-word',
+    paper: {
         height: '70vh',
         minWidth: 700,
         width: '85vw',
         maxWidth: '100%',
-        overflow: 'auto',
-        borderRadius: 4,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow:
-            '0px 3px 3px rgba(0, 0, 0, 0.2), 0px 3px 4px rgba(0, 0, 0, 0.14), 0px 1px 8px rgba(0, 0, 0, 0.12)'
+        overflow: 'auto'
     },
-    listModal: {
+    paperModal: {
         height: '45vh'
+    },
+    list: {
+        wordBreak: 'break-word'
     },
     textItem: {
         padding: theme.spacing(0, 2),
@@ -57,5 +55,9 @@ export default makeStyles(theme => ({
     },
     textMultisting: {
         whiteSpace: 'pre'
+    },
+    skeleton: {
+        paddingInline: theme.spacing(2),
+        paddingTop: theme.spacing(1)
     }
 }));

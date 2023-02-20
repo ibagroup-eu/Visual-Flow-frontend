@@ -18,17 +18,12 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
-import { useSelector } from 'react-redux';
+import { mount, shallow } from 'enzyme';
 
-import LogsList from './LogsList';
 import { ListItem, Typography } from '@material-ui/core';
+import LogsList from './LogsList';
 import LogsHeader from '../../../components/logs-header';
-
-jest.mock('react-redux', () => ({
-    ...jest.requireActual('react-redux'),
-    useSelector: jest.fn()
-}));
+import { RUNNING } from '../../../mxgraph/constants';
 
 describe('LogsList', () => {
     const defaultProps = {
@@ -51,15 +46,13 @@ describe('LogsList', () => {
                 message:
                     'org.apache.spark.internal.Logging - Running Spark version 3.1.1'
             }
-        ]
+        ],
+        loading: false,
+        jobStatus: RUNNING
     };
 
-    afterEach(() => useSelector.mockClear());
-
-    const init = (props = {}, useSelectorResult = undefined) => {
-        useSelector.mockImplementation(_ => useSelectorResult);
-
-        return shallow(<LogsList {...defaultProps} {...props} />);
+    const init = (props = {}, func = shallow) => {
+        return func(<LogsList {...defaultProps} {...props} />);
     };
 
     it('should render without crashes', () => {
@@ -70,7 +63,7 @@ describe('LogsList', () => {
     });
 
     it('should render error message', () => {
-        const wrapper = init({}, { message: 'errorMessage' });
+        const wrapper = init({ error: { message: 'errorMessage' } });
 
         const error = wrapper
             .find(ListItem)
@@ -78,6 +71,27 @@ describe('LogsList', () => {
             .text();
 
         expect(error).toBe('errorMessage');
+    });
+
+    it('should render with useEffect for errorMes', () => {
+        const wrapper = init({ jobStatus: '' }, mount);
+        wrapper.setProps({ error: 'message' });
+        wrapper.find(LogsHeader).prop('onSetAutoRefresh')();
+    });
+
+    it('should render with useEffect', () => {
+        jest.useFakeTimers();
+        window.HTMLElement.prototype.scrollIntoView = jest.fn();
+        const wrapper = init({}, mount);
+        wrapper.find(LogsHeader).prop('onSetAutoRefresh')();
+        jest.runAllTimers();
+        expect(defaultProps.onRefresh).toBeCalledWith(true);
+    });
+
+    it('should call onSetAutoRefresh', () => {
+        const wrapper = init({ jobStatus: '' }, mount);
+        wrapper.find(LogsHeader).prop('onSetAutoRefresh')();
+        wrapper.setProps({ data: defaultProps.data.slice(1) });
     });
 
     it('should call "onSearch" & "onSelect" functions', () => {

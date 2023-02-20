@@ -19,8 +19,9 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField } from '@material-ui/core';
+import { InputAdornment, TextField, Box } from '@material-ui/core';
 import { isFunction } from 'lodash';
+import useStyles from './ParamsTextField.Styles';
 
 const ParamsTextField = ({
     name,
@@ -41,31 +42,34 @@ const ParamsTextField = ({
         onChange(event);
     };
 
+    const classes = useStyles();
+
     return (
-        <TextField
-            disabled={!ableToEdit}
-            name={name}
-            label={label}
-            placeholder={label}
-            type={type}
-            variant="outlined"
-            margin="normal"
-            value={value}
-            onChange={handleChange}
-            fullWidth
-            InputProps={{
-                inputProps,
-                endAdornment: adornment && (
-                    <InputAdornment position="end">{adornment}</InputAdornment>
-                )
-            }}
-            InputLabelProps={{
-                shrink: true
-            }}
-            helperText={error}
-            error={!!error}
-            required={required}
-        />
+        <Box className={classes.fields}>
+            <TextField
+                disabled={!ableToEdit}
+                name={name}
+                label={label}
+                placeholder={label}
+                type={type}
+                variant="outlined"
+                value={value}
+                onChange={handleChange}
+                fullWidth
+                InputProps={{
+                    inputProps,
+                    endAdornment: adornment && (
+                        <InputAdornment position="end">{adornment}</InputAdornment>
+                    )
+                }}
+                InputLabelProps={{
+                    shrink: true
+                }}
+                helperText={error}
+                error={!!error}
+                required={required}
+            />
+        </Box>
     );
 };
 

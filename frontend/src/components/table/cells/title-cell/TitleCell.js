@@ -108,7 +108,7 @@ TitleCell.propTypes = {
     classes: PropTypes.object,
     pipelineId: PropTypes.string,
     tags: PropTypes.array,
-    checkedTags: PropTypes.array,
+    checkedTags: PropTypes.object,
     onCheckTags: PropTypes.func
 };
 

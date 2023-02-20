@@ -33,14 +33,15 @@ import {
     createPipeline,
     updatePipeline,
     runPipelineAndRefreshIt,
-    stopPipelineAndRefreshIt
+    stopPipelineAndRefreshIt,
+    suspendPipeline,
+    resumePipeline
 } from '../../../redux/actions/pipelinesActions';
-import RunStopButtons from '../run-stop-buttons';
 import EditDesignerButtons from '../edit-designer-buttons';
 import LinearProgressChart from '../../../components/chart/linear';
 import { fetchPipelineById } from '../../../redux/actions/mxGraphActions';
 import { fetchJobs } from '../../../redux/actions/jobsActions';
-import { PENDING, RUNNING } from '../../constants';
+import { PENDING, RUNNING, SUSPENDED } from '../../constants';
 import { findByProp } from '../../../components/helpers/JobsPipelinesTable';
 import {
     findParamByKey,
@@ -49,6 +50,7 @@ import {
 import CronButton from '../cron-button';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
 import UnitConfig from '../../../unitConfig';
+import ControlButtons from '../control-buttons';
 
 const PipelinesToolbar = ({
     graph,
@@ -56,6 +58,8 @@ const PipelinesToolbar = ({
     data,
     run,
     stop,
+    suspend,
+    resume,
     getActualJobs,
     getActualPipeline,
     pipelineStatus: { loading, status, progress, id },
@@ -68,7 +72,8 @@ const PipelinesToolbar = ({
     undoButtonsDisabling,
     jobs,
     params,
-    setCurrentCell
+    setCurrentCell,
+    dirtyGraph
 }) => {
     const { t } = useTranslation();
     const classes = useStyles({ name: 'PipelineUtilizationCell' });
@@ -114,20 +119,14 @@ const PipelinesToolbar = ({
         }
     };
 
-    const runAndUpdate = () =>
-        run(currentProject, currentPipeline).then(() => {
-            getActualJobs(currentProject);
-            getActualPipeline(currentProject, currentPipeline);
-        });
-
-    const stopAndUpdate = () =>
-        stop(currentProject, currentPipeline).then(() => {
+    const getAction = action => () =>
+        action(currentProject, currentPipeline).then(() => {
             getActualJobs(currentProject);
             getActualPipeline(currentProject, currentPipeline);
         });
 
     const enableViewMode = () =>
-        data.status === PENDING || data.status === RUNNING ? false : data.editable;
+        [SUSPENDED, PENDING, RUNNING].includes(data.status) ? false : data.editable;
 
     const pipelineRefresh = () => {
         getActualJobs(currentProject);
@@ -171,30 +170,36 @@ const PipelinesToolbar = ({
             <Divider orientation="vertical" flexItem />
             <div className={classes.buttons}>
                 {data.runnable && (
-                    <>
-                        <RunStopButtons
-                            isNotRunning={![RUNNING, PENDING].includes(statusValue)}
-                            runnable={data.runnable}
-                            stopable={![PENDING].includes(statusValue)}
-                            changesNotSaved={changesNotSaved()}
-                            run={runAndUpdate}
-                            stop={stopAndUpdate}
-                        />
-                        <CronButton
-                            changesNotSaved={changesNotSaved()}
-                            pipeline={data}
-                            refresh={pipelineRefresh}
-                            projectId={currentProject}
-                        />
-                    </>
+                    <ControlButtons
+                        status={statusValue}
+                        runnable={data.runnable}
+                        changesNotSaved={changesNotSaved()}
+                        run={getAction(run)}
+                        stop={getAction(stop)}
+                        suspend={getAction(suspend)}
+                        resume={getAction(resume)}
+                    />
                 )}
                 {enableViewMode() && (
-                    <IconButton aria-label="saveIcon" onClick={createUpdatePipeline}>
+                    <IconButton
+                        aria-label="saveIcon"
+                        disabled={!dirtyGraph}
+                        onClick={createUpdatePipeline}
+                    >
                         <Tooltip title={t('jobs:tooltip.Save')} arrow>
                             <Save />
                         </Tooltip>
                     </IconButton>
                 )}
+                {data.runnable && (
+                    <CronButton
+                        changesNotSaved={changesNotSaved()}
+                        pipeline={data}
+                        refresh={pipelineRefresh}
+                        projectId={currentProject}
+                    />
+                )}
+
                 {UnitConfig.PIPELINE.HISTORY && (
                     <>
                         <IconButton
@@ -248,6 +253,8 @@ PipelinesToolbar.propTypes = {
     update: PropTypes.func,
     run: PropTypes.func,
     stop: PropTypes.func,
+    suspend: PropTypes.func,
+    resume: PropTypes.func,
     pipelineStatus: PropTypes.object,
     reversible: PropTypes.object,
     getActualPipeline: PropTypes.func,
@@ -256,18 +263,20 @@ PipelinesToolbar.propTypes = {
     undoButtonsDisabling: PropTypes.object,
     jobs: PropTypes.array,
     params: PropTypes.array,
-    setCurrentCell: PropTypes.func
+    setCurrentCell: PropTypes.func,
+    dirtyGraph: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     pipelineStatus: state.pipelineStatus,
+    dirtyGraph: state.mxGraph.dirty,
     dirty:
         state.mxGraph.dirty ||
         state.mxGraph.graphWithParamsIsDirty ||
         state.mxGraph.paramsIsDirty ||
         state.mxGraph.sidePanelIsDirty,
     jobs: state.pages.jobs.data.jobs,
-    params: state.pages.settingsParameters.data.params
+    params: state.pages.settingsParameters.params
 });
 
 const mapDispatchToProps = {
@@ -275,6 +284,8 @@ const mapDispatchToProps = {
     update: updatePipeline,
     run: runPipelineAndRefreshIt,
     stop: stopPipelineAndRefreshIt,
+    suspend: suspendPipeline,
+    resume: resumePipeline,
     getActualPipeline: fetchPipelineById,
     getActualJobs: fetchJobs
 };

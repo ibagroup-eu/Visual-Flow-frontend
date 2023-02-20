@@ -22,12 +22,14 @@ import { Grid } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import EventIcon from '@material-ui/icons/Event';
 import PlayArrowOutlinedIcon from '@material-ui/icons/PlayArrowOutlined';
-import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
+import StopIcon from '@material-ui/icons/Stop';
 import PaletteOutlinedIcon from '@material-ui/icons/PaletteOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExportIcon from '@material-ui/icons/Publish';
+import PauseTwoToneIcon from '@material-ui/icons/PauseTwoTone';
+import PlayArrowTwoToneIcon from '@material-ui/icons/PlayArrowTwoTone';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -45,17 +47,24 @@ import { setCurrentTablePage } from '../../../redux/actions/enhancedTableActions
 import {
     copyPipeline,
     deletePipeline,
+    resumePipeline,
     runPipeline,
     setPipelinesLastRun,
     setPipelinesStatus,
-    stopPipeline
+    stopPipeline,
+    suspendPipeline
 } from '../../../redux/actions/pipelinesActions';
 import withStyles from './PipelinesTable.Styles';
 import timeRange from '../../../utils/timeRangeOptions';
 import DropdownFilter from '../../../components/table/dropdown-filter';
 import history from '../../../utils/history';
 import ExportModalWindow from '../../../components/export-modal-window';
-import { PENDING, PIPELINE_STATUSES, RUNNING } from '../../../mxgraph/constants';
+import {
+    PENDING,
+    PIPELINE_STATUSES,
+    RUNNING,
+    SUSPENDED
+} from '../../../mxgraph/constants';
 import {
     joinDataNames,
     removeHandler,
@@ -91,6 +100,8 @@ const PipelinesTable = ({
     run,
     stop,
     copy,
+    suspend,
+    resume,
     lastRun,
     setLastRun,
     status,
@@ -130,17 +141,10 @@ const PipelinesTable = ({
 
     const getActions = item =>
         [
-            {
-                title: t('pipelines:tooltip.Scheduling'),
-                Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
-                disable: !item.runnable,
-                onClick: () =>
-                    setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
-            },
-            ![RUNNING, PENDING].includes(item.status)
+            ![RUNNING, PENDING, SUSPENDED].includes(item.status)
                 ? {
                       title: t('pipelines:tooltip.Play'),
-                      Icon: PlayArrowOutlinedIcon,
+                      Icon: PlayArrowTwoToneIcon,
                       disable: !item.runnable,
                       onClick: () => {
                           runWithValidation(
@@ -154,21 +158,39 @@ const PipelinesTable = ({
                   }
                 : {
                       title: t('pipelines:tooltip.Stop'),
-                      Icon: StopOutlinedIcon,
+                      Icon: StopIcon,
                       disable: !item.runnable || item.status === PENDING,
                       onClick: () => {
                           stop(projectId, item.id);
                       }
                   },
             {
+                title: t('pipelines:tooltip.Suspend'),
+                Icon: PauseTwoToneIcon,
+                onClick: () => {
+                    suspend(projectId, item.id);
+                },
+                visible: item.status === RUNNING
+            },
+            {
+                title: t('pipelines:tooltip.Resume'),
+                Icon: PlayArrowOutlinedIcon,
+                onClick: () => {
+                    resume(projectId, item.id);
+                },
+                visible: item.status === SUSPENDED
+            },
+            {
                 title: t('pipelines:tooltip.pipelineDesigner'),
                 Icon: PaletteOutlinedIcon,
                 onClick: () => history.push(`/pipelines/${projectId}/${item.id}`)
             },
             {
-                title: t('pipelines:tooltip.Copy'),
-                Icon: FileCopyOutlinedIcon,
-                onClick: () => copy(projectId, item.id)
+                title: t('pipelines:tooltip.Scheduling'),
+                Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
+                disable: !item.runnable,
+                onClick: () =>
+                    setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
             },
             {
                 title: t('pipelines:tooltip.History'),
@@ -179,6 +201,12 @@ const PipelinesTable = ({
                     getPipeline(projectId, item.id);
                 }
             },
+            {
+                title: t('pipelines:tooltip.Copy'),
+                Icon: FileCopyOutlinedIcon,
+                onClick: () => copy(projectId, item.id)
+            },
+
             {
                 title: t('pipelines:tooltip.Remove'),
                 Icon: DeleteOutlinedIcon,
@@ -359,6 +387,8 @@ PipelinesTable.propTypes = {
     run: PropTypes.func,
     stop: PropTypes.func,
     copy: PropTypes.func,
+    suspend: PropTypes.func,
+    resume: PropTypes.func,
     lastRun: PropTypes.string,
     setLastRun: PropTypes.func,
     status: PropTypes.string,
@@ -371,7 +401,7 @@ PipelinesTable.propTypes = {
     params: PropTypes.array,
     resetTags: PropTypes.func,
     onCheckTags: PropTypes.func,
-    checkedTags: PropTypes.array,
+    checkedTags: PropTypes.object,
     getPipeline: PropTypes.func,
     pipelineData: PropTypes.object
 };
@@ -389,6 +419,8 @@ const mapDispatchToProps = {
     stop: stopPipeline,
     remove: deletePipeline,
     copy: copyPipeline,
+    suspend: suspendPipeline,
+    resume: resumePipeline,
     setLastRun: setPipelinesLastRun,
     setStatus: setPipelinesStatus,
     setCurrentPage: setCurrentTablePage,

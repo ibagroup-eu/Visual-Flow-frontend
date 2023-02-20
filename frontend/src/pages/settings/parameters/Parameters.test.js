@@ -17,164 +17,187 @@
  * limitations under the License.
  */
 
-import { Box, Grid } from '@material-ui/core';
-import { mount, shallow } from 'enzyme';
-import { times } from 'lodash';
 import React from 'react';
-import { Prompt } from 'react-router';
-import FormWrapper from '../../../components/form-wrapper';
+import { mount, shallow } from 'enzyme';
+
+import { Parameters } from './Parameters';
+import ParametersTableRow from './table';
+import ParametersPanel from './panel';
+import ParametersSearch from './search/ParametersSearch';
 import PropertySelect from '../../../components/property-select';
-import SearchInput from '../../../components/search-input';
-import { PageSkeleton } from '../../../components/skeleton';
-import ParametersTableRow from '../components/parameters-table-row';
-import Parameters from './Parameters';
 
 describe('Parameters', () => {
-    let wrapper;
-    let props;
-
-    beforeEach(() => {
-        props = {
-            project: {},
-            loading: true,
-            getProject: jest.fn(),
-            parameters: { editable: false },
+    const init = (props = {}, returnProps = false, func = shallow) => {
+        const defaultProps = {
+            classes: {},
+            projectId: 'projectId',
+            loading: false,
             getParameters: jest.fn(),
-            update: jest.fn()
+            create: jest.fn(() => Promise.resolve()),
+            update: jest.fn(() => Promise.resolve()),
+            remove: jest.fn(),
+            parameters: [
+                {
+                    id: 'key_1',
+                    key: 'key_1',
+                    value: 'value_1',
+                    secret: false
+                },
+                {
+                    id: 'key_2',
+                    key: 'key_2',
+                    value: 'value_2',
+                    secret: true
+                }
+            ],
+            editStatus: {},
+            deleteStatus: {},
+            saving: false
         };
 
-        wrapper = shallow(<Parameters {...props} />);
+        const wrapper = func(<Parameters {...defaultProps} {...props} />);
+
+        return returnProps ? [wrapper, { ...defaultProps, ...props }] : [wrapper];
+    };
+
+    it('should render without crashes', () => {
+        const [wrapper] = init();
+
+        expect(wrapper.find(ParametersTableRow).length).toBe(2);
+        expect(wrapper.find(ParametersPanel).exists()).toBeTruthy();
     });
 
-    it('should render component', () => {
-        expect(wrapper).toBeDefined();
+    it('should track editing & deleting states', () => {
+        const [wrapper] = init({
+            editStatus: { key_1: true },
+            deleteStatus: { key_2: true }
+        });
+
+        const [first, second] = wrapper.find(ParametersTableRow).map(x => x);
+
+        expect(first.prop('editing')).toBeTruthy();
+        expect(first.prop('deleting')).toBeFalsy();
+
+        expect(second.prop('deleting')).toBeTruthy();
+        expect(second.prop('editing')).toBeFalsy();
     });
 
-    it('should render PageSkeleton', () => {
-        expect(wrapper.find(PageSkeleton)).toHaveLength(1);
+    it('should apply search', () => {
+        const [wrapper] = init();
+
+        wrapper.find(ParametersSearch).prop('onFilter')(['key_2', '']);
+
+        wrapper.update();
+
+        expect(wrapper.find(ParametersTableRow).prop('parameter').key).toBe('key_2');
     });
 
-    it('should render 4 Grid and FormWrapper', () => {
-        wrapper.setProps({ loading: false });
-        expect(wrapper.find(Grid)).toHaveLength(4);
-        expect(wrapper.find(FormWrapper)).toHaveLength(1);
+    it('should apply filter', () => {
+        const [wrapper] = init();
+
+        wrapper.find(ParametersSearch).prop('onFilter')(['', 'secureString']);
+
+        wrapper.update();
+
+        expect(wrapper.find(ParametersTableRow).prop('parameter').key).toBe('key_2');
     });
 
-    it('should calls useEffect with projectId', () => {
-        wrapper = mount(<Parameters {...props} />);
-        wrapper.setProps({ projectId: 'newVswId' });
-        expect(props.getParameters).toBeCalledWith('newVswId');
-    });
+    it('should open panel for editing', () => {
+        const [wrapper] = init();
 
-    it('should render 10 ParametersTableRow and 2 Box', () => {
-        const changedProps = {
-            loading: false,
-            parameters: {
-                params: [],
-                editable: true
-            }
+        const param = {
+            id: 'key_2',
+            key: 'key_2',
+            value: 'value_2',
+            secret: true
         };
-        times(10, num =>
-            changedProps.parameters.params.push({
-                id: `id${num}`,
-                key: `${num === 2 ? num + 1 : num}`,
-                value: `2${num === 5 ? num + 1 : num}`
-            })
-        );
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
-        wrapper.find(FormWrapper).invoke('setEditMode')();
-        expect(wrapper.find(ParametersTableRow)).toHaveLength(10);
-        expect(wrapper.find(Box)).toHaveLength(3);
-    });
 
-    it('should calls isErrorParameter prop with add and delete id for errorParameters', () => {
-        const changedProps = {
-            loading: false,
-            parameters: {
-                params: [{ id: 'id1', key: '1', value: '21' }],
-                editable: true
-            }
-        };
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
         wrapper
             .find(ParametersTableRow)
-            .at(0)
-            .invoke('isErrorParameter')(true, 'id1');
+            .at(1)
+            .prop('handleEdit')(param);
+
+        wrapper.update();
+
+        expect(wrapper.find(ParametersPanel).prop('data')).toEqual(param);
+        expect(wrapper.find(ParametersPanel).prop('title')).toBe('Edit');
+    });
+
+    it('should open panel for creating', () => {
+        const [wrapper] = init();
+
+        wrapper.find(PropertySelect).prop('handleChange')({
+            target: { value: 'secureString' }
+        });
+
+        wrapper.update();
+
+        expect(wrapper.find(ParametersPanel).prop('data')).toEqual({ secret: true });
+        expect(wrapper.find(ParametersPanel).prop('title')).toBe('Create');
+    });
+
+    it('should handle on remove', () => {
+        const [wrapper, props] = init({}, true);
+
+        const param = {
+            id: 'key_2',
+            key: 'key_2',
+            value: 'value_2',
+            secret: true
+        };
+
         wrapper
             .find(ParametersTableRow)
-            .at(0)
-            .invoke('isErrorParameter')(false, 'id1');
+            .at(1)
+            .prop('handleRemove')(param);
+
+        wrapper.update();
+
+        expect(props.remove).toHaveBeenCalledWith(props.projectId, param);
     });
 
-    it('should calls setEditMode prop', () => {
-        const changedProps = {
-            loading: false,
-            parameters: {
-                params: [{ id: 'id', key: '1', value: '21' }],
-                editable: true
-            }
+    it('should handle on create', () => {
+        const [wrapper, props] = init({}, true);
+
+        const param = {
+            id: 'key_2',
+            key: 'key_2',
+            value: 'value_2',
+            secret: true
         };
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
-        wrapper.find(FormWrapper).invoke('setEditMode')();
+
+        wrapper.find(ParametersPanel).prop('save')(param);
+
+        wrapper.update();
+
+        expect(props.create).toHaveBeenCalledWith(props.projectId, param);
     });
 
-    it('should calls onChange prop', () => {
-        const changedProps = {
-            loading: false,
-            parameters: {
-                params: [{ id: 'id', key: '1', value: '21' }],
-                editable: true
-            }
+    it('should handle on update', () => {
+        const [wrapper, props] = init({}, true);
+
+        const param = {
+            id: 'key_2',
+            key: 'key_2',
+            value: 'value_2',
+            secret: true
         };
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
-        wrapper.find(SearchInput).invoke('onChange')({ target: { value: 'test' } });
+
+        wrapper
+            .find(ParametersTableRow)
+            .at(1)
+            .prop('handleEdit')(param);
+
+        wrapper.find(ParametersPanel).prop('save')(param);
+
+        wrapper.update();
+
+        expect(props.update).toHaveBeenCalledWith(props.projectId, param);
     });
 
-    it('should calls onCancel prop', () => {
-        const changedProps = {
-            loading: false
-        };
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
-        wrapper.find(FormWrapper).invoke('onCancel')();
-    });
+    it('should use effect', () => {
+        const [_, props] = init({}, true, mount);
 
-    it('should calls onSubmit prop', () => {
-        const changedProps = {
-            loading: false,
-            projectId: 'newVswId',
-            parameters: {
-                params: [{ id: 'id', key: '1', value: '21' }],
-                editable: true
-            }
-        };
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
-        wrapper.find(FormWrapper).invoke('onSubmit')();
-        expect(props.update).toBeCalledWith('newVswId', {
-            params: [{ key: '1', value: '21' }],
-            editable: true
-        });
-    });
-
-    it('should calls handleRemoveParameter and handleChange props', () => {
-        const changedProps = {
-            loading: false,
-            parameters: {
-                params: [{ id: 'id1', key: '1', value: '21' }],
-                editable: true
-            }
-        };
-        wrapper = shallow(<Parameters {...props} {...changedProps} />);
-        wrapper.find(ParametersTableRow).invoke('handleChangeParameter')(
-            {
-                persist: jest.fn(),
-                target: { value: 'testValue' }
-            },
-            'id1',
-            'value'
-        );
-        wrapper.find(ParametersTableRow).invoke('handleRemoveParameter')('id');
-        wrapper.find(PropertySelect).invoke('handleChange')({
-            target: { value: 'test' }
-        });
+        expect(props.getParameters).toHaveBeenCalledWith(props.projectId);
     });
 });

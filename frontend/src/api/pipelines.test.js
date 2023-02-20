@@ -75,10 +75,10 @@ describe('pipelines', () => {
         });
     });
 
-    it('should resume pipeline by projectId and pipelineId', () => {
+    it('should retry pipeline by projectId and pipelineId', () => {
         const requestURL = `/project/${projectId}/pipeline/${pipelineId}/retry`;
         const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
-        return pipelines.resumePipeline(projectId, pipelineId).then(result => {
+        return pipelines.retryPipeline(projectId, pipelineId).then(result => {
             expect(result).toEqual(expected);
             expect(spy).toHaveBeenCalledWith(requestURL);
         });
@@ -134,6 +134,24 @@ describe('pipelines', () => {
         const requestURL = `/project/${projectId}/pipeline/${pipelineId}/history`;
         const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
         return pipelines.getPipelineHistory(projectId, pipelineId).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should suspend pipeline', () => {
+        const requestURL = `/project/${projectId}/pipeline/${pipelineId}/suspend`;
+        const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
+        return pipelines.suspendPipeline(projectId, pipelineId).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
+
+    it('should resume pipeline', () => {
+        const requestURL = `/project/${projectId}/pipeline/${pipelineId}/resume`;
+        const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
+        return pipelines.resumePipeline(projectId, pipelineId).then(result => {
             expect(result).toEqual(expected);
             expect(spy).toHaveBeenCalledWith(requestURL);
         });

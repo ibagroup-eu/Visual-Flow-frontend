@@ -33,5 +33,28 @@ export default theme => ({
     },
     panTool: {
         cursor: 'grab'
+    },
+    popupMenu: {
+        position: 'absolute',
+        borderRadius: theme.spacing(1),
+        paddingBlock: theme.spacing(1),
+        boxShadow: theme.shadows[5],
+        backgroundColor: theme.palette.background.paper
+    },
+    popupMenuTable: {
+        borderCollapse: 'collapse',
+        borderSpacing: 0
+    },
+    popupMenuItem: {
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover
+        },
+        cursor: 'pointer',
+        transition: theme.transitions.create('background-color')
+    },
+    popupMenuItemCell: {
+        padding: theme.spacing(0.75, 2),
+        whiteSpace: 'nowrap',
+        fontSize: '1rem'
     }
 });

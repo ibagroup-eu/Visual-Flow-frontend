@@ -23,5 +23,9 @@ export default theme => ({
     },
     button: {
         padding: theme.spacing(1)
+    },
+    wrapper: {
+        display: 'flex',
+        justifyContent: 'space-between'
     }
 });

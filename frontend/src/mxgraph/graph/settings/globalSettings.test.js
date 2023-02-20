@@ -35,34 +35,18 @@ jest.mock('../graph', () => ({
         prototype: {
             isEnabledForEvent: undefined
         }
-    },
-    mxVertexHandler: {
-        prototype: {
-            createSelectionShape: jest.fn(() => ({
-                isRounded: false
-            }))
-        }
     }
 }));
 
 import { setGlobalSettings } from './globalSettings';
-import { mxEdgeHandler, mxGraphHandler, mxGuide, mxVertexHandler } from '../graph';
+import { mxEdgeHandler, mxGraphHandler, mxGuide } from '../graph';
 
 describe('globalSettings', () => {
     it('should set global settings', () => {
-        const shape = { isRounded: false };
-        mxVertexHandler.prototype.createSelectionShape.mockImplementation(
-            () => shape
-        );
-
         setGlobalSettings();
 
         expect(mxGraphHandler.prototype.guidesEnabled).toBeTruthy();
         expect(mxEdgeHandler.prototype.snapToTerminals).toBeTruthy();
         expect(mxGuide.prototype.isEnabledForEvent(true)).toBeFalsy();
-
-        mxVertexHandler.prototype.createSelectionShape('bounds');
-
-        expect(shape.isRounded).toBeTruthy();
     });
 });

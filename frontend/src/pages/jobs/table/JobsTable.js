@@ -337,7 +337,7 @@ JobsTable.propTypes = {
     setCurrentPage: PropTypes.func,
     currentPage: PropTypes.number,
     rowsPerPage: PropTypes.number,
-    checkedTags: PropTypes.array,
+    checkedTags: PropTypes.object,
     onCheckTags: PropTypes.func,
     resetTags: PropTypes.func
 };

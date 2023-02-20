@@ -31,6 +31,8 @@ describe('ConfigurationWrapper', () => {
     beforeEach(() => {
         props = {
             configuration: {},
+            state: { name: 'test' },
+            setState: jest.fn(),
             ableToEdit: true,
             isDisabled: jest.fn(),
             onSave: jest.fn(),
@@ -52,5 +54,10 @@ describe('ConfigurationWrapper', () => {
     it('should cancel changes', () => {
         wrapper.find(SaveCancelButtons).prop('cancelChanges')();
         expect(props.setPanelDirty).toHaveBeenCalledWith(false);
+    });
+
+    it('should save changes', () => {
+        wrapper.find(SaveCancelButtons).prop('saveCell')();
+        expect(props.onSave).toHaveBeenCalledWith({ name: 'test' });
     });
 });

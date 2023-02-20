@@ -43,9 +43,6 @@ const ValidateModalRowValidation = ({
             <Typography variant="subtitle1" className={classes.type}>
                 {data.type}
             </Typography>
-            <Typography variant="subtitle1" className={classes.error}>
-                {data.isError}
-            </Typography>
             <Box className={classes.parameter}>
                 {validationTypeWithoutField.some(type => type === data.type) ? (
                     <CheckCircleOutlined className={classes.iconCheck} />

@@ -18,6 +18,7 @@
  */
 
 const path = require('path');
+const { version } = require('../../package.json');
 
 const IS_LOCAL_ENV = !['production', 'development'].includes(
     process.env.NODE_ENV
@@ -32,6 +33,7 @@ const CONFIG = {
         IS_LOCAL_ENV
     },
     APP: {
+        VERSION: version,
         BASE_URL: process.env.BASE_URL || '/',
         LOGOUT_URL: process.env.LOGOUT_URL,
         COOKIE_MAX_AGE: process.env.COOKIE_MAX_AGE || 3600 * 1000 * 8,

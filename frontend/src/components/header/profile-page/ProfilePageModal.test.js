@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { useTranslation } from 'react-i18next';
-import ProfilePageModal from './ProfilePageModal';
+import { ProfilePageModal } from './ProfilePageModal';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -20,10 +20,10 @@ describe('ProfilePageModal', () => {
             title: 'test',
             onClose: jest.fn()
         };
+
         useTranslation.mockImplementation(() => ({ t: x => x }));
 
-        const wrapper = shallow(<ProfilePageModal {...defaultProps} />);
-        return wrapper;
+        return shallow(<ProfilePageModal {...defaultProps} />);
     };
 
     it('should render without crashes', () => {

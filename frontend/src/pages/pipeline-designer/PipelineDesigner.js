@@ -126,10 +126,7 @@ PipelineDesigner.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    loading:
-        state.mxGraph.loading ||
-        state.pages.jobs.loading ||
-        state.pages.pipelines.loading
+    loading: state.mxGraph.loading
 });
 
 const mapDispatchToProps = {

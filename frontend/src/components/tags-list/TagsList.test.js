@@ -27,7 +27,7 @@ describe('Tags list', () => {
     const defaultProps = {
         tags: ['1', '2', '3', '4', '5'],
         limit: 3,
-        checkedTags: [['1', true]],
+        checkedTags: { 1: true },
         onCheckTags: jest.fn()
     };
 

@@ -20,11 +20,23 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 
 import useStyles from './ValidateConfiguration.Styles';
 import ValidateModal from './validate-modal';
 import ConfigurationDivider from '../../../components/divider/ConfigurationDivider';
+import getMenuItems from '../helpers/getMenuItems';
+
+const values = [
+    {
+        value: 'true',
+        label: 'True'
+    },
+    {
+        value: 'false',
+        label: 'False'
+    }
+];
 
 const ValidateConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
@@ -36,6 +48,22 @@ const ValidateConfiguration = ({ state, ableToEdit, onChange }) => {
             {state.name && (
                 <>
                     <ConfigurationDivider />
+                    <TextField
+                        disabled={!ableToEdit}
+                        label={t('jobDesigner:Validate.isError')}
+                        placeholder={t('jobDesigner:isError')}
+                        variant="outlined"
+                        margin="normal"
+                        fullWidth
+                        select
+                        name="isError"
+                        value={state.isError || values[0].value}
+                        onChange={event =>
+                            onChange(event.target.name, event.target.value)
+                        }
+                    >
+                        {getMenuItems(values)}
+                    </TextField>
                     <ValidateModal
                         validateConfig={state.validateConfig}
                         editable={ableToEdit}

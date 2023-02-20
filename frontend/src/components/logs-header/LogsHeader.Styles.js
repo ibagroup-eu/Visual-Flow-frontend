@@ -24,7 +24,6 @@ export default makeStyles(theme => ({
         margin: theme.spacing(2, 0, 4)
     },
     right: {
-        width: 330,
         height: 40,
         padding: 0,
         verticalAlign: 'center'
@@ -37,14 +36,25 @@ export default makeStyles(theme => ({
         width: 200,
         border: 0
     },
-    button: {
-        width: 20,
-        height: 40
-    },
-    refreshBtn: {
-        justifyContent: 'flex-end'
-    },
     search: {
         width: '35%'
+    },
+    autoRefresh: {
+        '&.MuiToggleButton-root.Mui-selected:hover': {
+            backgroundColor: theme.palette.primary.dark
+        },
+        '&.MuiToggleButton-root.Mui-selected': {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText
+        },
+        '&.MuiToggleButton-root:hover': {
+            backgroundColor: theme.palette.action.disabled
+        },
+        backgroundColor: theme.palette.action.disabledBackground,
+        color: theme.palette.action.disabled,
+        transition: theme.transitions.create(['background-color', 'color']),
+        border: 0,
+        paddingBlock: theme.spacing(1),
+        paddingInline: theme.spacing(2.625)
     }
 }));

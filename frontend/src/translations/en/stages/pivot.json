@@ -1,0 +1,36 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "operationType": {
+        "name": "Operation Type",
+        "value1": "Provide operation type:",
+        "value2": "1. pivot - Transpose data from one column into multiple columns.",
+        "value3": "2. unpivot - Transpose data from multiple columns to one column."
+    },
+    "groupBy": {
+        "name": "Group By",
+        "value": "Column(s) for grouping."
+    },
+    "aggregateFunc": {
+        "name": "Aggregate function and column",
+        "value": "Aggregate function and column."
+    },
+    "pivotValues": {
+        "name": "Pivot Values",
+        "value": "Value(s) from pivot column to be used (optional)."
+    },
+    "unchangedColumns": {
+        "name": "Unchanged Columns",
+        "value": "Unchanged column(s)."
+    },
+    "unpivotColumns": {
+        "name": "Unpivot Columns",
+        "value": "Columns for unpivoting."
+    },
+    "unpivotNames": {
+        "name": "Unpivot Names",
+        "value": "Names for columns after unpivoting."
+    }
+}

@@ -42,6 +42,7 @@ import history from '../../utils/history';
 import SelectProject from '../select-project';
 import ProfileMenu from './profile-menu';
 import logo from '../../assets/logo.svg';
+import LangMenu from './lang-menu/LangMenu';
 
 export const Header = ({ classes }) => {
     const { t } = useTranslation();
@@ -114,6 +115,7 @@ export const Header = ({ classes }) => {
                         />
                     </div>
                     {menu && <SelectProject />}
+                    <LangMenu />
                     <Avatar
                         src={userInfo?.avatar}
                         className={classes.user}

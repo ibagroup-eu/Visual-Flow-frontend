@@ -38,7 +38,7 @@ import ActionsCell from '../../../components/table/cells/action-cell';
 import EnhancedTable from '../../../components/table/enhanced-table';
 import DropdownFilter from '../../../components/table/dropdown-filter';
 import ExportModalWindow from '../../../components/export-modal-window';
-import { DRAFT, RUNNING } from '../../../mxgraph/constants';
+import { DRAFT, RUNNING, SUSPENDED } from '../../../mxgraph/constants';
 import history from '../../../utils/history';
 import { runWithValidation } from '../../../components/helpers/JobsPipelinesTable';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
@@ -92,6 +92,8 @@ describe('PipelinesTable', () => {
             run: jest.fn(),
             stop: jest.fn(),
             copy: jest.fn(),
+            suspend: jest.fn(),
+            resume: jest.fn(),
             lastRun: '',
             setLastRun: jest.fn(),
             setStatus: jest.fn(),
@@ -266,15 +268,15 @@ describe('PipelinesTable', () => {
         const { actions } = children[children.length - 1].props;
 
         expect(actions.map(x => x.title)).toEqual([
-            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.Play',
             'pipelines:tooltip.pipelineDesigner',
-            'pipelines:tooltip.Copy',
+            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.History',
+            'pipelines:tooltip.Copy',
             'pipelines:tooltip.Remove'
         ]);
 
-        const play = actions[1].onClick;
+        const play = actions[0].onClick;
 
         play();
 
@@ -291,25 +293,39 @@ describe('PipelinesTable', () => {
         }).props;
 
         const { actions } = children[children.length - 1].props;
-
         expect(actions.map(x => x.title)).toEqual([
-            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.Stop',
+            'pipelines:tooltip.Suspend',
             'pipelines:tooltip.pipelineDesigner',
-            'pipelines:tooltip.Copy',
+            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.History',
+            'pipelines:tooltip.Copy',
             'pipelines:tooltip.Remove'
         ]);
 
-        const [, stop, designer, copy, , remove] = actions.map(x => x.onClick);
+        const [stop, suspend, designer, scheduling, , copy, remove] = actions.map(
+            x => x.onClick
+        );
+
+        const setState = jest.fn();
+        const useStateSpy = jest.spyOn(React, 'useState');
+        useStateSpy.mockImplementation(init => [init, setState]);
 
         stop();
 
         expect(props.stop).toHaveBeenCalled();
 
+        suspend();
+
+        expect(props.suspend).toHaveBeenCalled();
+
         designer();
 
         expect(history.push).toHaveBeenCalled();
+
+        scheduling();
+
+        expect(useStateSpy).toHaveBeenCalled();
 
         copy();
 
@@ -318,6 +334,34 @@ describe('PipelinesTable', () => {
         remove();
 
         expect(props.confirmationWindow).toHaveBeenCalled();
+    });
+
+    it('should return correct actions with Resume button', () => {
+        const childrenFunc = wrapper.find(EnhancedTable).prop('children');
+
+        const { children } = childrenFunc({
+            item: { status: SUSPENDED },
+            checked: false,
+            onClick: jest.fn()
+        }).props;
+
+        const { actions } = children[children.length - 1].props;
+
+        expect(actions.map(x => x.title)).toEqual([
+            'pipelines:tooltip.Stop',
+            'pipelines:tooltip.Resume',
+            'pipelines:tooltip.pipelineDesigner',
+            'pipelines:tooltip.Scheduling',
+            'pipelines:tooltip.History',
+            'pipelines:tooltip.Copy',
+            'pipelines:tooltip.Remove'
+        ]);
+
+        const resume = actions[1].onClick;
+
+        resume();
+
+        expect(props.resume).toHaveBeenCalled();
     });
 
     it('should call onClose prop', () => {

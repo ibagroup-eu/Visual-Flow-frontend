@@ -21,9 +21,10 @@ import { FETCH_LOGS_FAIL, FETCH_LOGS_START, FETCH_LOGS_SUCCESS } from './types';
 import apiJobs from '../../api/jobs';
 import apiPipelines from '../../api/pipelines';
 
-export const fetchJobLogs = (projectId, jobId) => dispatch => {
+export const fetchJobLogs = (projectId, jobId, live = false) => dispatch => {
     dispatch({
-        type: FETCH_LOGS_START
+        type: FETCH_LOGS_START,
+        payload: live
     });
 
     return apiJobs.getJobLogs(projectId, jobId).then(
@@ -40,8 +41,13 @@ export const fetchJobLogs = (projectId, jobId) => dispatch => {
     );
 };
 
-export const fetchContainerLogs = (projectId, pipelineId, nodeId) => dispatch => {
-    dispatch({ type: FETCH_LOGS_START });
+export const fetchContainerLogs = (
+    projectId,
+    pipelineId,
+    nodeId,
+    live = false
+) => dispatch => {
+    dispatch({ type: FETCH_LOGS_START, payload: live });
 
     return apiPipelines.getPipelineLogs(projectId, pipelineId, nodeId).then(
         response => dispatch({ type: FETCH_LOGS_SUCCESS, payload: response.data }),
@@ -49,8 +55,13 @@ export const fetchContainerLogs = (projectId, pipelineId, nodeId) => dispatch =>
     );
 };
 
-export const fetchJobHistoryLogs = (projectId, jobId, logId) => dispatch => {
-    dispatch({ type: FETCH_LOGS_START });
+export const fetchJobHistoryLogs = (
+    projectId,
+    jobId,
+    logId,
+    live = false
+) => dispatch => {
+    dispatch({ type: FETCH_LOGS_START, payload: live });
 
     return apiJobs.getJobHistoryLogs(projectId, jobId, logId).then(
         response =>

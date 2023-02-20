@@ -1,7 +1,7 @@
 all: lint tests
 
 lint:
-	npm run lint:js:ignore
+	npm run lint-local
 
 tests:
 	npm run coverage

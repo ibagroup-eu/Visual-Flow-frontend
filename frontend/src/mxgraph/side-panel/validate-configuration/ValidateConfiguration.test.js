@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import ValidateConfiguration from './ValidateConfiguration';
 import ValidateModal from './validate-modal';
 
@@ -41,6 +41,12 @@ describe('ValidateConfiguration', () => {
 
     it('should render component', () => {
         expect(wrapper).toBeDefined();
+    });
+
+    it('should call onChange prop', () => {
+        wrapper.find(TextField).prop('onChange')({
+            target: { name: 'isError', value: 'false' }
+        });
     });
 
     it('should call onClose prop', () => {

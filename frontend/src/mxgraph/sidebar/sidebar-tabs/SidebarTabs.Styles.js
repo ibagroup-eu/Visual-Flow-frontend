@@ -33,6 +33,7 @@ export default makeStyles(theme => ({
     },
     content: {
         overflowY: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
+        height: '100%'
     }
 }));

@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { Box, Drawer, IconButton, List, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
-import { groupBy } from 'lodash';
+import { groupBy, isNil } from 'lodash';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import useStyles from './HistoryPanel.Styles';
@@ -82,10 +82,12 @@ const HistoryPanel = ({
     }, [display]);
 
     useEffect(() => {
-        if (historyData) {
+        if (historyData && historyData[0]?.id === data?.id) {
             setDateGroups(groupByDate);
+        } else {
+            setDateGroups(null);
         }
-    }, [historyData]);
+    }, [historyData, data.id]);
 
     const findName = currentId =>
         data?.definition?.graph.find(obj => obj.value.jobId === currentId)?.value
@@ -120,13 +122,15 @@ const HistoryPanel = ({
                             <Box className={classes.header}>
                                 <HistoryHeader
                                     status={
-                                        sortByDate[0]
+                                        !isNil(dateGroups) && sortByDate[0]
                                             ? sortByDate[0].status
                                             : data.status
                                     }
                                     name={data.name}
                                     startedBy={
-                                        sortByDate[0] ? sortByDate[0].startedBy : ''
+                                        sortByDate[0] && !isNil(dateGroups)
+                                            ? sortByDate[0].startedBy
+                                            : ''
                                     }
                                 />
                                 <IconButton
@@ -136,7 +140,7 @@ const HistoryPanel = ({
                                     <CloseIcon />
                                 </IconButton>
                             </Box>
-                            {dateGroups.length === 0 ? (
+                            {isNil(dateGroups) || dateGroups.length === 0 ? (
                                 <Box className={classes.emptyList}>
                                     <Typography variant="h6">
                                         {t('main:history.EmptyList')}

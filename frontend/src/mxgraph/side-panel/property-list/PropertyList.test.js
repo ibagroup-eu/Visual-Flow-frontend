@@ -21,14 +21,9 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { PropertyList } from './PropertyList';
-import {
-    FormControl,
-    IconButton,
-    Select,
-    TextField,
-    Tooltip
-} from '@material-ui/core';
+import { Select, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { PropertyListWrapper } from './PropertyListWrapper';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -43,7 +38,7 @@ describe('PropertyList', () => {
             onChange: jest.fn(),
             onAddItem: jest.fn(),
             handleItemChange: jest.fn(),
-            items: ['c_1:agg_1', 'c_2:agg_2'],
+            items: ['c_1:agg_1'],
             options: [{ value: 'v_1', label: 'l_1' }]
         };
 
@@ -55,76 +50,25 @@ describe('PropertyList', () => {
     };
 
     it('should render without crashes', () => {
-        const [wrapper, props] = init({}, true);
+        const [wrapper] = init({}, true);
 
-        expect(wrapper.find(FormControl).length).toBe(props.items.length);
-    });
-
-    it('should handle remove', () => {
-        const [wrapper, props] = init({}, true);
-
-        expect(wrapper.find(FormControl).length).toBe(props.items.length);
-
-        wrapper
-            .find(Tooltip)
-            .map(x => x)
-            .filter(x => x.prop('title') === 'main:tooltip.Delete')[0]
-            .find(IconButton)
-            .simulate('click');
-
-        expect(props.onChange.mock.calls[0][0]).toEqual(['c_2:agg_2']);
-    });
-
-    it('should handle move down', () => {
-        const [wrapper, props] = init({}, true);
-
-        expect(wrapper.find(FormControl).length).toBe(props.items.length);
-
-        wrapper
-            .find(Tooltip)
-            .map(x => x)
-            .filter(x => x.prop('title') === 'main:tooltip.MoveDown')[0]
-            .find(IconButton)
-            .simulate('click');
-
-        expect(props.onChange.mock.calls[0][0]).toEqual(['c_2:agg_2', 'c_1:agg_1']);
-    });
-
-    it('should handle move up', () => {
-        const [wrapper, props] = init({}, true);
-
-        expect(wrapper.find(FormControl).length).toBe(props.items.length);
-
-        wrapper
-            .find(Tooltip)
-            .map(x => x)
-            .filter(x => x.prop('title') === 'main:tooltip.MoveUp')[0]
-            .find(IconButton)
-            .simulate('click');
-
-        expect(props.onChange.mock.calls[0][0]).toEqual(['c_2:agg_2', 'c_1:agg_1']);
+        expect(wrapper.find(PropertyListWrapper)).toBeTruthy();
     });
 
     it('should handle item change via text field', () => {
-        const [wrapper, props] = init({}, true);
+        const [wrapper, props] = init({}, true, mount);
 
-        wrapper
-            .find(TextField)
-            .at(0)
-            .simulate('change', { target: { value: 'value' } });
+        wrapper.find(TextField).prop('onChange')({ target: { value: 'value' } });
 
-        expect(props.handleItemChange);
+        expect(props.handleItemChange).toHaveBeenCalled();
     });
 
     it('should handle item change via select', () => {
-        const [wrapper, props] = init({}, true);
+        const [wrapper, props] = init({}, true, mount);
 
-        wrapper
-            .find(Select)
-            .at(0)
-            .simulate('change', { target: { value: 'value' } });
+        wrapper.find(Select).prop('onChange')({ target: { value: 'value' } });
 
-        expect(props.handleItemChange);
+        expect(props.handleItemChange).toHaveBeenCalled();
     });
 
     it('should call use effect', () => {
@@ -138,18 +82,5 @@ describe('PropertyList', () => {
             [0, 'col_1:default'],
             [1, 'col_2:default']
         ]);
-    });
-
-    it('should add item', () => {
-        const [wrapper, props] = init({}, true);
-
-        wrapper
-            .find(Tooltip)
-            .map(x => x)
-            .filter(x => x.prop('title') === 'main:tooltip.Add')[0]
-            .find(IconButton)
-            .simulate('click');
-
-        expect(props.onAddItem).toHaveBeenCalled();
     });
 });

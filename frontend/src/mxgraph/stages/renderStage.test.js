@@ -24,9 +24,11 @@ import {
     CACHE,
     CDC,
     CONTAINER,
+    DATETIME,
     EDGE,
     FILTER,
     GROUP,
+    HANDLE_NULL,
     JOB,
     JOIN,
     NOTIFICATION,
@@ -37,6 +39,7 @@ import {
     TRANSFORM,
     UNION,
     VALIDATE,
+    WITH_COLUMN,
     WRITE
 } from '../constants';
 
@@ -58,7 +61,10 @@ describe('should render the stage', () => {
         JOB,
         NOTIFICATION,
         CONTAINER,
-        VALIDATE
+        VALIDATE,
+        DATETIME,
+        WITH_COLUMN,
+        HANDLE_NULL
     ])('should render "%s" stage', operation => {
         const columns = 'col_1,col_2';
         const stage = {

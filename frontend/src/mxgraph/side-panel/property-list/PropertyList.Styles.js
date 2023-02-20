@@ -20,8 +20,7 @@
 export default theme => ({
     title: {
         display: 'flex',
-        alignItems: 'center',
-        marginTop: theme.spacing(0.25)
+        alignItems: 'center'
     },
 
     text: {
@@ -55,5 +54,10 @@ export default theme => ({
             content: '"\\A0*"',
             color: theme.palette.text.secondary
         }
+    },
+
+    column: {
+        marginRight: theme.spacing(1),
+        width: theme.spacing(12)
     }
 });

@@ -20,23 +20,25 @@
 import { Box, Typography, Avatar, Divider, IconButton } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Person, FileCopyOutlined } from '@material-ui/icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
 import PopupForm from '../../popup-form';
 import useStyles from './ProfilePageModal.Styles';
 
-const ProfilePageModal = ({ display, onClose, title }) => {
+export const ProfilePageModal = ({ display, onClose, title, userInfo }) => {
     const { t } = useTranslation();
-    const userInfo = useSelector(state => state.user.profile.data);
     const classes = useStyles();
+
     const titles = [
         t('main:profilePage.titles.username'),
         t('main:profilePage.titles.fullName'),
         t('main:profilePage.titles.email'),
         userInfo?.accessToken && t('main:profilePage.titles.authorizationToken')
     ];
+
     const values = [
         userInfo?.username,
         userInfo?.displayName,
@@ -88,7 +90,12 @@ const ProfilePageModal = ({ display, onClose, title }) => {
 ProfilePageModal.propTypes = {
     display: PropTypes.bool,
     title: PropTypes.string,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    userInfo: PropTypes.object
 };
 
-export default ProfilePageModal;
+const mapStateToProps = state => ({
+    userInfo: state.user.profile.data
+});
+
+export default connect(mapStateToProps)(ProfilePageModal);

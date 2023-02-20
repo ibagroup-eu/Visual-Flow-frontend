@@ -33,7 +33,7 @@ const logsReducer = (state = initialState, action = {}) => {
         case FETCH_LOGS_START:
             return {
                 ...state,
-                loading: true
+                loading: !action.payload
             };
         case FETCH_LOGS_SUCCESS:
             return {

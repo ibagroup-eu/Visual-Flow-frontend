@@ -24,17 +24,25 @@ import {
     CACHE,
     CDC,
     CONTAINER,
+    DATETIME,
     FILTER,
     GROUP,
     JOB,
     JOIN,
     NOTIFICATION,
     READ,
-    REMOVE_DUPLICATES, SLICE,
+    REMOVE_DUPLICATES,
+    SLICE,
     SORT,
     TRANSFORM,
     UNION,
-    WRITE
+    VALIDATE,
+    WRITE,
+    PIPELINE,
+    WAIT,
+    WITH_COLUMN,
+    PIVOT,
+    HANDLE_NULL
 } from '../../../mxgraph/constants';
 
 describe('StageModal', () => {
@@ -62,10 +70,17 @@ describe('StageModal', () => {
             CONTAINER,
             CACHE,
             SORT,
-            SLICE
+            SLICE,
+            WITH_COLUMN,
+            VALIDATE,
+            DATETIME,
+            PIPELINE,
+            WAIT,
+            PIVOT,
+            HANDLE_NULL
         ];
 
-        stages.map(stageName => {
+        stages.forEach(stageName => {
             const wrapper = init({ stageName });
 
             expect(wrapper).toBeDefined();

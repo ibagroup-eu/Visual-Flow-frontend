@@ -1,9 +1,28 @@
+/*
+ * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { mount } from 'enzyme';
 import React from 'react';
-import Configuration from './Configuration';
 import { Box, TextField } from '@material-ui/core';
-import SaveCancelButtons from '../buttons/SaveCancelButtons';
 import { useTranslation } from 'react-i18next';
+import Configuration from './Configuration';
+import SaveCancelButtons from '../buttons/SaveCancelButtons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
 import { CDC, JOIN } from '../../constants';
 
@@ -18,6 +37,8 @@ describe('Configuration', () => {
     const init = (props = {}, returnProps = false, func = mount) => {
         const defaultProps = {
             configuration: {},
+            state: {},
+            setState: jest.fn(),
             ableToEdit: true,
             isDisabled: jest.fn(),
             saveCell: jest.fn(),
@@ -44,9 +65,9 @@ describe('Configuration', () => {
     });
 
     it('selectedStorage func should run', () => {
-        const [_, props] = init(
+        const [, props] = init(
             {
-                configuration: {
+                state: {
                     operation: 'READ' || 'WRITE',
                     storage: 'test',
                     connectionName: 'test'
@@ -57,6 +78,53 @@ describe('Configuration', () => {
         );
 
         expect(props.selectedStorage).toHaveBeenCalledWith('test');
+    });
+
+    it('should set connection with key = connectionName', () => {
+        init(
+            {
+                state: {
+                    operation: 'READ' || 'WRITE',
+                    storage: 'test',
+                    connectionName: 'test'
+                },
+                connections: [{ key: test }]
+            },
+            true,
+            mount
+        );
+    });
+
+    it('should set connection with connectionName = null', () => {
+        const [, props] = init(
+            {
+                state: {
+                    operation: 'READ' || 'WRITE',
+                    storage: 'test',
+                    connectionName: null
+                },
+                connections: [{ key: test }]
+            },
+            true,
+            mount
+        );
+
+        expect(props.setState).toHaveBeenCalled();
+    });
+
+    it('selectedStorage func should run', () => {
+        const [, props] = init(
+            {
+                state: {
+                    operation: 'DATETIME',
+                    operationType: 'current_date'
+                }
+            },
+            true,
+            mount
+        );
+
+        expect(props.selectedStorage).toHaveBeenCalledWith('current_date');
     });
 
     it('cancelChanges func should run', () => {
@@ -70,7 +138,7 @@ describe('Configuration', () => {
     it('handleSaveCell func should run', () => {
         const [wrapper] = init(
             {
-                configuration: {
+                state: {
                     operation: 'CDC'
                 }
             },
@@ -81,7 +149,7 @@ describe('Configuration', () => {
         wrapper.find(SaveCancelButtons).prop('saveCell')();
 
         wrapper.setProps({
-            configuration: {
+            state: {
                 operation: 'JOIN'
             }
         });
@@ -91,7 +159,7 @@ describe('Configuration', () => {
         wrapper.find(SaveCancelButtons).prop('saveCell')();
 
         wrapper.setProps({
-            configuration: {
+            state: {
                 operation: 'test'
             }
         });
@@ -102,15 +170,13 @@ describe('Configuration', () => {
     });
 
     it('should handle onChange', () => {
-        const [wrapper] = init({ configuration: { name: '' } });
+        const [wrapper, props] = init({ state: { name: '' } }, true);
 
         expect(wrapper.find(TextField).prop('value')).toBe('');
 
         wrapper.find(ParametersModal).prop('onChange')('name', 'value_1');
 
-        wrapper.update();
-
-        expect(wrapper.find(TextField).prop('value')).toBe('value_1');
+        expect(props.setState).toHaveBeenCalled();
     });
 
     it('should close / open a modal', () => {
@@ -132,39 +198,40 @@ describe('Configuration', () => {
     });
 
     it('should handle onSetValue', () => {
-        const [wrapper] = init({ configuration: {} });
+        const [wrapper, props] = init({ configuration: {} }, true);
 
         expect(wrapper.find(FakeComponent).prop('state')).toEqual({});
 
         wrapper.find(ParametersModal).prop('onSetValue')('value');
 
-        wrapper.update();
-
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual({
-            null: '#value#'
-        });
+        expect(props.setState).toHaveBeenCalled();
     });
 
     it('should handle change for the text field', () => {
-        const [wrapper] = init({ configuration: {} });
+        const [wrapper, props] = init(
+            {
+                configuration: {},
+                state: { name: 'test', value: 'test' }
+            },
+            true
+        );
 
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual({});
+        expect(wrapper.find(FakeComponent).prop('state')).toEqual({
+            name: 'test',
+            value: 'test'
+        });
 
         wrapper.find(TextField).prop('onChange')({
             target: { name: 'key_1', value: 'value_1' }
         });
 
-        wrapper.update();
-
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual({
-            key_1: 'value_1'
-        });
+        expect(props.setState).toHaveBeenCalled();
     });
 
     it('should handle swap for the CDC stage', () => {
         const [wrapper, props] = init(
             {
-                configuration: {
+                state: {
                     operation: CDC,
                     newDataset: 'newDataset',
                     oldDataset: 'oldDataset'
@@ -173,19 +240,9 @@ describe('Configuration', () => {
             true
         );
 
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual(
-            props.configuration
-        );
-
         wrapper.find(FakeComponent).prop('handleSwap')();
 
-        wrapper.update();
-
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual({
-            operation: CDC,
-            newDataset: 'oldDataset',
-            oldDataset: 'newDataset'
-        });
+        expect(props.setState).toHaveBeenCalled();
 
         expect(props.swapEdges).toHaveBeenCalled();
     });
@@ -193,7 +250,7 @@ describe('Configuration', () => {
     it('should handle swap for the JOIN stage', () => {
         const [wrapper, props] = init(
             {
-                configuration: {
+                state: {
                     operation: JOIN,
                     leftDataset: 'leftDataset',
                     rightDataset: 'rightDataset'
@@ -202,19 +259,9 @@ describe('Configuration', () => {
             true
         );
 
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual(
-            props.configuration
-        );
-
         wrapper.find(FakeComponent).prop('handleSwap')();
 
-        wrapper.update();
-
-        expect(wrapper.find(FakeComponent).prop('state')).toEqual({
-            operation: JOIN,
-            leftDataset: 'rightDataset',
-            rightDataset: 'leftDataset'
-        });
+        expect(props.setState).toHaveBeenCalled();
 
         expect(props.swapEdges).toHaveBeenCalled();
     });

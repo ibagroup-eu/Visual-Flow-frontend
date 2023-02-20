@@ -83,9 +83,9 @@ const TransformConfiguration = ({
                             'jobDesigner:transformConfiguration.Placeholder'
                         )}
                         variant="outlined"
-                        margin="normal"
                         fullWidth
                         multiline
+                        margin="normal"
                         minRows={16}
                         name="statement"
                         value={state.statement || ''}

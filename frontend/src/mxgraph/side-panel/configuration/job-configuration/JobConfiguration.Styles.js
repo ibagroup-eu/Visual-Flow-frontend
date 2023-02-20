@@ -24,7 +24,7 @@ export default makeStyles(theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         flexDirection: 'column',
-        height: '90%'
+        height: '100%'
     },
     iconBtn: {
         left: 12

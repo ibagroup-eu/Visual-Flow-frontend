@@ -34,10 +34,6 @@ export default makeStyles(theme => ({
         paddingLeft: theme.spacing(3),
         width: 112
     },
-    error: {
-        paddingLeft: theme.spacing(1.5),
-        width: 102
-    },
     parameter: {
         paddingLeft: theme.spacing(1.5),
         minWidth: 122

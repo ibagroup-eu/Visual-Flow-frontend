@@ -1,0 +1,30 @@
+{
+    "status": "Статус",
+    "lastRun": "Последний запуск",
+    "lastFinished": "Завершен",
+    "lastEdit": "Изменен",
+    "statuses": {
+        "Draft": "Draft",
+        "Pending": "Pending",
+        "Running": "Running",
+        "Failed": "Failed",
+        "Succeeded": "Succeeded",
+        "Unknown": "Unknown",
+        "Error": "Error",
+        "Skipped": "Skipped",
+        "Terminated": "Terminated",
+        "Suspended": "Suspended",
+        "Stopped": "Stopped"
+    },
+    "timeRange": {
+        "last hour": "за последний час",
+        "last 3 hours": "за последние 3 часа",
+        "last 8 hours": "за последние 8 часов",
+        "1 day ago": "за вчерашний день",
+        "3 days ago": "за прошедшие 3 дня",
+        "7 days ago": "за прошедшие 7 дней"
+    },
+    "dropDown": {
+        "None": "None"
+    }
+}

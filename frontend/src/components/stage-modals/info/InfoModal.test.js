@@ -26,11 +26,7 @@ describe('InfoModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             title: 'Read',
-            storages: [
-                {
-                    value: 'redis'
-                }
-            ],
+            storages: ['redis'],
             content: [
                 { title: 'title', paragraph_1: 'paragraph', hide: false },
                 { hide: false }
@@ -43,22 +39,53 @@ describe('InfoModal', () => {
     };
 
     it('should render without crashes', () => {
-        Object.values(STORAGES)
-            .map(({ value }) => value)
-            .forEach(storage => {
-                const [wrapper] = init(
-                    {
-                        currentStorage: storage,
-                        display: false,
-                        [storage]: [
-                            { title: 'title', paragraph_1: 'paragraph', hide: false }
-                        ]
-                    },
-                    false,
-                    mount
-                );
+        Object.values(STORAGES).forEach(({ value }) => {
+            const [wrapper] = init(
+                {
+                    currentStorage: value,
+                    display: true,
+                    [value]: [
+                        { title: 'title', paragraph_1: 'paragraph', hide: false }
+                    ]
+                },
+                false,
+                mount
+            );
 
-                expect(wrapper).toBeDefined();
-            });
+            expect(wrapper).toBeDefined();
+        });
+    });
+
+    it('should render with operations', () => {
+        const [wrapper] = init(
+            {
+                title: 'Date/Time',
+                currentStorage: 'current_date',
+                display: true,
+                storages: null,
+                operations: {
+                    current_date: {
+                        title: 'title',
+                        paragraph_1: 'paragraph'
+                    }
+                }
+            },
+            false,
+            mount
+        );
+        expect(wrapper).toBeDefined();
+    });
+
+    it('should render without currentStorage', () => {
+        const [wrapper] = init(
+            {
+                title: 'Date/Time',
+                currentStorage: undefined,
+                display: true
+            },
+            false,
+            mount
+        );
+        expect(wrapper).toBeDefined();
     });
 });

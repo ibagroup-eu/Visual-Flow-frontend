@@ -33,7 +33,6 @@ const JOB_STATS = {
     Running: 'Running',
     Succeeded: 'Succeeded',
     Failed: 'Failed',
-    Stopped: 'Stopped',
     Error: 'Error',
     Suspended: 'Suspended',
     Terminated: 'Terminated'

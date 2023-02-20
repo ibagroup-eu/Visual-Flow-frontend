@@ -25,11 +25,11 @@ import { IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import PipelinesToolbar from './PipelinesToolbar';
 import EditDesignerButtons from '../edit-designer-buttons';
-import RunStopButtons from '../run-stop-buttons';
 import Status from '../../../components/status';
 import { PENDING } from '../../constants';
 import history from '../../../utils/history';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+import ControlButtons from '../control-buttons';
 
 jest.mock('../../../unitConfig', () => ({
     JOB: { HISTORY: true },
@@ -59,6 +59,8 @@ describe('Pipelines toolbar', () => {
             },
             run: jest.fn(() => Promise.resolve()),
             stop: jest.fn(() => Promise.resolve()),
+            suspend: jest.fn(() => Promise.resolve()),
+            resume: jest.fn(() => Promise.resolve()),
             create: jest.fn(),
             getActualJobs: jest.fn(),
             getActualPipeline: jest.fn(),
@@ -95,7 +97,7 @@ describe('Pipelines toolbar', () => {
         expect(wrapper).toBeDefined();
 
         expect(wrapper.find(EditDesignerButtons)).toHaveLength(1);
-        expect(wrapper.find(RunStopButtons)).toHaveLength(1);
+        expect(wrapper.find(ControlButtons)).toHaveLength(1);
     });
 
     it('should produce correct statusValue value when currentPipline is not equal to id', () => {
@@ -124,18 +126,18 @@ describe('Pipelines toolbar', () => {
 
     it('should correctly set changesNotSaved ', () => {
         const [wrapper] = init();
-        expect(wrapper.find(RunStopButtons).prop('changesNotSaved')).toEqual(true);
+        expect(wrapper.find(ControlButtons).prop('changesNotSaved')).toEqual(true);
 
         wrapper.setProps({
             sidePanelIsDirty: false
         });
-        expect(wrapper.find(RunStopButtons).prop('changesNotSaved')).toEqual(true);
+        expect(wrapper.find(ControlButtons).prop('changesNotSaved')).toEqual(true);
 
         wrapper.setProps({
             sidePanelIsDirty: false,
             dirty: false
         });
-        expect(wrapper.find(RunStopButtons).prop('changesNotSaved')).toEqual(true);
+        expect(wrapper.find(ControlButtons).prop('changesNotSaved')).toEqual(true);
     });
 
     it('should call update prop', () => {
@@ -160,14 +162,26 @@ describe('Pipelines toolbar', () => {
 
     it('should call run prop', () => {
         const [wrapper, props] = init({}, '');
-        wrapper.find(RunStopButtons).prop('run')();
+        wrapper.find(ControlButtons).prop('run')();
         expect(props.run).toHaveBeenCalled();
     });
 
     it('should call stop prop', () => {
         const [wrapper, props] = init({}, '');
-        wrapper.find(RunStopButtons).prop('stop')();
+        wrapper.find(ControlButtons).prop('stop')();
         expect(props.stop).toHaveBeenCalled();
+    });
+
+    it('should call suspend prop', () => {
+        const [wrapper, props] = init({}, '');
+        wrapper.find(ControlButtons).prop('suspend')();
+        expect(props.suspend).toHaveBeenCalled();
+    });
+
+    it('should call resume prop', () => {
+        const [wrapper, props] = init({}, '');
+        wrapper.find(ControlButtons).prop('resume')();
+        expect(props.resume).toHaveBeenCalled();
     });
 
     it('should call getActualJobs prop', () => {

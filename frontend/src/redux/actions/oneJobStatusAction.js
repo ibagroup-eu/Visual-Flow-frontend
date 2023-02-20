@@ -28,9 +28,10 @@ import {
 import api from '../../api/jobs';
 import { DRAFT } from '../../mxgraph/constants';
 
-const fetchJobStatus = (projectId, jobId) => dispatch => {
+const fetchJobStatus = (projectId, jobId, withoutLoading = false) => dispatch => {
     dispatch({
-        type: FETCH_JOB_STATUS_START
+        type: FETCH_JOB_STATUS_START,
+        payload: withoutLoading
     });
     const promise = jobId
         ? api.getJobById(projectId, jobId)

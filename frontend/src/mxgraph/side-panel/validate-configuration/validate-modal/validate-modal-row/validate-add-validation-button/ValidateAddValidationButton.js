@@ -34,7 +34,7 @@ import classNames from 'classnames';
 import { isEqual } from 'lodash';
 import useStyles from './ValidateAddValidationButton.Styles';
 
-const validationType = [
+export const validationType = [
     'dataType',
     'minValue',
     'maxValue',
@@ -94,8 +94,7 @@ const ValidateAddValidationButton = ({
                 item => !validations.find(({ type }) => type === item)
             );
             const currentValidation = {
-                type: currentType,
-                isError: 'false'
+                type: currentType
             };
             if (currentType === 'dataType') {
                 // eslint-disable-next-line prefer-destructuring
@@ -119,8 +118,7 @@ const ValidateAddValidationButton = ({
 
     const handleSelectChange = event => {
         const newValidate = {
-            type: event.target.value,
-            isError: 'false'
+            type: event.target.value
         };
 
         if (newValidate.type === 'dataType') {
@@ -133,13 +131,20 @@ const ValidateAddValidationButton = ({
     const handleValudationValueChange = event =>
         setValidation({ ...validation, [validation.type]: event.target.value });
 
-    const handleValudationisErrorChange = event =>
-        setValidation({ ...validation, isError: event.target.value });
-
     const handleAddValidaton = () => {
         addValidation(validation, changeValidationIndex);
         setAnchorEl(null);
         cancelChangeValidation();
+    };
+
+    const onInputValues = event => {
+        if (
+            validation.type !== 'regex' &&
+            !/^\d+$/.test(event.key) &&
+            event.key !== 'Backspace'
+        ) {
+            event.preventDefault();
+        }
     };
 
     return (
@@ -201,19 +206,6 @@ const ValidateAddValidationButton = ({
                                 </MenuItem>
                             ))}
                         </TextField>
-                        <TextField
-                            select
-                            disabled={!anchorEl}
-                            label={t('jobDesigner:Validate.popupMenu.isError')}
-                            className={classes.isErrorField}
-                            value={validation.isError}
-                            onChange={handleValudationisErrorChange}
-                            variant="outlined"
-                            size="small"
-                        >
-                            <MenuItem value="true">true</MenuItem>
-                            <MenuItem value="false">false</MenuItem>
-                        </TextField>
                     </Box>
                     <Box
                         className={classNames(
@@ -266,6 +258,7 @@ const ValidateAddValidationButton = ({
                                             ? 'text'
                                             : 'number'
                                     }
+                                    onKeyDown={onInputValues}
                                     select={validation.type === 'dataType'}
                                     label={validation.type}
                                     value={validation[validation.type] || ''}

@@ -26,7 +26,7 @@ import classNames from 'classnames';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { connect } from 'react-redux';
 import styles from '../../../components/status/Status.Styles';
-import { resumePipeline } from '../../../redux/actions/pipelinesActions';
+import { retryPipeline } from '../../../redux/actions/pipelinesActions';
 import { ERROR } from '../../../mxgraph/constants';
 
 const PipelineStatusCell = ({
@@ -36,12 +36,12 @@ const PipelineStatusCell = ({
     showRerun,
     hint,
     classes,
-    resume,
+    retry,
     ...rest
 }) => {
     const { t } = useTranslation();
 
-    const handleClick = () => resume(projectId, pipelineId);
+    const handleClick = () => retry(projectId, pipelineId);
 
     return (
         <TableCell className={classNames(classes.cell)} {...rest}>
@@ -91,11 +91,11 @@ PipelineStatusCell.propTypes = {
     showRerun: PropTypes.bool,
     hint: PropTypes.string,
     classes: PropTypes.object,
-    resume: PropTypes.func
+    retry: PropTypes.func
 };
 
 const mapDispatchToProps = {
-    resume: resumePipeline
+    retry: retryPipeline
 };
 
 export default withStyles(styles, { name: 'PipelineStatusCell' })(

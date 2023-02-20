@@ -36,8 +36,8 @@ describe('Jobs', () => {
                 loading: false,
                 data: {
                     jobs: [
-                        { name: 'field', tags: 'tag1' },
-                        { name: 'field2', tags: 'tag2' }
+                        { name: 'field', tags: ['tag1'] },
+                        { name: 'field2', tags: ['tag2'] }
                     ]
                 }
             },

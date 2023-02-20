@@ -30,7 +30,8 @@ const getClickHouseWriteMode = t => ({
     paragraph: t('ReadWrite:writeMode.value'),
     paragraph1: t('ReadWrite:writeMode.value1'),
     paragraph2: t('ReadWrite:writeMode.value2'),
-    paragraph3: t('ReadWrite:writeMode.value3')
+    paragraph3: t('ReadWrite:writeMode.value3'),
+    hide: [READ]
 });
 
 const getWriteMode = t => ({
@@ -529,7 +530,9 @@ const getClickHouse = t => [
 const RWModal = props => {
     const { t } = useTranslation();
 
-    const storages = Object.values(STORAGES).map(v => v.label);
+    const storages = Object.values(STORAGES)
+        .map(v => v.label)
+        .sort();
     return (
         <InfoModal
             content={getContent(t)}

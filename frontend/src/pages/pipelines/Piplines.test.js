@@ -43,7 +43,8 @@ describe('Pipelines', () => {
                 progress: 0,
                 runnable: true,
                 startedAt: null,
-                status: 'Draft'
+                status: 'Draft',
+                tags: ['tag1']
             },
             {
                 cron: false,
@@ -55,7 +56,8 @@ describe('Pipelines', () => {
                 progress: 0,
                 runnable: true,
                 startedAt: null,
-                status: 'Draft'
+                status: 'Draft',
+                tags: ['tag2']
             }
         ];
         props = {
@@ -103,8 +105,7 @@ describe('Pipelines', () => {
     });
 
     it('should trigger use effect via projectId', () => {
-
-        const props = {
+        const defaultProps = {
             projectId: 'vsw-frontend',
             pipelines: { loading: true, data: { pipelines: [] } },
             getPipelines: jest.fn(),
@@ -115,13 +116,23 @@ describe('Pipelines', () => {
             params: []
         };
 
-        const wrapper = mount(<Pipelines {...props} />);
+        wrapper = mount(<Pipelines {...defaultProps} />);
 
         const projectId = 'newProjectId';
         wrapper.setProps({ projectId });
 
-        expect(props.getPipelines).toHaveBeenCalledWith(projectId);
-        expect(props.getJobs).toHaveBeenCalledWith(projectId);
-        expect(props.getParameters).toHaveBeenCalledWith(projectId);
+        expect(defaultProps.getPipelines).toHaveBeenCalledWith(projectId);
+        expect(defaultProps.getJobs).toHaveBeenCalledWith(projectId);
+        expect(defaultProps.getParameters).toHaveBeenCalledWith(projectId);
+    });
+
+    it('should calls resetTags prop', () => {
+        wrapper = mount(<Pipelines {...props} />);
+        wrapper.find(PageHeader).prop('resetTags')();
+    });
+
+    it('should calls onCheckTags prop', () => {
+        wrapper = mount(<Pipelines {...props} />);
+        wrapper.find(PageHeader).prop('onCheckTags')({ tag1: true });
     });
 });

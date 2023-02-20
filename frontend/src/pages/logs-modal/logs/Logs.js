@@ -21,7 +21,6 @@ import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Skeleton from '@material-ui/lab/Skeleton';
 
 import {
     fetchContainerLogs,
@@ -31,11 +30,12 @@ import {
 import LogsList from '../logs-list';
 import LogsPageHeader from '../../../components/logs-page-header';
 import history from '../../../utils/history';
+import fetchJobStatus from '../../../redux/actions/oneJobStatusAction';
 
 export const Logs = ({
     projId,
     jobId,
-    logs: { data, loading },
+    logs: { data, loading, error },
     getJobLogs,
     getContainerLogs,
     getJobHistoryLogs,
@@ -43,19 +43,22 @@ export const Logs = ({
     pipelineId,
     nodeId,
     logId,
-    query
+    query,
+    getJobStatus,
+    jobStatus
 }) => {
     const [search, setSearch] = React.useState('');
     const [levels, setLevels] = React.useState([]);
 
-    const callGetLogs = () => {
+    const callGetLogs = live => {
         if (logId) {
-            return getJobHistoryLogs(projId, jobId, logId);
+            return getJobHistoryLogs(projId, jobId, logId, live);
         }
+        getJobStatus(projId, jobId || nodeId, true);
 
         return nodeId
-            ? getContainerLogs(projId, pipelineId, nodeId)
-            : getJobLogs(projId, jobId);
+            ? getContainerLogs(projId, pipelineId, nodeId, live)
+            : getJobLogs(projId, jobId, live);
     };
 
     React.useEffect(() => {
@@ -84,32 +87,22 @@ export const Logs = ({
             <Grid container>
                 {!modal && (
                     <Grid item xs={12}>
-                        {loading ? (
-                            <Skeleton />
-                        ) : (
-                            <LogsPageHeader
-                                title={jobName}
-                                arrowLink={arrowLink()}
-                            />
-                        )}
+                        <LogsPageHeader title={jobName} arrowLink={arrowLink()} />
                     </Grid>
                 )}
                 <Grid item xs={12}>
-                    {loading ? (
-                        <Skeleton />
-                    ) : (
-                        <LogsList
-                            data={data}
-                            modal={modal}
-                            projId={projId}
-                            jobId={jobId}
-                            onRefresh={callGetLogs}
-                            search={search}
-                            onSearch={setSearch}
-                            levels={levels}
-                            onSelect={setLevels}
-                        />
-                    )}
+                    <LogsList
+                        data={data}
+                        modal={modal}
+                        onRefresh={callGetLogs}
+                        search={search}
+                        onSearch={setSearch}
+                        levels={levels}
+                        onSelect={setLevels}
+                        loading={loading}
+                        error={error}
+                        jobStatus={!logId ? jobStatus : ''}
+                    />
                 </Grid>
             </Grid>
         </Box>
@@ -127,18 +120,22 @@ Logs.propTypes = {
     getContainerLogs: PropTypes.func,
     getJobHistoryLogs: PropTypes.func,
     query: PropTypes.string,
-    logId: PropTypes.string
+    logId: PropTypes.string,
+    getJobStatus: PropTypes.func,
+    jobStatus: PropTypes.string
 };
 
 const mapStateToProps = state => ({
     logs: state.pages.logs,
-    query: state.pages.urlSearch.search
+    query: state.pages.urlSearch.search,
+    jobStatus: state.jobStatus.status
 });
 
 const mapDispatchToProps = {
     getJobLogs: fetchJobLogs,
     getContainerLogs: fetchContainerLogs,
-    getJobHistoryLogs: fetchJobHistoryLogs
+    getJobHistoryLogs: fetchJobHistoryLogs,
+    getJobStatus: fetchJobStatus
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Logs);

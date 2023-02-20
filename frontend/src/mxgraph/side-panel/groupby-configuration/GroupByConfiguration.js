@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Checkbox, Chip, FormControlLabel, TextField } from '@material-ui/core';
+import { Checkbox, Chip, FormControlLabel, TextField, Box } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ import useStyles from './GroupByConfiguration.Styles';
 import PropertyList from '../property-list';
 import ConfigurationDivider from '../../../components/divider';
 
-const aggregateFunctions = [
+export const aggregateFunctions = [
     {
         value: 'Count',
         label: 'Count'
@@ -101,7 +101,6 @@ const GroupByConfiguration = ({ ableToEdit, state, onChange }) => {
                 autoSelect
                 options={[]}
                 value={groupingColumns}
-                className={classes.divider}
                 onChange={(event, value) =>
                     onChange('groupingColumns', value?.join(','))
                 }
@@ -115,17 +114,18 @@ const GroupByConfiguration = ({ ableToEdit, state, onChange }) => {
                     ))
                 }
                 renderInput={params => (
-                    <TextField
-                        {...params}
-                        fullWidth
-                        variant="outlined"
-                        margin="normal"
-                        label={t('jobDesigner:groupByConfiguration.GroupBy')}
-                        required
-                    />
+                    <Box className={classes.groupBy}>
+                        <TextField
+                            {...params}
+                            fullWidth
+                            variant="outlined"
+                            label={t('jobDesigner:groupByConfiguration.GroupBy')}
+                            required
+                        />
+                    </Box>
                 )}
             />
-            <ConfigurationDivider size="large" />
+            <ConfigurationDivider />
             <PropertyList
                 required
                 ableToEdit={ableToEdit}

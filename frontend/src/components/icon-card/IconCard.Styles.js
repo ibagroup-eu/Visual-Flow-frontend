@@ -25,8 +25,17 @@ export default makeStyles(theme => ({
         marginTop: theme.spacing(1)
     },
     header: {
+        paddingBottom: theme.spacing(0)
+    },
+    headerContent: {
         overflow: 'hidden',
         textOverflow: 'ellipsis'
+    },
+    cardContent: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        paddingBottom: `${theme.spacing(1)}px !important`,
+        paddingTop: theme.spacing(0)
     },
     jobsAndPipelinesAvatar: {
         backgroundColor: theme.palette.info.main,

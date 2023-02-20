@@ -28,16 +28,20 @@ import FilterStage from './filter-stage';
 import UnionStage from './union-stage';
 import JoinStage from './join-stage';
 import SliceStage from './slice-stage/SliceStage';
+import PivotStage from './pivot-stage';
+import StringFunctionsStage from './string-functions-stage';
 import CDCStage from './cdc-stage';
 import EdgeStage from './edge-stage';
 import NotificationStage from './notification-stage';
 import PDStages from './pd-stages/PDStages';
 import CacheStage from './cache-stage';
 import SortStage from './sort-stage';
+import WithColumnStage from './withcolumn-stage';
 import {
     CACHE,
     CDC,
     CONTAINER,
+    DATETIME,
     EDGE,
     FILTER,
     GROUP,
@@ -52,11 +56,17 @@ import {
     STAGE_WIDTH,
     TRANSFORM,
     UNION,
+    WRITE,
+    STRING,
     VALIDATE,
-    WRITE
+    WITH_COLUMN,
+    PIVOT,
+    HANDLE_NULL
 } from '../constants';
 import { StageWithIcon } from '../sidebar/stage-icon';
 import ValidateStage from './validate-stage';
+import DateTimeStage from './datetime-stage/DateTimeStage';
+import HandleNullStage from './handlenull-stage';
 
 const root = {
     position: 'relative',
@@ -94,6 +104,8 @@ const renderContent = (stage, t, type, jobs, params, pipelines) => {
             return <JoinStage stage={stage} />;
         case SLICE:
             return <SliceStage stage={stage} />;
+        case STRING:
+            return <StringFunctionsStage stage={stage} />;
         case CDC:
             return <CDCStage stage={stage} />;
         case EDGE:
@@ -140,6 +152,14 @@ const renderContent = (stage, t, type, jobs, params, pipelines) => {
             return <SortStage stage={stage} />;
         case VALIDATE:
             return <ValidateStage stage={stage} />;
+        case WITH_COLUMN:
+            return <WithColumnStage stage={stage} />;
+        case DATETIME:
+            return <DateTimeStage stage={stage} />;
+        case PIVOT:
+            return <PivotStage stage={stage} />;
+        case HANDLE_NULL:
+            return <HandleNullStage stage={stage} />;
         default:
             return null;
     }

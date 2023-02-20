@@ -40,7 +40,7 @@ export default {
     stopPipeline: (projectId, pipelineId) =>
         axiosInstance.post(`/project/${projectId}/pipeline/${pipelineId}/terminate`),
 
-    resumePipeline: (projectId, pipelineId) =>
+    retryPipeline: (projectId, pipelineId) =>
         axiosInstance.post(`/project/${projectId}/pipeline/${pipelineId}/retry`),
 
     copyPipeline: (projectId, pipelineId) =>
@@ -52,5 +52,11 @@ export default {
         ),
 
     getPipelineHistory: (projectId, pipelineId) =>
-        axiosInstance.get(`/project/${projectId}/pipeline/${pipelineId}/history`)
+        axiosInstance.get(`/project/${projectId}/pipeline/${pipelineId}/history`),
+
+    suspendPipeline: (projectId, pipelineId) =>
+        axiosInstance.post(`/project/${projectId}/pipeline/${pipelineId}/suspend`),
+
+    resumePipeline: (projectId, pipelineId) =>
+        axiosInstance.post(`/project/${projectId}/pipeline/${pipelineId}/resume`)
 };

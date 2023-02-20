@@ -27,9 +27,6 @@ import {
     RUN_PIPELINE_START,
     RUN_PIPELINE_SUCCESS,
     RUN_PIPELINE_FAIL,
-    RESUME_PIPELINE_START,
-    RESUME_PIPELINE_SUCCESS,
-    RESUME_PIPELINE_FAIL,
     CREATE_PIPELINE_START,
     CREATE_PIPELINE_SUCCESS,
     CREATE_PIPELINE_FAIL,
@@ -41,7 +38,10 @@ import {
     COPY_PIPELINE_FAIL,
     SET_PIPELINES_STATUS,
     SET_PIPELINES_LAST_RUN,
-    SET_DEFAULT
+    SET_DEFAULT,
+    RETRY_PIPELINE_START,
+    RETRY_PIPELINE_SUCCESS,
+    RETRY_PIPELINE_FAIL
 } from '../actions/types';
 
 describe('pipelines Reducer', () => {
@@ -169,9 +169,9 @@ describe('pipelines Reducer', () => {
         });
     });
 
-    it('should handle RESUME_PIPELINE_START', () => {
+    it('should handle RETRY_PIPELINE_START', () => {
         const action = {
-            type: RESUME_PIPELINE_START
+            type: RETRY_PIPELINE_START
         };
         expect(pipelinesReducer(undefined, action)).toEqual({
             loading: true,
@@ -182,9 +182,9 @@ describe('pipelines Reducer', () => {
         });
     });
 
-    it('should handle RESUME_PIPELINE_SUCCESS', () => {
+    it('should handle RETRY_PIPELINE_SUCCESS', () => {
         const action = {
-            type: RESUME_PIPELINE_SUCCESS,
+            type: RETRY_PIPELINE_SUCCESS,
             payload: { ...mockData }
         };
         expect(pipelinesReducer(undefined, action)).toEqual({
@@ -196,9 +196,9 @@ describe('pipelines Reducer', () => {
         });
     });
 
-    it('should handle RESUME_PIPELINE_FAIL', () => {
+    it('should handle RETRY_PIPELINE_FAIL', () => {
         const action = {
-            type: RESUME_PIPELINE_FAIL,
+            type: RETRY_PIPELINE_FAIL,
             payload: { error }
         };
         expect(pipelinesReducer(undefined, action)).toEqual({

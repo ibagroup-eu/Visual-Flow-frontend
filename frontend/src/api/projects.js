@@ -25,8 +25,12 @@ export default {
     deleteProject: id => axiosInstance.delete(`/project/${id}`),
     getProjectById: id => axiosInstance.get(`/project/${id}`),
     getProjectParameters: id => axiosInstance.get(`/project/${id}/params`),
-    updateProjectParameters: (id, params) =>
-        axiosInstance.post(`/project/${id}/params`, params),
+    deleteProjectParameter: (projectId, paramKey) =>
+        axiosInstance.delete(`/project/${projectId}/params/${paramKey}`),
+    createProjectParameter: (projectId, paramKey, param) =>
+        axiosInstance.post(`/project/${projectId}/params/${paramKey}`, param),
+    updateProjectParameter: (projectId, paramKey, param) =>
+        axiosInstance.put(`/project/${projectId}/params/${paramKey}`, param),
     getResourceUtilization: id => axiosInstance.get(`/project/${id}/usage`),
     updateProject: project => axiosInstance.post(`/project/${project.id}`, project),
     getProjectUsers: id => axiosInstance.get(`/project/${id}/users`),

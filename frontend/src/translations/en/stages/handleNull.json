@@ -1,0 +1,54 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "mode": {
+        "name": "Mode",
+        "value1": "Provide mode:",
+        "value2": "1. Drop - Allows to remove rows/column with null values.",
+        "value3": "2. Fill - Allows to replace null values."
+    },
+    "dropType": {
+        "name": "Drop Type",
+        "value1": "Replacement type for missing values (\"Column\" | \"Row\").",
+        "value2": "\"Column\" option allows to remove all or specific columns where all the rows have null values.",
+        "value3": "\"Row\" option allows to remove all rows, where all the values are null."
+    },
+    "dropChoice": {
+        "name": "Drop Choice",
+        "value1": "What to drop:",
+        "value2": "1.\"Names\"- remove all rows, where all the values are null in some column (works as a filter).",
+        "value3": "2.\"All\"."
+    },
+    "dropColumns": {
+        "name": "Drop Columns",
+        "value": "Which columns to delete if Drop Choice = \"Names\" ."
+    },
+    "fillValueType": {
+        "name": "Fill Value Type",
+        "value1": "Replacement type for missing values (\"Custom\" | \"Agg\").",
+        "value2": "Notes:",
+        "value3": "Set aggregation function in \"Fill Strategy\" field."
+    },
+    "fillChoice": {
+        "name": "Fill Choice",
+        "value1": "What to fill:",
+        "value2": "1.\"Names\"- provide specific column(s) and value for it in \"Fill nulls\" section.",
+        "value3": "2.\"All\".",
+        "value4": "Notes:",
+        "value5": "Use the Plus button to add Column/Value pairs."
+    },
+    "fillValues": {
+        "name": "Fill Values",
+        "value": "Value(s) for columns to replace nulls."
+    },
+    "fillColumns": {
+        "name": "Fill Columns",
+        "value": "Column(s) to be replaced by using aggregate function"
+    },
+    "fillStrategy": {
+        "name": "Fill Strategy",
+        "value": "Aggregation type (\"mean\" | \"median\" | \"mode\")"
+    }
+}

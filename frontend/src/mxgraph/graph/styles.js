@@ -73,3 +73,14 @@ export const getWaitBorderColor = (node, statuses, theme) => {
         ? getBorderColor(SUCCEEDED, theme)
         : undefined;
 };
+
+export const setDefaultPopupMenuStyle = (menu, classes) => {
+    menu.div.classList.add(classes.popupMenu);
+    menu.table.classList.add(classes.popupMenuTable);
+    menu.tbody.childNodes.forEach(item => {
+        item.classList.add(classes.popupMenuItem);
+        item.firstChild.remove();
+        item.lastChild.remove();
+        item.firstChild.classList.add(classes.popupMenuItemCell);
+    });
+};

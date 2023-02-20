@@ -20,6 +20,6 @@
 export default theme => ({
     root: {
         height: '100%',
-        padding: theme.spacing(4)
+        padding: theme.spacing(4, 4, 0, 4)
     }
 });

@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { reduce } from 'lodash';
+import { isEqual, reduce } from 'lodash';
 import { fetchPipelines } from '../../redux/actions/pipelinesActions';
 import { setCurrentTablePage } from '../../redux/actions/enhancedTableActions';
 import PipelinesTable from './table';
@@ -49,6 +49,7 @@ const Pipelines = ({
     const [search, setSearch] = React.useState('');
     const [list, setList] = React.useState([]);
     const [tags, setTags] = React.useState({});
+    const filteredTags = checkedTags(tags);
 
     React.useEffect(() => {
         if (projectId) {
@@ -64,24 +65,24 @@ const Pipelines = ({
     }, [data?.pipelines]);
 
     React.useEffect(() => {
-        setList(
-            data?.pipelines?.filter(
-                item =>
-                    item.name.toUpperCase().includes(search.toUpperCase()) &&
-                    checkedTags(tags).every(r => item?.tags.includes(r[0]))
-            )
-        );
-    }, [search, tags]);
-
-    React.useEffect(() => {
-        search.trim() && setCurrentPage(0);
-    }, [search]);
-
-    React.useEffect(() => {
-        if (checkedTags(tags).length !== 0) {
+        if (!isEqual(filteredTags, {})) {
             setCurrentPage(0);
+            setList(
+                data?.pipelines?.filter(
+                    item =>
+                        item.name.toUpperCase().includes(search.toUpperCase()) &&
+                        item?.tags.find(tag => filteredTags[tag])
+                )
+            );
+        } else {
+            search.trim() && setCurrentPage(0);
+            setList(
+                data?.pipelines?.filter(item =>
+                    item.name.toUpperCase().includes(search.toUpperCase())
+                )
+            );
         }
-    }, [checkedTags(tags)]);
+    }, [search, tags]);
 
     const resetTags = () =>
         setTags(
@@ -114,7 +115,7 @@ const Pipelines = ({
                     tagsData={tags}
                     resetTags={resetTags}
                     onCheckTags={onCheckTags}
-                    checkedTags={checkedTags(tags)}
+                    checkedTags={filteredTags}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -126,7 +127,7 @@ const Pipelines = ({
                     params={params}
                     resetTags={resetTags}
                     onCheckTags={onCheckTags}
-                    checkedTags={checkedTags(tags)}
+                    checkedTags={filteredTags}
                 />
             </Grid>
         </Box>
@@ -149,7 +150,7 @@ const mapStateToProps = state => ({
     pipelines: state.pages.pipelines,
     loadingExport: state.importExport.loading,
     jobs: state.pages.jobs.data.jobs,
-    params: state.pages.settingsParameters.data.params
+    params: state.pages.settingsParameters.params
 });
 
 const mapDispatchToProps = {

@@ -61,9 +61,15 @@ const SelectField = ({
                 label={t(label)}
                 placeholder={t(label)}
                 variant="outlined"
-                margin="normal"
                 fullWidth
                 select
+                SelectProps={{
+                    MenuProps: {
+                        style: {
+                            maxHeight: 300
+                        }
+                    }
+                }}
                 name={name}
                 value={value || ''}
                 onChange={

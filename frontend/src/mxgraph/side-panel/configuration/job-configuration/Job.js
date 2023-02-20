@@ -122,7 +122,7 @@ const Job = ({
                     <>
                         <ConfigurationDivider />
                         <Box className={classes.outputPaths}>
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant="subtitle1" color="textSecondary">
                                 {t('pipelineDesigner:jobConfiguration.OutputPaths')}
                             </Typography>
                         </Box>

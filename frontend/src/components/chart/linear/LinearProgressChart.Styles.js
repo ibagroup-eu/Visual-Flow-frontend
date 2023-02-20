@@ -40,6 +40,12 @@ export default theme => ({
     statusError: {
         backgroundColor: alpha(theme.palette.error.light, 0.6)
     },
+    statusSuspended: {
+        backgroundColor: alpha(theme.palette.warning.main, 0.3)
+    },
+    statusTerminated: {
+        backgroundColor: alpha(theme.palette.error.main, 0.3)
+    },
 
     statusBarDraft: {
         backgroundColor: theme.palette.grey[600]
@@ -53,6 +59,12 @@ export default theme => ({
     statusBarError: {
         backgroundColor: theme.palette.error.main
     },
+    statusBarSuspended: {
+        backgroundColor: alpha(theme.palette.warning.main, 0.8)
+    },
+    statusBarTerminated: {
+        backgroundColor: alpha(theme.palette.error.main, 0.8)
+    },
 
     statusColorDraft: {
         color: theme.palette.grey[600]
@@ -64,6 +76,12 @@ export default theme => ({
         color: theme.palette.success.main
     },
     statusColorError: {
+        color: theme.palette.error.main
+    },
+    statusColorSuspended: {
+        color: theme.palette.warning.main
+    },
+    statusColorTerminated: {
         color: theme.palette.error.main
     },
     caption: {

@@ -56,7 +56,7 @@ const CDCConfiguration = ({
                 <>
                     <ConfigurationDivider />
                     <div className={classes.divider}>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="subtitle1" color="textSecondary">
                             {t('jobDesigner:CDCConfiguration.LinkOrdering')}
                         </Typography>
                         <Box className={classes.fieldWrapper}>

@@ -115,7 +115,7 @@ PageHeader.propTypes = {
     tagsData: PropTypes.object,
     onCheckTags: PropTypes.func,
     resetTags: PropTypes.func,
-    checkedTags: PropTypes.array
+    checkedTags: PropTypes.object
 };
 
 export default PageHeader;

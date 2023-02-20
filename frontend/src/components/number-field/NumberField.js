@@ -58,7 +58,6 @@ const NumberField = ({
                 label={t(label)}
                 placeholder={t(label)}
                 variant="outlined"
-                margin="normal"
                 InputProps={{
                     inputProps: {
                         min: minValue,

@@ -19,7 +19,7 @@
 
 export default theme => ({
     small: {
-        marginTop: theme.spacing(1)
+        marginTop: theme.spacing(2)
     },
     large: {
         marginTop: theme.spacing(2)

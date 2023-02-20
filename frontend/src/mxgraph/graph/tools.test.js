@@ -357,12 +357,22 @@ describe('tools', () => {
                     {
                         value: { getAttribute: () => READ },
                         id: 0,
-                        geometry: { x: 0, y: 1, width: 100, height: 120 }
+                        geometry: {
+                            x: 0,
+                            y: 1,
+                            width: 100,
+                            height: 120
+                        }
                     },
                     {
                         value: { getAttribute: () => WRITE },
                         id: 1,
-                        geometry: { x: 10, y: 11, width: 1100, height: 1120 }
+                        geometry: {
+                            x: 10,
+                            y: 11,
+                            width: 1100,
+                            height: 1120
+                        }
                     },
                     {
                         value: {
@@ -370,7 +380,17 @@ describe('tools', () => {
                         },
                         id: 2,
                         source: 0,
-                        target: 1
+                        target: 1,
+                        geometry: {
+                            x: 10,
+                            y: 11,
+                            width: 1100,
+                            height: 1120,
+                            points: [
+                                { x: 1, y: 1 },
+                                { x: 2, y: 2 }
+                            ]
+                        }
                     },
                     {
                         value: {
@@ -378,7 +398,17 @@ describe('tools', () => {
                         },
                         id: 3,
                         source: 1,
-                        target: 0
+                        target: 0,
+                        geometry: {
+                            x: 10,
+                            y: 11,
+                            width: 1100,
+                            height: 1120,
+                            points: [
+                                { x: 1, y: 1 },
+                                { x: 2, y: 2 }
+                            ]
+                        }
                     }
                 ]
             };
@@ -476,7 +506,17 @@ describe('tools', () => {
                         },
                         id: 2,
                         source: 0,
-                        target: 1
+                        target: 1,
+                        geometry: {
+                            x: 10,
+                            y: 11,
+                            width: 1100,
+                            height: 1120,
+                            points: [
+                                { x: 1, y: 1 },
+                                { x: 2, y: 2 }
+                            ]
+                        }
                     },
                     {
                         value: {
@@ -484,7 +524,17 @@ describe('tools', () => {
                         },
                         id: 3,
                         source: 1,
-                        target: 0
+                        target: 0,
+                        geometry: {
+                            x: 10,
+                            y: 11,
+                            width: 1100,
+                            height: 1120,
+                            points: [
+                                { x: 1, y: 1 },
+                                { x: 2, y: 2 }
+                            ]
+                        }
                     }
                 ]
             };

@@ -38,7 +38,7 @@ import history from '../../../utils/history';
 import RunStopButtons from '../run-stop-buttons';
 import EditDesignerButtons from '../edit-designer-buttons';
 import { fetchJob } from '../../../redux/actions/mxGraphActions';
-import { DRAFT, PENDING, RUNNING } from '../../constants';
+import { DRAFT, PENDING, RUNNING, SUSPENDED } from '../../constants';
 import UnitConfig from '../../../unitConfig';
 
 export const JobsToolbar = ({
@@ -56,6 +56,7 @@ export const JobsToolbar = ({
     setDirty,
     setShowModal,
     dirty,
+    dirtyGraph,
     undoButtonsDisabling
 }) => {
     const { t } = useTranslation();
@@ -76,7 +77,7 @@ export const JobsToolbar = ({
         });
 
     const enableViewMode = () =>
-        status === PENDING || status === RUNNING ? false : data.editable;
+        [SUSPENDED, PENDING, RUNNING].includes(status) ? false : data.editable;
 
     const closeHistory = () => setJobHistory({ ...jobHistory, display: false });
 
@@ -106,7 +107,11 @@ export const JobsToolbar = ({
                     />
                 )}
                 {enableViewMode() && (
-                    <IconButton aria-label="saveIcon" onClick={updateJobHandler}>
+                    <IconButton
+                        aria-label="saveIcon"
+                        disabled={!dirtyGraph}
+                        onClick={updateJobHandler}
+                    >
                         <Tooltip title={t('jobs:tooltip.Save')} arrow>
                             <Save />
                         </Tooltip>
@@ -176,11 +181,13 @@ JobsToolbar.propTypes = {
     reversible: PropTypes.object,
     getActualJob: PropTypes.func,
     dirty: PropTypes.bool,
-    undoButtonsDisabling: PropTypes.object
+    undoButtonsDisabling: PropTypes.object,
+    dirtyGraph: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     storeStatus: state.jobStatus,
+    dirtyGraph: state.mxGraph.dirty,
     dirty:
         state.mxGraph.dirty ||
         state.mxGraph.graphWithParamsIsDirty ||

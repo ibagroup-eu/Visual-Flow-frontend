@@ -29,6 +29,7 @@ import { fetchResourceUtilization } from '../../redux/actions/overviewActions';
 import { setPipelinesStatus } from '../../redux/actions/pipelinesActions';
 import { setJobsStatus } from '../../redux/actions/jobsActions';
 import { setCurrentTablePage } from '../../redux/actions/enhancedTableActions';
+import styles from './Overview.Styles';
 
 export const Overview = ({
     projectId,
@@ -43,11 +44,13 @@ export const Overview = ({
         projectId && getResourceUtilization(projectId);
     }, [projectId]);
 
+    const classes = styles();
+
     return (
         <Box p={4}>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
-                    <Typography variant="h4" paragraph>
+                    <Typography className={classes.header} variant="h4" paragraph>
                         {loading ? <Skeleton /> : name}
                     </Typography>
                     <Box mb={-2}>

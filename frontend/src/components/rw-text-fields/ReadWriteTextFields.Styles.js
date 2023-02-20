@@ -22,7 +22,8 @@ import { makeStyles } from '@material-ui/core/styles';
 export default makeStyles(theme => ({
     fieldWrapper: {
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: theme.spacing(2)
     },
     button: {
         padding: 0,
@@ -33,7 +34,7 @@ export default makeStyles(theme => ({
         position: 'absolute',
         right: theme.spacing(1.75)
     },
-    multilineCross: {
-        alignItems: 'baseline'
+    disabled: {
+        color: theme.palette.text.secondary
     }
 }));

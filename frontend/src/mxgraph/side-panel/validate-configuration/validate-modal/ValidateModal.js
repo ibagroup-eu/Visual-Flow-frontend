@@ -58,6 +58,12 @@ const ValidateModal = ({ validateConfig, onChange, display, onClose, editable })
     const lastRowRef = useRef(null);
 
     useEffect(() => {
+        if (!isEqual(parsedValidateConfig, validationState)) {
+            setValidationState(parsedValidateConfig);
+        }
+    }, [validateConfig]);
+
+    useEffect(() => {
         lastRowRef?.current?.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest'

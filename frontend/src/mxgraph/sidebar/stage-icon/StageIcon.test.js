@@ -23,12 +23,14 @@ import {
     CACHE,
     CDC,
     CONTAINER,
+    DATETIME,
     FILTER,
     GROUP,
     JOB,
     JOIN,
     NOTIFICATION,
     PIPELINE,
+    PIVOT,
     READ,
     REMOVE_DUPLICATES,
     SLICE,
@@ -36,6 +38,8 @@ import {
     TRANSFORM,
     UNION,
     VALIDATE,
+    WAIT,
+    WITH_COLUMN,
     WRITE
 } from '../../constants';
 import StageIcon from './StageIcon';
@@ -59,6 +63,10 @@ describe('StageIcon', () => {
         { key: SORT, value: 'Memo(ForwardRef(SortOutlinedIcon))' },
         { key: SLICE, value: 'Memo(ForwardRef(DeleteSweepIcon))' },
         { key: VALIDATE, value: 'Memo(ForwardRef(CheckCircleOutlinedIcon))' },
+        { key: WITH_COLUMN, value: 'Memo(ForwardRef(ViewWeekIcon))' },
+        { key: DATETIME, value: 'Memo(ForwardRef(ScheduleOutlinedIcon))' },
+        { key: PIVOT, value: 'Memo(ForwardRef(CachedOutlinedIcon))' },
+        { key: WAIT, value: 'Memo(ForwardRef(ScheduleOutlinedIcon))' },
         { key: 'dummy', value: 'Fragment' }
     ])('should return $value for $key icon', ({ key, value }) => {
         const icon = shallow(<StageIcon stageName={key} />);

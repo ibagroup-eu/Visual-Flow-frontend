@@ -19,6 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { validationType } from '../../../mxgraph/side-panel/validate-configuration/validate-modal/validate-modal-row/validate-add-validation-button/ValidateAddValidationButton';
 import InfoModal from '../info';
 
 const ValidateModal = props => {
@@ -29,9 +30,26 @@ const ValidateModal = props => {
             paragraph: t('validation:name.value')
         },
         {
+            title: t('validation:isError.name'),
+            paragraph: t('validation:isError.value')
+        },
+        {
             title: t('validation:validationSchema.name'),
             paragraph: t('validation:validationSchema.value')
-        }
+        },
+        {
+            title: t('validation:column.name'),
+            paragraph: t('validation:column.value')
+        },
+        {
+            title: t('validation:dataType.name'),
+            paragraph1: t('validation:dataType.value'),
+            paragraph2: t('validation:dataType.value2')
+        },
+        ...validationType.slice(1).map(type => ({
+            title: t(`validation:${type}.name`),
+            paragraph: t(`validation:${type}.value`)
+        }))
     ];
     return <InfoModal content={content} {...props} />;
 };

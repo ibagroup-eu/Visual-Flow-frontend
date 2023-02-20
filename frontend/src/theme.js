@@ -29,7 +29,7 @@ const theme = createTheme({
             border: '#8799FA'
         },
         info: {
-            main: '#3F51B5',
+            main: '#5B6DD1',
             light: '#F3EAFF',
             background: '#E8F0FF',
             text: '#64B5F6'
@@ -41,17 +41,17 @@ const theme = createTheme({
             dark: '#16B19F'
         },
         warning: {
-            main: '#FF9800',
+            main: '#EEA12F',
             light: '#FFBB8A',
             background: '#FFF5E3'
         },
         success: {
-            main: '#4CAF50',
+            main: '#68C26B',
             light: '#81C784',
             background: '#F0FFED'
         },
         error: {
-            main: '#F44336',
+            main: '#FF5F53',
             light: '#E57373'
         },
         other: {
@@ -59,7 +59,9 @@ const theme = createTheme({
             skipped: '#BDBDBD'
         },
         text: {
-            primary: 'rgba(0, 0, 0, 0.87)'
+            primary: 'rgba(0, 0, 0, 0.87)',
+            secondary: 'rgba(0, 0, 0, 0.54)',
+            hint: 'rgba(0, 0, 0, 0.38)'
         },
         action: {
             active: 'rgba(0, 0, 0, 0.54)'
@@ -92,6 +94,14 @@ theme.overrides = {
     MuiSnackbar: {
         anchorOriginTopCenter: {
             top: '4rem !important'
+        }
+    },
+    MuiFormLabel: {
+        root: {
+            color: theme.palette.text.hint
+        },
+        filled: {
+            color: theme.palette.text.secondary
         }
     }
 };

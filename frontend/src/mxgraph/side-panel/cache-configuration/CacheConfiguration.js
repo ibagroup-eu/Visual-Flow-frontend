@@ -20,8 +20,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { TextField } from '@material-ui/core';
+import { TextField, Box } from '@material-ui/core';
 import getMenuItems from '../helpers/getMenuItems';
+import useStyles from './CacheConfiguration.Styles';
 import ConfigurationDivider from '../../../components/divider';
 
 const values = [
@@ -45,6 +46,7 @@ const cacheDefaultValues = [
 
 const CacheConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
+    const classes = useStyles();
     useEffect(() => {
         if (state.useDisk === undefined && state.name) {
             cacheDefaultValues.forEach(({ field, value }) => onChange(field, value));
@@ -56,24 +58,28 @@ const CacheConfiguration = ({ state, ableToEdit, onChange }) => {
             {state.name && <ConfigurationDivider />}
             {state.name &&
                 cacheDefaultValues.map(({ field, value, props }, index) => (
-                    <TextField
-                        key={`${index + field.slice(0, 4)}`}
-                        disabled={!ableToEdit}
-                        label={t(`jobDesigner:cacheConfiguration.${field}`)}
-                        placeholder={t(`jobDesigner:cacheConfiguration.${field}`)}
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        select={field !== 'replication'}
-                        name={field}
-                        value={state[field] || value}
-                        inputProps={field !== 'replication' ? {} : props}
-                        onChange={event =>
-                            onChange(event.target.name, event.target.value)
-                        }
-                    >
-                        {field !== 'replication' && getMenuItems(values)}
-                    </TextField>
+                    <Box className={classes.field}>
+                        <TextField
+                            /* eslint react/no-array-index-key: 0 */
+                            key={`${index}${field.slice(0, 4)}`}
+                            disabled={!ableToEdit}
+                            label={t(`jobDesigner:cacheConfiguration.${field}`)}
+                            placeholder={t(
+                                `jobDesigner:cacheConfiguration.${field}`
+                            )}
+                            variant="outlined"
+                            fullWidth
+                            select={field !== 'replication'}
+                            name={field}
+                            value={state[field] || value}
+                            inputProps={field !== 'replication' ? {} : props}
+                            onChange={event =>
+                                onChange(event.target.name, event.target.value)
+                            }
+                        >
+                            {field !== 'replication' && getMenuItems(values)}
+                        </TextField>
+                    </Box>
                 ))}
         </>
     );

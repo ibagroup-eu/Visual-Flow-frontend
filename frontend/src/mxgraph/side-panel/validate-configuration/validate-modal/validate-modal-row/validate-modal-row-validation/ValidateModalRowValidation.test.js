@@ -66,7 +66,7 @@ describe('ValidateModalRowValidation', () => {
                 }}
             />
         );
-        expect(wrapper.find(Typography)).toHaveLength(3);
+        expect(wrapper.find(Typography)).toHaveLength(2);
     });
 
     it('should render Typography for data parameter with long name', () => {
@@ -79,11 +79,11 @@ describe('ValidateModalRowValidation', () => {
                 }}
             />
         );
-        expect(wrapper.find(Typography)).toHaveLength(3);
+        expect(wrapper.find(Typography)).toHaveLength(2);
         expect(
             wrapper
                 .find(Typography)
-                .at(2)
+                .at(1)
                 .text()
         ).toHaveLength(30);
     });

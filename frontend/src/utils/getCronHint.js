@@ -28,7 +28,7 @@ const TYPES = {
     DAY_OF_WEEK: 'day-of-week'
 };
 
-const dayOfWeekData = [
+export const dayOfWeekData = [
     'Sunday',
     'Monday',
     'Tuesday',

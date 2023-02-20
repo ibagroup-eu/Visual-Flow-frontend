@@ -23,8 +23,7 @@ export default makeStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        marginTop: theme.spacing(-2)
+        height: '100%'
     },
     params: {
         flexGrow: 1
@@ -34,7 +33,7 @@ export default makeStyles(theme => ({
         display: 'flex',
         gap: theme.spacing(2),
         paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(4)
+        paddingBottom: theme.spacing(8)
     },
     button: {
         minWidth: 100

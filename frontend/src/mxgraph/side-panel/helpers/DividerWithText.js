@@ -22,12 +22,13 @@ import PropTypes from 'prop-types';
 import { Box, Typography } from '@material-ui/core';
 import useStyles from './DividerWithText.Styles';
 
-const DividerWithText = ({ children }) => {
+const DividerWithText = ({ children, type }) => {
+    const typoVariant = type === 'res' ? 'subtitle1' : 'caption';
     const classes = useStyles();
     return (
         <Box className={classes.container}>
             <Box className={classes.borderLeft} />
-            <Typography variant="caption" className={classes.content}>
+            <Typography variant={typoVariant} className={classes.content}>
                 {children}
             </Typography>
             <Box className={classes.borderRight} />
@@ -36,7 +37,8 @@ const DividerWithText = ({ children }) => {
 };
 
 DividerWithText.propTypes = {
-    children: PropTypes.any
+    children: PropTypes.any,
+    type: PropTypes.string
 };
 
 export default DividerWithText;

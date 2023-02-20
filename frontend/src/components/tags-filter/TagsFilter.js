@@ -31,7 +31,7 @@ import {
     Slide
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { partition } from 'lodash';
+import { isEqual, partition } from 'lodash';
 import classNames from 'classnames';
 import useStyles from './TagsFilter.Styles';
 import SearchInput from '../search-input';
@@ -153,7 +153,7 @@ const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
                             </Button>
                         )}
                         <TagsResetButton
-                            disabled={checkedTags.length === 0}
+                            disabled={isEqual(checkedTags, {})}
                             resetTags={resetTags}
                         />
                     </Paper>
@@ -168,7 +168,7 @@ const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
                 <TagsButton
                     open={!!anchorEl}
                     onOpen={handleClick}
-                    checkedCount={checkedTags.length}
+                    checkedCount={Object.keys(checkedTags).length}
                 />
                 <Popper
                     open={!!anchorEl}
@@ -188,7 +188,7 @@ TagsFilter.propTypes = {
     data: PropTypes.object,
     onCheckTags: PropTypes.func,
     resetTags: PropTypes.func,
-    checkedTags: PropTypes.array
+    checkedTags: PropTypes.object
 };
 
 export default TagsFilter;

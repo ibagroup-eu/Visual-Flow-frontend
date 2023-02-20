@@ -84,9 +84,7 @@ export const ExportModalWindow = ({
     React.useEffect(() => {
         if (showModal) {
             const selectedData = isPipelineModal ? selectedPipelines : selectedJobs;
-            const letterPart = tableData?.find(el => {
-                return el.id === selectedData[0];
-            });
+            const letterPart = tableData?.find(el => el.id === selectedData[0]);
             if (selectedData.length > 1) {
                 setFileName(`${letterPart?.name} (${selectedData.length - 1} more)`);
             } else {

@@ -44,7 +44,7 @@ export class DesignerToolbar extends React.Component {
     componentDidUpdate(prevProps) {
         const { graph, data } = this.props;
         if (prevProps.graph !== graph) {
-            const undoManagerStartIndex = isEmpty(data.definition.graph) ? 0 : 1;
+            const undoManagerStartIndex = isEmpty(data.definition?.graph) ? 0 : 1;
             const undoManager = new mxUndoManager(25);
             undoManager.undo = this.undoManagerUndo();
             undoManager.redo = this.undoManagerRedo();
@@ -92,20 +92,14 @@ export class DesignerToolbar extends React.Component {
 
     undoManagerChangedStage = history => {
         return history?.changes?.find(obj => {
-            if (
+            const mxGeometryCond =
                 Object.getPrototypeOf(obj).constructor.name === 'mxGeometryChange' &&
-                obj.previous.width !== obj.geometry.width
-            ) {
-                return true;
-            }
-            if (
+                obj.previous.width !== obj.geometry.width;
+            const mxStyleCond =
                 Object.getPrototypeOf(obj).constructor.name === 'mxStyleChange' &&
                 obj.cell.edge &&
-                history.changes.length <= 1
-            ) {
-                return true;
-            }
-            return false;
+                history.changes.length <= 1;
+            return mxGeometryCond || mxStyleCond;
         });
     };
 

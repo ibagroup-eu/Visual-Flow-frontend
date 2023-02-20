@@ -64,6 +64,7 @@
         "fast-sass-loader": "^2.0.1",
         "file-loader": "^6.2.0",
         "html-loader": "^2.1.2",
+        "husky": "^8.0.2",
         "jest": "^27.5.1",
         "jest-junit": "^13.2.0",
         "loader-utils": "^2.0.2",
@@ -82,14 +83,13 @@
         "build": "webpack --config webpack.config.js --mode production",
         "owasp": "owasp-dependency-check --project frontend --scan package-lock.json --scan package.json -f HTML --disableAssembly --failOnCVSS 8 --suppression dependency-check-suppression.xml",
         "test": "jest && npm run owasp",
+        "test-local": "jest",
         "coverage": "jest --coverage",
         "format": "prettier --write \"./src/**/*.{js,md,scss}\"",
-        "format:diff": "prettier --list-different \"./src/**/*.{js,md,scss}\"",
         "lint": "eslint ./src -f json -o reports/eslint-report.json",
-        "lint-fix": "eslint --fix ./src",
-        "lint:js": "eslint ./src --color --max-warnings 0 --no-ignore",
-        "lint:js:ignore": "eslint ./src --color --max-warnings 0",
-        "lint:js:fix": "eslint ./src --color --max-warnings 0 --no-ignore --fix"
+        "lint-local": "eslint ./src --color --max-warnings 0",
+        "lint-all": "npm run lint-local && npm run test-local",
+        "husky-init": "cd .. && husky install frontend/.husky && npx husky add frontend/.husky/pre-push \"cd frontend && npm run lint-all\""
     },
     "jest": {
         "setupFilesAfterEnv": [

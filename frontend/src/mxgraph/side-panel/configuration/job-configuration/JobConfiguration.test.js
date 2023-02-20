@@ -33,6 +33,7 @@ jest.mock('react-i18next', () => ({
 describe('JobConfiguration', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
+            state: { jobId: '1' },
             configuration: {},
             ableToEdit: true,
             isDisabled: jest.fn(),

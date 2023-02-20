@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { TextField, MenuItem, Box, Typography } from '@material-ui/core';
+import { Box, MenuItem, TextField, Typography } from '@material-ui/core';
 import { isEqual, pickBy } from 'lodash';
 import useStyles from './EdgeConfiguration.Styles';
 
@@ -43,33 +43,28 @@ const EdgeConfiguration = ({
     saveCell,
     setPanelDirty,
     sourceAndTarget,
-    ableToEdit
+    ableToEdit,
+    state,
+    setState
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
-    const [inputValues, setInputValues] = React.useState(configuration);
-
-    // when new current cell
-    useEffect(() => {
-        setInputValues(configuration);
-    }, [configuration]);
-
     const handleInputChange = event => {
         const newValue = pickBy(
             {
-                ...inputValues,
+                ...state,
                 [event.target.name]: event.target.value
             },
             value => value !== ''
         );
 
-        setInputValues(newValue);
+        setState(newValue);
         setPanelDirty(!isEqual(configuration, newValue));
     };
 
     const cancelChanges = () => {
-        setInputValues(configuration);
+        setState(configuration);
         setPanelDirty(false);
     };
 
@@ -108,7 +103,7 @@ const EdgeConfiguration = ({
                     fullWidth
                     select
                     name="successPath"
-                    value={inputValues?.successPath || ''}
+                    value={state?.successPath || ''}
                     onChange={handleInputChange}
                 >
                     {path.map(option => (
@@ -121,7 +116,7 @@ const EdgeConfiguration = ({
 
             <SaveCancelButtons
                 ableToEdit={ableToEdit}
-                saveCell={() => saveCell(inputValues)}
+                saveCell={() => saveCell(state)}
                 cancelChanges={cancelChanges}
             />
         </Box>
@@ -133,7 +128,9 @@ EdgeConfiguration.propTypes = {
     setPanelDirty: PropTypes.func,
     configuration: PropTypes.object,
     sourceAndTarget: PropTypes.object,
-    ableToEdit: PropTypes.bool
+    ableToEdit: PropTypes.bool,
+    state: PropTypes.object,
+    setState: PropTypes.func
 };
 
 export default EdgeConfiguration;

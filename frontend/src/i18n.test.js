@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { resources } from './i18n';
+import resources from './translations/resources';
 
 describe('i18n', () => {
     it('should load translations without any error', () => {

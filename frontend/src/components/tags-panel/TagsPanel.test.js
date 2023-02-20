@@ -27,7 +27,7 @@ describe('TagsPanel', () => {
 
     beforeEach(() => {
         props = {
-            data: [['test', true]],
+            data: { test: true },
             onCheckTags: jest.fn(),
             resetTags: jest.fn()
         };

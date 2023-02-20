@@ -37,11 +37,11 @@ import fetchRoles from '../../../redux/actions/rolesActions';
 import PopupForm from '../../../components/popup-form';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 
-import UsersTable from '../components/users-table';
+import UsersTable from './table';
 import useStyles from './Users.Styles';
 import useUnsavedChangesWarning from '../useUnsavedChangesWarning';
 
-const Users = ({
+export const Users = ({
     projectId,
     getUsers,
     users,

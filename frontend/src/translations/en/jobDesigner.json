@@ -22,8 +22,13 @@
         "CONTAINER": "Container",
         "CACHE": "Cache",
         "SLICE": "Slice",
+        "PIVOT": "Pivot",
         "SORT": "Sort",
-        "VALIDATE": "Validate"
+        "STRING": "String\nFunctions",
+        "VALIDATE": "Validate",
+        "WITH_COLUMN": "withColumn",
+        "DATETIME": "Date/Time",
+        "HANDLE_NULL": "Drop/Fill\nNulls"
     },
     "readConfiguration": {
         "Name": "Name",
@@ -110,6 +115,43 @@
         "keep": "Keep",
         "drop": "Drop"
     },
+    "pivotConfiguration": {
+        "Name": "Name",
+        "operationType": "Operation Type",
+        "option": {
+            "groupBy": "GroupBy",
+            "pivotColumns": "Pivot Columns",
+            "unpivotColumns": "Unpivot Columns",
+            "unpivotNames": "Unpivot Names",
+            "unchangedColumns": "Unchanged Columns",
+            "pivotValues": "Pivot Values",
+            "aggregation": "Aggregate function and Column"
+        },
+        "pivot": "pivot",
+        "unpivot": "unpivot",
+        "aggregation": "Aggregate function and Column"
+    },
+    "stringFunctionsConfiguration": {
+        "Name": "Name",
+        "OperationType": "Operation Type",
+        "SourceColumn": "Source Column",
+        "TargetColumn": "Target Column",
+        "Separator": "Separator",
+        "Charset": "Charset for decode",
+        "FormatNumber": "Decimal Places",
+        "FormatString": "Printf-style String",
+        "Substring": "Substring searched for",
+        "Position": "Position",
+        "Length": "Length",
+        "Pad": "String placeholder",
+        "Regex": "Regex string for searching",
+        "Limit": "Limit",
+        "trimString": "Character string for trim",
+        "groupIndex": "Ingex of regex group",
+        "RepeatNumber": "Number of repetitions",
+        "Delimiter": "Delimiter",
+        "Count": "Count"
+    },
     "RemoveDuplConfiguration": {
         "Key": "Key",
         "OrderBy": "Order By"
@@ -153,6 +195,30 @@
         "SortType": "Sort type",
         "OrderColumns": "Order columns"
     },
+    "withColumnConfiguration": {
+        "Name": "Name",
+        "operationType": "Operation Type",
+        "Column": "Column",
+        "expression": "Expression",
+        "columnType": "Column Type",
+        "constant": "Constant",
+        "columnName": "Column Name",
+        "conditions": "Conditions",
+        "otherwise": "Otherwise",
+        "windowFunction": "Window Function",
+        "orderBy": "Order By",
+        "partitionBy": "Partition By",
+        "column": "Columns",
+        "n": "Number of buckets",
+        "offset": "Offset",
+        "defaultValue": "Default Value",
+        "deriveColumn": "deriveColumn",
+        "addConstant": "addConstant",
+        "changeType": "changeType",
+        "renameColumn": "renameColumn",
+        "useConditions": "useConditions",
+        "useWindowFunction": "useWindowFunction"
+    },
     "Zoom": {
         "Zoom": "Zoom",
         "In": "Zoom in",
@@ -161,10 +227,40 @@
         "Select": "Select",
         "Move": "Move"
     },
+    "dateTimeConfiguration": {
+        "operationType": "Operation Type",
+        "option": {
+            "sourceColumn": "Source Column",
+            "targetColumn": "Target Column",
+            "format": "Date Format",
+            "numMonths": "Number of Months",
+            "days": "Number of Days",
+            "startColumn": "Start Date Column",
+            "endColumn": "End Date Column",
+            "roundOff": "Round Off",
+            "dayOfWeek": "Day of Week"
+        }
+    },
+    "handleNullConfiguration": {
+        "Mode": "Mode",
+        "DropType": "Drop Type",
+        "DropChoice": "Drop Choice",
+        "DropColumns": "Drop Columns",
+        "fillValueType": "Fill Value Type",
+        "fillChoice": "Fill Choice",
+        "fillValues": "Fill Values",
+        "fillColumns": "Fill Columns",
+        "fillStrategy": "Fill Strategy",
+        "DROP": "Drop",
+        "fill": "Fill",
+        "fillNulls": "Fill nulls"
+    },
     "Path": "Path",
     "Configuration": "Configuration",
     "STAGE": "STAGE",
     "Column": "Column",
+    "Value": "Value",
+    "Function": "Func",
     "avroSchema": {
         "useSchema": {
             "name": "Schema"
@@ -219,6 +315,7 @@
         }
     },
     "Validate": {
+        "isError": "Is Error",
         "modal": {
             "addValidation": "Add Validation",
             "editValidation": "Edit Validation"
@@ -232,14 +329,12 @@
         },
         "header": {
             "type": "TYPE",
-            "parameter": "PARAMETER",
-            "isError": "ISERROR"
+            "parameter": "PARAMETER"
         },
         "popupMenu": {
             "columnName": "Column Name",
             "ok": "Ok",
             "type": "Type",
-            "isError": "isError",
             "values": "Values"
         }
     }

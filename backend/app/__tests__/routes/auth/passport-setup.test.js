@@ -43,7 +43,7 @@ describe('Passport-Setup', () => {
     it('should verify', () => {
         const accessToken = 'accessToken';
         const refreshToken = 'refreshToken';
-        const profile = 'profile';
+        const profile = {};
         const cb = jest.fn();
 
         verify(accessToken, refreshToken, profile, cb);

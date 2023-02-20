@@ -55,12 +55,7 @@ const ReadWriteTextFields = ({
         const hiddenField = visible ? <Visibility /> : <VisibilityOff />;
 
         return (
-            <Box
-                key={field}
-                className={classNames(classes.fieldWrapper, {
-                    [classes.multilineCross]: rows > 1
-                })}
-            >
+            <Box key={field} className={classes.fieldWrapper}>
                 <TextField
                     label={t(
                         `jobDesigner:readConfiguration.${field.replace(
@@ -75,7 +70,6 @@ const ReadWriteTextFields = ({
                         )}`
                     )}
                     variant="outlined"
-                    margin="normal"
                     fullWidth
                     multiline={rows > 1}
                     minRows={rows}
@@ -113,7 +107,10 @@ const ReadWriteTextFields = ({
                                     <TuneOutlined />
                                 </IconButton>
                             </InputAdornment>
-                        )
+                        ),
+                        classes: {
+                            disabled: classes.disabled
+                        }
                     }}
                     required={required || fieldRequired}
                 />

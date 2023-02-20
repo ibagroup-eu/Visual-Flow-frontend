@@ -45,6 +45,7 @@ import urlSearchReducer from './urlSearchReducer';
 import profileReducer from './profileReducer';
 import historyReducer from './historyReducer';
 import filesReducer from './filesReducer';
+import appSettingsReducer from './appSettingsReducer';
 
 const combine = combineReducers({
     routing: routerReducer,
@@ -74,7 +75,8 @@ const combine = combineReducers({
     }),
     importExport: importExportReducer,
     enhancedTable: enhancedTableReducer,
-    files: filesReducer
+    files: filesReducer,
+    appSettings: appSettingsReducer
 });
 
 const reducers = (state, action) =>

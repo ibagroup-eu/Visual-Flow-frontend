@@ -43,7 +43,13 @@ import {
     FETCH_PIPELINE_STATUS_SUCCESS,
     COPY_PIPELINE_START,
     COPY_PIPELINE_SUCCESS,
-    COPY_PIPELINE_FAIL
+    COPY_PIPELINE_FAIL,
+    RETRY_PIPELINE_START,
+    RETRY_PIPELINE_SUCCESS,
+    RETRY_PIPELINE_FAIL,
+    SUSPEND_PIPELINE_START,
+    SUSPEND_PIPELINE_SUCCESS,
+    SUSPEND_PIPELINE_FAIL
 } from './types';
 import api from '../../api/pipelines';
 import {
@@ -51,11 +57,12 @@ import {
     deletePipeline,
     runPipeline,
     stopPipeline,
-    resumePipeline,
     createPipeline,
     updatePipeline,
-    copyPipeline
-} from './pipelinesActions';
+    copyPipeline,
+    retryPipeline,
+    suspendPipeline, resumePipeline
+} from "./pipelinesActions";
 import fetchPipelineStatus from './onePipelineStatusActions';
 
 describe('Pipelines action', () => {
@@ -239,26 +246,26 @@ describe('Pipelines action', () => {
         });
     });
 
-    describe('resumePipeline', () => {
+    describe('retryPipeline', () => {
         let data;
         beforeEach(() => {
             data = { status: '' };
             dispatch = jest.fn();
-            jest.spyOn(api, 'resumePipeline').mockResolvedValue({ data });
+            jest.spyOn(api, 'retryPipeline').mockResolvedValue({ data });
         });
 
-        it('should dispatch RESUME_PIPELINE_START', () => {
-            resumePipeline()(dispatch);
-            expect(dispatch).toHaveBeenCalledWith({ type: RESUME_PIPELINE_START });
+        it('should dispatch RETRY_PIPELINE_START', () => {
+            retryPipeline()(dispatch);
+            expect(dispatch).toHaveBeenCalledWith({ type: RETRY_PIPELINE_START });
         });
 
-        it('should dispatch RESUME_PIPELINE_SUCCESS on success', () => {
-            return resumePipeline()(dispatch).then(() => {
+        it('should dispatch RETRY_PIPELINE_SUCCESS on success', () => {
+            return retryPipeline()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: RESUME_PIPELINE_START }],
+                    [{ type: RETRY_PIPELINE_START }],
                     [
                         {
-                            type: RESUME_PIPELINE_SUCCESS,
+                            type: RETRY_PIPELINE_SUCCESS,
                             payload: { status: '' }
                         }
                     ]
@@ -266,12 +273,12 @@ describe('Pipelines action', () => {
             });
         });
 
-        it('should dispatch RESUME_PIPELINE_FAIL on failure', () => {
-            jest.spyOn(api, 'resumePipeline').mockRejectedValue({});
-            return resumePipeline()(dispatch).then(() => {
+        it('should dispatch RETRY_PIPELINE_FAIL on failure', () => {
+            jest.spyOn(api, 'retryPipeline').mockRejectedValue({});
+            return retryPipeline()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: RESUME_PIPELINE_START }],
-                    [{ type: RESUME_PIPELINE_FAIL, payload: { error: {} } }]
+                    [{ type: RETRY_PIPELINE_START }],
+                    [{ type: RETRY_PIPELINE_FAIL, payload: { error: {} } }]
                 ]);
             });
         });
@@ -501,4 +508,84 @@ describe('Pipelines action', () => {
             });
         });
     });
+
+    describe('suspendPipeline', () => {
+        let data;
+        beforeEach(() => {
+            data = { status: '' };
+            dispatch = jest.fn();
+            jest.spyOn(api, 'suspendPipeline').mockResolvedValue({ data });
+        });
+
+        it('should dispatch SUSPEND_PIPELINE_START', () => {
+            suspendPipeline()(dispatch);
+            expect(dispatch).toHaveBeenCalledWith({ type: SUSPEND_PIPELINE_START });
+        });
+
+        it('should dispatch SUSPEND_PIPELINE_SUCCESS on success', () => {
+            return suspendPipeline()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: SUSPEND_PIPELINE_START }],
+                    [
+                        {
+                            type: SUSPEND_PIPELINE_SUCCESS,
+                            payload: { status: '' }
+                        }
+                    ],
+                    [expect.any(Function)]
+                ]);
+            });
+        });
+
+        it('should dispatch SUSPEND_PIPELINE_FAIL on failure', () => {
+            jest.spyOn(api, 'suspendPipeline').mockRejectedValue({});
+            return suspendPipeline()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: SUSPEND_PIPELINE_START }],
+                    [{ type: SUSPEND_PIPELINE_FAIL, payload: { error: {} } }]
+                ]);
+            });
+        });
+    });
+
+    describe('resumePipeline', () => {
+        let data;
+        beforeEach(() => {
+            data = { status: '' };
+            dispatch = jest.fn();
+            jest.spyOn(api, 'resumePipeline').mockResolvedValue({ data });
+        });
+
+        it('should dispatch RESUME_PIPELINE_START', () => {
+            resumePipeline()(dispatch);
+            expect(dispatch).toHaveBeenCalledWith({ type: RESUME_PIPELINE_START });
+        });
+
+        it('should dispatch RESUME_PIPELINE_SUCCESS on success', () => {
+            return resumePipeline()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: RESUME_PIPELINE_START }],
+                    [
+                        {
+                            type: RESUME_PIPELINE_SUCCESS,
+                            payload: { status: '' }
+                        }
+                    ],
+                    [expect.any(Function)]
+                ]);
+            });
+        });
+
+        it('should dispatch RESUME_PIPELINE_FAIL on failure', () => {
+            jest.spyOn(api, 'resumePipeline').mockRejectedValue({});
+            return resumePipeline()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: RESUME_PIPELINE_START }],
+                    [{ type: RESUME_PIPELINE_FAIL, payload: { error: {} } }]
+                ]);
+            });
+        });
+    });
+
+
 });

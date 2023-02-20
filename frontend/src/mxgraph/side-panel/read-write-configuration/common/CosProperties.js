@@ -78,7 +78,7 @@ const CosProperties = ({
             />
             {inputValues.format === 'csv' && (
                 <>
-                    <Divider />
+                    <Divider className={classes.divider} />
                     <CsvHeader
                         value={inputValues['option.header'] || ''}
                         onChange={handleInputChange}

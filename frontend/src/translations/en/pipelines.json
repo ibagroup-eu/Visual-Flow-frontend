@@ -10,8 +10,11 @@
         "Cron": "Cron",
         "Scheduling": "Scheduling",
         "OnOff": "On/Off",
-        "History": "History"
+        "History": "History",
+        "Suspend": "Suspend",
+        "Resume": "Resume"
     },
+    "changesNotSaved": "Please save pipeline changes to change cron",
     "confirm": {
         "delete": "Are you sure you want to delete {{name}} pipeline(s)?"
     },

@@ -19,10 +19,12 @@
 
 const routes = require('express').Router();
 
+const settings = require('./settings/router').router;
 const oauth = require('./auth/router').router;
 const site = require('./static/router').router;
 const proxy = require('./proxy/router').router;
 
+routes.use('/settings', settings);
 routes.use(oauth);
 routes.use(proxy);
 routes.use(site);

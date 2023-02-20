@@ -18,12 +18,10 @@
  */
 
 import { DialogActions } from '@material-ui/core';
-import { Router } from '@material-ui/icons';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import React from 'react';
 import { Prompt } from 'react-router';
-import { synthHistory } from '../../redux';
-import Parameters from './parameters/Parameters';
+import { Users } from './users/Users';
 
 describe('useUnsavedChangesWarning', () => {
     let wrapper;
@@ -31,18 +29,12 @@ describe('useUnsavedChangesWarning', () => {
 
     beforeEach(() => {
         props = {
-            project: {},
             loading: false,
-            parameters: {
-                params: [{ id: 'id1', key: '1', value: '21' }],
-                editable: true
-            },
-            getProject: jest.fn(),
-            getParameters: jest.fn(),
-            update: jest.fn()
+            users: [],
+            projectUsers: {}
         };
 
-        wrapper = shallow(<Parameters {...props} />);
+        wrapper = shallow(<Users {...props} />);
     });
 
     it('should calls message prop with return false and calls showModal function', () => {

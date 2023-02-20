@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 import React from 'react';
-import { shallow } from 'enzyme';
-import { NOTIFICATION } from '../../constants';
+import { mount, shallow } from 'enzyme';
+import { CONTAINER, NOTIFICATION } from '../../constants';
 import RenderPipelineConfiguration, {
     checkContainerFields,
     checkNotification
@@ -44,6 +44,26 @@ describe('RenderPipelineConfiguration', () => {
             <RenderPipelineConfiguration configuration={configuration} />
         );
         expect(wrapper.find(Configuration).exists()).toBeTruthy();
+    });
+
+    it('should update state', () => {
+        const props = {
+            setPanelDirty: jest.fn(),
+            configuration: {
+                operation: NOTIFICATION
+            },
+            graph: { getSelectionCell: jest.fn(), getIncomingEdges: jest.fn() }
+        };
+
+        const wrapper = mount(<RenderPipelineConfiguration {...props} />);
+
+        wrapper.setProps({
+            configuration: {
+                operation: CONTAINER
+            }
+        });
+        wrapper.update();
+        expect(props.setPanelDirty).toHaveBeenCalled();
     });
 
     it('should not render when operation does not exist', () => {

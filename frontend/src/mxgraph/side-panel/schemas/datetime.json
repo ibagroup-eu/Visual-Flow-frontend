@@ -1,0 +1,164 @@
+{
+  "DATETIME": [
+    {
+      "field": "operationType"
+    },
+    {
+      "field": "option.targetColumn"
+    },
+    {
+      "field": "option.sourceColumn",
+      "conditions": [
+        {
+          "operationType": "date_format"
+        },
+        {
+          "operationType": "to_date"
+        },
+        {
+          "operationType": "add_months"
+        },
+        {
+          "operationType": "date_add"
+        },
+        {
+          "operationType": "date_sub"
+        },
+        {
+          "operationType": "next_day"
+        },
+        {
+          "operationType": "year"
+        },
+        {
+          "operationType": "quarter"
+        },
+        {
+          "operationType": "month"
+        },
+        {
+          "operationType": "dayofweek"
+        },
+        {
+          "operationType": "dayofmonth"
+        },
+        {
+          "operationType": "dayofyear"
+        },
+        {
+          "operationType": "weekofyear"
+        },
+        {
+          "operationType": "last_day"
+        },
+        {
+          "operationType": "trunc"
+        },
+        {
+          "operationType": "hour"
+        },
+        {
+          "operationType": "minute"
+        },
+        {
+          "operationType": "second"
+        },
+        {
+          "operationType": "to_timestamp"
+        },
+        {
+          "operationType": "date_trunc"
+        },
+        {
+          "operationType": "to_unix_timestamp"
+        },
+        {
+          "operationType": "from_unixtime"
+        }
+      ]
+    },
+    {
+      "field": "option.format",
+      "conditions": [
+        {
+          "operationType": "date_format"
+        }, 
+        {
+          "operationType": "to_date"
+        }, 
+        {
+          "operationType": "trunc"
+        }, 
+        {
+          "operationType": "to_timestamp"
+        }, 
+        {
+          "operationType": "date_trunc"
+        }, 
+        {
+          "operationType": "to_unix_timestamp"
+        }, 
+        {
+          "operationType": "from_unixtime"
+        }
+      ]
+    },
+    {
+      "field": "option.numMonths",
+      "conditions": [
+        {
+          "operationType": "add_months"
+        }
+      ]
+    },
+    {
+      "field": "option.startColumn",
+      "conditions": [
+        {
+          "operationType": "datediff"
+        },
+        {
+          "operationType": "months_between"
+        }
+      ]
+    },
+    {
+      "field": "option.endColumn",
+      "conditions": [
+        {
+          "operationType": "datediff"
+        },
+        {
+          "operationType": "months_between"
+        }
+      ]
+    },
+    {
+      "field": "option.roundOff",
+      "conditions": [
+        {
+          "operationType": "months_between"
+        }
+      ]
+    },
+    {
+      "field": "option.dayOfWeek",
+      "conditions": [
+        {
+          "operationType": "next_day"
+        }
+      ]
+    },
+    {
+      "field": "option.days",
+      "conditions": [
+        {
+          "operationType": "date_add"
+        },
+        {
+          "operationType": "date_sub"
+        }
+      ]
+    }
+  ]
+}

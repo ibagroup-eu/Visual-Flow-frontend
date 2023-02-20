@@ -21,7 +21,7 @@ import { forEach } from 'lodash';
 
 const stageLabels = readConfiguration => {
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString('', 'text/xml');
+    const xmlDoc = parser.parseFromString('<html/>', 'text/xml');
     const obj = xmlDoc.createElement('TaskObject');
 
     forEach(readConfiguration, (value, key) => {

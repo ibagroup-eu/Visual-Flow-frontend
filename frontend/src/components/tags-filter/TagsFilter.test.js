@@ -32,7 +32,7 @@ describe('TagsFilter', () => {
             data: { test: true, test2: false },
             onCheckTags: jest.fn(),
             resetTags: jest.fn(),
-            checkedTags: [['test', true]]
+            checkedTags: { test: true }
         };
 
         wrapper = shallow(<TagsFilter {...props} />);

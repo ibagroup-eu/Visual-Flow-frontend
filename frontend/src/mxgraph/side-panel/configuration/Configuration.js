@@ -18,7 +18,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { isEqual, pickBy, get, omit, has, keys, reduce } from 'lodash';
+import { get, has, keys, omit, pickBy, reduce } from 'lodash';
 import { Box, TextField, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -28,7 +28,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './Configuration.Styles';
 import SaveCancelButtons from '../buttons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
-import { JOIN, CDC } from '../../constants';
+import { CDC, DATETIME, JOIN, READ, WRITE } from '../../constants';
 import ConnectionsModal from '../read-write-configuration/connections-modal/ConnectionsModal';
 
 const Configuration = ({
@@ -44,10 +44,11 @@ const Configuration = ({
     sidePanelIsOpen,
     selectedStorage,
     params,
-    connections
+    connections,
+    state,
+    setState
 }) => {
     const { t } = useTranslation();
-    const [state, setState] = useState({ ...configuration });
     const [showModal, setShowModal] = useState(false);
     const [fieldInModal, setFieldInModal] = useState(null);
     const [swap, setSwap] = useState(false);
@@ -71,22 +72,20 @@ const Configuration = ({
     const connection = state.connectionName
         ? omit(connections.find(({ key }) => key === state.connectionName)?.value, [
               'connectionName'
-          ]) || {}
+          ])
         : {};
 
     useEffect(() => {
-        setState(configuration);
-    }, [configuration, sidePanelIsOpen]);
-
-    useEffect(() => {
-        setPanelDirty(!isEqual(configuration, state));
-        if (state.operation === 'READ' || state.operation === 'WRITE') {
+        if (state.operation === READ || state.operation === WRITE) {
             selectedStorage(state.storage);
+        }
+        if (state.operation === DATETIME) {
+            selectedStorage(state.operationType);
         }
     }, [state]);
 
     useEffect(() => {
-        if (state.operation === 'READ' || state.operation === 'WRITE') {
+        if (state.operation === READ || state.operation === WRITE) {
             if (state.connectionName) {
                 setState({
                     ...omit(state, keys(connectionPrevState)),
@@ -152,7 +151,7 @@ const Configuration = ({
     };
 
     const cancelChanges = () => {
-        setState({ ...configuration });
+        setState(configuration);
         setPanelDirty(false);
         if (swap) {
             handleSwap();
@@ -184,10 +183,10 @@ const Configuration = ({
         onClose: () => setShowModal(false),
         onSetValue: newValue => {
             setShowModal(false);
-            setState({
-                ...state,
+            setState(prevState => ({
+                ...prevState,
                 [fieldInModal]: `#${newValue}#`
-            });
+            }));
         },
         onChange: handleChange,
         currentValue: get(state, fieldInModal, '')
@@ -212,13 +211,12 @@ const Configuration = ({
                     ableToEdit={ableToEdit && !has(connection, fieldInModal)}
                 />
             )}
-            <Box>
+            <Box className={classes.fieldWrapper}>
                 <TextField
                     disabled={!ableToEdit || !sidePanelIsOpen}
                     label={t('jobDesigner:readConfiguration.Name')}
                     placeholder={t('jobDesigner:readConfiguration.Name')}
                     variant="outlined"
-                    margin="normal"
                     fullWidth
                     name="name"
                     value={state.name || ''}
@@ -227,9 +225,11 @@ const Configuration = ({
                     }
                     required
                 />
+
                 <Component
                     ableToEdit={ableToEdit && sidePanelIsOpen}
                     state={state}
+                    setState={setState}
                     onChange={handleChange}
                     openModal={openModal}
                     edgeLabels={edgeLabels}
@@ -262,12 +262,13 @@ Configuration.propTypes = {
     sidePanelIsOpen: PropTypes.bool,
     selectedStorage: PropTypes.func,
     params: PropTypes.array,
-    connections: PropTypes.array
+    connections: PropTypes.array,
+    state: PropTypes.object,
+    setState: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-    sidePanelIsOpen: state.mxGraph.sidePanelIsOpen,
-    params: state.pages.settingsParameters.data.params,
+    params: state.pages.settingsParameters.params,
     connections: state.pages.settingsConnections.connections
 });
 

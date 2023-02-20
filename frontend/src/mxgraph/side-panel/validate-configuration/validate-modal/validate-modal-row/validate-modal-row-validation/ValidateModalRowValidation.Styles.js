@@ -28,10 +28,6 @@ export default makeStyles(theme => ({
         paddingLeft: theme.spacing(3.125),
         width: 112
     },
-    error: {
-        paddingLeft: theme.spacing(1.5),
-        width: 102
-    },
     parameter: {
         display: 'flex',
         alignItems: 'center',

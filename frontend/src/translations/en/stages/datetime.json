@@ -1,0 +1,162 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "chooseOperation": "Choose operation type",
+    "operationType": {
+        "name": "Operation Type",
+        "value": "Operation types possible values description:"
+    },
+    "option": {
+        "targetColumn": {
+            "name": "targetColumn",
+            "value": "Column where the result is displayed."
+        },
+        "sourceColumn": {
+            "name": "sourceColumn",
+            "value": "Column from which data is taken."
+        },
+        "format": {
+            "name": "format",
+            "value1": "Format specified by the date format.",
+            "value2": "Format: 'year', 'yyyy', 'yy' to truncate by year, 'month', 'mon', 'mm' to truncate by month.",
+            "value3": "format: 'year', 'yyyy', 'yy' to truncate by year, 'month', 'mon', 'mm' to truncate by month, 'day', 'dd' to truncate by day. Other options are: 'second', 'minute', 'hour', 'week', 'month', 'quarter'.",
+            "value4": "Format: yyyy-MM-dd HH:mm:ss."
+        },
+        "numMonths": {
+            "name": "numMonths",
+            "value": "Number of months."
+        },
+        "days": {
+            "name": "days",
+            "value": "Number of days."
+        },
+        "roundOff": {
+            "name": "roundOff",
+            "value": "If roundOff is set to true, the result is rounded off to 8 digits; it is not rounded otherwise."
+        },
+        "dayOfWeek": {
+            "name": "dayOfWeek",
+            "value": "Day of the week; For example: Sunday."
+        },
+        "startColumn": {
+            "name": "startColumn",
+            "value": "Start date column."
+        },
+        "endColumn": {
+            "name": "endColumn",
+            "value": "End date column."
+        }
+    },
+    "operationTypes": {
+        "current_date": {
+            "name": "current_date",
+            "value": "Returns the current date as a date column."
+        },
+        "date_format": {
+            "name": "date_format",
+            "value": "Converts a date/timestamp/string to a value of string in the format specified by the date format given by the second argument."
+        },
+        "to_date": {
+            "name": "to_date",
+            "value": "Convert string type containing date value to date format."
+        },
+        "add_months": {
+            "name": "add_months",
+            "value": "Add months to date."
+        },
+        "date_add": {
+            "name": "date_add",
+            "value": "Add days to the date."
+        },
+        "date_sub": {
+            "name": "date_sub",
+            "value": "Subtract the days from date field."
+        },
+        "datediff": {
+            "name": "datediff",
+            "value": "Returns difference between two dates in days."
+        },
+        "months_between": {
+            "name": "months_between",
+            "value": "Returns number of months between two dates."
+        },
+        "next_day": {
+            "name": "next_day",
+            "value": "Returns the first date which is later than the value of the date column."
+        },
+        "year": {
+            "name": "year",
+            "value": "Extract the year of a given date as integer."
+        },
+        "quarter": {
+            "name": "quarter",
+            "value": "Extract the quarter of a given date as integer."
+        },
+        "month": {
+            "name": "month",
+            "value": "Extract the month of a given date as integer."
+        },
+        "dayofweek": {
+            "name": "dayofweek",
+            "value": "Returns the first date which is later than the value of the date column that is on the specified day of the week."
+        },
+        "dayofmonth": {
+            "name": "dayofmonth",
+            "value": "Extracts the day of the month as an integer from a given date/timestamp/string."
+        },
+        "dayofyear": {
+            "name": "dayofyear",
+            "value": "Extracts the day of the year as an integer from a given date/timestamp/string."
+        },
+        "weekofyear": {
+            "name": "weekofyear",
+            "value": "Extracts the week number as an integer from a given date/timestamp/string. A week is considered to start on a Monday and week 1 is the first week with more than 3 days, as defined by ISO 8601."
+        },
+        "last_day": {
+            "name": "last_day",
+            "value": "Returns the last day of the month which the given date belongs to."
+        },
+        "trunc": {
+            "name": "trunc",
+            "value": "Returns date truncated to the unit specified by the format."
+        },
+        "current_timestamp": {
+            "name": "current_timestamp",
+            "value": "Returns the current timestamp as a timestamp column."
+        },
+        "hour": {
+            "name": "hour",
+            "value": "Extracts the hours as an integer from a given date/timestamp/string."
+        },
+        "minute": {
+            "name": "minute",
+            "value": "Extracts the minutes as an integer from a given date/timestamp/string."
+        },
+        "second": {
+            "name": "second",
+            "value": "Extracts the seconds as an integer from a given date/timestamp/string."
+        },
+        "to_timestamp": {
+            "name": "to_timestamp",
+            "value": "Converts time string with the given pattern to timestamp."
+        },
+        "date_trunc": {
+            "name": "date_trunc",
+            "value": "Returns timestamp truncated to the unit specified by the format."
+        },
+        "unix_timestamp": {
+            "name": "unix_timestamp",
+            "value": "Returns the current Unix timestamp (in seconds) as a long."
+        },
+        "to_unix_timestamp": {
+            "name": "to_unix_timestamp",
+            "value": "Converts time string in format yyyy-MM-dd HH:mm:ss to Unix timestamp."
+        },
+        "from_unixtime": {
+            "name": "from_unixtime",
+            "value": "Converts the number of seconds from unix epoch (1970-01-01 00:00:00 UTC) to a string representing the timestamp of that moment in the current system time zone in the given format."
+        }
+    }
+}

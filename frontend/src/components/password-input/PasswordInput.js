@@ -36,18 +36,22 @@ const PasswordInput = ({
     onBlur,
     helperText,
     fromDesigner,
+    name,
+    required,
     InputProps
 }) => {
     const [visible, setVisibility] = React.useState(false);
 
     return (
         <TextField
+            required={required}
             fullWidth={fullWidth}
             variant="outlined"
             disabled={disabled}
             className={classNames(className)}
             type={(disabled && !fromDesigner) || !visible ? 'password' : 'text'}
             value={value}
+            name={name}
             onChange={onChange}
             label={label}
             InputProps={{
@@ -78,6 +82,7 @@ PasswordInput.propTypes = {
     label: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
+    name: PropTypes.string,
     disabled: PropTypes.bool,
     fullWidth: PropTypes.bool,
     error: PropTypes.bool,
@@ -85,7 +90,8 @@ PasswordInput.propTypes = {
     onBlur: PropTypes.func,
     helperText: PropTypes.any,
     fromDesigner: PropTypes.bool,
-    InputProps: PropTypes.object
+    InputProps: PropTypes.object,
+    required: PropTypes.bool
 };
 
 export default PasswordInput;

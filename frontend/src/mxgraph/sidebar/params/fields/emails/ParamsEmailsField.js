@@ -55,9 +55,11 @@ export const ParamsEmailsField = ({
                 <Popper
                     {...props}
                     popperOptions={{
+                        positionFixed: true,
                         modifiers: {
-                            preventOverflow: {
-                                boundariesElement: parentRef?.current
+                            preventOverflow: { enabled: false },
+                            hide: {
+                                enabled: false
                             }
                         }
                     }}

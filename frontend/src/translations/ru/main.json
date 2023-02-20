@@ -1,0 +1,13 @@
+{
+    "Overview": "Обзор",
+    "Import": "Импорт",
+    "Settings": "Настройки",
+    "Exit": "Выход",
+    "searchByName": "Поиск по имени джоба",
+    "button": {
+        "addJob": "СОЗДАТЬ JOB"
+    },
+    "form": {
+        "Name": "Имя"
+    }
+}

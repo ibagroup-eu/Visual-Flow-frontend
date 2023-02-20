@@ -31,7 +31,7 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { noop } from 'lodash';
+import { isEqual, noop } from 'lodash';
 
 import TableToolbar from '../table-toolbar';
 import styles from './EnhancedTable.Styles';
@@ -141,7 +141,7 @@ export const EnhancedTable = ({
             >
                 {filter}
             </TableToolbar>
-            {tagsData.length !== 0 && (
+            {!isEqual(tagsData, {}) && (
                 <TagsPanel
                     data={tagsData}
                     onCheckTags={onCheckTags}
@@ -203,7 +203,7 @@ EnhancedTable.propTypes = {
     setTableOrderBy: PropTypes.func,
     order: PropTypes.string,
     orderBy: PropTypes.string,
-    tagsData: PropTypes.array,
+    tagsData: PropTypes.object,
     onCheckTags: PropTypes.func,
     resetTags: PropTypes.func
 };

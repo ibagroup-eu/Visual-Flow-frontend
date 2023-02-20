@@ -1,0 +1,64 @@
+{
+    "PIVOT": [
+      {
+        "field": "operationType"
+      },
+      {
+        "field": "option.groupBy",
+        "conditions": [
+            {
+              "operationType": "pivot"
+            }
+          ]
+      },
+      {
+        "field": "option.pivotColumn",
+        "conditions": [
+            {
+              "operationType": "pivot"
+            }
+          ]
+      },
+      {
+        "field": "option.aggregation",
+        "conditions": [
+            {
+              "operationType": "pivot"
+            }
+          ]
+      },
+      {
+        "field": "option.pivotValues",
+        "conditions": [
+            {
+              "operationType": "pivot"
+            }
+          ]
+      },
+      {
+        "field": "option.unchangedColumns",
+        "conditions": [
+            {
+              "operationType": "unpivot"
+            }
+          ]
+      },
+      {
+        "field": "option.unpivotColumns",
+        "conditions": [
+            {
+              "operationType": "unpivot"
+            }
+          ]
+      },
+      {
+        "field": "option.unpivotNames",
+        "conditions": [
+            {
+              "operationType": "unpivot"
+            }
+          ]
+      }
+    ]
+  }
+  

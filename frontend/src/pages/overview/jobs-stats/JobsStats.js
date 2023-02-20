@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import PendingIcon from '@material-ui/icons/Update';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WarningOutlinedIcon from '@material-ui/icons/WarningOutlined';
@@ -34,7 +34,7 @@ const JobsStats = ({ data, loading, setStatus, setCurrentPage }) => {
     const items = [
         {
             title: t('filters:statuses.Draft'),
-            Icon: InfoOutlinedIcon,
+            Icon: AssignmentIcon,
             color: theme.palette.grey[600],
             data: data?.jobsStat?.Draft
         },

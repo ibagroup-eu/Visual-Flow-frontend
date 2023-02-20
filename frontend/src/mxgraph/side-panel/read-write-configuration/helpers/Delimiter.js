@@ -34,7 +34,6 @@ const Delimiter = ({ value, onChange, ableToEdit }) => {
                 label={t('jobDesigner:writeConfiguration.Delimiter')}
                 placeholder={t('jobDesigner:writeConfiguration.Delimiter')}
                 variant="outlined"
-                margin="normal"
                 fullWidth
                 name="option.delimiter"
                 value={value || ''}

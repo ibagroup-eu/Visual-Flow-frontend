@@ -21,7 +21,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { get, has, isEmpty, isEqual, isNil, set } from 'lodash';
+import { get, has, isEmpty, isEqual, isNil, noop, set } from 'lodash';
 import './common.css';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/styles';
@@ -61,32 +61,34 @@ import {
     PENDING,
     PIPELINE,
     RUNNING,
+    SUSPENDED,
     WAIT
 } from './constants';
 import LogsModal from '../pages/logs-modal';
 import { jobStagesByType } from './jobStages';
 import { pipelinesStagesByType } from './pipelinesStages';
-import { toObject, findJobInstance, addStyles, getNodeType } from './graph/utils';
+import { addStyles, findJobInstance, getNodeType, toObject } from './graph/utils';
 import {
-    mxGraph,
-    mxEdgeHandler,
-    mxClient,
-    mxUtils,
-    mxEvent,
-    mxConstraintHandler,
-    mxConnectionConstraint,
-    mxCellState,
-    mxPoint,
-    swapEdges,
     activateCell,
     deactivateCell,
-    setGraphSettings,
-    setDatasetOnConnection,
+    loadContent,
+    mxCellState,
+    mxClient,
+    mxConnectionConstraint,
+    mxConstraintHandler,
+    mxEdgeHandler,
+    mxEvent,
+    mxGraph,
+    mxPoint,
+    mxUtils,
     setDatasetOnChangeConnection,
-    setLayoutSetting,
+    setDatasetOnConnection,
     setGlobalSettings,
-    loadContent
+    setGraphSettings,
+    setLayoutSetting,
+    swapEdges
 } from './graph';
+import { setDefaultPopupMenuStyle } from './graph/styles';
 
 export class GraphDesigner extends Component {
     constructor(props) {
@@ -115,7 +117,7 @@ export class GraphDesigner extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { data, sidePanelIsOpen, currentCell, theme, type } = this.props;
+        const { data, theme, type } = this.props;
         const { graph, stages } = this.state;
 
         if (!isEqual(data?.definition, prevProps.data?.definition)) {
@@ -129,18 +131,45 @@ export class GraphDesigner extends Component {
             );
         }
 
+        this.updateGraph(graph);
+    }
+
+    componentWillUnmount() {
+        const { graph } = this.state;
+        document.removeEventListener('keydown', this.handleKeyDown);
+        if (graph.popupMenuHandler) {
+            graph.popupMenuHandler.destroy();
+        }
+    }
+
+    updateGraph = graph => {
+        const {
+            type,
+            jobStatus,
+            pipelineStatus,
+            sidePanelIsOpen,
+            currentCell
+        } = this.props;
         if (graph) {
+            const status = type === JOB ? jobStatus : pipelineStatus;
+            const that = this;
+            if ([PENDING, RUNNING, SUSPENDED].includes(status)) {
+                graph.setEnabled(false);
+                // eslint-disable-next-line no-param-reassign
+                graph.popupMenuHandler.factoryMethod = noop;
+            } else {
+                graph.setEnabled(true);
+                // eslint-disable-next-line no-param-reassign
+                graph.popupMenuHandler.factoryMethod = (menu, cell, event) =>
+                    that.createPopupMenu(graph, menu, cell, event);
+            }
             if (sidePanelIsOpen) {
                 activateCell(graph, currentCell);
             } else {
                 deactivateCell(graph, currentCell);
             }
         }
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('keydown', this.handleKeyDown);
-    }
+    };
 
     setUndoManagerConfig = configuration => {
         this.setState({ undoManagerConfig: configuration });
@@ -184,7 +213,8 @@ export class GraphDesigner extends Component {
             setPanel,
             projectId,
             type,
-            setCell
+            setCell,
+            classes
         } = this.props;
 
         const { stageCopy } = this.state;
@@ -258,7 +288,11 @@ export class GraphDesigner extends Component {
                     visible &&
                     (!has(data, 'editable') || this.graphIsDisabled(data.editable))
             )
-            .forEach(({ name, onClick }) => menu.addItem(name, null, onClick));
+            .forEach(({ name, onClick }) =>
+                menu.addItem(name, null, onClick, null, null, null, null, true)
+            );
+
+        setDefaultPopupMenuStyle(menu, classes);
     };
 
     handleKeyDown = event => {
@@ -292,6 +326,8 @@ export class GraphDesigner extends Component {
     };
 
     onMoveCellsListener = (sender, event) => {
+        const { setDirtyGraph } = this.props;
+        setDirtyGraph(true);
         const { graph } = this.state;
 
         if (event.getProperty('clone')) {
@@ -382,13 +418,10 @@ export class GraphDesigner extends Component {
     // main setting
     setGraphSetting = () => {
         const { theme } = this.props;
+
         const { graph } = this.state;
-        const that = this;
 
         setGraphSettings(graph, theme);
-
-        graph.popupMenuHandler.factoryMethod = (menu, cell, event) =>
-            that.createPopupMenu(graph, menu, cell, event);
 
         graph.convertValueToString = this.onConvertValueToStringListener;
 
@@ -583,7 +616,7 @@ export class GraphDesigner extends Component {
 
     loadGraph = content => {
         const { stages } = this.state;
-        const { theme, type, data } = this.props;
+        const { theme, type, data, setDirtyGraph } = this.props;
 
         // eslint-disable-next-line react/no-find-dom-node
         const container = ReactDOM.findDOMNode(this.refGraph.current);
@@ -610,6 +643,7 @@ export class GraphDesigner extends Component {
                         type,
                         data?.jobsStatuses
                     );
+                this.updateGraph(graph);
             });
 
             // Disables the built-in context menu
@@ -621,6 +655,18 @@ export class GraphDesigner extends Component {
                 .addListener(mxEvent.CHANGE, this.selectionChange);
 
             graph.addListener(mxEvent.CELL_CONNECTED, this.selectionChange);
+            graph.getModel().addListener(mxEvent.CHANGE, (model, event) => {
+                const { properties } = event;
+                const geometryChanged = properties?.changes.some(change => {
+                    return (
+                        model.isEdge(change.cell) &&
+                        change.constructor.name === 'mxGeometryChange'
+                    );
+                });
+                if (geometryChanged) {
+                    setDirtyGraph(true);
+                }
+            });
         }
     };
 
@@ -645,7 +691,7 @@ export class GraphDesigner extends Component {
             return true; // new job, parameters are active
         }
 
-        return status === PENDING || status === RUNNING ? false : value;
+        return [SUSPENDED, PENDING, RUNNING].includes(status) ? false : value;
     };
 
     render() {
@@ -782,13 +828,13 @@ const mapStateToProps = state => ({
     data: state.mxGraph.data,
     jobStatus: state.jobStatus.status,
     pipelineStatus: state.pipelineStatus.status,
-    param: state.pages.settingsParameters.data?.editable,
+    param: state.pages.settingsParameters.editable,
     zoomVal: state.mxGraph.zoomValue,
     jobs: state.pages.jobs.data.jobs,
     pipelines: state.pages.pipelines.data.pipelines,
     panning: state.mxGraph.panning,
     showLogsModal: state.mxGraph.showLogsModal,
-    params: state.pages.settingsParameters.data.params
+    params: state.pages.settingsParameters.params
 });
 
 const mapDispatchToProps = {

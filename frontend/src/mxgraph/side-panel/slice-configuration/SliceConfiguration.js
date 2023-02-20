@@ -22,27 +22,25 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { TextField, Chip } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import useStyles from './SliceConfiguration.Styles';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
 import ConfigurationDivider from '../../../components/divider';
 
 const mode = [
     {
-        value: 'keep',
-        label: 'keep'
+        value: 'Keep',
+        label: 'Keep'
     },
     {
-        value: 'drop',
-        label: 'drop'
+        value: 'Drop',
+        label: 'Drop'
     }
 ];
 
-const SLICE_DEFAULT_VALUE = 'drop';
+const SLICE_DEFAULT_VALUE = 'Drop';
 
 const SliceConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
     const slicingColumns = state.columns?.split(',') || [];
 
     return (
@@ -83,9 +81,9 @@ const SliceConfiguration = ({ state, ableToEdit, onChange }) => {
                         }
                         renderInput={params => (
                             <TextField
-                                className={classes.columns}
                                 {...params}
                                 fullWidth
+                                margin="normal"
                                 variant="outlined"
                                 label={t('jobDesigner:sliceConfiguration.Columns')}
                                 required

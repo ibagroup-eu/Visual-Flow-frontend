@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { reduce } from 'lodash';
+import { isEqual, reduce } from 'lodash';
 import { fetchJobs, setJobSearchField } from '../../redux/actions/jobsActions';
 import { setCurrentTablePage } from '../../redux/actions/enhancedTableActions';
 import JobsTable from './table';
@@ -46,7 +46,14 @@ export const sortTags = dataArray =>
         {}
     );
 
-export const checkedTags = data => Object.entries(data).filter(tag => tag[1]);
+export const checkedTags = data =>
+    reduce(
+        data,
+        (result, value, key) => {
+            return value ? { ...result, [key]: value } : result;
+        },
+        {}
+    );
 
 const Jobs = ({
     projectId,
@@ -62,6 +69,7 @@ const Jobs = ({
     const { t } = useTranslation();
     const [list, setList] = React.useState([]);
     const [tags, setTags] = React.useState({});
+    const filteredTags = checkedTags(tags);
 
     React.useEffect(() => {
         if (projectId) {
@@ -78,24 +86,26 @@ const Jobs = ({
     }, [jobs.data?.jobs]);
 
     React.useEffect(() => {
-        setList(
-            jobs.data.jobs?.filter(
-                item =>
-                    item?.name?.toUpperCase().includes(searchField.toUpperCase()) &&
-                    checkedTags(tags).every(r => item?.tags.includes(r[0]))
-            )
-        );
-    }, [searchField, tags]);
-
-    React.useEffect(() => {
-        searchField.trim() && setCurrentPage(0);
-    }, [searchField]);
-
-    React.useEffect(() => {
-        if (checkedTags(tags).length !== 0) {
+        if (!isEqual(filteredTags, {})) {
             setCurrentPage(0);
+            setList(
+                jobs.data.jobs?.filter(
+                    item =>
+                        item?.name
+                            ?.toUpperCase()
+                            .includes(searchField.toUpperCase()) &&
+                        item?.tags.find(tag => filteredTags[tag])
+                )
+            );
+        } else {
+            searchField.trim() && setCurrentPage(0);
+            setList(
+                jobs.data.jobs?.filter(item =>
+                    item?.name?.toUpperCase().includes(searchField.toUpperCase())
+                )
+            );
         }
-    }, [checkedTags(tags)]);
+    }, [searchField, tags]);
 
     const resetTags = () =>
         setTags(
@@ -129,7 +139,7 @@ const Jobs = ({
                         tagsData={tags}
                         onCheckTags={onCheckTags}
                         resetTags={resetTags}
-                        checkedTags={checkedTags(tags)}
+                        checkedTags={filteredTags}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -138,7 +148,7 @@ const Jobs = ({
                         pipelines={pipelines.data.pipelines}
                         projectId={projectId}
                         ableToEdit={jobs.data.editable}
-                        checkedTags={checkedTags(tags)}
+                        checkedTags={filteredTags}
                         onCheckTags={onCheckTags}
                         resetTags={resetTags}
                     />

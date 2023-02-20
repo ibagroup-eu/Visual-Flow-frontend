@@ -1,9 +1,10 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { useTranslation } from 'react-i18next';
 import ProfilePageModal from '../profile-page';
-import ProfileMenu from './ProfileMenu';
+import { ProfileMenu } from './ProfileMenu';
 import { MenuItem } from '@material-ui/core';
+import { LocalOffer } from '@material-ui/icons';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -11,15 +12,16 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('ProfileMenu', () => {
-    const init = (props = {}, returnProps = false) => {
+    const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             anchorEl: 'test',
             open: true,
-            handleClose: jest.fn()
+            handleClose: jest.fn(),
+            getVersion: jest.fn()
         };
         useTranslation.mockImplementation(() => ({ t: x => x }));
 
-        const wrapper = shallow(<ProfileMenu {...defaultProps} {...props} />);
+        const wrapper = func(<ProfileMenu {...defaultProps} {...props} />);
         return returnProps ? [wrapper, { ...defaultProps, ...props }] : [wrapper];
     };
 
@@ -29,10 +31,12 @@ describe('ProfileMenu', () => {
         const [wrapper] = init();
         expect(wrapper).toBeDefined();
     });
+
     it('should call handleCloseProfilePage func', () => {
         const [wrapper] = init();
         wrapper.find(ProfilePageModal).prop('onClose')();
     });
+
     it('should call  handleClose prop', () => {
         const [wrapper, props] = init({}, true);
         wrapper
@@ -40,5 +44,29 @@ describe('ProfileMenu', () => {
             .at(0)
             .prop('onClick')();
         expect(props.handleClose).toHaveBeenCalled();
+    });
+
+    it('should show version', () => {
+        const [wrapper] = init({ version: '1.0.0' });
+
+        expect(wrapper.find(LocalOffer).exists()).toBeTruthy();
+        expect(
+            wrapper
+                .find(MenuItem)
+                .at(2)
+                .text()
+        ).toBe('Version: 1.0.0');
+    });
+
+    it('should not show version', () => {
+        const [wrapper] = init();
+
+        expect(wrapper.find(LocalOffer).exists()).toBeFalsy();
+    });
+
+    it('should handle useEffect', () => {
+        const [_, props] = init({}, true, mount);
+
+        expect(props.getVersion).toHaveBeenCalled();
     });
 });

@@ -37,10 +37,10 @@ import {
     pingConnection
 } from '../../../redux/actions/settingsConnectionsActions';
 import { PageSkeleton } from '../../../components/skeleton';
-import ConnectionsTableRow from '../components/connections-table-row';
+import ConnectionsTableRow from './table';
 import useStyles from './Connections.Styles';
 import { STORAGES } from '../../../mxgraph/constants';
-import ConnectionsPanel from '../components/connections-panel/ConnectionsPanel';
+import ConnectionsPanel from './panel';
 import ConnectionsSearchAndSelect from '../../../mxgraph/side-panel/read-write-configuration/connections-modal/searchAndSelect/ConnectionsSearchAndSelect';
 
 export const selectConnections = reduce(
