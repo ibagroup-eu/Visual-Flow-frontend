@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-FROM public.ecr.aws/lambda/nodejs:16.2022.06.07.18
+FROM public.ecr.aws/lambda/nodejs:10.2023.02.17.12
 ARG PORT=8888
 WORKDIR /app/backend
 ENV EXPRESS_PORT=$PORT
