@@ -22,10 +22,12 @@ Visual Flow is an ETL tool designed for effective data manipulation via convenie
 
 Visual Flow application is divided into the following repositories:
 
-- _**Visual-Flow-frontend**_ (current)
-- [Visual-Flow-backend](https://github.com/ibagomel/Visual-Flow-backend)
-- [Visual-Flow-jobs](https://github.com/ibagomel/Visual-Flow-jobs)
-- [Visual-Flow-deploy](https://github.com/ibagomel/Visual-Flow-deploy)
+- _**Visual-Flow-frontend**_ (current))
+- [Visual-Flow-backend](https://github.com/ibagroup-eu/Visual-Flow-backend)
+- [Visual-Flow-jobs](https://github.com/ibagroup-eu/Visual-Flow-jobs)
+- [Visual-Flow-deploy](https://github.com/ibagroup-eu/Visual-Flow-deploy)
+- [Visual-Flow-backend-db-service](https://github.com/ibagroup-eu/Visual-Flow-backend-db-service)
+- [Visual-Flow-backend-history-service](https://github.com/ibagroup-eu/Visual-Flow-backend-history-service)
 
 ## Visual Flow Frontend
 
