@@ -17,50 +17,26 @@
  * limitations under the License.
  */
 
-import React, { useRef } from 'react';
-import { Button, Fade } from '@material-ui/core';
+import React, { memo, useRef, useState } from 'react';
+import { Button } from '@material-ui/core';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { entries, get, isFunction, set, isEqual } from 'lodash';
+import { cloneDeep, entries, get, identity, isEqual, set } from 'lodash';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { setParams, setParamsDirty } from '../../../redux/actions/mxGraphActions';
 
 import useStyles from './Params.Styles';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
-import DividerWithText from '../../side-panel/helpers/DividerWithText';
-import {
-    ParamsEmailsField,
-    ParamsSwitchField,
-    ParamsTextField,
-    ParamsChipsField
-} from './fields';
-
-const DEFAULT_PARAMS = {
-    NAME: '',
-    DRIVER_REQUEST_CORES: 0.1,
-    DRIVER_CORES: 1,
-    DRIVER_MEMORY: 1,
-    EXECUTOR_REQUEST_CORES: 0.1,
-    EXECUTOR_CORES: 1,
-    EXECUTOR_MEMORY: 1,
-    EXECUTOR_INSTANCES: 2,
-    SHUFFLE_PARTITIONS: 10
-};
-
-const FIELD_COMPONENTS = {
-    text: ParamsTextField,
-    switch: ParamsSwitchField,
-    emails: ParamsEmailsField,
-    chips: ParamsChipsField
-};
+import FieldFactory from './FieldFactory';
 
 export const getFieldNames = fields => {
     const names = [];
 
     const rec = structure => {
         entries(structure).forEach(([k, v]) => {
-            if (v.type === 'section') {
+            if (v.fields) {
                 rec(v.fields);
             } else {
                 names.push(k);
@@ -73,6 +49,30 @@ export const getFieldNames = fields => {
     return names;
 };
 
+const DEFAULT_PARAMS = {
+    NAME: '',
+    DRIVER_REQUEST_CORES: 0.1,
+    DRIVER_CORES: 1,
+    DRIVER_MEMORY: 1,
+    EXECUTOR_REQUEST_CORES: 0.1,
+    EXECUTOR_CORES: 1,
+    EXECUTOR_MEMORY: 1,
+    EXECUTOR_INSTANCES: 2,
+    SHUFFLE_PARTITIONS: 10,
+    EMAIL: {
+        NOTIFY_FAILURE: false,
+        NOTIFY_SUCCESS: false,
+        RECIPIENTS: []
+    },
+    SLACK: {
+        NOTIFY_FAILURE: false,
+        NOTIFY_SUCCESS: false,
+        RECIPIENTS: [],
+        CHANNELS: []
+    },
+    TAGS: []
+};
+
 export const Params = ({
     store: { fields, data = {} } = {},
     save,
@@ -83,8 +83,15 @@ export const Params = ({
 }) => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const params = { ...data.params, NAME: data.name };
+
     const ref = useRef();
+    const params = {
+        ...data.params,
+        NAME: data.name,
+        NOTIFY_FAILURE: false,
+        NOTIFY_SUCCESS: false,
+        RECIPIENTS: []
+    };
 
     const initialState = getFieldNames(fields).reduce(
         (acc, name) => set(acc, name, get(params, name, get(DEFAULT_PARAMS, name))),
@@ -92,65 +99,39 @@ export const Params = ({
     );
 
     const [state, setState] = React.useState(initialState);
+    const [errors, setErrors] = useState({});
 
     const handleChange = event => {
         event.persist();
 
-        const newValue = {
-            ...state,
-            [event.target.name]: event.target.value
-        };
-
+        const newValue = cloneDeep(state);
+        set(newValue, event.target.name, event.target.value);
         setState(newValue);
-        setDirty(!isEqual(newValue, { ...data.params, NAME: data.name }));
+
+        setDirty(!isEqual(newValue, initialState));
+    };
+
+    const handleError = ({ name, value }) => {
+        const newValue = cloneDeep(errors);
+        set(newValue, name, value);
+        setErrors(newValue);
     };
 
     const isSaveBtnDisabled = () =>
-        isEqual(state, { ...data.params, NAME: data.name }) ||
-        entries(fields).some(
-            ([key, field]) =>
-                isFunction(field.validate) && field.validate(state[key])
-        );
-
-    const isVisible = field => !field.needs || field.needs.some(x => get(state, x));
-
-    const getField = (key, field) => {
-        const FieldComponent = get(FIELD_COMPONENTS, field.type, ParamsTextField);
-
-        return (
-            <FieldComponent
-                ableToEdit={ableToEdit}
-                parentRef={ref}
-                key={key}
-                name={key}
-                {...field}
-                value={state[key]}
-                onChange={handleChange}
-            />
-        );
-    };
-
-    const getSection = (key, field) => (
-        <Fade key={key} in>
-            <div className={classes.section}>
-                <DividerWithText type="res">{field.label}</DividerWithText>
-                <div className={classes.section}>
-                    {entries(field.fields).map(
-                        ([k, v]) => isVisible(v) && getField(k, v)
-                    )}
-                </div>
-            </div>
-        </Fade>
-    );
+        isEqual(state, initialState) || Object.values(errors).some(identity);
 
     return (
         <div className={classes.root} ref={ref}>
             <div className={classes.params}>
-                {entries(fields).map(([key, field]) =>
-                    field.type === 'section'
-                        ? isVisible(field) && getSection(key, field)
-                        : isVisible(field) && getField(key, field)
-                )}
+                <FieldFactory
+                    fields={fields}
+                    state={state}
+                    ableToEdit={ableToEdit}
+                    onChange={handleChange}
+                    onError={handleError}
+                    errors={errors}
+                    parentRef={ref}
+                />
             </div>
             <div className={classes.buttons}>
                 {ableToEdit && (
@@ -177,11 +158,13 @@ export const Params = ({
                                         callback: () => {
                                             setState(initialState);
                                             setDirty();
+                                            setErrors({});
                                         }
                                     });
                                 } else {
                                     setState(initialState);
                                     setDirty();
+                                    setErrors({});
                                 }
                             }}
                             className={classNames(classes.cancelBtn, classes.button)}
@@ -214,4 +197,4 @@ const mapDispatchToProps = {
     confirmationWindow: toggleConfirmationWindow
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Params);
+export default compose(connect(mapStateToProps, mapDispatchToProps), memo)(Params);

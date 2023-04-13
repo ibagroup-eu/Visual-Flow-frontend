@@ -28,7 +28,6 @@ export default makeStyles(theme => ({
     },
     button: {
         margin: '0 8px',
-        width: 100,
         color: theme.palette.primary.contrastText
     },
     cancelBtn: {

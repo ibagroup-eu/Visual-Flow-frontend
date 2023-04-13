@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
 import {
     fetchContainerLogs,
     fetchJobHistoryLogs,
@@ -30,6 +29,7 @@ import {
 import LogsList from '../logs-list';
 import LogsPageHeader from '../../../components/logs-page-header';
 import history from '../../../utils/history';
+import { PENDING, RUNNING } from '../../../mxgraph/constants';
 import fetchJobStatus from '../../../redux/actions/oneJobStatusAction';
 
 export const Logs = ({
@@ -44,26 +44,48 @@ export const Logs = ({
     nodeId,
     logId,
     query,
-    getJobStatus,
-    jobStatus
+    getJob,
+    jobStatus,
+    jobsStatuses,
+    status: initialStatus
 }) => {
     const [search, setSearch] = React.useState('');
     const [levels, setLevels] = React.useState([]);
+    const status =
+        initialStatus || new URLSearchParams(history.location.search).get('status');
 
-    const callGetLogs = live => {
-        if (logId) {
-            return getJobHistoryLogs(projId, jobId, logId, live);
+    const sameJob = jobId && jobStatus.id === jobId;
+
+    React.useEffect(() => {
+        if (jobId && !logId && projId && !status) {
+            getJob(projId, jobId, true);
         }
-        getJobStatus(projId, jobId || nodeId, true);
+    }, [projId, jobId, jobStatus.id, logId, getJob, status]);
 
-        return nodeId
-            ? getContainerLogs(projId, pipelineId, nodeId, live)
-            : getJobLogs(projId, jobId, live);
-    };
+    const callGetLogs = useCallback(() => {
+        if (projId) {
+            if (jobId && logId) {
+                getJobHistoryLogs(projId, jobId, logId);
+            } else if (nodeId && pipelineId) {
+                getContainerLogs(projId, pipelineId, nodeId);
+            } else if (jobId) {
+                getJobLogs(projId, jobId);
+            }
+        }
+    }, [
+        getContainerLogs,
+        getJobHistoryLogs,
+        getJobLogs,
+        jobId,
+        logId,
+        nodeId,
+        pipelineId,
+        projId
+    ]);
 
     React.useEffect(() => {
         callGetLogs();
-    }, [nodeId, jobId]);
+    }, [nodeId, jobId, callGetLogs]);
 
     const backTo = new URLSearchParams(history.location.search).get('backTo');
     const jobName = new URLSearchParams(history.location.search).get('jobName');
@@ -80,6 +102,34 @@ export const Logs = ({
             default:
                 return `/pipelines/${projId}/${backTo}`;
         }
+    };
+
+    const isRunning = () => {
+        if (status && jobId) {
+            return [RUNNING, PENDING].includes(status);
+        }
+
+        if (!sameJob) {
+            return false;
+        }
+
+        const containerRunning = !!(
+            nodeId && [RUNNING, PENDING].includes(jobsStatuses?.[nodeId])
+        );
+
+        const jobRunning = !!(
+            !logId &&
+            jobStatus.id === jobId &&
+            [RUNNING, PENDING].includes(jobStatus.status)
+        );
+
+        const instanceRunning = !!(
+            nodeId &&
+            jobId &&
+            [RUNNING, PENDING].includes(jobsStatuses?.[nodeId])
+        );
+
+        return containerRunning || jobRunning || instanceRunning;
     };
 
     return (
@@ -101,7 +151,8 @@ export const Logs = ({
                         onSelect={setLevels}
                         loading={loading}
                         error={error}
-                        jobStatus={!logId ? jobStatus : ''}
+                        isRunning={isRunning()}
+                        logId={logId}
                     />
                 </Grid>
             </Grid>
@@ -119,23 +170,26 @@ Logs.propTypes = {
     getJobLogs: PropTypes.func,
     getContainerLogs: PropTypes.func,
     getJobHistoryLogs: PropTypes.func,
+    getJob: PropTypes.func,
     query: PropTypes.string,
     logId: PropTypes.string,
-    getJobStatus: PropTypes.func,
-    jobStatus: PropTypes.string
+    jobStatus: PropTypes.object,
+    jobsStatuses: PropTypes.object,
+    status: PropTypes.string
 };
 
 const mapStateToProps = state => ({
     logs: state.pages.logs,
     query: state.pages.urlSearch.search,
-    jobStatus: state.jobStatus.status
+    jobStatus: state.jobStatus,
+    jobsStatuses: state.mxGraph.data.jobsStatuses
 });
 
 const mapDispatchToProps = {
+    getJob: fetchJobStatus,
     getJobLogs: fetchJobLogs,
     getContainerLogs: fetchContainerLogs,
-    getJobHistoryLogs: fetchJobHistoryLogs,
-    getJobStatus: fetchJobStatus
+    getJobHistoryLogs: fetchJobHistoryLogs
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Logs);

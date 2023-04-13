@@ -18,125 +18,20 @@
  */
 
 import React from 'react';
-import { camelCase, has } from 'lodash';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { TextField, InputAdornment, IconButton, Box } from '@material-ui/core';
-import { Visibility, VisibilityOff, TuneOutlined } from '@material-ui/icons';
-import { useTranslation } from 'react-i18next';
-import useStyles from './ReadWriteTextFields.Styles';
-import ClearButton from '../../mxgraph/side-panel/helpers/ClearButton';
-import { READWRITE } from '../../mxgraph/constants';
+import ReadWriteTextField from './ReadWriteTextField';
 
-export const valueIsLink = value =>
-    Boolean(value) &&
-    value.length > 4 &&
-    value.charAt(0) === '#' &&
-    value.charAt(value.length - 1) === '#';
+const ReadWriteTextFields = props => {
+    const { fields, required, ...rest } = props;
 
-const ReadWriteTextFields = ({
-    fields,
-    inputValues,
-    handleInputChange,
-    openModal,
-    ableToEdit,
-    nameWIthPoint = false,
-    required,
-    hidden,
-    disabled,
-    connection
-}) => {
-    const { t } = useTranslation();
-    const classes = useStyles();
-    // eslint-disable-next-line complexity
-    return fields.map(({ field, rows = 1, required: fieldRequired }) => {
-        const fieldName = nameWIthPoint ? field : camelCase(field);
-        const [visible, setVisibility] = React.useState(false);
-        const hiddenField = visible ? <Visibility /> : <VisibilityOff />;
-
-        return (
-            <Box key={field} className={classes.fieldWrapper}>
-                <TextField
-                    label={t(
-                        `jobDesigner:readConfiguration.${field.replace(
-                            /[\s.]/g,
-                            ''
-                        )}`
-                    )}
-                    placeholder={t(
-                        `jobDesigner:readConfiguration.${field.replace(
-                            /[\s.]/g,
-                            ''
-                        )}`
-                    )}
-                    variant="outlined"
-                    fullWidth
-                    multiline={rows > 1}
-                    minRows={rows}
-                    type={
-                        !visible && hidden && !valueIsLink(inputValues[fieldName])
-                            ? 'password'
-                            : 'text'
-                    }
-                    disabled={
-                        has(connection, fieldName) ||
-                        !ableToEdit ||
-                        valueIsLink(inputValues[fieldName])
-                    }
-                    name={fieldName}
-                    value={inputValues[fieldName] || ''}
-                    onChange={handleInputChange}
-                    InputProps={{
-                        endAdornment: !disabled && (
-                            <InputAdornment position="end">
-                                {!valueIsLink(inputValues[fieldName]) && hidden ? (
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={() => setVisibility(!visible)}
-                                        className={classes.button}
-                                    >
-                                        {hiddenField}
-                                    </IconButton>
-                                ) : null}
-                                <IconButton
-                                    className={classNames(classes.button, {
-                                        [classes.multilineButton]: rows > 1
-                                    })}
-                                    onClick={() => openModal(fieldName)}
-                                >
-                                    <TuneOutlined />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                        classes: {
-                            disabled: classes.disabled
-                        }
-                    }}
-                    required={required || fieldRequired}
-                />
-                <ClearButton
-                    name={fieldName}
-                    value={inputValues[fieldName]}
-                    ableToEdit={!has(connection, fieldName) && ableToEdit}
-                    handleInputChange={handleInputChange}
-                    type={READWRITE}
-                />
-            </Box>
-        );
-    });
-};
-
-ReadWriteTextFields.propTypes = {
-    fields: PropTypes.array,
-    inputValues: PropTypes.object,
-    handleInputChange: PropTypes.func,
-    openModal: PropTypes.func,
-    ableToEdit: PropTypes.bool,
-    nameWIthPoint: PropTypes.bool,
-    required: PropTypes.bool,
-    hidden: PropTypes.bool,
-    disabled: PropTypes.bool,
-    connection: PropTypes.object
+    return fields.map(({ field, rows = 1, required: fieldRequired }) => (
+        <ReadWriteTextField
+            key={field}
+            field={field}
+            rows={rows}
+            required={required || fieldRequired}
+            {...rest}
+        />
+    ));
 };
 
 export default ReadWriteTextFields;

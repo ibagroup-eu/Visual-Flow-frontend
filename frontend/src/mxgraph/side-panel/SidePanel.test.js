@@ -153,7 +153,7 @@ describe('SidePanel', () => {
     describe('cleanUpConfiguration ', () => {
         it('cleanUpConfiguration should return correct configuration', () => {
             const fields = { field1: 'value1', field2: 'value2' };
-            const schema = [{ field: 'field1', conditions: [{ field2: 'va' }] }];
+            const schema = [{ field: 'field1', conditions: [{ field2: 'test' }] }];
             expect(cleanUpConfiguration(fields, schema)).toEqual({
                 field2: 'value2'
             });

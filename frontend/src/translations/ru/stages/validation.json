@@ -1,0 +1,55 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "isError": {
+        "name": "isError",
+        "value": "End job with error if validation fails."
+    },
+    "validationSchema": {
+        "name": "Schema",
+        "value": "Provide validation schema."
+    },
+    "column": {
+        "name": "Column",
+        "value": "Specify column name."
+    },
+    "dataType": {
+        "name": "dataType",
+        "value": "Data type of column.",
+        "value2": "Note: may work incorrectly when reading files without a schema (when reading сsv files, all fields have string type)."
+    },
+    "minValue": {
+        "name": "minValue",
+        "value": "Minimum field value."
+    },
+    "maxValue": {
+        "name": "maxValue",
+        "value": "Maximum field value."
+    },
+    "minLength": {
+        "name": "minLength",
+        "value": "Minimum string length."
+    },
+    "maxLength": {
+        "name": "maxLength",
+        "value": "Maximum string length."
+    },
+    "inValues": {
+        "name": "inValues",
+        "value": "Possible values separated by commas."
+    },
+    "regex": {
+        "name": "regex",
+        "value": "Regular expression."
+    },
+    "notNull": {
+        "name": "notNull",
+        "value": "Doesn't contain null value."
+    },
+    "uniqueness": {
+        "name": "uniqueness",
+        "value": "Contains only unique values."
+    }
+}

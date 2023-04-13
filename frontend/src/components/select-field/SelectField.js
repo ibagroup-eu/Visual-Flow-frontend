@@ -53,6 +53,7 @@ const SelectField = ({
                 ? handleInputChange(event)
                 : handleInputChange(event.target.name, event.target.value);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <Box className={classes.wrapper}>

@@ -19,7 +19,12 @@
 
 export default theme => ({
     root: {
-        height: '100%',
+        height: '100%'
+    },
+    sidebarTab: {
         padding: theme.spacing(4, 4, 0, 4)
+    },
+    notificationTabs: {
+        padding: theme.spacing(3, 0, 0, 0)
     }
 });

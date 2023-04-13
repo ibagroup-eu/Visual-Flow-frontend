@@ -43,4 +43,9 @@ describe('CronRunInfo', () => {
         expect(correctInvalidCron('2-2 * * * *,2')).toBe('2 * * * *,2');
         expect(correctInvalidCron('0-2 * * * *,2')).toBe('0-2 * * * *,2');
     });
+
+    it('should render hint about UTC format for new cron', () => {
+        const [wrapper] = init({ cronValue: { value: '', errorMessage: '' } });
+        expect(wrapper.find(Typography).at(0).text()).toBe('pipelines:cronInfo.helperText');
+    });
 });

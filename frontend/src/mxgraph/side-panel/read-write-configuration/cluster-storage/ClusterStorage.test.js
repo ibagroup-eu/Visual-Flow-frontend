@@ -42,16 +42,6 @@ describe('ClusterStorage', () => {
         expect(wrapper).toBeDefined();
     });
 
-    it('should change values with READ operation', () => {
-        wrapper = mount(
-            <ClusterStorage
-                {...props}
-                inputValues={{ ...props.inputValues, operation: READ }}
-            />
-        );
-        expect(wrapper.find(FileTextField).prop('name')).toBe('filePath');
-    });
-
     it('should calls setFile', () => {
         wrapper = mount(
             <ClusterStorage

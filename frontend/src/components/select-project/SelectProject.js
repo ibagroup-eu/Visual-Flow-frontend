@@ -35,7 +35,7 @@ export const SelectProject = ({ projects, getProjects, loading, projectId }) => 
         if (isEmpty(projects)) {
             getProjects();
         }
-    }, [getProjects]);
+    }, [getProjects, projects]);
 
     const selectedProject = projects?.projects?.find(({ id }) => id === projectId);
     const [valueSelected, setValueSelected] = useState(selectedProject);

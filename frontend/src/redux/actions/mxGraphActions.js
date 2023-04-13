@@ -125,10 +125,17 @@ export const fetchJob = (projectId, jobId, t) => dispatch => {
     );
 };
 
-export const fetchPipelineById = (projectId, pipelineId, t) => dispatch => {
-    dispatch({
-        type: FETCH_PIPELINE_START
-    });
+export const fetchPipelineById = (
+    projectId,
+    pipelineId,
+    t,
+    skipLoading
+) => dispatch => {
+    if (!skipLoading) {
+        dispatch({
+            type: FETCH_PIPELINE_START
+        });
+    }
     const promise = pipelineId
         ? pipelinesApi.getPipelineById(projectId, pipelineId)
         : Promise.resolve({ data: { definition: {}, status: DRAFT, params: {} } });

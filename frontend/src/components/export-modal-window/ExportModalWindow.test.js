@@ -20,7 +20,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { ExportModalWindow } from './ExportModalWindow';
-import { Box, Button, Checkbox, TextField } from '@material-ui/core';
+import { Box, Button, TextField } from '@material-ui/core';
 import PopupForm from '../popup-form';
 
 describe('ExportModalWindow', () => {
@@ -46,12 +46,6 @@ describe('ExportModalWindow', () => {
         expect(wrapper).toBeDefined();
     });
 
-    it('should not render checkbox', () => {
-        const [wrapper] = init({ isPipelineModal: false });
-
-        expect(wrapper.find(Checkbox).exists()).toBeFalsy();
-    });
-
     it('should handle "isFetching"', () => {
         global.URL.createObjectURL = jest.fn();
 
@@ -63,7 +57,12 @@ describe('ExportModalWindow', () => {
 
     it('should handle "showModal"', () => {
         const [wrapper] = init(
-            { showModal: true, isPipelineModal: false, display: true },
+            {
+                showModal: true,
+                isPipelineModal: false,
+                display: true,
+                selectedJobs: []
+            },
             false,
             mount
         );

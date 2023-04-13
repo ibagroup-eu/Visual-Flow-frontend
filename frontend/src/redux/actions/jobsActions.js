@@ -49,10 +49,12 @@ import { fetchJob } from './mxGraphActions';
 import fetchJobStatus from './oneJobStatusAction';
 import stringifyWithoutCircular from '../../utils/stringifyWithoutCircular';
 
-export const fetchJobs = projectId => dispatch => {
-    dispatch({
-        type: FETCH_JOBS_START
-    });
+export const fetchJobs = (projectId, skipLoading) => dispatch => {
+    if (!skipLoading) {
+        dispatch({
+            type: FETCH_JOBS_START
+        });
+    }
 
     return api.getJobs(projectId).then(
         response =>

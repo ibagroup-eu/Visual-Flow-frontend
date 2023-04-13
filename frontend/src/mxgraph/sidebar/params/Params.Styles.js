@@ -44,5 +44,17 @@ export default makeStyles(theme => ({
     },
     section: {
         marginTop: theme.spacing(2)
+    },
+    tabs: {
+        marginTop: theme.spacing(2),
+        backgroundColor: theme.palette.background.paper,
+        '& .MuiTab-root': {
+            minWidth: 'auto'
+        }
+    },
+    content: {
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        height: '100%'
     }
 }));

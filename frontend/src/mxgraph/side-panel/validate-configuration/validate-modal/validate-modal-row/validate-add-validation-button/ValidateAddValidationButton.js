@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Box,
@@ -86,30 +86,33 @@ const ValidateAddValidationButton = ({
         isEqual(validationForChange, validation) ||
         (!withoutField && !validation[validation.type]);
 
-    const onAddValidation = event => {
-        if (changeValidationIndex !== null) {
-            setValidation(validationForChange);
-        } else {
-            const currentType = validationType.find(
-                item => !validations.find(({ type }) => type === item)
-            );
-            const currentValidation = {
-                type: currentType
-            };
-            if (currentType === 'dataType') {
-                // eslint-disable-next-line prefer-destructuring
-                currentValidation[currentType] = dataTypeValues[0];
+    const onAddValidation = useCallback(
+        event => {
+            if (changeValidationIndex !== null) {
+                setValidation(validationForChange);
+            } else {
+                const currentType = validationType.find(
+                    item => !validations.find(({ type }) => type === item)
+                );
+                const currentValidation = {
+                    type: currentType
+                };
+                if (currentType === 'dataType') {
+                    // eslint-disable-next-line prefer-destructuring
+                    currentValidation[currentType] = dataTypeValues[0];
+                }
+                setValidation(currentValidation);
             }
-            setValidation(currentValidation);
-        }
-        setAnchorEl(event.currentTarget);
-    };
+            setAnchorEl(event.currentTarget);
+        },
+        [changeValidationIndex, validationForChange, validations]
+    );
 
     useEffect(() => {
         if (changeValidationIndex !== null) {
             onAddValidation({ currentTarget: buttonRef.current });
         }
-    }, [changeValidationIndex]);
+    }, [changeValidationIndex, onAddValidation]);
 
     const handleClose = () => {
         setAnchorEl(null);

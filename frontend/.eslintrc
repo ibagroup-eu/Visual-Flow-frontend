@@ -5,7 +5,12 @@
         "jest": true,
         "node": true
     },
-    "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
+    "extends": [
+        "airbnb",
+        "plugin:prettier/recommended",
+        "prettier/react",
+        "plugin:react-hooks/recommended"
+    ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -22,7 +27,11 @@
     "rules": {
         "complexity": ["error", 13],
         "quotes": ["error", "single", { "avoidEscape": true }],
-        "react/destructuring-assignment": [1, "always", { "ignoreClassFields": true }],
+        "react/destructuring-assignment": [
+            1,
+            "always",
+            { "ignoreClassFields": true }
+        ],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/require-default-props": 0,
         "jsx-a11y/click-events-have-key-events": 0,
@@ -52,9 +61,6 @@
             { "property": "freeze", "object": "Object" },
             { "property": "myFavoriteWrapper" }
         ],
-        "linkComponents": [
-            "Hyperlink",
-            { "name": "Link", "linkAttribute": "to" }
-        ]
+        "linkComponents": ["Hyperlink", { "name": "Link", "linkAttribute": "to" }]
     }
 }

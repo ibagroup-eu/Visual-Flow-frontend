@@ -69,6 +69,11 @@ describe('Jobs action', () => {
             expect(dispatch).toHaveBeenCalledWith({ type: FETCH_JOBS_START });
         });
 
+        it('should not dispatch FETCH_JOBS_START if skipLoading equals true', () => {
+            fetchJobs('id',true)(dispatch);
+            expect(dispatch).not.toHaveBeenCalledWith({ type: FETCH_JOBS_START });
+        });
+
         it('should dispatch FETCH_JOBS_SUCCESS on success', () => {
             return fetchJobs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([

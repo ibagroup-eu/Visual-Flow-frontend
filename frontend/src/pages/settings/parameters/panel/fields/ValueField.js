@@ -31,8 +31,7 @@ export const ValueField = ({
     error,
     helperText,
     disabled,
-    onChange,
-    classes
+    onChange
 }) => {
     const { t } = useTranslation();
 
@@ -41,7 +40,6 @@ export const ValueField = ({
         onChange,
         error,
         helperText,
-        margin: 'normal',
         fullWidth: true,
         required: true,
         name: 'value',
@@ -51,12 +49,7 @@ export const ValueField = ({
     };
 
     return secret ? (
-        <PasswordInput
-            {...defaultTextProps}
-            isTouched
-            fromDesigner
-            className={classes.secret}
-        />
+        <PasswordInput {...defaultTextProps} isTouched fromDesigner />
     ) : (
         <TextField {...defaultTextProps} variant="outlined" />
     );

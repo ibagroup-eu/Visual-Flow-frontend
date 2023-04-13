@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -25,20 +25,50 @@ import { withTranslation } from 'react-i18next';
 import classNames from 'classnames';
 import {
     Box,
-    TablePagination,
-    Grid,
-    Typography,
+    Button,
     Checkbox,
-    Button
+    Grid,
+    TablePagination,
+    Typography
 } from '@material-ui/core';
-import TransformOutlinedIcon from '@material-ui/icons/TransformOutlined';
-import Timeline from '@material-ui/icons/Timeline';
-import moment from 'moment';
 
+import { isEqual } from 'lodash';
 import useStyles from './ImportModal.Styles';
 import PopupForm from '../../../components/popup-form';
+import ModalGridRow from './ModalGridRow';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
-import { DATE_FORMAT } from '../../../globalConstants';
+
+const prepareData = (jobs, pipelines) =>
+    pipelines.reduce((map, pipeline) => {
+        const jobIds = pipeline.spec?.templates
+            ?.filter(({ name }) => name === 'dagTemplate')
+            .flatMap(({ dag }) =>
+                dag?.tasks?.flatMap(task =>
+                    task?.arguments?.parameters
+                        ?.filter(({ name }) => name === 'configMap')
+                        .map(({ value }) => value)
+                )
+            );
+        const filteredJobs = jobs.filter(job =>
+            jobIds?.includes(job?.metadata?.name)
+        );
+        map.set(pipeline, filteredJobs);
+        return map;
+    }, new Map());
+
+const buildSelectedIds = (selected, checked, ...ids) => {
+    let newSelected;
+
+    if (checked) {
+        newSelected = selected.concat(
+            ids.filter(id => !selected.some(v => isEqual(v, id)))
+        );
+    } else {
+        newSelected = selected.filter(v => !ids.some(id => isEqual(v, id)));
+    }
+
+    return newSelected;
+};
 
 const ImportModal = ({
     display,
@@ -52,62 +82,64 @@ const ImportModal = ({
     confirmationWindow
 }) => {
     const classes = useStyles();
-
-    const [dataList, setDataList] = React.useState([]);
+    const [dataList, setDataList] = React.useState(new Map());
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const numSelected = selected?.length || 0;
     const rowsPerPage = 5;
 
-    React.useEffect(() => {
-        setDataList(jobs.concat(pipelines));
-        setSelected([]);
-    }, [jobs, pipelines]);
+    const map = useMemo(() => prepareData(jobs, pipelines), [jobs, pipelines]);
 
-    const handleSelect = id => {
-        const index = selected.indexOf(id);
-        let newSelected = [];
-        if (index > -1) {
-            newSelected = newSelected.concat(
-                selected.slice(0, index),
-                selected.slice(index + 1)
-            );
+    React.useEffect(() => {
+        const result = new Map();
+        if (pipelines?.length) {
+            map.forEach((value, key) => {
+                result.set([key], key);
+                value.forEach(v => result.set([v, key], v));
+            });
         } else {
-            newSelected = newSelected.concat(selected, id);
+            jobs.forEach(job => result.set([job], job));
         }
-        setSelected(newSelected);
+        setDataList(result);
+
+        setSelected(Array.from(result.keys()));
+    }, [map, jobs, pipelines]);
+
+    const handleSelect = (id, checked) => {
+        if (checked && pipelines?.length) {
+            const [item] = id;
+            const pipeline = pipelines.find(v => v === item);
+            if (pipeline) {
+                const children = map.get(pipeline)?.map(job => [job, item]) || [];
+
+                setSelected(v => buildSelectedIds(v, checked, id, ...children));
+                return;
+            }
+        }
+        setSelected(v => buildSelectedIds(v, checked, id));
     };
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const items = dataList.map(item => item?.metadata?.name);
+            const items = Array.from(dataList.keys());
             setSelected(items);
         } else {
             setSelected([]);
         }
     };
 
-    const isSelected = id => selected.indexOf(id) !== -1;
+    const isSelected = id => selected.some(v => isEqual(v, id));
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
-    const renderIconType = type => {
-        switch (type) {
-            case 'ConfigMap':
-                return <TransformOutlinedIcon className={classes.secondary} />;
-            case 'WorkflowTemplate':
-                return <Timeline className={classes.secondary} />;
-            default:
-                return null;
-        }
-    };
-
-    const formatDate = date => date && moment(date, DATE_FORMAT).format(DATE_FORMAT);
-
     const handleImportResources = () => {
-        if (existedList.some(item => selected.includes(item.id))) {
+        if (
+            existedList.some(item =>
+                selected.some(([v]) => v.metadata?.name === item.id)
+            )
+        ) {
             confirmationWindow({
                 body: `${t('main:importPage.confirm')}`,
                 callback: () => {
@@ -136,8 +168,7 @@ const ImportModal = ({
                                 numSelected > 0 && numSelected < dataList.length
                             }
                             checked={
-                                dataList.length > 0 &&
-                                numSelected === dataList.length
+                                dataList.size > 0 && numSelected === dataList.size
                             }
                             onChange={handleSelectAllClick}
                             inputProps={{
@@ -147,82 +178,46 @@ const ImportModal = ({
                     </Grid>
                     <TablePagination
                         rowsPerPageOptions={[rowsPerPage]}
+                        labelDisplayedRows={args => t('main:pagination.of', args)}
                         component={Grid}
-                        count={dataList.length}
+                        count={dataList.size}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                     />
                 </Grid>
-                {dataList
+                {Array.from(dataList.entries())
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(({ kind, metadata }, index) => {
-                        const id = metadata.name;
+                    .map(([id, item], index) => {
+                        const { kind, metadata } = item;
+                        const [child, parent] = id;
+
+                        const disabled = id.length > 1 && isSelected([parent]);
                         const isItemSelected = isSelected(id);
                         const labelId = `enhanced-table-checkbox-${index}`;
-
                         return (
-                            <Box
-                                key={id}
-                                boxShadow={3}
-                                className={classNames(
-                                    classes.row,
-                                    isItemSelected && classes.linear
-                                )}
-                            >
-                                <Grid
-                                    container
-                                    alignItems="center"
-                                    onClick={() => handleSelect(id)}
-                                >
-                                    <Grid item xs={1} sm={1} md={1}>
-                                        <Checkbox
-                                            checked={isItemSelected}
-                                            inputProps={{
-                                                'aria-labelledby': labelId
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={2}
-                                        sm={2}
-                                        md={2}
-                                        className={classes.center}
-                                    >
-                                        {renderIconType(kind)}
-                                        <Typography color="textSecondary">
-                                            {t(`main:importPage.configType.${kind}`)}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs={9}
-                                        sm={9}
-                                        md={9}
-                                        className={classes.paddingLeft}
-                                    >
-                                        <Typography
-                                            variant="h5"
-                                            color="textSecondary"
-                                        >
-                                            {metadata?.labels?.name}
-                                        </Typography>
-                                        <Typography
-                                            component="div"
-                                            variant="body2"
-                                            className={classes.hint}
-                                        >
-                                            {t('main:importPage.LastUpdated')}:{' '}
-                                            {formatDate(
-                                                metadata?.annotations?.lastModified
-                                            ) || t('main:N/A')}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </Box>
+                            <ModalGridRow
+                                key={child?.metadata?.name + parent?.metadata?.name}
+                                id={id}
+                                t={t}
+                                kind={kind}
+                                metadata={metadata}
+                                isItemSelected={isItemSelected}
+                                labelId={labelId}
+                                disabled={disabled}
+                                handleSelect={handleSelect}
+                            />
                         );
                     })}
+                <Typography
+                    component="div"
+                    variant="body2"
+                    color="textSecondary"
+                    className={classes.typography}
+                >
+                    <strong>{t('main:export.note1')}</strong>
+                    {t('pipelines:importPipelinesNote')}
+                </Typography>
                 <Box className={classes.buttonsGroup}>
                     <Button
                         onClick={handleImportResources}

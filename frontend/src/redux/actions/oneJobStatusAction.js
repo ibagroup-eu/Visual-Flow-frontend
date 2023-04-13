@@ -50,14 +50,14 @@ const fetchJobStatus = (projectId, jobId, withoutLoading = false) => dispatch =>
     );
 };
 
-export const updateJobStatus = (pipelineId, status) => dispatch => {
+export const updateJobStatus = (id, status) => dispatch => {
     dispatch({
         type: UPDATE_JOB_STATUS_START
     });
-    return pipelineId
+    return id
         ? dispatch({
               type: UPDATE_JOB_STATUS_SUCCESS,
-              payload: { status, id: pipelineId }
+              payload: { status, id }
           })
         : dispatch({
               type: UPDATE_JOB_STATUS_FAIL,

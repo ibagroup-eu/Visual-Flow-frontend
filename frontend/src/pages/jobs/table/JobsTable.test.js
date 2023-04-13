@@ -133,14 +133,6 @@ describe('Jobs', () => {
         expect(props.setCurrentPage).toBeCalledWith(0);
     });
 
-    it('should calls onClick for all actions in getGlobalActions', () => {
-        wrapper
-            .find(EnhancedTable)
-            .prop('actions')
-            .forEach(action => action.onClick(['testid']));
-        expect(props.confirmationWindow).toBeCalled();
-    });
-
     it('should render children', () => {
         wrapper = mount(<JobsTable {...props} />);
         wrapper

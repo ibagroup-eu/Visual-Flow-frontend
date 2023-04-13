@@ -53,7 +53,6 @@ const NotificationConfiguration = ({
                                 'jobDesigner:notificationConfiguration.Addressees'
                             )}
                             variant="outlined"
-                            margin="normal"
                             fullWidth
                             multiline
                             name="addressees"
@@ -92,7 +91,6 @@ const NotificationConfiguration = ({
                             'jobDesigner:notificationConfiguration.Message'
                         )}
                         variant="outlined"
-                        margin="normal"
                         fullWidth
                         multiline
                         minRows={16}

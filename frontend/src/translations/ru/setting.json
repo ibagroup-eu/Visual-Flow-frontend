@@ -1,0 +1,38 @@
+{
+    "parameter": {
+        "tooltip": {
+            "string": "String",
+            "secureString": "Secure string",
+            "Edit": "Редактировать параметр",
+            "Delete": "Удалить параметр"
+        },
+        "Name": "Имя",
+        "Value": "Значение",
+        "Create": "Новый параметр",
+        "Edit": "Редактировать Параметр",
+        "Type": "Тип"
+    },
+    "connection": {
+        "tooltip": {
+            "Open": "Open Connection",
+            "Edit": "Edit Connection",
+            "Delete": "Delete Connection",
+            "Ping": "Ping Connection"
+        },
+        "Name": "Name",
+        "Storage": "Storage",
+        "Configuration": "New Connection",
+        "View": "View Connection",
+        "Edit": "Edit Connection"
+    },
+    "usersAndRoles": {
+        "Toolbar": {
+            "Delete": "Удалить"
+        },
+        "tableColumns": {
+            "ID": "Идентификатор",
+            "Name": "Имя",
+            "Role": "Роль"
+        }
+    }
+}

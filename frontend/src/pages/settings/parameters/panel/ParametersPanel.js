@@ -62,7 +62,7 @@ export const ParametersPanel = ({
     useEffect(() => {
         data && setParameter({ ...data });
         data && validateParam(data);
-    }, [data, open]);
+    }, [data, open, validateParam]);
 
     const updateParam = param => {
         setParameter(param);
@@ -101,7 +101,6 @@ export const ParametersPanel = ({
 
     const defaultTextProps = {
         disabled: !open,
-        margin: 'normal',
         fullWidth: true,
         required: true
     };
@@ -125,17 +124,26 @@ export const ParametersPanel = ({
                         </Box>
                         <Box className={classes.fieldsRoot}>
                             <Box>
-                                <TextField
-                                    {...defaultTextProps}
-                                    label={t('setting:parameter.Name')}
-                                    placeholder={t('setting:parameter.Name')}
-                                    variant="outlined"
-                                    name="key"
-                                    value={parameter?.key || ''}
-                                    onChange={handleOnChange}
-                                    error={'key' in validationErrors}
-                                    helperText={validationErrors.key}
-                                />
+                                <Box className={classes.field}>
+                                    <TextField
+                                        {...defaultTextProps}
+                                        label={t('setting:parameter.Name')}
+                                        placeholder={t('setting:parameter.Name')}
+                                        variant="outlined"
+                                        name="key"
+                                        value={parameter?.key || ''}
+                                        onChange={handleOnChange}
+                                        error={
+                                            !isNil(parameter?.key) &&
+                                            'key' in validationErrors
+                                        }
+                                        helperText={
+                                            !isNil(parameter?.key)
+                                                ? validationErrors.key
+                                                : undefined
+                                        }
+                                    />
+                                </Box>
                                 <Autocomplete
                                     disabled={!open}
                                     name="type"
@@ -151,24 +159,34 @@ export const ParametersPanel = ({
                                         handleOnTypeChange(value)
                                     }
                                     renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined"
-                                            margin="normal"
-                                            placeholder={t('setting:parameter.Type')}
-                                            label={t('setting:parameter.Type')}
-                                            required
-                                        />
+                                        <Box className={classes.field}>
+                                            <TextField
+                                                {...params}
+                                                variant="outlined"
+                                                placeholder={t(
+                                                    'setting:parameter.Type'
+                                                )}
+                                                label={t('setting:parameter.Type')}
+                                                required
+                                            />
+                                        </Box>
                                     )}
                                 />
                                 {!isNil(parameter.secret) && (
                                     <>
-                                        <Divider />
+                                        <Divider className={classes.divider} />
                                         <ValueField
                                             value={parameter?.value || ''}
                                             secret={parameter.secret}
-                                            error={'value' in validationErrors}
-                                            helperText={validationErrors.value}
+                                            error={
+                                                !isNil(parameter?.value) &&
+                                                'value' in validationErrors
+                                            }
+                                            helperText={
+                                                !isNil(parameter?.value)
+                                                    ? validationErrors.value
+                                                    : undefined
+                                            }
                                             disabled={!open}
                                             onChange={handleOnChange}
                                         />

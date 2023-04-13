@@ -47,7 +47,8 @@ const LogsHeader = ({
     modal,
     autoRefresh,
     onSetAutoRefresh,
-    autoRefreshDisabled
+    autoRefreshDisabled,
+    logId
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -95,31 +96,33 @@ const LogsHeader = ({
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item>
-                        <Tooltip
-                            arrow
-                            title={
-                                autoRefreshDisabled
-                                    ? ''
-                                    : t('main:tooltip:AutoRefresh')
-                            }
-                        >
-                            <ToggleButton
-                                className={classes.autoRefresh}
-                                disabled={autoRefreshDisabled}
-                                size="small"
-                                value="check"
-                                selected={!autoRefreshDisabled && autoRefresh}
-                                onChange={onSetAutoRefresh}
+                    {!logId && (
+                        <Grid item>
+                            <Tooltip
+                                arrow
+                                title={
+                                    autoRefreshDisabled
+                                        ? ''
+                                        : t('main:tooltip:AutoRefresh')
+                                }
                             >
-                                {autoRefresh ? (
-                                    <TimerOutlined />
-                                ) : (
-                                    <TimerOffOutlined />
-                                )}
-                            </ToggleButton>
-                        </Tooltip>
-                    </Grid>
+                                <ToggleButton
+                                    className={classes.autoRefresh}
+                                    disabled={autoRefreshDisabled}
+                                    size="small"
+                                    value="check"
+                                    selected={!autoRefreshDisabled && autoRefresh}
+                                    onChange={onSetAutoRefresh}
+                                >
+                                    {autoRefresh ? (
+                                        <TimerOutlined />
+                                    ) : (
+                                        <TimerOffOutlined />
+                                    )}
+                                </ToggleButton>
+                            </Tooltip>
+                        </Grid>
+                    )}
                     <Grid item>
                         <Tooltip arrow title={t('main:tooltip:Refresh')}>
                             <Button
@@ -149,7 +152,8 @@ LogsHeader.propTypes = {
     modal: PropTypes.bool,
     autoRefresh: PropTypes.bool,
     onSetAutoRefresh: PropTypes.func,
-    autoRefreshDisabled: PropTypes.bool
+    autoRefreshDisabled: PropTypes.bool,
+    logId: PropTypes.string
 };
 
 export default LogsHeader;

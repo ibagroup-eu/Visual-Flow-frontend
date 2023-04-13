@@ -6,7 +6,7 @@ import { PipelineStageTag } from '../../../components/stage-tag';
 describe('PDStage', () => {
     const init = () => {
         const defaultProps = {
-            stage: { status: 'test', name: 'test' },
+            stage: { showLogs: true, name: 'test' },
             params: [],
             jobs: [],
             iconId: 'test',

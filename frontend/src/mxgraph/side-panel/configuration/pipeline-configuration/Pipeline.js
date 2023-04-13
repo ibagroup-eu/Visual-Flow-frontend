@@ -23,7 +23,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import useStyles from './PipelineConfiguration.Styles';
+import useStyles from '../job-configuration/JobConfiguration.Styles';
 import { TextSkeleton } from '../../../../components/skeleton';
 import SingleSelectModal from '../modal';
 import ConfigurationDivider from '../../../../components/divider';
@@ -56,13 +56,12 @@ const Pipeline = ({ data, loading, ableToEdit, state, onStateChange }) => {
                     onStateChange('pipelineName', pipelineNameById(newValue));
                 }}
             />
-            <Box>
+            <Box className={classes.fieldWrapper}>
                 <TextField
                     disabled={!ableToEdit}
                     label={t('pipelineDesigner:jobConfiguration.Name')}
                     placeholder={t('pipelineDesigner:jobConfiguration.Name')}
                     variant="outlined"
-                    margin="normal"
                     fullWidth
                     name="name"
                     value={state.name || ''}

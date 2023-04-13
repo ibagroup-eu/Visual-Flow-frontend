@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
+import redux from 'react-redux';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import { PageSkeleton } from '../../skeleton';
@@ -27,6 +28,11 @@ import Auth from './Auth';
 describe('Auth', () => {
     const redirect = 'success';
     const user = {};
+    const dispatch = jest.fn();
+
+    beforeEach(() => {
+        jest.spyOn(redux, 'useDispatch').mockReturnValue(dispatch);
+    });
 
     afterEach(() => {
         jest.clearAllMocks();

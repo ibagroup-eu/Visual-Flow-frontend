@@ -1,0 +1,45 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "output": {
+        "name": "Output",
+        "value1": "Transformer stage gives the user an ability to modify columns that will be written to some data storage later on.",
+        "value2": "The customization allows for (and not limited to):",
+        "value3": "1. Specify only needed columns. ",
+        "value4": "2. Provide alias for columns.",
+        "value5": "3. Use spark-sql functions/procedures to modify (or create new) columns.",
+        "value6": {
+            "title": "For more information about Built-in Functions click here.",
+            "link": "https://spark.apache.org/docs/latest/api/sql/index.html"
+        }
+    },
+    "note": {
+        "name": "Note",
+        "boldText": "\uD835\uDC1B\uD835\uDC1A\uD835\uDC1C\uD835\uDC24\uD835\uDC2D\uD835\uDC22\uD835\uDC1C\uD835\uDC24(`)",
+        "lastText": " symbols.",
+        "value1": "An identifier is a string used to identify a database object such as a table, view, schema, column, etc. Spark SQL has regular identifiers and delimited identifiers, which are enclosed within backticks. Therefore be vigilant when you reference certain database objects in your query since some might have symbols that might be misinterpreted (e.g. spark function invocation) if the whole object's name is not guarded by",
+        "value2": {
+            "title": "For more information of backticks click here.",
+            "link": "https://spark.apache.org/docs/latest/sql-ref-identifier.html"
+        }
+    },
+    "mode": {
+        "name": "Mode",
+        "value1": "Transformer mode defines the type of the SQL query (Spark SQL dialect) that is accepted and executed.",
+        "value2": "Simple - only allows you to specify the part between SELECT and FROM. You can do things like these:",
+        "value3": "1) col1, concat(col1, col2)",
+        "value4": "2) count(*) as count",
+        "value5": "3) a, b, row_number() OVER (PARTITION BY a ORDER BY b)",
+        "value6": "4) col, exists(col, x -> x % 2 == 0)",
+        "value7": "5) col, collect_list(col)",
+        "value8": "Syntax:",
+        "value9": " <column_name_1> as <alias_1>, function(<column_name_2>) as <alias_2>",
+        "value10": "Full SQL - allows you to write a full-blown Spark SQL query. Though you would have to specify the table's name in the query by manually referencing the value from the \"Table name\" parameter."
+    },
+    "tableName": {
+        "name": "Table name",
+        "value": "The name of the table that you should use within the Spark SQL query. Only applicable for Full SQL transformer mode."
+    }
+}

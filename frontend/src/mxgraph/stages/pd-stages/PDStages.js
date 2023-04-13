@@ -19,11 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import DescriptionIcon from '@material-ui/icons/Description';
-
 import useStyles from './PDStages.Styles';
-import { DRAFT, PENDING, SKIPPED } from '../../constants';
 import StageWarning from '../../../components/stage-warning';
 import makeTooltip from '../helpers/makeTooltip';
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
@@ -39,8 +36,6 @@ const PDStages = ({
     tooltipClass
 }) => {
     const classes = useStyles();
-    const visibleLogsIcon =
-        stage.status && ![DRAFT, PENDING, SKIPPED].includes(stage.status);
 
     return (
         <ConfiguredStageWithIcon
@@ -48,7 +43,7 @@ const PDStages = ({
             name={
                 <>
                     {makeTooltip(stage.name, stage.name)}
-                    {visibleLogsIcon && (
+                    {stage.showLogs && (
                         <DescriptionIcon id={iconId} className={classes.logIcon} />
                     )}
                     <StageWarning

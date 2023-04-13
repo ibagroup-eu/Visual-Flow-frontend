@@ -98,5 +98,10 @@ describe('ReadWriteStage', () => {
                 storage: STORAGES.DATAFRAME.value
             }
         });
+        wrapper.setProps({
+            stage: {
+                storage: STORAGES.API.value
+            }
+        });
     });
 });

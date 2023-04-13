@@ -310,6 +310,8 @@ const UsersTable = ({
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
+                        labelDisplayedRows={args => t('main:pagination.of', args)}
+                        labelRowsPerPage={t('main:pagination.RowsPerPage')}
                     />
                 </Paper>
             </Box>

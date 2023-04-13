@@ -175,7 +175,7 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
 
                 if (operation !== EDGE) {
                     const style = {
-                        fillColor: stages[operation].color,
+                        fillColor: stages[operation]?.color,
                         strokeWidth: theme.mxgraph.border.strong,
                         strokeColor:
                             operation !== WAIT

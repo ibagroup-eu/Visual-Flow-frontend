@@ -19,3 +19,4 @@
 
 export const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 export const DATE_FORMAT_UTC = `${DATE_FORMAT} UTC`;
+export const DATE_FORMAT_Z = 'YYYY-MM-DD HH:mm:ss Z';

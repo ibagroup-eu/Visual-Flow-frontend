@@ -261,6 +261,8 @@ export const validations = {
     [STORAGES.COS.value]: checkCosRequiredFields,
     [STORAGES.ELASTIC.value]: checkElasticsearchRequiredFields,
     [STORAGES.CLICKHOUSE.value]: checkClickHouseRequiredFields,
+    [STORAGES.KAFKA.value]: isAnyEmpty('bootstrapServers', 'subscribe'),
+    [STORAGES.API.value]: isAnyEmpty('method', 'host', 'jsonPath'),
     [DERIVE_COLUMN]: isAnyEmpty('option.expression'),
     [ADD_CONSTANT]: isAnyEmpty('option.constant'),
     [CHANGE_TYPE]: isAnyEmpty('option.columnType'),

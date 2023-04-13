@@ -62,7 +62,7 @@ const DataframeBody = ({
                 });
             }
         }
-    }, [rows.length]);
+    }, [rows.length, pageRows.length, page, rowsPerPage, scrollTop]);
 
     const onDebounce = (rowId, columnIndex) => newValue =>
         changeField(newValue, rowId, columnIndex);

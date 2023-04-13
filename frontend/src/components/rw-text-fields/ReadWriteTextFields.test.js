@@ -18,9 +18,15 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import ReadWriteTextFields from './ReadWriteTextFields';
 import { TextField } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+
+jest.mock('react-i18next', () => ({
+    ...jest.requireActual('react-i18next'),
+    useTranslation: jest.fn()
+}));
 
 describe('ReadWriteTextFields', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -44,7 +50,9 @@ describe('ReadWriteTextFields', () => {
     };
 
     it('should render without crashes', () => {
-        const [wrapper, props] = init({}, true);
+        useTranslation.mockImplementation(() => ({ t: x => x }));
+
+        const [wrapper, props] = init({}, true, mount);
 
         expect(wrapper.find(TextField).length).toBe(props.fields.length);
     });

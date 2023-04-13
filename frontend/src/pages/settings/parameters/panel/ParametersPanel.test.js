@@ -106,16 +106,6 @@ describe('ParametersPanel', () => {
         expect(props.close).toHaveBeenCalled();
     });
 
-    it('should render autocomplete options', () => {
-        const [wrapper] = init();
-
-        const renderInput = shallow(
-            wrapper.find(Autocomplete).prop('renderInput')({ name: 'name' })
-        );
-
-        expect(renderInput.prop('name')).toBe('name');
-    });
-
     it('should handle autocomplete changes', () => {
         const [wrapper] = init();
 

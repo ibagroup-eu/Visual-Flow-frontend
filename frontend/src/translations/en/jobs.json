@@ -2,6 +2,8 @@
     "Status": "Status",
     "Level": "Level",
     "CPU": "CPU",
+    "Cores": "Cores",
+    "GB": "GB",
     "Memory": "Memory",
     "JOB_ID": "JOB_ID*",
     "level": {
@@ -23,8 +25,10 @@
         "Remove": "Remove",
         "jobDesigner": "Job Designer",
         "Remove selected": "Remove selected",
+        "Disable remove": "You cannot delete a job which compounds a pipeline",
         "Export selected": "Export selected",
-        "History": "History"
+        "History": "History",
+        "cdcKey": "Please fill the comparison key"
     },
     "noItems": "No items to display",
     "changesNotSaved": "Please save your changes to run the job",

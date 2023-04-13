@@ -43,6 +43,8 @@ const InfoModal = ({
     cluster,
     dataframe,
     clickhouse,
+    kafka,
+    api,
     operations,
     display,
     title,
@@ -64,7 +66,7 @@ const InfoModal = ({
         if (currentStorage === undefined) {
             setStorage('');
         }
-    }, [currentStorage, display]);
+    }, [currentStorage, display, t]);
 
     // eslint-disable-next-line complexity
     const chosenStorage = () => {
@@ -102,6 +104,10 @@ const InfoModal = ({
                 return dataframe;
             case STORAGES.CLICKHOUSE.label:
                 return clickhouse;
+            case STORAGES.KAFKA.label:
+                return kafka;
+            case STORAGES.API.label:
+                return api;
             default:
                 return null;
         }
@@ -220,35 +226,33 @@ const InfoModal = ({
                     </Select>
                 </FormControl>
             )}
-            {(title === 'Read' || title === 'Write' || title === 'Date/Time') && (
-                <Box className={classNames(classes.name, classes.wrapper)}>
-                    {storage &&
-                        clearData(chosenStorage())?.map(section => {
-                            const other = Object.keys(section).slice(1);
-                            return (
-                                <Box className={classes.root} key={section.title}>
+            <Box className={classNames(classes.name, classes.wrapper)}>
+                {storage &&
+                    clearData(chosenStorage())?.map(section => {
+                        const other = Object.keys(section).slice(1);
+                        return (
+                            <Box className={classes.root} key={section.title}>
+                                <Typography
+                                    variant="subtitle2"
+                                    color="textSecondary"
+                                    className={classes.name}
+                                >
+                                    {section.title}
+                                </Typography>
+                                {other.map(paragraph => (
                                     <Typography
-                                        variant="subtitle2"
+                                        key={paragraph.slice(7)}
+                                        variant="body2"
                                         color="textSecondary"
-                                        className={classes.name}
+                                        className={classes.paragraph}
                                     >
-                                        {section.title}
+                                        {section[paragraph]}
                                     </Typography>
-                                    {other.map(paragraph => (
-                                        <Typography
-                                            key={paragraph.slice(7)}
-                                            variant="body2"
-                                            color="textSecondary"
-                                            className={classes.paragraph}
-                                        >
-                                            {section[paragraph]}
-                                        </Typography>
-                                    ))}
-                                </Box>
-                            );
-                        })}
-                </Box>
-            )}
+                                ))}
+                            </Box>
+                        );
+                    })}
+            </Box>
         </PopupForm>
     );
 };
@@ -268,6 +272,8 @@ InfoModal.propTypes = {
     stdout: PropTypes.array,
     cluster: PropTypes.array,
     dataframe: PropTypes.array,
+    kafka: PropTypes.array,
+    api: PropTypes.array,
     operations: PropTypes.object,
     display: PropTypes.bool,
     title: PropTypes.string,

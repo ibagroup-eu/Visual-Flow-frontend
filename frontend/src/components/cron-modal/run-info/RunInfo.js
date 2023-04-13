@@ -25,7 +25,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import useStyles from '../CronModal.Styles';
-import { DATE_FORMAT_UTC } from '../../../globalConstants';
+import { DATE_FORMAT_UTC, DATE_FORMAT_Z } from '../../../globalConstants';
 import getCronHint from '../../../utils/getCronHint';
 
 export const correctInvalidCron = cronValue =>
@@ -49,14 +49,19 @@ const RunInfo = ({ cronValue, isUseCron }) => {
     const classes = useStyles();
     const { t } = useTranslation();
 
-    const computeNextCron = cron =>
-        `${t('pipelines:cronInfo.nextAt')}: ${moment(
+    const computeNextCron = cron => {
+        const utc = moment.utc(
             parser
-                .parseExpression(cron)
+                .parseExpression(cron, { utc: true })
                 .next()
                 .toISOString(),
             DATE_FORMAT_UTC
-        ).format(DATE_FORMAT_UTC)}`;
+        );
+
+        const nextRun = utc.local().format(DATE_FORMAT_Z);
+
+        return `${t('pipelines:cronInfo.nextAt')}: ${nextRun}`;
+    };
 
     let nextCron = '';
     let cronHint = '';
@@ -84,7 +89,7 @@ const RunInfo = ({ cronValue, isUseCron }) => {
                     colorClass
                 )}
             >
-                {cronHint}
+                {!cronHint ? t('pipelines:cronInfo.helperText') : cronHint}
             </Typography>
             <Typography
                 className={classNames(

@@ -2,12 +2,191 @@
     "Overview": "Обзор",
     "Import": "Импорт",
     "Settings": "Настройки",
+    "Basic": "Базовые",
     "Exit": "Выход",
+    "search": "Поиск...",
     "searchByName": "Поиск по имени джоба",
+    "Users/Roles": "Пользователи/Роли",
+    "Parameters": "Параметры",
+    "Connections": "Подключения",
     "button": {
-        "addJob": "СОЗДАТЬ JOB"
+        "addJob": "СОЗДАТЬ JOB",
+        "ChooseFile": "ВЫБРАТЬ ФАЙЛ",
+        "Load": "ЗАГРУЗИТЬ",
+        "Import": "Импортировать",
+        "setRole": "ВЫБРАТЬ РОЛЬ",
+        "Save": "Сохранить",
+        "Cancel": "Отменить",
+        "addUser": "Добавить пользователя",
+        "Close": "Закрыть",
+        "Add": "Добавить",
+        "AddParameter": "СОЗДАТЬ ПАРАМЕТР",
+        "Export": "Export",
+        "Browse": "Browse",
+        "Exit": "Exit",
+        "CLOSE": "CLOSE",
+        "addProperty": "ADD PROPERTY",
+        "addPipeline": "ADD PIPELINE",
+        "Confirm": "CONFIRM",
+        "Discard": "DISCARD",
+        "UseSchema": "Use Schema",
+        "EditSchema": "Edit Schema",
+        "AddConnection": "CREATE CONNECTION",
+        "AddOption": "Add option",
+        "Ping": "PING",
+        "CreateDataframe": "Create Dataframe",
+        "EditDataframe": "Edit Dataframe",
+        "AddValidation": "Add Validation",
+        "EditValidation": "Edit Validation"
+    },
+    "importPage": {
+        "FilePath": "Путь к файлу",
+        "LastUpdated": "Последнее обновление",
+        "BadFile": "Неправильная структура файла",
+        "importSuccess": "Импорт успешно завершён",
+        "importFailed": "Не удалось импортировать ресурсы",
+        "configType": {
+            "ConfigMap": "Job",
+            "WorkflowTemplate": "Pipeline"
+        },
+        "confirm": "Jobs (pipelines) с одинаковыми именами будут перезаписаны.",
+        "Notice": "Предупреждение:",
+        "NotAutorized": "Вы не можете импортировать файлы в этот проект"
     },
     "form": {
-        "Name": "Имя"
+        "header": {
+            "usersAndRoles": "Пользователи и Роли",
+            "addUser": "Добавить пользователя",
+            "Parameters": "Параметры",
+            "editProjectConnections": "Управление подключениями",
+            "Connections": "Подключения",
+            "viewProject": "Обзор проекта",
+            "editProject": "Редактирование проекта",
+            "createProject": "Создание проекта",
+            "viewProjectParameters": "View Project Parameters",
+            "editProjectParameters": "Edit Project Parameters",
+            "Export": "Export to"
+        },
+        "Name": "Имя",
+        "Description": "Описание",
+        "Requests": "Требования",
+        "Limits": "Пределы"
+    },
+    "confirm": {
+        "title": "Вы уверены?",
+        "body": "Вы уверены?",
+        "Yes": "Да",
+        "No": "Нет",
+        "sure": "Вы уверены, что хотите удалить",
+        "unsaved": "Вы уверены? Несохраненные изменения будут потеряны"
+    },
+    "pagination": {
+        "of": "{{from}}-{{to}} из {{count}}",
+        "RowsPerPage": "Строк на странице:",
+        "Rows": "Строки:"
+    },
+    "unsavedChanges": {
+        "leaveWithUnsavedChanges": "Несохраненные изменения будут потеряны",
+        "sidePanelIsDirty": "Your configuration has not been saved",
+        "paramsIsDirty": "Your parameters have not been saved",
+        "jobsGraphIsDirty": "Your job has not been saved. If you leave Job Designer unsaved changes will be lost. Press “SAVE”  to save your job",
+        "pipelinesGraphIsDirty": "Your pipeline has not been saved. If you leave Pipeline Designer unsaved changes will be lost. Press “SAVE”  to save your pipeline"
+    },
+    "validation": {
+        "projectParameters": {
+            "keyDuplication": "Дублирование ключей",
+            "keyLength": "Допустимая длина: 1-50",
+            "keySymbols": "Допустимые символы: A-Z, a-z, 0-9, -, _",
+            "keyStartEnd": "Должно начинаться и заканчиваться буквенно-цифровым символом",
+            "valueEmpty": "Не может быть пустым"
+        },
+        "projectConnections": {
+            "nameDuplication": "Дублирование имён",
+            "nameLength": "Допустимая длина: 1-50",
+            "nameSymbols": "Допустимые символы: A-Z, a-z, 0-9, -, _"
+        },
+        "positive": "Значение должно быть положительным.",
+        "3to40chars": "Неправильный символ или длина строки (3-40 символов).",
+        "moreThen500": "Длина должна быть менее 500 символов.",
+        "notBlank": "Should not be blank.",
+        "fieldsNotFilled": "Some fields are not filled.",
+        "incorrectJobLength": "Must be no more than 63 characters.",
+        "incorrectPipelineLength": "The name should have a total length between 3 and 40 characters max.",
+        "incorrectCharacters": "Use alphanumeric characters, '-', '.' or '_'. Name must start and end with an alphanumeric.",
+        "pipelineWithoutJobParams": "Unable to run pipeline, missing job/parameter data."
+    },
+    "title": "Visual Flow",
+    "Jobs": "Jobs",
+    "job": "Job",
+    "Pipelines": "Pipelines",
+    "pipeline": "Pipeline",
+    "jobDesigner": "Job Designer",
+    "FileName": "File Name",
+    "Deleted": "Deleted successfully",
+    "Loading": "Loading...",
+    "Switch": "Switch projects",
+    "searchByTags": "Filter by Tags...",
+    "reset": "Reset",
+    "tags": "Tags",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "noResult": "No result",
+    "sorted": {
+        "descending": "sorted descending",
+        "ascending": "sorted ascending"
+    },
+    "overview": {
+        "Jobs": "Jobs",
+        "Pipelines": "Pipelines",
+        "Utilization": "Resource Utilization",
+        "utilization": {
+            "Used": "Used",
+            "Requested": "Requested",
+            "Limits": "Limits"
+        }
+    },
+    "profileMenu": {
+        "profile": "Profile",
+        "logOut": "Log out"
+    },
+    "profilePage": {
+        "header": "User Profile",
+        "titles": {
+            "username": "Username:",
+            "fullName": "Full Name:",
+            "email": "Email:",
+            "authorizationToken": "Authorization Token:"
+        }
+    },
+    "404": "Sorry, we can’t find the page you are looking for.",
+    "enterJobName": "Please enter name and save params",
+    "tooltip": {
+        "MoveDown": "Move down",
+        "MoveUp": "Move up",
+        "Delete": "Delete",
+        "Add": "Add",
+        "Refresh": "Refresh",
+        "AutoRefresh": "Auto Refresh",
+        "AutoRefreshOn": "Включить автоматическое обновление",
+        "AutoRefreshOff": "Выключить автоматическое обновление"
+    },
+    "error": {
+        "GUI": "GUI is absent. Possible reason: created via API."
+    },
+    "export": {
+        "note1": "Note: ",
+        "note2": "The file will be exported to the default folder set in your browser."
+    },
+    "history": {
+        "Started": "STARTED",
+        "Duration": "DURATION",
+        "RunBy": "RUN BY",
+        "Name": "NAME",
+        "Log": "LOG",
+        "EmptyList": "History is empty",
+        "LastRunBy": "Last Run by",
+        "Today": "Today",
+        "Yesterday": "Yesterday",
+        "At": "At"
     }
 }

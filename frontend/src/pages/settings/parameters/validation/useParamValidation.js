@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { isEmpty, isNil, pickBy } from 'lodash';
+import { isEmpty, pickBy } from 'lodash';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,29 +30,24 @@ export const MESSAGES = {
 };
 
 export const KEY_VALIDATIONS = {
-    [MESSAGES.VALUE_EMPTY]: value => !value.trim(),
-    [MESSAGES.KEY_LENGTH]: key => key.length > 50,
-    [MESSAGES.KEY_SYMBOLS]: key => key.search(/^[-A-Za-z0-9_]*?$/),
+    [MESSAGES.VALUE_EMPTY]: value => !value?.trim(),
+    [MESSAGES.KEY_LENGTH]: key => key?.length > 50,
+    [MESSAGES.KEY_SYMBOLS]: key => key?.search(/^[-A-Za-z0-9_]*?$/),
     [MESSAGES.KEY_START_END]: key =>
-        key.search(/^([A-Za-z0-9][-A-Za-z0-9_]*)?[A-Za-z0-9]$/)
+        key?.search(/^([A-Za-z0-9][-A-Za-z0-9_]*)?[A-Za-z0-9]$/)
 };
 
 export const VALUE_VALIDATIONS = {
-    [MESSAGES.VALUE_EMPTY]: value => !value.trim()
+    [MESSAGES.VALUE_EMPTY]: value => !value?.trim()
 };
 
-export const validate = (value, validationSchema) => {
-    if (isNil(value)) {
-        return null;
-    }
-
-    return Object.entries(validationSchema).reduce((acc, [message, func]) => {
+export const validate = (value, validationSchema) =>
+    Object.entries(validationSchema).reduce((acc, [message, func]) => {
         if (acc) {
             return acc;
         }
-        return func(value) ? message : null;
-    }, null);
-};
+        return func(value) ? message : '';
+    }, '');
 
 const useParamValidation = data => {
     const [param, setParam] = useState(data);
@@ -61,10 +56,7 @@ const useParamValidation = data => {
     const key = validate(param?.key, KEY_VALIDATIONS);
     const value = validate(param?.value, VALUE_VALIDATIONS);
 
-    return [
-        pickBy({ key: t(key), value: t(value) }, v => !isEmpty(v)),
-        e => setParam(e)
-    ];
+    return [pickBy({ key: t(key), value: t(value) }, v => !isEmpty(v)), setParam];
 };
 
 export default useParamValidation;

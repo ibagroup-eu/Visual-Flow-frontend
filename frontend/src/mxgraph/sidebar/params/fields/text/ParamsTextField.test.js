@@ -21,11 +21,14 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import ParamsTextField from './ParamsTextField';
 import { TextField } from '@material-ui/core';
+import { noop } from 'lodash';
 
 describe('ParamsTextField', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
+            name: 'name',
             onChange: jest.fn(),
+            onError: jest.fn(),
             adornment: 'adornment',
             ableToEdit: true,
             validate: jest.fn()
@@ -43,28 +46,21 @@ describe('ParamsTextField', () => {
     });
 
     it('should handle on change', () => {
-        const [wrapper, props] = init({}, true);
+        const mockedFunction = jest.fn().mockReturnValue('invalid');
+        const [wrapper, props] = init({ validate: mockedFunction }, true);
 
-        const event = { target: { value: 'value' } };
+        const event = {
+            target: { name: props.name, value: 'value' },
+            persist: noop
+        };
 
         wrapper.find(TextField).simulate('change', event);
 
         expect(props.onChange).toHaveBeenCalledWith(event);
-        expect(props.validate).toHaveBeenCalledWith('value');
-    });
-
-    it('should set an error', () => {
-        const [wrapper] = init({ validate: x => x });
-
-        expect(wrapper.find(TextField).prop('helperText')).toBeNull();
-
-        const event = { target: { value: 'value' } };
-
-        wrapper.find(TextField).simulate('change', event);
-
-        wrapper.update();
-
-        expect(wrapper.find(TextField).prop('helperText')).toBe('value');
+        expect(props.onError).toHaveBeenCalledWith({
+            name: props.name,
+            value: 'invalid'
+        });
     });
 
     it('should show adornment', () => {

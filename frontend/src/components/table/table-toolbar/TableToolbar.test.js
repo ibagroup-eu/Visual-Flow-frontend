@@ -22,8 +22,8 @@ import React from 'react';
 
 import { TableToolbar } from './TableToolbar';
 import { TablePagination } from '@material-ui/core';
-import Action from '../action';
 import TableSort from '../table-sort';
+import ActionButton from '../../action-button';
 
 describe('TableToolbar', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -57,9 +57,9 @@ describe('TableToolbar', () => {
     it('should render custom actions', () => {
         const [wrapper, props] = init({}, true);
 
-        expect(wrapper.find(Action).length).toBe(props.actions.length);
+        expect(wrapper.find(ActionButton).length).toBe(props.actions.length);
 
-        const [action] = wrapper.find(Action).map(x => x);
+        const [action] = wrapper.find(ActionButton).map(x => x);
 
         expect(action.prop('title')).toBe(props.actions[0].title);
 
@@ -71,7 +71,7 @@ describe('TableToolbar', () => {
     it('should render sort table', () => {
         const [wrapper] = init({ selected: [] });
 
-        expect(wrapper.find(Action).length).toBe(0);
+        expect(wrapper.find(ActionButton).length).toBe(0);
         expect(wrapper.find(TableSort).exists()).toBeTruthy();
     });
 });

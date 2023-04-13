@@ -1,0 +1,24 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "joinType": {
+        "name": "Join type",
+        "value": "Inner join. Transfers records from input data sets whose key columns contain equal values to the output data set. Records whose key columns do not contain equal values are dropped.",
+        "value2": "Left outer join. Transfers all values from the left data set but transfers values from the right data set only where key columns match. The stage drops the key column from the right data set.",
+        "value3": "Right outer join. Transfers all values from the right data set and transfers values from the left data set and intermediate data sets only where key columns match. The stage drops the key column from the left and intermediate data sets.",
+        "value4": "Full outer join. Transfers records in which the contents of the key columns are equal from the left and right input data sets to the output data set. It also transfers records whose key columns contain unequal values from both input data sets to the output data set.",
+        "value5": "Cross join. Returns a result data set where each row from the first table is combined with each row from the second table.",
+        "value6": "Left semi join. Returns values from the left side of the relation that has a match with the right.",
+        "value7": "Left anti join. Returns values from the left relation that has no match with the right."
+    },
+    "linkOrdering": {
+        "name": "Link Ordering",
+        "value": "This option allows you to specify which input link is regarded as the left link and which link is regarded as the right link. By default the first link you add is regarded as the left link, and the last one as the right link. You can use arrow up and arrow down buttons to override the default order."
+    },
+    "key": {
+        "name": "Key",
+        "value": "Specify keys to combine rows from multiple tables."
+    }
+}

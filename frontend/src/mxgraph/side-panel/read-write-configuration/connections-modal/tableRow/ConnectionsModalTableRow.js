@@ -36,7 +36,7 @@ import {
 import { ExpandMore } from '@material-ui/icons';
 import { isEqual, map } from 'lodash';
 import useStyles from './ConnectionsModalTableRow.Styles';
-import { valueIsLink } from '../../../../../components/rw-text-fields/ReadWriteTextFields';
+import { valueIsLink } from '../../../../../components/rw-text-fields/ReadWriteTextField';
 import SecretField from '../secretField/ConnectionsModalSecretField';
 import { secretFields } from '../../../constants/container';
 
@@ -52,7 +52,14 @@ const ConnectionsModalTableRow = ({
     const classes = useStyles();
     const selectedRef = useRef(null);
     const [open, setOpen] = useState(false);
-    const { connectionName, storageLabel, storage, id, ...rest } = connection;
+    const {
+        connectionName,
+        storageLabel,
+        storage,
+        id,
+        dependentJobIDs,
+        ...rest
+    } = connection;
 
     useEffect(() => {
         if (defaultSelected) {

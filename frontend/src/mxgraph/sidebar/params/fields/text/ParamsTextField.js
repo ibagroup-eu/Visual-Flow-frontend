@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { InputAdornment, TextField, Box } from '@material-ui/core';
-import { isFunction } from 'lodash';
+import { isFunction, noop } from 'lodash';
 import useStyles from './ParamsTextField.Styles';
 
 const ParamsTextField = ({
@@ -33,13 +33,18 @@ const ParamsTextField = ({
     onChange,
     validate,
     ableToEdit,
-    required
+    required,
+    error,
+    onError
 }) => {
-    const [error, setError] = useState(null);
-
     const handleChange = event => {
-        setError(isFunction(validate) ? validate(event.target.value) : null);
-        onChange(event);
+        if (isFunction(validate)) {
+            onError({
+                name,
+                value: validate(event.target.value)
+            });
+        }
+        onChange({ target: { name, value: event.target.value }, persist: noop });
     };
 
     const classes = useStyles();
@@ -53,7 +58,7 @@ const ParamsTextField = ({
                 placeholder={label}
                 type={type}
                 variant="outlined"
-                value={value}
+                value={value || ''}
                 onChange={handleChange}
                 fullWidth
                 InputProps={{
@@ -83,7 +88,9 @@ ParamsTextField.propTypes = {
     onChange: PropTypes.func,
     validate: PropTypes.func,
     ableToEdit: PropTypes.bool,
-    required: PropTypes.bool
+    required: PropTypes.bool,
+    error: PropTypes.string,
+    onError: PropTypes.func
 };
 
 export default ParamsTextField;

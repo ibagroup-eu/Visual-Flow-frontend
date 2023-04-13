@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { get, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Grid, Box, Button } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 
 import FormWrapper from '../../../components/form-wrapper';
 import SearchInput from '../../../components/search-input';
 import fetchUsers from '../../../redux/actions/usersActions';
 import { PageSkeleton } from '../../../components/skeleton';
 import {
-    updateProjectUsers,
-    fetchProjectUsers
+    fetchProjectUsers,
+    updateProjectUsers
 } from '../../../redux/actions/settingsUsersRolesActions';
 import fetchRoles from '../../../redux/actions/rolesActions';
 import PopupForm from '../../../components/popup-form';
@@ -47,7 +47,7 @@ export const Users = ({
     users,
     loadingUsers,
     roles,
-    loadingRoles,
+    loading,
     getRoles,
     getProjectUsers,
     projectUsers,
@@ -69,34 +69,41 @@ export const Users = ({
     React.useEffect(() => {
         getUsers();
         getRoles();
-    }, [editMode]);
+    }, [editMode, getRoles, getUsers]);
 
     React.useEffect(() => {
         projectId && getProjectUsers(projectId);
-    }, [projectId, editMode]);
+    }, [projectId, editMode, getProjectUsers]);
 
-    const getMappedUsers = () =>
-        users
-            .filter(user => get(projectUsers, `grants.${user.username}`, false))
-            .map(user => ({
-                ...user,
-                role: get(projectUsers, `grants.${user.username}`, '')
-            }));
+    const getMappedUsers = useCallback(
+        () =>
+            users
+                .filter(user => get(projectUsers, `grants.${user.username}`, false))
+                .map(user => ({
+                    ...user,
+                    role: get(projectUsers, `grants.${user.username}`, '')
+                })),
+        [projectUsers, users]
+    );
 
-    const getNewUsers = () =>
-        users.filter(
-            user =>
-                !usersAndRoles.some(
-                    userAndRole => user.username === userAndRole.username
-                )
-        );
+    const getNewUsers = useCallback(
+        () =>
+            users.filter(
+                user =>
+                    !usersAndRoles.some(
+                        userAndRole => user.username === userAndRole.username
+                    )
+            ),
+        [users, usersAndRoles]
+    );
 
     React.useEffect(() => {
-        !loadingProjectUsers &&
-            !loadingUsers &&
-            setUsersAndRoles(getMappedUsers()) &&
-            setNewUsers(getNewUsers());
-    }, [users, projectUsers]);
+        !loadingProjectUsers && !loadingUsers && setUsersAndRoles(getMappedUsers());
+    }, [getMappedUsers, loadingProjectUsers, loadingUsers]);
+
+    React.useEffect(() => {
+        !loadingProjectUsers && !loadingUsers && setNewUsers(getNewUsers());
+    }, [getNewUsers, loadingProjectUsers, loadingUsers]);
 
     React.useEffect(() => {
         setNewUsers(getNewUsers());
@@ -107,7 +114,14 @@ export const Users = ({
                 setDirty();
             }
         }
-    }, [usersAndRoles]);
+    }, [
+        editMode,
+        getMappedUsers,
+        getNewUsers,
+        setDirty,
+        setPristine,
+        usersAndRoles
+    ]);
 
     const searchFilter = (user, value) =>
         user.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
@@ -166,7 +180,7 @@ export const Users = ({
     const filterUsers = () =>
         usersAndRoles.filter(user => searchFilter(user, searchValue));
 
-    return loadingUsers || loadingRoles || loadingProjectUsers ? (
+    return loading ? (
         <PageSkeleton />
     ) : (
         <Grid container>
@@ -245,15 +259,20 @@ export const Users = ({
     );
 };
 
-const mapStateToProps = state => ({
-    projectId: state.projects.currentProject,
-    users: state.user.users.data,
-    loadingUsers: state.user.users.loading,
-    roles: state.user.roles.data,
-    loadingRoles: state.user.roles.loading,
-    projectUsers: state.pages.settingsUsersRoles.data,
-    loadingProjectUsers: state.pages.settingsUsersRoles.loading
-});
+const mapStateToProps = state => {
+    const loadingUsers = state.user.users.loading;
+    const loadingProjectUsers = state.pages.settingsUsersRoles.loading;
+    const loadingRoles = state.user.roles.loading;
+    return {
+        projectId: state.projects.currentProject,
+        users: state.user.users.data,
+        loadingUsers,
+        roles: state.user.roles.data,
+        loading: loadingRoles || loadingUsers || loadingProjectUsers,
+        projectUsers: state.pages.settingsUsersRoles.data,
+        loadingProjectUsers
+    };
+};
 
 const mapDispatchToProps = {
     getUsers: fetchUsers,
@@ -269,7 +288,7 @@ Users.propTypes = {
     users: PropTypes.array,
     loadingUsers: PropTypes.bool,
     roles: PropTypes.array,
-    loadingRoles: PropTypes.bool,
+    loading: PropTypes.bool,
     getRoles: PropTypes.func,
     getProjectUsers: PropTypes.func,
     projectUsers: PropTypes.object,

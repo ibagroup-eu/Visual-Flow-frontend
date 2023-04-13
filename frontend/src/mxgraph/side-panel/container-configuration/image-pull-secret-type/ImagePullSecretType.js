@@ -64,7 +64,6 @@ const ImagePullSecretType = ({
                                 'pipelineDesigner:containerConfiguration.Username'
                             )}
                             variant="outlined"
-                            margin="normal"
                             fullWidth
                             multiline
                             name="username"
@@ -110,7 +109,6 @@ const ImagePullSecretType = ({
                                 'pipelineDesigner:containerConfiguration.Registry'
                             )}
                             variant="outlined"
-                            margin="normal"
                             fullWidth
                             multiline
                             name="registry"
@@ -148,7 +146,6 @@ const ImagePullSecretType = ({
                             'pipelineDesigner:containerConfiguration.ImagePullSecretName'
                         )}
                         variant="outlined"
-                        margin="normal"
                         fullWidth
                         multiline
                         name="imagePullSecretName"

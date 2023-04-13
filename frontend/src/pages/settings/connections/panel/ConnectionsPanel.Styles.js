@@ -19,7 +19,7 @@
 
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles(() => ({
+export default makeStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column'
@@ -30,6 +30,12 @@ export default makeStyles(() => ({
         display: 'flex',
         overflowY: 'auto',
         overflowX: 'hidden'
+    },
+    storageField: {
+        marginBottom: theme.spacing(2)
+    },
+    nameField: {
+        marginTop: theme.spacing(2)
     },
     form: {
         width: 350,

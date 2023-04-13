@@ -76,13 +76,12 @@ const Job = ({
                     onStateChange('jobName', jobNameById(newValue));
                 }}
             />
-            <Box>
+            <Box className={classes.fieldWrapper}>
                 <TextField
                     disabled={!ableToEdit}
                     label={t('pipelineDesigner:jobConfiguration.Name')}
                     placeholder={t('pipelineDesigner:jobConfiguration.Name')}
                     variant="outlined"
-                    margin="normal"
                     fullWidth
                     name="name"
                     value={state.name || ''}
@@ -95,28 +94,31 @@ const Job = ({
                 {loading ? (
                     <TextSkeleton />
                 ) : (
-                    <TextField
-                        disabled={!ableToEdit}
-                        label={t('pipelineDesigner:jobConfiguration.JobName')}
-                        placeholder={t('pipelineDesigner:jobConfiguration.JobName')}
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        name="jobId"
-                        value={jobNameById(state.jobId)}
-                        InputProps={{
-                            readOnly: true,
-                            endAdornment: (
-                                <IconButton
-                                    className={classes.iconBtn}
-                                    onClick={() => setShowModal(true)}
-                                >
-                                    <TransformOutlinedIcon />
-                                </IconButton>
-                            )
-                        }}
-                        required
-                    />
+                    <Box className={classes.fieldWrapper}>
+                        <TextField
+                            disabled={!ableToEdit}
+                            label={t('pipelineDesigner:jobConfiguration.JobName')}
+                            placeholder={t(
+                                'pipelineDesigner:jobConfiguration.JobName'
+                            )}
+                            variant="outlined"
+                            fullWidth
+                            name="jobId"
+                            value={jobNameById(state.jobId)}
+                            InputProps={{
+                                readOnly: true,
+                                endAdornment: (
+                                    <IconButton
+                                        className={classes.iconBtn}
+                                        onClick={() => setShowModal(true)}
+                                    >
+                                        <TransformOutlinedIcon />
+                                    </IconButton>
+                                )
+                            }}
+                            required
+                        />
+                    </Box>
                 )}
                 {outputPaths.length ? (
                     <>

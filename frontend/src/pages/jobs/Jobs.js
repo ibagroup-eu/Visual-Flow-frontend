@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -69,14 +69,14 @@ const Jobs = ({
     const { t } = useTranslation();
     const [list, setList] = React.useState([]);
     const [tags, setTags] = React.useState({});
-    const filteredTags = checkedTags(tags);
+    const filteredTags = useMemo(() => checkedTags(tags), [tags]);
 
     React.useEffect(() => {
         if (projectId) {
             getJobs(projectId);
             getPipelines(projectId);
         }
-    }, [projectId]);
+    }, [getJobs, getPipelines, projectId]);
 
     React.useEffect(() => {
         if (jobs.data.jobs) {
@@ -105,7 +105,7 @@ const Jobs = ({
                 )
             );
         }
-    }, [searchField, tags]);
+    }, [setCurrentPage, filteredTags, searchField, tags, jobs.data.jobs]);
 
     const resetTags = () =>
         setTags(

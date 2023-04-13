@@ -81,6 +81,7 @@
         "EditSchema": "Edit Schema",
         "AddConnection": "CREATE CONNECTION",
         "AddParameter": "CREATE PARAMETER",
+        "AddOption": "Add option",
         "Ping": "PING",
         "CreateDataframe": "Create Dataframe",
         "EditDataframe": "Edit Dataframe",
@@ -93,7 +94,7 @@
         "positive": "Should be positive.",
         "notBlank": "Should not be blank.",
         "fieldsNotFilled": "Some fields are not filled.",
-        "incorrectJobLength": "Must be no more than 63 characters.",
+        "incorrectJobLength": "The name should have a total length between 3 and 63 characters max.",
         "incorrectPipelineLength": "The name should have a total length between 3 and 40 characters max.",
         "incorrectCharacters": "Use alphanumeric characters, '-', '.' or '_'. Name must start and end with an alphanumeric.",
         "pipelineWithoutJobParams": "Unable to run pipeline, missing job/parameter data.",
@@ -146,7 +147,9 @@
         "Delete": "Delete",
         "Add": "Add",
         "Refresh": "Refresh",
-        "AutoRefresh": "Auto Refresh"
+        "AutoRefresh": "Auto Refresh",
+        "AutoRefreshOn": "Turn on auto refresh",
+        "AutoRefreshOff": "Turn off auto refresh"
     },
     "importPage": {
         "FilePath": "File Path",
@@ -180,5 +183,10 @@
         "Today": "Today",
         "Yesterday": "Yesterday",
         "At": "At"
+    },
+    "pagination": {
+        "of": "{{from}}-{{to}} of {{count}}",
+        "RowsPerPage": "Rows per page:",
+        "Rows": "Rows:"
     }
 }

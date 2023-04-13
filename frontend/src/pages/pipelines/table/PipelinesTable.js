@@ -128,16 +128,19 @@ const PipelinesTable = ({
     const [pipelineHistory, setPipelineHistory] = React.useState({ data: {} });
 
     useEffect(() => {
-        if (!isEqual(pipelineHistory, {}) && pipelineData?.definition) {
-            setPipelineHistory({
-                ...pipelineHistory,
-                data: {
-                    ...pipelineHistory.data,
-                    definition: pipelineData.definition
-                }
-            });
-        }
-    }, [pipelineData]);
+        setPipelineHistory(prev => {
+            if (!isEqual(prev, {}) && pipelineData?.definition) {
+                return {
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        definition: pipelineData.definition
+                    }
+                };
+            }
+            return prev;
+        });
+    }, [pipelineData?.definition]);
 
     const getActions = item =>
         [
@@ -145,7 +148,7 @@ const PipelinesTable = ({
                 ? {
                       title: t('pipelines:tooltip.Play'),
                       Icon: PlayArrowTwoToneIcon,
-                      disable: !item.runnable,
+                      disabled: !item.runnable,
                       onClick: () => {
                           runWithValidation(
                               projectId,
@@ -159,7 +162,7 @@ const PipelinesTable = ({
                 : {
                       title: t('pipelines:tooltip.Stop'),
                       Icon: StopIcon,
-                      disable: !item.runnable || item.status === PENDING,
+                      disabled: !item.runnable || item.status === PENDING,
                       onClick: () => {
                           stop(projectId, item.id);
                       }
@@ -188,7 +191,7 @@ const PipelinesTable = ({
             {
                 title: t('pipelines:tooltip.Scheduling'),
                 Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
-                disable: !item.runnable,
+                disabled: !item.runnable,
                 onClick: () =>
                     setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
             },
@@ -231,29 +234,32 @@ const PipelinesTable = ({
         {
             title: t('pipelines:tooltip.Remove selected'),
             Icon: DeleteIcon,
-            onClick: selected =>
+            onClick: selected => {
+                const pipId = selected.map(item => item.id);
                 confirmationWindow({
                     body: t('pipelines:confirm.delete', {
-                        name: joinDataNames(selected, data)
+                        name: joinDataNames(pipId, data)
                     }),
                     callback: () => {
                         removeHandler(
                             projectId,
-                            selected,
+                            pipId,
                             data.length,
                             { rowsPerPage, currentPage },
                             remove,
                             setCurrentPage
                         );
                     }
-                })
+                });
+            }
         },
         {
             title: t('jobs:tooltip.Export selected'),
             Icon: ExportIcon,
             onClick: selected => {
+                const pipId = selected.map(item => item.id);
                 setShowModal(true);
-                setSelectedPipelines(selected);
+                setSelectedPipelines(pipId);
             }
         }
     ];

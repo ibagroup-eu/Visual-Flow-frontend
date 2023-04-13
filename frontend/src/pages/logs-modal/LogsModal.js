@@ -21,7 +21,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import PopupForm from '../../components/popup-form';
-import Logs from './logs/Logs';
+import Logs from './logs';
 
 const LogsModal = ({
     display,
@@ -31,7 +31,8 @@ const LogsModal = ({
     jobId,
     pipelineId,
     nodeId,
-    logId
+    logId,
+    status
 }) => (
     <PopupForm display={display} onClose={onClose} title={t('jobs:tooltip.Logs')}>
         <Logs
@@ -41,6 +42,7 @@ const LogsModal = ({
             pipelineId={pipelineId}
             nodeId={nodeId}
             logId={logId}
+            status={status}
         />
     </PopupForm>
 );
@@ -53,7 +55,8 @@ LogsModal.propTypes = {
     nodeId: PropTypes.string,
     display: PropTypes.bool,
     onClose: PropTypes.func,
-    t: PropTypes.func
+    t: PropTypes.func,
+    status: PropTypes.string
 };
 
 export default withTranslation()(LogsModal);

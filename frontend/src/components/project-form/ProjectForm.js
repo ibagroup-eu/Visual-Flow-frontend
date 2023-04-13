@@ -45,10 +45,10 @@ export const ProjectForm = ({ project, create, update }) => {
         name: get(project, 'name', ''),
         description: get(project, 'description', ''),
         limits: {
-            limitsCpu: get(project, 'limits.limitsCpu', 1),
-            limitsMemory: get(project, 'limits.limitsMemory', 1),
-            requestsCpu: get(project, 'limits.requestsCpu', 1),
-            requestsMemory: get(project, 'limits.requestsMemory', 1),
+            limitsCpu: get(project, 'limits.limitsCpu', 6),
+            limitsMemory: get(project, 'limits.limitsMemory', 6),
+            requestsCpu: get(project, 'limits.requestsCpu', 4),
+            requestsMemory: get(project, 'limits.requestsMemory', 4),
             editable: get(project, 'limits.editable')
         },
         usage: get(project, 'usage'),
@@ -154,7 +154,7 @@ export const ProjectForm = ({ project, create, update }) => {
                     card={card}
                     label="CPU"
                     id="requestsCpu"
-                    adornment="Cores"
+                    adornment={t('jobs:Cores')}
                     editMode={editMode}
                     handleChangeLimits={handleChangeLimits}
                 />
@@ -163,7 +163,7 @@ export const ProjectForm = ({ project, create, update }) => {
                     card={card}
                     label="Memory"
                     id="requestsMemory"
-                    adornment="GB"
+                    adornment={t('jobs:GB')}
                     editMode={editMode}
                     handleChangeLimits={handleChangeLimits}
                 />
@@ -175,7 +175,7 @@ export const ProjectForm = ({ project, create, update }) => {
                     card={card}
                     label="CPU"
                     id="limitsCpu"
-                    adornment="Cores"
+                    adornment={t('jobs:Cores')}
                     editMode={editMode}
                     handleChangeLimits={handleChangeLimits}
                 />
@@ -184,7 +184,7 @@ export const ProjectForm = ({ project, create, update }) => {
                     card={card}
                     label="Memory"
                     id="limitsMemory"
-                    adornment="GB"
+                    adornment={t('jobs:GB')}
                     editMode={editMode}
                     handleChangeLimits={handleChangeLimits}
                 />

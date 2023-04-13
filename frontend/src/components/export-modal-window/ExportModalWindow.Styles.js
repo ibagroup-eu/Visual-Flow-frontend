@@ -27,12 +27,7 @@ export default makeStyles(theme => ({
     buttonsGroup: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    paddedTopOne: {
-        paddingTop: theme.spacing(1)
-    },
-    paddedTopSix: {
+        justifyContent: 'center',
         paddingTop: theme.spacing(6)
     },
     button: {

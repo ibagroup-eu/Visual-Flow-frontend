@@ -26,10 +26,12 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
+import classNames from 'classnames';
 import styles from './ActionButton.Styles';
 
 export const ActionButton = ({
     title,
+    className,
     classes,
     disabled,
     loading,
@@ -40,21 +42,26 @@ export const ActionButton = ({
 
     const defaultProps = loading
         ? {}
-        : { title: disabled || loading ? '' : title, arrow: true };
+        : {
+              title,
+              arrow: true
+          };
 
     return (
         <Wrapper {...defaultProps}>
-            <IconButton
-                className={classes.btn}
-                disabled={disabled || loading}
-                onClick={onClick}
-            >
-                {loading ? (
-                    <CircularProgress className={classes.circular} size={22} />
-                ) : (
-                    <Icon />
-                )}
-            </IconButton>
+            <span>
+                <IconButton
+                    className={classNames(classes.btn, className)}
+                    disabled={disabled || loading}
+                    onClick={onClick}
+                >
+                    {loading ? (
+                        <CircularProgress className={classes.circular} size={22} />
+                    ) : (
+                        <Icon />
+                    )}
+                </IconButton>
+            </span>
         </Wrapper>
     );
 };
@@ -69,7 +76,8 @@ ActionButton.propTypes = {
     disabled: PropTypes.bool,
     loading: PropTypes.bool,
     Icon: PropTypes.object,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    className: PropTypes.string
 };
 
 export default withStyles(styles)(ActionButton);

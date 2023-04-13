@@ -63,7 +63,7 @@ const Import = ({
             getJobs(projectId);
             getPipelines(projectId);
         }
-    }, [projectId]);
+    }, [projectId, checkAccess, getJobs, getPipelines]);
 
     const loadFile = () => {
         const reader = new FileReader();
@@ -92,10 +92,10 @@ const Import = ({
 
     const handleDataImport = selectedIds => {
         const importJobs = jobs.filter(job =>
-            selectedIds.find(id => job.metadata.name === id)
+            selectedIds.find(([id]) => job === id)
         );
-        const importPipelines = pipelines.filter(job =>
-            selectedIds.find(id => job.metadata.name === id)
+        const importPipelines = pipelines.filter(pipeline =>
+            selectedIds.find(([id]) => pipeline === id)
         );
 
         const data = {
@@ -118,6 +118,7 @@ const Import = ({
             />
             <Box className={classes.root}>
                 <TextField
+                    className={classes.field}
                     label={t('main:importPage.FilePath')}
                     placeholder={t('main:importPage.FilePath')}
                     variant="outlined"
@@ -158,7 +159,6 @@ const Import = ({
                     className={classes.button}
                     disabled={!file}
                     size="large"
-                    fullWidth
                     variant="contained"
                     color="primary"
                     onClick={loadFile}

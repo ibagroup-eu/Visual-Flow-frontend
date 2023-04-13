@@ -21,14 +21,14 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { ActionsCell } from './ActionsCell';
 import { TableCell } from '@material-ui/core';
-import Action from '../../action';
+import ActionButton from '../../../action-button';
 
 describe('ActionsCell', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             actions: [{}, {}],
             classes: {},
-            disable: false
+            disabled: false
         };
 
         const wrapper = func(<ActionsCell {...defaultProps} {...props} />);
@@ -41,6 +41,6 @@ describe('ActionsCell', () => {
 
         expect(wrapper).toBeDefined();
         expect(wrapper.find(TableCell).exists()).toBeTruthy();
-        expect(wrapper.find(Action).length).toBe(props.actions.length);
+        expect(wrapper.find(ActionButton).length).toBe(props.actions.length);
     });
 });

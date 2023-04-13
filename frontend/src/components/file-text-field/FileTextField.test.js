@@ -45,7 +45,7 @@ describe('FileTextField', () => {
     });
 
     it('should render ClearButton', () => {
-        wrapper = shallow(<FileTextField {...props} uploadStage={false} />);
+        wrapper = shallow(<FileTextField {...props} clearable={true} />);
         expect(wrapper.find(ClearButton)).toHaveLength(1);
     });
 

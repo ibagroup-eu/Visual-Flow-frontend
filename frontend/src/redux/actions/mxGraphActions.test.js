@@ -139,11 +139,13 @@ describe('mxGraph actions', () => {
     describe('fetchPipelineById', () => {
         let data;
         let dispatch;
+        let t;
         let pipelineId;
         let projectId;
         beforeEach(() => {
             data = {};
             dispatch = jest.fn();
+            t = jest.fn();
             pipelineId = 'id';
             projectId = 'project_id';
 
@@ -153,6 +155,13 @@ describe('mxGraph actions', () => {
         it('should dispatch FETCH_PIPELINE_START', () => {
             fetchPipelineById()(dispatch);
             expect(dispatch).toHaveBeenCalledWith({ type: FETCH_PIPELINE_START });
+        });
+
+        it('should not dispatch FETCH_PIPELINE_START if skipLoading equals true', () => {
+            fetchPipelineById(projectId, pipelineId, t, true)(dispatch);
+            expect(dispatch).not.toHaveBeenCalledWith({
+                type: FETCH_PIPELINE_START
+            });
         });
 
         it('should dispatch FETCH_PIPELINE_SUCCESS on success', () => {

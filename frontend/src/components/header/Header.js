@@ -115,7 +115,8 @@ export const Header = ({ classes }) => {
                         />
                     </div>
                     {menu && <SelectProject />}
-                    <LangMenu />
+                    {/* hidden from release 2022-04-03 */}
+                    {false && <LangMenu />}
                     <Avatar
                         src={userInfo?.avatar}
                         className={classes.user}

@@ -1,0 +1,32 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "linkOrdering": {
+        "name": "Link Ordering",
+        "value": "This option allows you to specify which input link carries the before data set and which carries the after data set. To rearrange the links, click the up arrow button or the down arrow button."
+    },
+    "key": {
+        "name": "Key",
+        "value": "Specify unique key to compare. As example, 1 or more columns. Columns names should be the same."
+    },
+    "mode": {
+        "name": "Mode",
+        "value1": "Return All. Returns all rows (modified and unmodified).",
+        "value2": "Return Delta. Returns only modified rows."
+    },
+    "description": {
+        "name": "Description",
+        "value1": "This stage is intended to find all differences between before (old) and after (new) datasets.",
+        "value2": "Based on differences CDC produces additional column 'Operation', which indicates the state of the row from the old dataset considering it's presence/absence in the new one.",
+        "value3": "CDC compares each row of the new and the old datasets, based on key and columns to compare values and sets Operation value.",
+        "value4": "NOTE: old and new datasets must not contain duplicates (rows with the same key) based on key column(s).",
+        "value5": "Old and new datasets columns to compare and key columns must be presented in both datasets with the same names. If there are duplicated rows at least in one of dataset, results of the CDC will be unpredictable.",
+        "value6": "CDC change codes (column Operation in the result set):",
+        "value7": "0 - Copy (row doesn't have any changes)",
+        "value8": "1 - Insert (row exists only in new dataset, should be inserted)",
+        "value9": "2 - Delete (row exists only in old dataset, should be deleted)",
+        "value10": "3 - Update (row exists and has different values in both datasets, should be updates in old with new values from new)"
+    }
+}

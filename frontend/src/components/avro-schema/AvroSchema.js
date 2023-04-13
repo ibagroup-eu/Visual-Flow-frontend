@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Fade } from '@material-ui/core';
 import { debounce, uniqueId, get } from 'lodash';
 import { useTranslation } from 'react-i18next';
-
 import useStyles from './AvroSchema.Styles';
 import types, { NULL } from './types';
 import Row from './row';
@@ -75,105 +74,112 @@ export const checkDuplicates = updatedFields => {
     }));
 };
 
-const AvroSchema = ({
-    onChange,
-    className,
-    schemaFields = DEFAULT_SCHEMA_FIELDS,
-    filtrable = true,
-    editable = true
-}) => {
-    const classes = useStyles();
-    const { t } = useTranslation();
+const isValid = fields =>
+    !fields.some(field => field.duplicated || !field.name.trim());
 
-    const [fields, setFields] = React.useState(
-        (schemaFields.length === 0 ? DEFAULT_SCHEMA_FIELDS : schemaFields).map(
-            toField
-        )
-    );
-    const [criteria, setCriteria] = React.useState('');
+const AvroSchema = forwardRef(
+    (
+        {
+            onSave,
+            setIsValid,
+            className,
+            schemaFields = DEFAULT_SCHEMA_FIELDS,
+            filterable = true,
+            editable = true
+        },
+        ref
+    ) => {
+        const classes = useStyles();
+        const { t } = useTranslation();
 
-    useEffect(
-        () =>
-            onChange({
-                isValid: !fields.some(
-                    field => field.duplicated || !field.name.trim()
-                ),
-                fields: fields.filter(field => !field.duplicated).map(toSchema)
-            }),
-        [fields]
-    );
-
-    const onChangeHandler = index => (name, value) => {
-        setFields(
-            checkDuplicates(
-                update(fields, index, { ...fields[index], [name]: value })
+        const [fields, setFields] = React.useState(
+            (schemaFields.length === 0 ? DEFAULT_SCHEMA_FIELDS : schemaFields).map(
+                toField
             )
         );
-    };
+        const [criteria, setCriteria] = React.useState('');
 
-    const onAddRow = index => () => {
-        setFields(
-            checkDuplicates(
-                insert(fields, index, {
-                    autoFocus: true,
-                    ...toField(DEFAULT_SCHEMA_FIELDS[0])
-                })
-            )
-        );
-    };
+        useImperativeHandle(ref, () => ({
+            onSave() {
+                onSave(fields.map(toSchema));
+            }
+        }));
 
-    const onRemoveRow = index => () => {
-        fields.length > 1 && setFields(checkDuplicates(remove(fields, index)));
-    };
+        useEffect(() => {
+            setIsValid(isValid(fields));
+        }, [fields, setIsValid]);
 
-    const onMoveRowTop = index => () =>
-        index !== 0 && setFields(swap(fields, index, index - 1));
-
-    const onMoveRowDown = index => () =>
-        index + 1 !== fields.length && setFields(swap(fields, index, index + 1));
-
-    const onSearch = ({ target: { value } }) => setCriteria(value?.trim());
-
-    return (
-        <Grid container direction="column" className={className}>
-            {filtrable && (
-                <Grid item className={classes.search} xs={4}>
-                    <SearchInput
-                        fullWidth
-                        placeholder={t('jobDesigner:avroSchema.search.placeholder')}
-                        onChange={onSearch}
-                    />
-                </Grid>
-            )}
-
-            {fields
-                ?.filter(field =>
-                    field.name?.toUpperCase()?.includes(criteria?.toUpperCase())
+        const onChangeHandler = index => (name, value) =>
+            setFields(
+                checkDuplicates(
+                    update(fields, index, { ...fields[index], [name]: value })
                 )
-                .map((field, index) => (
-                    <Fade key={field.id} in>
-                        <Grid item>
-                            <Row
-                                {...field}
-                                index={index}
-                                editable={editable}
-                                onChange={debounce(onChangeHandler(index), 50)}
-                                onAdd={onAddRow(index)}
-                                onRemove={onRemoveRow(index)}
-                                onMoveDown={onMoveRowDown(index)}
-                                onMoveTop={onMoveRowTop(index)}
-                            />
-                        </Grid>
-                    </Fade>
-                ))}
-        </Grid>
-    );
-};
+            );
+
+        const onAddRow = index => () =>
+            setFields(
+                checkDuplicates(
+                    insert(fields, index, {
+                        autoFocus: true,
+                        ...toField(DEFAULT_SCHEMA_FIELDS[0])
+                    })
+                )
+            );
+
+        const onRemoveRow = index => () => {
+            fields.length > 1 && setFields(checkDuplicates(remove(fields, index)));
+        };
+
+        const onMoveRowTop = index => () =>
+            index !== 0 && setFields(swap(fields, index, index - 1));
+
+        const onMoveRowDown = index => () =>
+            index + 1 !== fields.length && setFields(swap(fields, index, index + 1));
+
+        const onSearch = ({ target: { value } }) => setCriteria(value?.trim());
+
+        return (
+            <Grid container direction="column" className={className}>
+                {filterable && (
+                    <Grid item className={classes.search} xs={4}>
+                        <SearchInput
+                            fullWidth
+                            placeholder={t(
+                                'jobDesigner:avroSchema.search.placeholder'
+                            )}
+                            onChange={onSearch}
+                        />
+                    </Grid>
+                )}
+
+                {fields
+                    ?.filter(field =>
+                        field.name?.toUpperCase()?.includes(criteria?.toUpperCase())
+                    )
+                    .map((field, index) => (
+                        <Fade key={field.id} in>
+                            <Grid item>
+                                <Row
+                                    {...field}
+                                    index={index}
+                                    editable={editable}
+                                    onChange={debounce(onChangeHandler(index), 50)}
+                                    onAdd={onAddRow(index)}
+                                    onRemove={onRemoveRow(index)}
+                                    onMoveDown={onMoveRowDown(index)}
+                                    onMoveTop={onMoveRowTop(index)}
+                                />
+                            </Grid>
+                        </Fade>
+                    ))}
+            </Grid>
+        );
+    }
+);
 
 AvroSchema.propTypes = {
-    filtrable: PropTypes.bool,
-    editable: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+    setIsValid: PropTypes.func.isRequired,
     className: PropTypes.string,
     schemaFields: PropTypes.arrayOf(
         PropTypes.shape({
@@ -183,7 +189,9 @@ AvroSchema.propTypes = {
                 PropTypes.array
             ])
         })
-    ).isRequired
+    ).isRequired,
+    filterable: PropTypes.bool,
+    editable: PropTypes.bool
 };
 
 export default AvroSchema;

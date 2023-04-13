@@ -1,5 +1,9 @@
 {
     "Status": "Статус",
+    "CPU": "Процессор",
+    "Memory": "ОЗУ",
+    "Cores": "Ядра",
+    "GB": "ГБ",
     "tooltip": {
         "Play": "Запустить",
         "Stop": "Остановить",
@@ -9,7 +13,40 @@
         "jobDesigner": "Job Designer",
         "Logs": "Logs",
         "Remove selected": "Удалить выбранные",
-        "Export selected": "Экспорт выбранных"
+        "Export selected": "Экспорт выбранных",
+        "Disable remove": "You cannot delete a job which compounds a pipeline",
+        "Save": "Save",
+        "Undo": "Undo",
+        "Redo": "Redo",
+        "Refresh": "Refresh",
+        "cdcKey": "Please fill the comparison key"
     },
-    "noItems": "Данных не найдено"
+    "noItems": "Данных не найдено",
+    "Level": "Level",
+    "JOB_ID": "JOB_ID*",
+    "level": {
+        "INFO": "INFO",
+        "WARN": "WARNING",
+        "ERROR": "ERROR",
+        "DEBUG": "DEBUG",
+        "RESULT": "RESULT"
+    },
+    "changesNotSaved": "Please save your changes to run the job",
+    "confirm": {
+        "delete": "Are you sure you want to delete {{name}} job(s)?"
+    },
+    "params": {
+        "Name": "Name",
+        "driverRequestCores": "Driver Request Cores",
+        "driverCores": "Driver Cores",
+        "driverMemory": "Driver Memory",
+        "executorRequestCores": "Executor Request Cores",
+        "executorCores": "Executor Cores",
+        "executorMemory": "Executor Memory",
+        "executorInstances": "Executor Instances",
+        "shufflePartitions": "Shuffle Partitions",
+        "ResourcesPanel": "Resources",
+        "Tags": "Tags",
+        "TagsHint": "Tag your job to categorize it"
+    }
 }

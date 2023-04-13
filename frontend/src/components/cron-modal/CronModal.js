@@ -122,11 +122,11 @@ export const CronModal = ({
         pipelineId && cronExists && getCronValue(projectId, pipelineId);
 
         pipelineId && !cronExists && cronInit('', false);
-    }, [pipelineId]);
+    }, [pipelineId, projectId, cronExists, getCronValue]);
 
     React.useEffect(() => {
         cronInit(cronState?.data.schedule, !cronState?.data.suspend);
-    }, [cronState?.data]);
+    }, [cronState?.data.schedule, cronState?.data.suspend]);
 
     const changeCronLabel = (index, value) =>
         setCronLabels(prevState =>

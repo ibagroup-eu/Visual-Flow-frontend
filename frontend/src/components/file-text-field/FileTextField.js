@@ -21,20 +21,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField, InputAdornment, IconButton, Box } from '@material-ui/core';
 import { TabOutlined } from '@material-ui/icons';
-import { useTranslation } from 'react-i18next';
 import useStyles from './FileTextField.Styles';
 import { READWRITE } from '../../mxgraph/constants';
 import ClearButton from '../../mxgraph/side-panel/helpers/ClearButton';
 
 const FileTextField = ({
-    name,
+    required,
+    name = 'path',
     value,
     handleInputChange,
     ableToEdit,
     uploadStage,
-    setFile
+    setFile,
+    clearable,
+    label
 }) => {
-    const { t } = useTranslation();
     const classes = useStyles();
 
     const selectFile = e => {
@@ -46,15 +47,15 @@ const FileTextField = ({
     return (
         <Box className={classes.wrapper}>
             <TextField
-                label={t(`jobDesigner:readConfiguration.${name}`)}
-                placeholder={t(`jobDesigner:readConfiguration.${name}`)}
+                label={label}
+                placeholder={label}
                 variant="outlined"
                 margin="normal"
                 fullWidth
                 type="text"
                 disabled={uploadStage || !ableToEdit}
                 name={name}
-                required
+                required={required}
                 value={value || ''}
                 onChange={event =>
                     setFile({
@@ -83,9 +84,9 @@ const FileTextField = ({
                     )
                 }}
             />
-            {!uploadStage && (
+            {clearable && (
                 <ClearButton
-                    name="path"
+                    name={name}
                     value={value}
                     ableToEdit={ableToEdit}
                     handleInputChange={handleInputChange}
@@ -102,7 +103,10 @@ FileTextField.propTypes = {
     handleInputChange: PropTypes.func,
     ableToEdit: PropTypes.bool,
     uploadStage: PropTypes.bool,
-    setFile: PropTypes.func
+    setFile: PropTypes.func,
+    required: PropTypes.bool,
+    clearable: PropTypes.bool,
+    label: PropTypes.string
 };
 
 export default FileTextField;

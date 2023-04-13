@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -43,19 +43,22 @@ export const PipelineDesigner = ({
     getPipelines,
     t
 }) => {
-    const isValidName = value => {
-        const reg = /^[a-z0-9]([\w\\.-]*[a-z0-9])?$/i;
-        if (!value.trim()) {
-            return t('main:validation.notBlank');
-        }
-        if (value.length < 3 || value.length > 40) {
-            return t('main:validation.incorrectPipelineLength');
-        }
-        if (!reg.test(value)) {
-            return t('main:validation.incorrectCharacters');
-        }
-        return null;
-    };
+    const isValidName = useCallback(
+        value => {
+            const reg = /^[a-z0-9]([\w\\.-]*[a-z0-9])?$/i;
+            if (!value.trim()) {
+                return t('main:validation.notBlank');
+            }
+            if (value.length < 3 || value.length > 40) {
+                return t('main:validation.incorrectPipelineLength');
+            }
+            if (!reg.test(value)) {
+                return t('main:validation.incorrectCharacters');
+            }
+            return null;
+        },
+        [t]
+    );
 
     React.useEffect(() => {
         createFields({
@@ -74,23 +77,63 @@ export const PipelineDesigner = ({
 
             NOTIFICATION_PANEL: {
                 label: t('pipelines:params.NotificationsPanel'),
-                type: 'section',
+                type: 'tabs',
                 needs: ['NAME'],
                 fields: {
-                    NOTIFY_FAILURE: {
-                        label: t('pipelines:params.NotifyFailure'),
-                        type: 'switch'
-                    },
+                    SLACK_TAB: {
+                        label: t('pipelines:params.Slack'),
+                        type: 'tab',
+                        fields: {
+                            'SLACK.NOTIFY_FAILURE': {
+                                label: t('pipelines:params.NotifyFailure'),
+                                type: 'email_switch'
+                            },
 
-                    NOTIFY_SUCCESS: {
-                        label: t('pipelines:params.NotifySuccess'),
-                        type: 'switch'
+                            'SLACK.NOTIFY_SUCCESS': {
+                                label: t('pipelines:params.NotifySuccess'),
+                                type: 'email_switch'
+                            },
+                            'SLACK.CHANNELS': {
+                                label: t('pipelines:params.Channels'),
+                                type: 'chips',
+                                needs: [
+                                    'SLACK.NOTIFY_SUCCESS',
+                                    'SLACK.NOTIFY_FAILURE'
+                                ]
+                            },
+                            'SLACK.RECIPIENTS': {
+                                label: t('pipelines:params.SlackNicknames'),
+                                type: 'chips',
+                                needs: [
+                                    'SLACK.NOTIFY_SUCCESS',
+                                    'SLACK.NOTIFY_FAILURE'
+                                ]
+                            }
+                        }
                     },
+                    EMAIL_TAB: {
+                        label: t('pipelines:params.Email'),
+                        type: 'tab',
+                        fields: {
+                            'EMAIL.NOTIFY_FAILURE': {
+                                label: t('pipelines:params.NotifyFailure'),
+                                type: 'email_switch'
+                            },
 
-                    RECIPIENTS: {
-                        label: t('pipelines:params.Recipients'),
-                        type: 'emails',
-                        needs: ['NOTIFY_SUCCESS', 'NOTIFY_FAILURE']
+                            'EMAIL.NOTIFY_SUCCESS': {
+                                label: t('pipelines:params.NotifySuccess'),
+                                type: 'email_switch'
+                            },
+
+                            'EMAIL.RECIPIENTS': {
+                                label: t('pipelines:params.Recipients'),
+                                type: 'email',
+                                needs: [
+                                    'EMAIL.NOTIFY_SUCCESS',
+                                    'EMAIL.NOTIFY_FAILURE'
+                                ]
+                            }
+                        }
                     }
                 }
             }
@@ -103,7 +146,18 @@ export const PipelineDesigner = ({
             getPipelines(projectId);
             getUsers();
         }
-    }, [projectId, pipelineId]);
+    }, [
+        projectId,
+        pipelineId,
+        t,
+        getPipeline,
+        getParameters,
+        getJobs,
+        getPipelines,
+        getUsers,
+        createFields,
+        isValidName
+    ]);
 
     return loading ? (
         <PageSkeleton />
@@ -126,7 +180,7 @@ PipelineDesigner.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    loading: state.mxGraph.loading
+    loading: state.mxGraph.loading || state.pages.jobs.loading
 });
 
 const mapDispatchToProps = {

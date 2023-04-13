@@ -41,5 +41,8 @@ export default makeStyles(theme => ({
     },
     targetName: {
         marginLeft: theme.spacing(1)
+    },
+    fieldWrapper: {
+        marginTop: theme.spacing(2)
     }
 }));

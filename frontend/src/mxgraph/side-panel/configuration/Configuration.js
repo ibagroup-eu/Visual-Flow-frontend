@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { get, has, keys, omit, pickBy, reduce } from 'lodash';
 import { Box, TextField, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -69,11 +69,17 @@ const Configuration = ({
     );
     const [connectionPrevState, setConnectionState] = useState({});
 
-    const connection = state.connectionName
-        ? omit(connections.find(({ key }) => key === state.connectionName)?.value, [
-              'connectionName'
-          ])
-        : {};
+    const connection = useMemo(
+        () =>
+            state.connectionName
+                ? omit(
+                      connections.find(({ key }) => key === state.connectionName)
+                          ?.value,
+                      ['connectionName']
+                  )
+                : {},
+        [connections, state.connectionName]
+    );
 
     useEffect(() => {
         if (state.operation === READ || state.operation === WRITE) {
@@ -82,38 +88,43 @@ const Configuration = ({
         if (state.operation === DATETIME) {
             selectedStorage(state.operationType);
         }
-    }, [state]);
+    }, [state, selectedStorage]);
 
     useEffect(() => {
-        if (state.operation === READ || state.operation === WRITE) {
-            if (state.connectionName) {
-                setState({
-                    ...omit(state, keys(connectionPrevState)),
-                    ...connection
-                });
-                setConnectionState(connection);
-            } else if (state.connectionName === null) {
-                setState(
-                    omit(state, [
+        setState(prevState => {
+            if (prevState.operation === READ || prevState.operation === WRITE) {
+                if (prevState.connectionName) {
+                    return {
+                        ...omit(prevState, keys(connectionPrevState)),
+                        ...connection
+                    };
+                }
+                if (prevState.connectionName === null) {
+                    return omit(prevState, [
                         'connectionName',
                         ...keys(omit(connectionPrevState, 'storage'))
-                    ])
-                );
-                setConnectionState(connection);
+                    ]);
+                }
             }
-        }
-    }, [state.connectionName]);
+            return prevState;
+        });
+    }, [state.connectionName, connectionPrevState, setState, connection]);
 
-    const handleChange = (key, value) =>
-        setState(prevState =>
-            pickBy(
-                {
-                    ...prevState,
-                    [key]: value
-                },
-                v => v !== ''
-            )
-        );
+    useEffect(() => setConnectionState(connection), [connection]);
+
+    const handleChange = useCallback(
+        (key, value) =>
+            setState(prevState =>
+                pickBy(
+                    {
+                        ...prevState,
+                        [key]: value
+                    },
+                    v => v !== ''
+                )
+            ),
+        [setState]
+    );
 
     const openModal = openedField => {
         setFieldInModal(openedField);

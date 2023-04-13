@@ -42,7 +42,7 @@ export const Overview = ({
     const { name, description } = data;
     React.useEffect(() => {
         projectId && getResourceUtilization(projectId);
-    }, [projectId]);
+    }, [projectId, getResourceUtilization]);
 
     const classes = styles();
 

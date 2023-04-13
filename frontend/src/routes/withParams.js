@@ -34,7 +34,7 @@ const withParams = WrappedComponent => {
                 : match?.params?.projectId;
             !projectId && dispatch(setJobSearchField(''));
             dispatch(setCurrentProject(projectId));
-        }, [match]);
+        }, [match, dispatch]);
 
         return <WrappedComponent {...rest} {...match?.params} />;
     };

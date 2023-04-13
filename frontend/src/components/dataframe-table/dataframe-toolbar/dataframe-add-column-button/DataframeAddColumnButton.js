@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import {
@@ -52,17 +52,20 @@ const DataframeAddColumnButton = ({
     const sameName =
         findIndex(columns, ['column', columnName.trim()]) !== -1 && !!anchorEl;
 
-    const onAddColumn = event => {
-        setType(renameField?.type || columnTypes[0]);
-        setColumnName(renameField?.column || '');
-        setAnchorEl(event.currentTarget);
-    };
+    const onAddColumn = useCallback(
+        event => {
+            setType(renameField?.type || columnTypes[0]);
+            setColumnName(renameField?.column || '');
+            setAnchorEl(event.currentTarget);
+        },
+        [renameField, columnTypes]
+    );
 
     useEffect(() => {
         if (renameFieldIndex !== null) {
             onAddColumn({ currentTarget: buttonRef.current });
         }
-    }, [renameFieldIndex]);
+    }, [renameFieldIndex, onAddColumn]);
 
     const handleClose = () => {
         setAnchorEl(null);

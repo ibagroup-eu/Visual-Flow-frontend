@@ -22,5 +22,11 @@ import { makeStyles } from '@material-ui/core/styles';
 export default makeStyles(theme => ({
     divider: {
         marginTop: theme.spacing(2)
+    },
+    valErrorLabel: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginLeft: theme.spacing(0),
+        marginTop: theme.spacing(1.5)
     }
 }));

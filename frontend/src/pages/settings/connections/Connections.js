@@ -39,14 +39,14 @@ import {
 import { PageSkeleton } from '../../../components/skeleton';
 import ConnectionsTableRow from './table';
 import useStyles from './Connections.Styles';
-import { STORAGES } from '../../../mxgraph/constants';
+import { STORAGES, READ, WRITE } from '../../../mxgraph/constants';
 import ConnectionsPanel from './panel';
 import ConnectionsSearchAndSelect from '../../../mxgraph/side-panel/read-write-configuration/connections-modal/searchAndSelect/ConnectionsSearchAndSelect';
 
 export const selectConnections = reduce(
     STORAGES,
-    (result, { value, label }) => {
-        if (value !== 'stdout' && value !== 'cluster' && value !== 'dataframe') {
+    (result, { value, label, hide }) => {
+        if (value !== 'cluster' && ![READ, WRITE].some(v => hide?.includes(v))) {
             result.push({ value, name: label });
         }
         return result;
@@ -83,7 +83,7 @@ const Connections = ({
     useEffect(() => {
         projectId && getParameters(projectId);
         projectId && getConnections(projectId);
-    }, [projectId]);
+    }, [getConnections, getParameters, projectId]);
 
     useEffect(() => {
         setProjectConnections(connections);
@@ -97,7 +97,7 @@ const Connections = ({
             setPanelState(false);
             setSavingState(null);
         }
-    }, [connections]);
+    }, [connections, savingState?.value]);
 
     const removeConnection = removedKey => remove(projectId, removedKey);
 

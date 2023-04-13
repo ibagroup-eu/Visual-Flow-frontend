@@ -47,16 +47,18 @@ const cacheDefaultValues = [
 const CacheConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
     const classes = useStyles();
+    const { useDisk, name } = state;
+
     useEffect(() => {
-        if (state.useDisk === undefined && state.name) {
+        if (useDisk === undefined && name) {
             cacheDefaultValues.forEach(({ field, value }) => onChange(field, value));
         }
-    }, [state.name]);
+    }, [name, useDisk, onChange]);
 
     return (
         <>
-            {state.name && <ConfigurationDivider />}
-            {state.name &&
+            {name && <ConfigurationDivider />}
+            {name &&
                 cacheDefaultValues.map(({ field, value, props }, index) => (
                     <Box className={classes.field}>
                         <TextField

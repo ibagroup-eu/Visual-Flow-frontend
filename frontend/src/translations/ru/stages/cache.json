@@ -1,0 +1,36 @@
+{
+    "description": {
+        "name": "Description",
+        "value1": "Persists the data set in some storage. The storage type can be tweaked by specifying/combining parameters.",
+        "value2": "Overall, the configuration gives the ability to define:",
+        "value3": "1. Whether to use memory.",
+        "value4": "2. Whether to drop the RDD to disk if it falls out of memory.",
+        "value5": "3. Whether to keep the data in memory in a serialized format.",
+        "value6": "4 .Whether to replicate the RDD partitions on multiple nodes.",
+        "value7": "By default the cache parameters are set to reflect StorageLevel.MEMORY_AND_DISK mode."
+    },
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "useDisk": {
+        "name": "Use disk",
+        "value": "Save data on disc."
+    },
+    "useMemory": {
+        "name": "Use memory",
+        "value": "Data should be saved in RAM."
+    },
+    "useOffHeap": {
+        "name": "Use off heap",
+        "value": "Objects will be managed by garbage collector."
+    },
+    "deserialized": {
+        "name": "Deserialized",
+        "value": "Objects should be automatically serialized."
+    },
+    "replication": {
+        "name": "Replication",
+        "value": "Replicate the RDD partitions on multiple nodes."
+    }
+}

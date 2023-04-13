@@ -32,7 +32,7 @@ const Basic = ({ project, projectId, loading, getProject: getProjectById }) => {
         if (projectId) {
             getProjectById(projectId);
         }
-    }, [projectId]);
+    }, [projectId, getProjectById]);
 
     return loading ? (
         <PageSkeleton />

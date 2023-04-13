@@ -1,0 +1,50 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide a stage name."
+    },
+    "operationType": {
+        "name": "Operation Type",
+        "value": "Select function type."
+    },
+    "sourceColumn": {
+        "name": "Source Column",
+        "value": "Column from which data is taken."
+    },
+    "targetColumn": {
+        "name": "Target Column",
+        "value": "Column where the result is displayed."
+    },
+    "separator": {
+        "name": "Separator",
+        "value": "Separator between string input values."
+    },
+    "decimalPlaces": {
+        "name": "Decimal Places",
+        "value": "A number of simbols after comma."
+    },
+    "substringSearch": {
+        "name": "Substring searched for",
+        "value": "Substring that is searched for in the sourceColumn."
+    },
+    "position": {
+        "name": "Position",
+        "value": "Position at which to start searching for a substring."
+    },
+    "length": {
+        "name": "Length",
+        "value": "Length of targetColumn."
+    },
+    "limit": {
+        "name": "Limit",
+        "value": "Limit of splitting."
+    },
+    "delimiter": {
+        "name": "Delimiter",
+        "value": "Delimiter strting for searching."
+    },
+    "count": {
+        "name": "Count",
+        "value": "Count occurrences of the delimiter."
+    }
+}

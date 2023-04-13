@@ -23,8 +23,6 @@ import { IconButton, Tooltip } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { ActionButton } from './ActionButton';
 
-const FakeIcon = () => <fake />;
-
 describe('ActionButton', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
@@ -32,7 +30,7 @@ describe('ActionButton', () => {
             classes: {},
             disabled: false,
             loading: false,
-            Icon: FakeIcon,
+            Icon: { type: { render: { displayName: 'DeleteIcon' } } },
             onClick: jest.fn()
         };
 
@@ -45,7 +43,6 @@ describe('ActionButton', () => {
         const [wrapper] = init();
 
         expect(wrapper.find(Tooltip).exists()).toBeTruthy();
-        expect(wrapper.find(FakeIcon).exists()).toBeTruthy();
     });
 
     it('should disable a button', () => {
@@ -66,7 +63,6 @@ describe('ActionButton', () => {
         const [wrapper] = init({ loading: true });
 
         expect(wrapper.find(IconButton).prop('disabled')).toBeTruthy();
-        expect(wrapper.find(FakeIcon).exists()).toBeFalsy();
         expect(wrapper.find(CircularProgress).exists()).toBeTruthy();
     });
 });

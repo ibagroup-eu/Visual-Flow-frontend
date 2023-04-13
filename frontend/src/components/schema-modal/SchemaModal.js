@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Box } from '@material-ui/core';
 import classNames from 'classnames';
@@ -31,6 +31,7 @@ import AvroSchema from '../avro-schema';
 const SchemaModal = ({ values, onChange, display, onClose, editable = true }) => {
     const classes = useStyles();
     const { t } = useTranslation();
+    const avroSchema = useRef(null);
 
     const DEFAULT_SCHEMA = {
         type: 'record',
@@ -42,30 +43,30 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
     const [schema, setSchema] = useState(DEFAULT_SCHEMA);
     const [isValid, setIsValid] = useState(false);
 
-    const handleSchemaChange = updatedSchema => {
-        setIsValid(updatedSchema.isValid);
-
-        setSchema({
-            ...schema,
-            fields: updatedSchema.fields
-        });
-    };
-
     const onCancel = () => {
         setSchema(DEFAULT_SCHEMA);
 
         onClose();
     };
 
-    const onSave = () => {
+    const onSave = updatedFields => {
+        const updatedSchema = {
+            ...schema,
+            fields: updatedFields
+        };
+        setSchema(updatedSchema);
         onChange({
             target: {
                 name: 'option.avroSchema',
-                value: JSON.stringify(schema)
+                value: JSON.stringify(updatedSchema)
             }
         });
 
         onClose();
+    };
+
+    const handleSave = () => {
+        avroSchema.current.onSave();
     };
 
     return (
@@ -76,9 +77,11 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
             isNotHelper
         >
             <AvroSchema
-                onChange={handleSchemaChange}
+                onSave={onSave}
+                setIsValid={setIsValid}
                 schemaFields={schema.fields}
                 editable={editable}
+                ref={avroSchema}
             />
             <Box className={classes.buttonsGroup}>
                 {editable && (
@@ -87,7 +90,7 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
                         className={classes.button}
                         variant="contained"
                         color="primary"
-                        onClick={onSave}
+                        onClick={handleSave}
                     >
                         {t('main:button.Save')}
                     </Button>

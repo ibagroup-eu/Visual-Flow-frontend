@@ -82,7 +82,8 @@ export const jobDesignerHendler = (projectId, item, data, history) => {
         `/jobs/${projectId}/${
             item.pipelineInstances === null
                 ? data.find(
-                      dataItem => dataItem.name === item.name && !item.runnable
+                      dataItem =>
+                          dataItem.name === item.name && dataItem.pipelineInstances
                   ).id
                 : item.id
         }`

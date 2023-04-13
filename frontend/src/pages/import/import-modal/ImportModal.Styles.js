@@ -32,11 +32,10 @@ export default makeStyles(theme => ({
         height: 64,
         borderRadius: 4,
         paddingTop: theme.spacing(1),
-        margin: 4
+        margin: theme.spacing(0.5, 0.5, 1, 0.5)
     },
     linear: {
-        background:
-            'linear-gradient(0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), #2196F3'
+        background: theme.palette.secondary.light
     },
     center: {
         display: 'flex',
@@ -51,6 +50,11 @@ export default makeStyles(theme => ({
     hint: {
         color: theme.palette.text.hint
     },
+    truncate: {
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+    },
     secondary: {
         color: theme.palette.text.secondary
     },
@@ -59,12 +63,16 @@ export default makeStyles(theme => ({
         textAlign: 'center'
     },
     button: {
-        width: 100,
         height: 40,
+        minWidth: 160,
         margin: theme.spacing(0, 2, 7, 2),
         color: theme.palette.primary.contrastText
     },
     cancelBtn: {
         background: theme.palette.grey[600]
+    },
+    typography: {
+        paddingTop: theme.spacing(1),
+        paddingLeft: theme.spacing(1)
     }
 }));

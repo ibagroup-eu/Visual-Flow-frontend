@@ -26,7 +26,7 @@
         "SORT": "Sort",
         "STRING": "String\nFunctions",
         "VALIDATE": "Validate",
-        "WITH_COLUMN": "withColumn",
+        "WITH_COLUMN": "Add/Update\nColumn",
         "DATETIME": "Date/Time",
         "HANDLE_NULL": "Drop/Fill\nNulls"
     },
@@ -79,7 +79,16 @@
         "SchemaRead": "Schema on read",
         "filePath": "File Path",
         "fileName": "File Name",
-        "file": "File"
+        "file": "File",
+        "subscribe": "Topic Name",
+        "truststore": "Certificate (optional)",
+        "method": "Method",
+        "jsonPath": "JSON path",
+        "jsonPathHint": "JSON path is a query language for JSON.",
+        "addParams": "ADD PARAMS",
+        "editParams": "EDIT PARAMS",
+        "addHeaders": "ADD HEADERS",
+        "editHeaders": "EDIT HEADERS"
     },
     "writeConfiguration": {
         "Header": "Header",
@@ -219,6 +228,14 @@
         "useConditions": "useConditions",
         "useWindowFunction": "useWindowFunction"
     },
+    "kafkaConfiguration": {
+        "bootstrapServers": "Kafka Bootstrap Server URLs",
+        "hint": "Enter a comma-separated list of bootstrap server URLs including the port number.",
+        "option.kafka.ssl.truststore.location": "File path",
+        "configureOptions": "Configure Options",
+        "editOptions": "Edit Options",
+        "options": "Options"
+    },
     "Zoom": {
         "Zoom": "Zoom",
         "In": "Zoom in",
@@ -315,7 +332,7 @@
         }
     },
     "Validate": {
-        "isError": "Is Error",
+        "isError": "Fail job on validation error",
         "modal": {
             "addValidation": "Add Validation",
             "editValidation": "Edit Validation"
@@ -337,5 +354,19 @@
             "type": "Type",
             "values": "Values"
         }
+    },
+    "apiModal": {
+        "paramsTitle": "API Params",
+        "headersTitle": "API Headers",
+        "paramsAddButton": "ADD PARAM",
+        "headersAddButton": "ADD HEADER",
+        "key": "Key"
+    },
+    "stagePopupMenu": {
+        "editStage": "Edit stage",
+        "copyStage": "Copy stage",
+        "deleteStage": "Delete stage",
+        "pasteStage": "Paste stage",
+        "deleteConnection": "Delete connection"
     }
 }

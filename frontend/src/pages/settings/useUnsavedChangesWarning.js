@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Prompt } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Button from '@material-ui/core/Button';
@@ -37,7 +37,7 @@ const useUnsavedChangesWarning = () => {
 
     React.useEffect(() => {
         history.push(lastLocation.pathname);
-    }, [confirmedNavigation]);
+    }, [confirmedNavigation, lastLocation.pathname]);
 
     const showModal = location => {
         if (
@@ -56,53 +56,72 @@ const useUnsavedChangesWarning = () => {
         }
     };
 
-    const handleBlockedNavigation = nextLocation => {
-        if (!confirmedNavigation) {
-            showModal(nextLocation);
-            return false;
-        }
-        return true;
-    };
-
-    const handleConfirmNavigationClick = () =>
-        closeModal(() => {
-            if (lastLocation) {
-                setConfirmedNavigation(true);
+    const handleBlockedNavigation = useCallback(
+        nextLocation => {
+            if (!confirmedNavigation) {
+                showModal(nextLocation);
+                return false;
             }
-        });
-
-    const routerPrompt = (
-        <>
-            <Prompt when={isDirty} message={handleBlockedNavigation} />
-            <Dialog
-                open={modalVisible}
-                onClose={closeModal}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {t('main:confirm.unsaved')}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={closeModal} color="primary">
-                        No
-                    </Button>
-                    <Button
-                        onClick={handleConfirmNavigationClick}
-                        color="primary"
-                        autoFocus
-                    >
-                        Yes
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+            return true;
+        },
+        [confirmedNavigation]
     );
 
-    return [routerPrompt, () => setDirty(true), () => setDirty(false)];
+    const handleConfirmNavigationClick = useCallback(
+        () =>
+            closeModal(() => {
+                if (lastLocation) {
+                    setConfirmedNavigation(true);
+                }
+            }),
+        [lastLocation]
+    );
+
+    const routerPrompt = useMemo(
+        () => (
+            <>
+                <Prompt when={isDirty} message={handleBlockedNavigation} />
+                <Dialog
+                    open={modalVisible}
+                    onClose={closeModal}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            {t('main:confirm.unsaved')}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={closeModal} color="primary">
+                            No
+                        </Button>
+                        <Button
+                            onClick={handleConfirmNavigationClick}
+                            color="primary"
+                            autoFocus
+                        >
+                            Yes
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </>
+        ),
+        [
+            handleBlockedNavigation,
+            handleConfirmNavigationClick,
+            isDirty,
+            modalVisible,
+            t
+        ]
+    );
+
+    return [
+        routerPrompt,
+        useCallback(() => setDirty(true), []),
+        useCallback(() => setDirty(false), [])
+    ];
 };
 
 export default useUnsavedChangesWarning;

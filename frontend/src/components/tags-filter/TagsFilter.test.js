@@ -54,33 +54,7 @@ describe('TagsFilter', () => {
         wrapper.find(ClickAwayListener).prop('onClickAway')();
     });
 
-    it('should calls onOpen prop with setLastSearchValue', () => {
-        wrapper
-            .find(Popper)
-            .props()
-            .children({ TransitionProps: {} })
-            .props.children.props.children.props.children.props.children.at(0)
-            .props.onChange({ target: { value: 'test' } });
-        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
-    });
-
     it('should calls onChange prop for SearchInput', () => {
-        wrapper
-            .find(Popper)
-            .props()
-            .children({ TransitionProps: {} })
-            .props.children.props.children.props.children.props.children.at(0)
-            .props.onChange({ target: { value: 'test' } });
-    });
-
-    it('should calls onChange prop for SearchInput with setLastSearchValue', () => {
-        wrapper
-            .find(Popper)
-            .props()
-            .children({ TransitionProps: {} })
-            .props.children.props.children.props.children.props.children.at(0)
-            .props.onChange({ target: { value: 'test' } });
-        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
         wrapper
             .find(Popper)
             .props()

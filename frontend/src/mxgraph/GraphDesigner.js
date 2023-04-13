@@ -54,7 +54,6 @@ import PipelinesToolbar from './toolbar/pipelines-toolbar';
 import {
     CDC,
     CONTAINER,
-    DRAFT,
     EDGE,
     JOB,
     JOIN,
@@ -104,7 +103,8 @@ export class GraphDesigner extends Component {
             undoManagerConfig: {},
             stageCopy: null,
             stages:
-                type === JOB ? jobStagesByType(theme) : pipelinesStagesByType(theme)
+                type === JOB ? jobStagesByType(theme) : pipelinesStagesByType(theme),
+            status: ''
         };
 
         this.createPopupMenu = this.popupMenu.bind(this);
@@ -120,7 +120,12 @@ export class GraphDesigner extends Component {
         const { data, theme, type } = this.props;
         const { graph, stages } = this.state;
 
-        if (!isEqual(data?.definition, prevProps.data?.definition)) {
+        if (
+            !(
+                isEqual(data?.definition, prevProps.data?.definition) &&
+                isEqual(data?.jobsStatuses, prevProps.data?.jobsStatuses)
+            )
+        ) {
             loadContent(
                 data?.definition,
                 graph,
@@ -214,14 +219,15 @@ export class GraphDesigner extends Component {
             projectId,
             type,
             setCell,
-            classes
+            classes,
+            t
         } = this.props;
 
         const { stageCopy } = this.state;
 
         const items = [
             {
-                name: 'Delete connection',
+                name: t('jobDesigner:stagePopupMenu.deleteConnection'),
                 visible: cell && cell.edge,
                 onClick: () => {
                     graph.removeCells([cell]);
@@ -246,7 +252,7 @@ export class GraphDesigner extends Component {
                 }
             },
             {
-                name: 'Edit child node',
+                name: t('jobDesigner:stagePopupMenu.editStage'),
                 visible:
                     cell && !cell.edge && cell.getAttribute('operation') !== WAIT,
                 onClick: () => {
@@ -255,14 +261,14 @@ export class GraphDesigner extends Component {
                 }
             },
             {
-                name: 'Copy child node',
+                name: t('jobDesigner:stagePopupMenu.copyStage'),
                 visible: cell && !cell.edge,
                 onClick: () => {
                     this.setState({ stageCopy: cell });
                 }
             },
             {
-                name: 'Delete child node',
+                name: t('jobDesigner:stagePopupMenu.deleteStage'),
                 visible: cell && !cell.edge,
                 onClick: () => {
                     sidePanelIsOpen && setPanel(false);
@@ -273,7 +279,7 @@ export class GraphDesigner extends Component {
                 }
             },
             {
-                name: 'Paste child node',
+                name: t('jobDesigner:stagePopupMenu.pasteStage'),
                 visible: !cell && stageCopy !== null,
                 onClick: () => {
                     this.pasteCopyHandler(event, graph);
@@ -367,8 +373,12 @@ export class GraphDesigner extends Component {
 
             if (operation === JOB && cell.getAttribute('jobId') === nodeId) {
                 const jobId = get(findJobInstance(data.id, nodeId, jobs), 'id');
-
-                this.setState({ jobId: jobId || nodeId, nodeId: '' });
+                const status = get(data, ['jobsStatuses', cell.id]);
+                this.setState({
+                    jobId: jobId || nodeId,
+                    nodeId: '',
+                    status
+                });
                 setLogs(true);
             }
 
@@ -393,21 +403,11 @@ export class GraphDesigner extends Component {
 
         const operation = cell.getAttribute('operation');
 
-        if (operation === JOB) {
-            const jobInstance = findJobInstance(
-                data.id,
-                cell.getAttribute('jobId'),
-                jobs
-            );
-
-            if (jobInstance) {
-                set(value, 'status', jobInstance.status);
-                data.status === DRAFT && delete value.status;
+        if ([JOB, CONTAINER].includes(operation)) {
+            const status = get(data, ['jobsStatuses', cell.id]);
+            if (status && status !== PENDING) {
+                set(value, 'showLogs', true);
             }
-        }
-
-        if (operation === CONTAINER && get(data, ['jobsStatuses', cell.id])) {
-            set(value, 'status', data.jobsStatuses[cell.id]);
         }
 
         return ReactDOMServer.renderToString(
@@ -709,7 +709,7 @@ export class GraphDesigner extends Component {
             setLogs,
             setCell
         } = this.props;
-        const { graph, jobId, nodeId, undoManagerConfig } = this.state;
+        const { graph, jobId, nodeId, undoManagerConfig, status } = this.state;
         const currentPath = history.location.pathname.split('/');
         const currentProject = currentPath.slice(-2, -1)[0];
         const currentJob = type === PIPELINE ? jobId : currentPath.slice(-1)[0];
@@ -723,6 +723,7 @@ export class GraphDesigner extends Component {
                     nodeId={nodeId}
                     jobId={currentJob}
                     onClose={() => setLogs(false)}
+                    status={status}
                 />
                 <Sidebar
                     graph={graph}

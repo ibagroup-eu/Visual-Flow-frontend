@@ -166,6 +166,16 @@ export const STORAGES = {
     CLICKHOUSE: {
         value: 'clickhouse',
         label: 'Click House'
+    },
+    KAFKA: {
+        value: 'kafka',
+        label: 'Kafka',
+        hide: [READ, WRITE]
+    },
+    API: {
+        value: 'api',
+        label: 'API',
+        hide: [READ, WRITE]
     }
 };
 

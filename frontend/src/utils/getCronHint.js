@@ -212,7 +212,8 @@ const getCronHint = cronInput => {
         minuteHour = `${minute} ${hour}`.trim();
     }
 
-    return `"${`${minuteHour} ${dayOfMonth} ${dayOfWeek} ${month}`.trim()}"`;
+    const date = `${minuteHour} ${dayOfMonth} ${dayOfWeek} ${month} `;
+    return `"${date.trim()} by UTC time"`;
 };
 
 export default getCronHint;

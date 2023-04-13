@@ -69,7 +69,6 @@ const HistoryPanel = ({
     const [logsModal, setLogsModal] = useState(false);
     const [logId, setLogId] = useState(null);
     const [jobId, setJobId] = useState(null);
-    const [dateGroups, setDateGroups] = useState(groupByDate);
 
     useEffect(() => {
         if (display) {
@@ -79,15 +78,7 @@ const HistoryPanel = ({
                 getPipelineHistory(projectId, data.id);
             }
         }
-    }, [display]);
-
-    useEffect(() => {
-        if (historyData && historyData[0]?.id === data?.id) {
-            setDateGroups(groupByDate);
-        } else {
-            setDateGroups(null);
-        }
-    }, [historyData, data.id]);
+    }, [display, data.id, getJobHistory, getPipelineHistory, projectId, type]);
 
     const findName = currentId =>
         data?.definition?.graph.find(obj => obj.value.jobId === currentId)?.value
@@ -122,13 +113,13 @@ const HistoryPanel = ({
                             <Box className={classes.header}>
                                 <HistoryHeader
                                     status={
-                                        !isNil(dateGroups) && sortByDate[0]
+                                        !isNil(groupByDate) && sortByDate[0]
                                             ? sortByDate[0].status
                                             : data.status
                                     }
                                     name={data.name}
                                     startedBy={
-                                        sortByDate[0] && !isNil(dateGroups)
+                                        !isNil(groupByDate) && sortByDate[0]
                                             ? sortByDate[0].startedBy
                                             : ''
                                     }
@@ -140,7 +131,7 @@ const HistoryPanel = ({
                                     <CloseIcon />
                                 </IconButton>
                             </Box>
-                            {isNil(dateGroups) || dateGroups.length === 0 ? (
+                            {isNil(groupByDate) || groupByDate.length === 0 ? (
                                 <Box className={classes.emptyList}>
                                     <Typography variant="h6">
                                         {t('main:history.EmptyList')}
@@ -150,7 +141,7 @@ const HistoryPanel = ({
                                 <>
                                     <HistoryListHeader type={type} />
                                     <List disablePadding className={classes.list}>
-                                        {dateGroups.map((day, index) => (
+                                        {groupByDate.map((day, index) => (
                                             <HistoryDaysRow
                                                 key={day[0]}
                                                 type={type}
@@ -185,7 +176,7 @@ HistoryPanel.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    loading: state.pages.history.loading || state.mxGraph.loading,
+    loading: state.pages.history.loading,
     historyData: state.pages.history.data
 });
 

@@ -17,16 +17,25 @@
  * limitations under the License.
  */
 
-import { makeStyles } from '@material-ui/core/styles';
+import { useEffect, useState } from 'react';
+import { AUTO_REFRESH_TIMER } from '../../constants';
 
-export default makeStyles(() => ({
-    root: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-        height: '90%'
-    },
-    iconBtn: {
-        left: 12
-    }
-}));
+const useAutoRefresh = (isRunning, onRefresh) => {
+    const [autoRefresh, setAutoRefresh] = useState(isRunning);
+
+    useEffect(() => {
+        setAutoRefresh(isRunning);
+    }, [isRunning]);
+
+    useEffect(() => {
+        if (!autoRefresh) {
+            return undefined;
+        }
+        const timer = setInterval(onRefresh, AUTO_REFRESH_TIMER * 1000);
+        return () => clearInterval(timer);
+    }, [autoRefresh, onRefresh]);
+
+    return [autoRefresh, setAutoRefresh];
+};
+
+export default useAutoRefresh;

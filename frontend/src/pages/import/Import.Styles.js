@@ -26,13 +26,17 @@ export default makeStyles(theme => ({
         justifyContent: 'space-between',
         margin: theme.spacing(4, 6)
     },
+    field: {
+        flexGrow: 1
+    },
     input: {
         display: 'none'
     },
     button: {
         marginTop: theme.spacing(1),
         marginLeft: theme.spacing(4),
-        width: 144,
+        whiteSpace: 'nowrap',
+        minWidth: 165,
         height: 40
     }
 }));

@@ -23,12 +23,18 @@
         "NotifyFailure": "Notify about failure",
         "NotifySuccess": "Notify about success",
         "Recipients": "Recipients",
+        "Slack": "Slack",
+        "Email": "Email",
         "NotificationsPanel": "Notifications",
+        "Channels": "Channel",
+        "SlackNicknames": "Slack Nickname(s)",
         "Tags": "Tags",
         "TagsHint": "Tag your job to categorize it"
     },
     "relatedJobs": "Export related jobs",
+    "importPipelinesNote": "Uncheck the pipeline if you want to export separate jobs",
     "cronInfo": {
-        "nextAt": "Next at"
+        "nextAt": "Next at",
+        "helperText": "Enter cron expression in UTC timezone"
     }
 }

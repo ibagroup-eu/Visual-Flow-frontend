@@ -55,7 +55,7 @@ export const PropertyList = ({
                 handleItemChange(index, `${column}:${defaultValue}`);
             }
         });
-    }, [items]);
+    }, [items, defaultValue, handleItemChange]);
 
     const renderItem = (item, index) => {
         const [column, aggregate] = splitItem(item);

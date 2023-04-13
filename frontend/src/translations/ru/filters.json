@@ -3,6 +3,7 @@
     "lastRun": "Последний запуск",
     "lastFinished": "Завершен",
     "lastEdit": "Изменен",
+    "N/A": "N/A",
     "statuses": {
         "Draft": "Draft",
         "Pending": "Pending",
@@ -24,6 +25,7 @@
         "3 days ago": "за прошедшие 3 дня",
         "7 days ago": "за прошедшие 7 дней"
     },
+    "noItems": "No items to display",
     "dropDown": {
         "None": "None"
     }

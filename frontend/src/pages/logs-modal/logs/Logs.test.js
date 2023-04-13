@@ -48,8 +48,10 @@ describe('Logs', () => {
             jobId: 'fcf5055a-e138-4e65-a2f1-581580c79dd9',
             modal: false,
             pipelineId: undefined,
-            nodeId: true,
-            logs: { data, loading: false }
+            nodeId: '2',
+            logs: { data, loading: false },
+            jobStatus: { id: 'fcf5055a-e138-4e65-a2f1-581580c79dd9' },
+            jobsStatuses: { 2: 'Succeeded' }
         };
 
         wrapper = shallow(<Logs {...props} />);
@@ -73,7 +75,7 @@ describe('Logs', () => {
         );
     });
 
-    it('should call "getContainerLogs" & "getJobLogs" & "getJobHistoryLogs" & "getJobStatus" functions', () => {
+    it('should call "getContainerLogs" & "getJobLogs" & "getJobHistoryLogs" functions', () => {
         const defaultProps = {
             projId: 'projId',
             modal: true,
@@ -83,7 +85,9 @@ describe('Logs', () => {
             getContainerLogs: jest.fn(),
             getJobLogs: jest.fn(),
             getJobStatus: jest.fn(),
-            getJobHistoryLogs: jest.fn()
+            getJobHistoryLogs: jest.fn(),
+            getJob: jest.fn(),
+            jobStatus: { id: 'fcf5055a-e138-4e65-a2f1-581580c79dd8' }
         };
 
         const mountedWrapper = mount(<Logs {...defaultProps} />);
@@ -94,8 +98,7 @@ describe('Logs', () => {
         expect(defaultProps.getContainerLogs).toHaveBeenCalledWith(
             defaultProps.projId,
             defaultProps.pipelineId,
-            'newNodeId',
-            undefined
+            'newNodeId'
         );
 
         // getJobLogs should be called
@@ -103,8 +106,7 @@ describe('Logs', () => {
 
         expect(defaultProps.getJobLogs).toHaveBeenCalledWith(
             defaultProps.projId,
-            'newJobId',
-            undefined
+            'newJobId'
         );
 
         // getJobHistoryLogs should be called
@@ -113,17 +115,7 @@ describe('Logs', () => {
         expect(defaultProps.getJobHistoryLogs).toHaveBeenCalledWith(
             defaultProps.projId,
             'newJobId',
-            'logId',
-            undefined
-        );
-
-        // getJobStatus should be called
-        mountedWrapper.setProps({ jobId: '', nodeId: 'newNodeId' });
-
-        expect(defaultProps.getJobStatus).toHaveBeenCalledWith(
-            defaultProps.projId,
-            defaultProps.nodeId,
-            true
+            'logId'
         );
     });
 });

@@ -58,7 +58,7 @@ const ConnectionsModal = ({
         setSelectedValue(currentValue);
         setSearchValue('');
         setStorageSelection('');
-    }, [display]);
+    }, [display, currentValue]);
 
     const filterParameters = () =>
         projectConnections?.filter(

@@ -123,6 +123,7 @@ const CDCConfiguration = ({
                                     fullWidth
                                     variant="outlined"
                                     label={t('jobDesigner:CDCConfiguration.Key')}
+                                    title={t('jobs:tooltip.cdcKey')}
                                     required
                                 />
                             )}

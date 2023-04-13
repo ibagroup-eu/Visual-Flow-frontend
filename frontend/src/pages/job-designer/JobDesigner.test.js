@@ -81,7 +81,9 @@ describe('JobDesigner', () => {
             const [_, props] = init({}, true, mount);
 
             const validate =
-                props.createFields.mock.calls[0][0]['RESOURCES_PANEL']['fields']['DRIVER_REQUEST_CORES'].validate;
+                props.createFields.mock.calls[0][0]['RESOURCES_PANEL']['fields'][
+                    'DRIVER_REQUEST_CORES'
+                ].validate;
 
             expect(validate(1)).toBeNull();
             expect(validate(-1)).toBe('main:validation.positive');
@@ -98,8 +100,9 @@ describe('JobDesigner', () => {
             expect(validate('a'.repeat(100))).toBe(
                 'main:validation.incorrectJobLength'
             );
-            expect(validate('#')).toBe('main:validation.incorrectCharacters');
-            expect(validate('a')).toBeNull();
+            expect(validate('#ab')).toBe('main:validation.incorrectCharacters');
+            expect(validate('ab')).toBe('main:validation.incorrectJobLength');
+            expect(validate('abcd')).toBeNull();
         });
     });
 });

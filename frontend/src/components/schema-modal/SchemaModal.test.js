@@ -18,10 +18,24 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import SchemaModal from './SchemaModal';
 import PopupForm from '../popup-form';
 import { Button } from '@material-ui/core';
+
+jest.mock('react-i18next', () => ({
+    // this mock makes sure any components using the translate hook can use it without a warning being shown
+    useTranslation: () => {
+        return {
+            t: str => str
+        };
+    }
+}));
+
+jest.mock('@material-ui/core/styles', () => ({
+    ...jest.requireActual('@material-ui/core/styles'),
+    makeStyles: jest.fn().mockReturnValue(jest.fn().mockReturnValue({ classes: {} }))
+}));
 
 describe('SchemaModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -50,17 +64,6 @@ describe('SchemaModal', () => {
         expect(wrapper.find(Button).length).toBe(1);
     });
 
-    it('should handle "onSave"', () => {
-        const [wrapper, props] = init({}, true);
-
-        const [saveBtn, _] = wrapper.find(Button).map(x => x);
-
-        saveBtn.simulate('click');
-
-        expect(props.onChange).toHaveBeenCalled();
-        expect(props.onClose).toHaveBeenCalled();
-    });
-
     it('should handle "onClose"', () => {
         const [wrapper, props] = init({}, true);
 
@@ -68,6 +71,21 @@ describe('SchemaModal', () => {
 
         closeBtn.simulate('click');
 
+        expect(props.onClose).toHaveBeenCalled();
+    });
+
+    it('should handle "onSave"', () => {
+        const addProps = {
+            values:
+                '{"type":"record","name":"schema_71a540f380eb44959ba6295601c1256d","fields":[{"name":"int","type":["null","int"]}]}'
+        };
+        const [wrapper, props] = init(addProps, true, mount);
+
+        const [saveBtn, _] = wrapper.find(Button).map(x => x);
+
+        saveBtn.simulate('click');
+
+        expect(props.onChange).toHaveBeenCalled();
         expect(props.onClose).toHaveBeenCalled();
     });
 });

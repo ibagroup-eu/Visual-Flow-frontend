@@ -68,7 +68,12 @@ const LoadLocalFile = ({
             element.click();
             clearLocalFilesState();
         }
-    }, [fileDownloaded]);
+    }, [
+        fileDownloaded,
+        clearLocalFilesState,
+        inputValues.operation,
+        inputValues.path
+    ]);
 
     useEffect(() => {
         if (fileUploaded) {
@@ -77,7 +82,7 @@ const LoadLocalFile = ({
             });
             clearLocalFilesState();
         }
-    }, [fileUploaded]);
+    }, [fileUploaded, clearLocalFilesState, handleInputChange]);
 
     const buttonText = () => {
         if (loading) {

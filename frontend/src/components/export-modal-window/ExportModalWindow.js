@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { Box, Button, TextField, Typography, Checkbox } from '@material-ui/core';
+import { Box, Button, TextField, Typography } from '@material-ui/core';
 
 import useStyles from './ExportModalWindow.Styles';
 import PopupForm from '../popup-form';
@@ -36,8 +36,8 @@ export const ExportModalWindow = ({
     isPipelineModal,
     display,
     projectId,
-    selectedJobs = [],
-    selectedPipelines = [],
+    selectedJobs,
+    selectedPipelines,
     onClose,
     data,
     exportFromProject,
@@ -51,7 +51,6 @@ export const ExportModalWindow = ({
     const { t } = useTranslation();
     const classes = useStyles();
     const [fileName, setFileName] = React.useState('');
-    const [withRelatedJobs, setWithRelatedJobs] = React.useState(false);
 
     React.useEffect(() => {
         if (isFetching) {
@@ -67,16 +66,18 @@ export const ExportModalWindow = ({
             onClose();
             setDefault();
         }
-    }, [isFetching]);
+    }, [isFetching, data, exportFileName, onClose, setDefault]);
 
     const handleSaveFile = () => {
         setExportName(fileName);
         const requestData = {
-            jobIds: selectedJobs,
-            pipelines: selectedPipelines.map(id => ({
-                pipelineId: id,
-                withRelatedJobs
-            }))
+            jobIds: selectedJobs || [],
+            pipelines: selectedPipelines
+                ? selectedPipelines.map(id => ({
+                      pipelineId: id,
+                      withRelatedJobs: true
+                  }))
+                : []
         };
         exportFromProject(projectId, requestData);
     };
@@ -91,7 +92,7 @@ export const ExportModalWindow = ({
                 setFileName(letterPart?.name);
             }
         }
-    }, [showModal]);
+    }, [showModal, isPipelineModal, selectedJobs, selectedPipelines, tableData]);
 
     return (
         <PopupForm
@@ -112,22 +113,6 @@ export const ExportModalWindow = ({
                         value={fileName || ''}
                         onChange={e => setFileName(e.target.value)}
                     />
-                    {isPipelineModal && (
-                        <Typography
-                            display="block"
-                            variant="h6"
-                            color="textSecondary"
-                        >
-                            <Checkbox
-                                checked={withRelatedJobs}
-                                onChange={e => setWithRelatedJobs(e.target.checked)}
-                                inputProps={{
-                                    'aria-label': 'related jobs'
-                                }}
-                            />
-                            {t('pipelines:relatedJobs')}
-                        </Typography>
-                    )}
                 </Box>
                 <Typography
                     display="block"
@@ -137,12 +122,7 @@ export const ExportModalWindow = ({
                     <span className={classes.note}>{t('main:export.note1')}</span>
                     <span className={classes.txtNote}>{t('main:export.note2')}</span>
                 </Typography>
-                <Box
-                    className={classNames(
-                        classes.buttonsGroup,
-                        isPipelineModal ? classes.paddedTopOne : classes.paddedTopSix
-                    )}
-                >
+                <Box className={classes.buttonsGroup}>
                     <Button
                         disabled={!fileName}
                         className={classes.button}

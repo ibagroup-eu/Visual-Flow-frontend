@@ -231,7 +231,7 @@ const ConnectionsPanel = ({
                                     label={t('setting:connection.Name')}
                                     placeholder={t('setting:connection.Name')}
                                     variant="outlined"
-                                    margin="normal"
+                                    className={classes.nameField}
                                     fullWidth
                                     name="connectionName"
                                     value={
@@ -274,6 +274,7 @@ const ConnectionsPanel = ({
                                             )}
                                             label={t('setting:connection.Storage')}
                                             required
+                                            className={classes.storageField}
                                         />
                                     )}
                                 />

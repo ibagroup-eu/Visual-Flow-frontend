@@ -20,23 +20,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Button, TextField } from '@material-ui/core';
+import { Button, FormControlLabel, Switch } from '@material-ui/core';
 
 import useStyles from './ValidateConfiguration.Styles';
 import ValidateModal from './validate-modal';
 import ConfigurationDivider from '../../../components/divider/ConfigurationDivider';
-import getMenuItems from '../helpers/getMenuItems';
-
-const values = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
 
 const ValidateConfiguration = ({ state, ableToEdit, onChange }) => {
     const { t } = useTranslation();
@@ -48,22 +36,28 @@ const ValidateConfiguration = ({ state, ableToEdit, onChange }) => {
             {state.name && (
                 <>
                     <ConfigurationDivider />
-                    <TextField
-                        disabled={!ableToEdit}
-                        label={t('jobDesigner:Validate.isError')}
-                        placeholder={t('jobDesigner:isError')}
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        select
-                        name="isError"
-                        value={state.isError || values[0].value}
-                        onChange={event =>
-                            onChange(event.target.name, event.target.value)
+                    <FormControlLabel
+                        className={classes.valErrorLabel}
+                        control={
+                            <Switch
+                                checked={
+                                    state.isError ? state.isError === 'true' : true
+                                }
+                                value={
+                                    state.isError
+                                        ? String(!(state.isError === 'true'))
+                                        : 'false'
+                                }
+                                color="primary"
+                                name="isError"
+                                onChange={event =>
+                                    onChange(event.target.name, event.target.value)
+                                }
+                            />
                         }
-                    >
-                        {getMenuItems(values)}
-                    </TextField>
+                        label={t('jobDesigner:Validate.isError')}
+                        labelPlacement="start"
+                    />
                     <ValidateModal
                         validateConfig={state.validateConfig}
                         editable={ableToEdit}

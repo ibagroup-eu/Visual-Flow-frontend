@@ -487,6 +487,9 @@
                 },
                 {
                     "storage": "clickhouse"
+                },
+                {
+                    "storage": "api"
                 }
             ]
         },
@@ -543,6 +546,63 @@
             "conditions": [
                 {
                     "storage": "redshift"
+                }
+            ]
+        },
+
+        {
+            "field": "bootstrapServers",
+            "conditions": [
+                {
+                    "storage": "kafka"
+                }
+            ]
+        },
+        {
+            "field": "subscribe",
+            "conditions": [
+                {
+                    "storage": "kafka"
+                }
+            ]
+        },
+        {
+            "field": "option.kafka.*",
+            "conditions": [
+                {
+                    "storage": "kafka"
+                }
+            ]
+        },
+        {
+            "field": "method",
+            "conditions": [
+                {
+                    "storage": "api"
+                }
+            ]
+        },
+        {
+            "field": "jsonPath",
+            "conditions": [
+                {
+                    "storage": "api"
+                }
+            ]
+        },
+        {
+            "field": "option.params",
+            "conditions": [
+                {
+                    "storage": "api"
+                }
+            ]
+        },
+        {
+            "field": "option.headers",
+            "conditions": [
+                {
+                    "storage": "api"
                 }
             ]
         }

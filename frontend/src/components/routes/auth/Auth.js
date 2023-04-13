@@ -53,7 +53,7 @@ const Auth = ({ redirect, children }) => {
             source.cancel();
             setUser(null);
         };
-    }, [redirect]);
+    }, [redirect, dispatch]);
 
     return <AuthRenderer authenticated={!!user}>{children}</AuthRenderer>;
 };

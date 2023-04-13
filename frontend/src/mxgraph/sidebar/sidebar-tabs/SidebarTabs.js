@@ -34,34 +34,36 @@ import { setGraphDirty } from '../../../redux/actions/mxGraphActions';
 export const SidebarTabs = ({ name, graph = {}, setDirty, ableToEdit }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-    const [value, setValue] = React.useState(0);
-    React.useEffect(() => {
-        if (name) {
-            setValue(ableToEdit ? 0 : 1);
-        } else {
-            setValue(1);
+    const getInitialValue = () => {
+        if (!name) {
+            return 1;
         }
-    }, [ableToEdit]);
+        return 0;
+    };
+    const [value, setValue] = React.useState(getInitialValue());
 
+    const tab = ableToEdit ? value : 1;
     return (
         <Box className={classes.root}>
             <AppBar position="static" className={classes.tabs}>
                 <Tabs
-                    value={ableToEdit ? value : 0}
+                    value={tab}
                     onChange={(e, newValue) => setValue(ableToEdit ? newValue : 1)}
                     variant="fullWidth"
                     textColor="primary"
                     indicatorColor="primary"
                 >
-                    {ableToEdit && <Tab label={t('jobDesigner:PALETTE')} />}
-                    <Tab label={t('jobDesigner:PARAMS')} />
+                    {ableToEdit && (
+                        <Tab value={0} label={t('jobDesigner:PALETTE')} />
+                    )}
+                    <Tab value={1} label={t('jobDesigner:PARAMS')} />
                 </Tabs>
             </AppBar>
             <Box className={classes.content}>
-                <TabPanel value={value} index={0}>
+                <TabPanel value={tab} index={0}>
                     <Palette graph={graph} setDirty={setDirty} />
                 </TabPanel>
-                <TabPanel value={value} index={1}>
+                <TabPanel value={tab} index={1}>
                     <Params ableToEdit={ableToEdit} />
                 </TabPanel>
             </Box>

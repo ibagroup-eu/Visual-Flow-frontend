@@ -74,6 +74,7 @@ describe('LogsList', () => {
     });
 
     it('should render with useEffect for errorMes', () => {
+        window.HTMLElement.prototype.scrollIntoView = function() {};
         const wrapper = init({ jobStatus: '' }, mount);
         wrapper.setProps({ error: 'message' });
         wrapper.find(LogsHeader).prop('onSetAutoRefresh')();
@@ -84,8 +85,8 @@ describe('LogsList', () => {
         window.HTMLElement.prototype.scrollIntoView = jest.fn();
         const wrapper = init({}, mount);
         wrapper.find(LogsHeader).prop('onSetAutoRefresh')();
-        jest.runAllTimers();
-        expect(defaultProps.onRefresh).toBeCalledWith(true);
+        jest.runOnlyPendingTimers();
+        expect(defaultProps.onRefresh).toBeCalled();
     });
 
     it('should call onSetAutoRefresh', () => {

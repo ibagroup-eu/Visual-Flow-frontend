@@ -124,7 +124,7 @@ describe('EnhancedTable', () => {
 
     it('should handle select all click with not empty items', () => {
         const [wrapper] = init(
-            { data: [{ id: 'id_1', pipelineInstances: [] }] },
+            { data: [{ id: 'id_1', pipelineId: null }] },
             false,
             mount
         );
@@ -135,7 +135,12 @@ describe('EnhancedTable', () => {
 
         wrapper.update();
 
-        expect(wrapper.find(TableToolbar).prop('selected')).toEqual(['id_1']);
+        expect(wrapper.find(TableToolbar).prop('selected')).toEqual([
+            {
+                id: 'id_1',
+                pipelineId: null
+            }
+        ]);
     });
 
     it('should handle select all click with empty items', () => {
@@ -163,6 +168,11 @@ describe('EnhancedTable', () => {
 
         wrapper.update();
 
-        expect(wrapper.find(TableToolbar).prop('selected')).toEqual(['id_1']);
+        expect(wrapper.find(TableToolbar).prop('selected')).toEqual([
+            {
+                id: 'id_1',
+                pipelineInstances: []
+            }
+        ]);
     });
 });

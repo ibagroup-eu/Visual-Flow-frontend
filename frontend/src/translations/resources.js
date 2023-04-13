@@ -52,7 +52,37 @@ const resources = {
         pivot: combinedEn.pivot,
         handleNull: combinedEn.handleNull
     },
-    ru: { main: combinedRu.main, filters: combinedRu.filters, jobs: combinedRu.jobs }
+    ru: {
+        main: combinedRu.main,
+        filters: combinedRu.filters,
+        jobs: combinedRu.jobs,
+        setting: combinedRu.setting,
+        ReadWrite: combinedRu.ReadWrite,
+        filter: combinedRu.filter,
+        transformer: combinedRu.transformer,
+        removeDuplicates: combinedRu.removeDuplicates,
+        union: combinedRu.union,
+        groupBy: combinedRu.groupBy,
+        join: combinedRu.join,
+        cdc: combinedRu.cdc,
+        job: combinedRu.job,
+        notification: combinedRu.notification,
+        container: combinedRu.container,
+        cache: combinedRu.cache,
+        sort: combinedRu.sort,
+        slice: combinedRu.slice,
+        pipeline: combinedRu.pipeline,
+        wait: combinedRu.wait,
+        stringFunctions: combinedRu.stringFunctions,
+        validation: combinedRu.validation,
+        withColumn: combinedRu.withColumn,
+        datetime: combinedRu.datetime,
+        pivot: combinedRu.pivot,
+        handleNull: combinedRu.handleNull,
+        jobDesigner: combinedRu.jobDesigner,
+        pipelineDesigner: combinedRu.pipelineDesigner,
+        pipelines: combinedRu.pipelines
+    }
 };
 
 export default resources;

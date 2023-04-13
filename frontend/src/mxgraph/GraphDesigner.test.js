@@ -398,7 +398,7 @@ describe('GraphDesigner', () => {
 
             expect(menu.addItem.mock.calls).toEqual([
                 [
-                    'Delete connection',
+                    'jobDesigner:stagePopupMenu.deleteConnection',
                     null,
                     expect.any(Function),
                     null,
@@ -441,7 +441,7 @@ describe('GraphDesigner', () => {
                     true
                 ],
                 [
-                    'Edit child node',
+                    'jobDesigner:stagePopupMenu.editStage',
                     null,
                     expect.any(Function),
                     null,
@@ -451,7 +451,7 @@ describe('GraphDesigner', () => {
                     true
                 ],
                 [
-                    'Copy child node',
+                    'jobDesigner:stagePopupMenu.copyStage',
                     null,
                     expect.any(Function),
                     null,
@@ -461,7 +461,7 @@ describe('GraphDesigner', () => {
                     true
                 ],
                 [
-                    'Delete child node',
+                    'jobDesigner:stagePopupMenu.deleteStage',
                     null,
                     expect.any(Function),
                     null,
@@ -488,7 +488,7 @@ describe('GraphDesigner', () => {
 
             expect(menu.addItem.mock.calls).toEqual([
                 [
-                    'Edit child node',
+                    'jobDesigner:stagePopupMenu.editStage',
                     null,
                     expect.any(Function),
                     null,
@@ -498,7 +498,7 @@ describe('GraphDesigner', () => {
                     true
                 ],
                 [
-                    'Copy child node',
+                    'jobDesigner:stagePopupMenu.copyStage',
                     null,
                     expect.any(Function),
                     null,
@@ -508,7 +508,7 @@ describe('GraphDesigner', () => {
                     true
                 ],
                 [
-                    'Delete child node',
+                    'jobDesigner:stagePopupMenu.deleteStage',
                     null,
                     expect.any(Function),
                     null,
@@ -520,7 +520,7 @@ describe('GraphDesigner', () => {
             ]);
         });
 
-        it('should show "Paste child node" option', () => {
+        it('should show "Paste stage" option', () => {
             const [wrapper] = init({ type: JOB });
 
             wrapper.setState({ stageCopy: {} });
@@ -533,7 +533,7 @@ describe('GraphDesigner', () => {
 
             expect(menu.addItem.mock.calls).toEqual([
                 [
-                    'Paste child node',
+                    'jobDesigner:stagePopupMenu.pasteStage',
                     null,
                     expect.any(Function),
                     null,
@@ -592,7 +592,7 @@ describe('GraphDesigner', () => {
             expect(history.push).toHaveBeenCalled();
         });
 
-        it('should handle "Edit child node"', () => {
+        it('should handle "Edit stage"', () => {
             const [wrapper, props] = init({ type: JOB }, true);
 
             const graph = { removeCells: jest.fn() };
@@ -613,7 +613,7 @@ describe('GraphDesigner', () => {
             expect(props.setPanel).toHaveBeenCalledWith(true);
         });
 
-        it('should handle "Copy child node"', () => {
+        it('should handle "Copy stage"', () => {
             const [wrapper] = init({ type: JOB });
 
             const graph = { removeCells: jest.fn() };
@@ -635,7 +635,7 @@ describe('GraphDesigner', () => {
             expect(wrapper.state().stageCopy).toEqual(cell);
         });
 
-        it('should handle "Delete child node"', () => {
+        it('should handle "Delete stage"', () => {
             const [wrapper, props] = init(
                 { type: JOB, sidePanelIsOpen: true },
                 true
@@ -662,7 +662,7 @@ describe('GraphDesigner', () => {
             expect(props.setDirtyGraph).toHaveBeenCalledWith(true);
         });
 
-        it('Paste child node"', () => {
+        it('Paste stage"', () => {
             const [wrapper, props] = init({ type: JOB }, true);
 
             wrapper.setState({ stageCopy: { value: { attributes: {} } } });
@@ -967,7 +967,7 @@ describe('GraphDesigner', () => {
         it('should render a job stage', () => {
             const [wrapper, props] = init(
                 {
-                    data: { id: 0 },
+                    data: { id: 0, jobsStatuses: { 2: 'Succeeded' } },
                     jobs: [
                         {
                             id: 0,
@@ -990,6 +990,7 @@ describe('GraphDesigner', () => {
             };
 
             const cell = {
+                id: 2,
                 value: {
                     nodeName: 'taskobject',
                     attributes: {}
@@ -1001,7 +1002,7 @@ describe('GraphDesigner', () => {
 
             expect(ReactDOMServer.renderToString).toHaveBeenCalled();
             expect(renderStage).toHaveBeenCalledWith(
-                { status: SUCCEEDED },
+                { showLogs: true },
                 't',
                 'type',
                 props.jobs,
@@ -1100,7 +1101,7 @@ describe('GraphDesigner', () => {
 
             expect(ReactDOMServer.renderToString).toHaveBeenCalled();
             expect(renderStage).toHaveBeenCalledWith(
-                { status: RUNNING },
+                { showLogs: true },
                 't',
                 'type',
                 props.jobs,

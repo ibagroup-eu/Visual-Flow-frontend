@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { List, Grid, ListItem, Typography, Box, Paper } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import useStyles from './LogsList.Styles';
 import LogsHeader from '../../../components/logs-header';
 import { TextSkeleton } from '../../../components/skeleton';
-import { AUTO_REFRESH_TIMER, PENDING, RUNNING } from '../../../mxgraph/constants';
+import useAutoRefresh from '../../../mxgraph/toolbar/auto-refresh-button/useAutoRefresh';
 
 const LEVELS = ['INFO', 'WARN', 'ERROR', 'DEBUG', 'RESULT'];
 
@@ -39,43 +38,24 @@ const LogsList = ({
     onSelect,
     loading,
     error,
-    jobStatus
+    isRunning,
+    logId
 }) => {
     const classes = useStyles();
     const listRef = useRef();
-    const [autoRefresh, setAutoRefresh] = useState(false);
 
-    const isRunning = [RUNNING, PENDING].includes(jobStatus);
-
-    useEffect(() => {
-        isRunning && setAutoRefresh(true);
-    }, [jobStatus]);
+    const [autoRefresh, setAutoRefresh] = useAutoRefresh(isRunning, onRefresh);
 
     useEffect(() => {
-        error && setAutoRefresh(false);
-    }, [error]);
+        error?.message && setAutoRefresh(false);
+    }, [error?.message, setAutoRefresh]);
 
     useEffect(() => {
-        if (!autoRefresh) {
-            return;
-        }
-
-        listRef?.current?.scrollIntoView({
-            block: 'end'
-        });
-
-        if (!isRunning) {
-            setAutoRefresh(false);
-            return;
-        }
-
-        const timer = setTimeout(() => {
-            onRefresh(autoRefresh);
-        }, AUTO_REFRESH_TIMER * 1000);
-
-        // eslint-disable-next-line consistent-return
-        return () => clearTimeout(timer);
-    }, [data, autoRefresh]);
+        !loading &&
+            listRef?.current?.scrollIntoView({
+                block: 'end'
+            });
+    }, [loading]);
 
     const highlight = (string, value) => {
         if (!value) {
@@ -119,7 +99,8 @@ const LogsList = ({
                     levels={levels}
                     autoRefresh={autoRefresh}
                     onSetAutoRefresh={() => setAutoRefresh(!autoRefresh)}
-                    autoRefreshDisabled={!isRunning}
+                    autoRefreshDisabled={false}
+                    logId={logId}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -226,7 +207,8 @@ LogsList.propTypes = {
     onSelect: PropTypes.func,
     loading: PropTypes.bool,
     error: PropTypes.object,
-    jobStatus: PropTypes.string
+    isRunning: PropTypes.bool,
+    logId: PropTypes.string
 };
 
 export default LogsList;

@@ -20,7 +20,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoModal from '../info';
-import { SHOW_DESCRIPTION, STORAGES } from '../../../mxgraph/constants';
+import {
+    SHOW_DESCRIPTION,
+    STORAGES,
+    READ as CONSTANTS_READ,
+    WRITE as CONSTANTS_WRITE
+} from '../../../mxgraph/constants';
 
 const READ = 'Read';
 const WRITE = 'Write';
@@ -527,10 +532,56 @@ const getClickHouse = t => [
     getClickHouseWriteMode(t)
 ];
 
+const getKafka = t => [
+    {
+        title: t('ReadWrite:KAFKA.bootstrapServers.name'),
+        paragraph: t('ReadWrite:KAFKA.bootstrapServers.value')
+    },
+    {
+        title: t('ReadWrite:KAFKA.topicName.name'),
+        paragraph: t('ReadWrite:KAFKA.topicName.value')
+    },
+    {
+        title: t('ReadWrite:KAFKA.filePath.name'),
+        paragraph: t('ReadWrite:KAFKA.filePath.value')
+    },
+    {
+        title: t('ReadWrite:KAFKA.options.name'),
+        paragraph: t('ReadWrite:KAFKA.options.value')
+    }
+];
+
+const getAPI = t => [
+    {
+        title: t('ReadWrite:API.host.name'),
+        paragraph: t('ReadWrite:API.host.value')
+    },
+    {
+        title: t('ReadWrite:API.method.name'),
+        paragraph: t('ReadWrite:API.method.value')
+    },
+    {
+        title: t('ReadWrite:API.jsonPath.name'),
+        paragraph: t('ReadWrite:API.jsonPath.value')
+    },
+    {
+        title: t('ReadWrite:API.headers.name'),
+        paragraph: t('ReadWrite:API.headers.value')
+    },
+    {
+        title: t('ReadWrite:API.params.name'),
+        paragraph: t('ReadWrite:API.params.value')
+    }
+];
+
 const RWModal = props => {
     const { t } = useTranslation();
 
     const storages = Object.values(STORAGES)
+        .filter(
+            ({ hide }) =>
+                ![CONSTANTS_READ, CONSTANTS_WRITE].every(v => hide?.includes(v))
+        )
         .map(v => v.label)
         .sort();
     return (
@@ -549,6 +600,8 @@ const RWModal = props => {
             cluster={getCluster(t)}
             dataframe={getDataframe(t)}
             clickhouse={getClickHouse(t)}
+            kafka={getKafka(t)}
+            api={getAPI(t)}
             {...props}
         />
     );

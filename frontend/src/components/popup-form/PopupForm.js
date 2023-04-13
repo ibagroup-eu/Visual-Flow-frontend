@@ -30,9 +30,17 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
+import classNames from 'classnames';
 import useStyles from './PopupForm.Styles';
 
-const PopupForm = ({ display, title, children, onClose, isNotHelper }) => {
+const PopupForm = ({
+    display,
+    title,
+    children,
+    onClose,
+    isNotHelper,
+    className
+}) => {
     const classes = useStyles();
 
     return (
@@ -47,7 +55,7 @@ const PopupForm = ({ display, title, children, onClose, isNotHelper }) => {
             }}
         >
             <Fade in={display}>
-                <Card className={classes.card}>
+                <Card className={classNames(classes.card, className)}>
                     <CardHeader
                         title={title}
                         className={classes.header}
@@ -75,7 +83,8 @@ PopupForm.propTypes = {
     title: PropTypes.string,
     display: PropTypes.bool,
     isNotHelper: PropTypes.bool,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
+    className: PropTypes.string
 };
 
 export default PopupForm;

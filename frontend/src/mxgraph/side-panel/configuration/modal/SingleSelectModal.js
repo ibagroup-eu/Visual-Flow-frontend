@@ -50,7 +50,7 @@ const SingleSelectModal = ({
         setSelectedValue(currentValue);
         setItemList(_.sortBy(items, 'name'));
         setSearchValue('');
-    }, [display, items]);
+    }, [display, items, currentValue]);
 
     const handleChangeSearch = value => {
         setSearchValue(value);

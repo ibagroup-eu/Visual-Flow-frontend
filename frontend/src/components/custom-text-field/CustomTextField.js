@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { TextField, MenuItem } from '@material-ui/core';
@@ -52,7 +52,10 @@ const CustomTextField = ({
 }) => {
     const classes = useStyles();
 
-    const parsedValue = parseFunction(value) || [];
+    const parsedValue = useMemo(() => parseFunction(value) || [], [
+        parseFunction,
+        value
+    ]);
     const textValue = parsedValue[1] || '';
     const [selectValue, setCurrenValue] = useState(defaultValue);
 
@@ -93,10 +96,11 @@ const CustomTextField = ({
         ) {
             setCurrenValue(parsedValue[2] || defaultValue);
         }
-    }, [value]);
+    }, [value, defaultValue, parsedValue, selectValue]);
 
     React.useEffect(() => {
         setDefaultValue();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

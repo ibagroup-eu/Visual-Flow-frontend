@@ -17,29 +17,31 @@
  * limitations under the License.
  */
 
-import { TableCell, withStyles } from '@material-ui/core';
+import { Box, TableCell, withStyles } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import styles from './ActionsCell.Styles';
-import Action from '../../action';
+import ActionButton from '../../../action-button';
 
-export const ActionsCell = ({ actions, classes, ...rest }) => (
-    <TableCell width={1} className={classes.cell} {...rest}>
-        <div className={classes.wrapper}>
+export const ActionsCell = ({ actions, className, classes, ...rest }) => (
+    <TableCell width={1} className={classNames(classes.cell, className)} {...rest}>
+        <Box className={classes.wrapper}>
             {actions.map(action => (
-                <Action
+                <ActionButton
                     key={action.title}
                     {...action}
-                    classes={{ button: classes.button }}
+                    className={classes.button}
                 />
             ))}
-        </div>
+        </Box>
     </TableCell>
 );
 
 ActionsCell.propTypes = {
     actions: PropTypes.arrayOf(PropTypes.object),
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    className: PropTypes.string
 };
 
 export default withStyles(styles, { name: 'ActionsCell' })(ActionsCell);

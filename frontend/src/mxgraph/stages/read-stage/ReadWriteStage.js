@@ -142,6 +142,7 @@ const ReadWriteStage = ({ stage }) => {
                 );
             case STORAGES.STDOUT.value:
             case STORAGES.DATAFRAME.value:
+            case STORAGES.KAFKA.value:
                 return null;
             case STORAGES.CLUSTER.value:
                 return (
@@ -151,6 +152,13 @@ const ReadWriteStage = ({ stage }) => {
                             stage.path?.split('/')[3],
                             stage.path?.split('/')[3]
                         )}
+                    </Parameter>
+                );
+            case STORAGES.API.value:
+                return (
+                    <Parameter name={t('jobDesigner:readConfiguration.method')}>
+                        {' '}
+                        {makeTooltip(stage.method, stage.method)}
                     </Parameter>
                 );
             default:

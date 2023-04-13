@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
+import { useTranslation } from 'react-i18next';
 import FileTextField from '../../../../components/file-text-field';
 import CosProperties from '../common';
 import LoadLocalFile from '../../../../components/load-local-file';
@@ -28,9 +29,15 @@ import history from '../../../../utils/history';
 
 const ClusterStorage = ({ inputValues, handleInputChange, ableToEdit, stageId }) => {
     const [file, setFile] = useState(null);
-    const currentProject = history.location.pathname.split('/')[2];
-    const id = uuidv4();
-    const fileNameValue = inputValues.path?.split('/')[3];
+    const { t } = useTranslation();
+    const currentProject = useMemo(
+        () => history.location.pathname.split('/')[2],
+        []
+    );
+    const id = useMemo(uuidv4, []);
+    const { path, operation, format } = inputValues;
+    const fileNameValue = path?.split('/')[3];
+    const name = operation === READ ? 'filePath' : 'fileName';
 
     useEffect(() => {
         if (file) {
@@ -40,14 +47,10 @@ const ClusterStorage = ({ inputValues, handleInputChange, ableToEdit, stageId })
                     value: `/${currentProject}/${id}/${file.name.replace(
                         /[,()[\]{}\s]/g,
                         '_'
-                    )}${
-                        inputValues.operation === WRITE
-                            ? `.${inputValues.format}`
-                            : ''
-                    }`
+                    )}${operation === WRITE ? `.${format}` : ''}`
                 }
             });
-            if (inputValues.operation === READ) {
+            if (operation === READ) {
                 handleInputChange({
                     target: {
                         name: 'uploaded',
@@ -56,41 +59,39 @@ const ClusterStorage = ({ inputValues, handleInputChange, ableToEdit, stageId })
                 });
             }
         }
-    }, [file]);
+    }, [file, id, currentProject, handleInputChange, format, operation]);
 
     useEffect(() => {
-        if (inputValues.operation === WRITE) {
-            if (inputValues.format) {
+        if (operation === WRITE) {
+            if (format) {
                 handleInputChange({
                     target: {
                         name: 'path',
-                        value: `${inputValues.path?.replace(
-                            /\..*/,
-                            ''
-                        )}${`.${inputValues.format}`}`
+                        value: `${path?.replace(/\..*/, '')}${`.${format}`}`
                     }
                 });
             }
         }
-    }, [inputValues.format]);
+    }, [format, handleInputChange, operation, path]);
 
     return (
         <>
-            {
-                <FileTextField
-                    name={inputValues.operation === READ ? 'filePath' : 'fileName'}
-                    value={
-                        inputValues.operation === READ
-                            ? fileNameValue
-                            : fileNameValue?.replace(/\..*/, '')
-                    }
-                    ableToEdit={ableToEdit}
-                    uploadStage={inputValues.operation === READ}
-                    handleInputChange={handleInputChange}
-                    setFile={data => setFile(data)}
-                />
-            }
-            {inputValues.path && (
+            <FileTextField
+                required
+                label={t(`jobDesigner:readConfiguration.${name}`)}
+                value={
+                    operation === READ
+                        ? fileNameValue
+                        : fileNameValue?.replace(/\..*/, '')
+                }
+                ableToEdit={ableToEdit}
+                uploadStage={operation === READ}
+                clearable={operation !== READ}
+                handleInputChange={handleInputChange}
+                setFile={data => setFile(data)}
+            />
+
+            {path && (
                 <>
                     <CosProperties
                         inputValues={inputValues}

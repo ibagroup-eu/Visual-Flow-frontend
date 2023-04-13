@@ -58,7 +58,7 @@ export const CELL_HEIGHT = 144;
 export const cleanUpConfiguration = (fields, schema) => {
     let result = {};
     Object.entries(fields).forEach(([key, value]) => {
-        const schemaLine = schema.find(v => v.field === key);
+        const schemaLine = schema.find(v => new RegExp(`^${v.field}$`).test(key));
         const conditions = get(schemaLine, 'conditions', undefined);
         if (!conditions) {
             result = { ...result, [key]: value };

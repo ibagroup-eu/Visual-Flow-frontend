@@ -17,29 +17,6 @@
  * limitations under the License.
  */
 
-import { IconButton, Tooltip, withStyles } from '@material-ui/core';
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './Action.Styles';
+import KafkaStorage from './KafkaStorage';
 
-export const Action = ({ title, Icon, onClick, classes, disable }) => (
-    <Tooltip title={disable ? '' : title} arrow>
-        <IconButton
-            disabled={disable || false}
-            onClick={onClick}
-            className={classes.button}
-        >
-            <Icon />
-        </IconButton>
-    </Tooltip>
-);
-
-Action.propTypes = {
-    Icon: PropTypes.object,
-    title: PropTypes.string,
-    disable: PropTypes.bool,
-    onClick: PropTypes.func,
-    classes: PropTypes.object
-};
-
-export default withStyles(styles)(Action);
+export default KafkaStorage;

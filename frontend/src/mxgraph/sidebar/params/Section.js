@@ -17,6 +17,27 @@
  * limitations under the License.
  */
 
-import Action from './Action';
+import { Fade } from '@material-ui/core';
+import React from 'react';
+import PropTypes from 'prop-types';
+import DividerWithText from '../../side-panel/helpers/DividerWithText';
+import useStyles from './Params.Styles';
 
-export default Action;
+const Section = ({ label, children }) => {
+    const classes = useStyles();
+
+    return (
+        <Fade in>
+            <div className={classes.section}>
+                <DividerWithText type="res">{label}</DividerWithText>
+                <div className={classes.section}>{children}</div>
+            </div>
+        </Fade>
+    );
+};
+
+Section.propTypes = {
+    label: PropTypes.string,
+    children: PropTypes.array
+};
+export default Section;

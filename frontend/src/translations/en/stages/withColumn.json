@@ -5,7 +5,7 @@
     },
     "description": {
         "name": "Description",
-        "value1": "'withColumn' stage gives the user an ability to perform the following operations with data:",
+        "value1": "'Add/Update Column' stage gives the user an ability to perform the following operations with data:",
         "value2": "1. Adding a new column to dataframe.",
         "value3": "2. Changing value of an existing column. ",
         "value4": "3. Deriving new column from an existing column.",

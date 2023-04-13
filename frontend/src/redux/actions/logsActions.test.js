@@ -40,15 +40,14 @@ describe('Logs action', () => {
         it('should dispatch FETCH_LOGS_START', () => {
             fetchJobLogs()(dispatch);
             expect(dispatch).toHaveBeenCalledWith({
-                type: FETCH_LOGS_START,
-                payload: false
+                type: FETCH_LOGS_START
             });
         });
 
         it('should dispatch FETCH_LOGS_SUCCESS on success', () => {
             return fetchJobLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_LOGS_START, payload: false }],
+                    [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_SUCCESS, payload: data }]
                 ]);
             });
@@ -58,7 +57,7 @@ describe('Logs action', () => {
             jest.spyOn(apiJobs, 'getJobLogs').mockRejectedValue({});
             return fetchJobLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_LOGS_START, payload: false }],
+                    [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_FAIL, payload: { error: {} } }]
                 ]);
             });
@@ -76,15 +75,14 @@ describe('Logs action', () => {
         it('should dispatch FETCH_LOGS_START', () => {
             fetchContainerLogs()(dispatch);
             expect(dispatch).toHaveBeenCalledWith({
-                type: FETCH_LOGS_START,
-                payload: false
+                type: FETCH_LOGS_START
             });
         });
 
         it('should dispatch FETCH_LOGS_SUCCESS on success', () => {
             return fetchContainerLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_LOGS_START, payload: false }],
+                    [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_SUCCESS, payload: data }]
                 ]);
             });
@@ -94,7 +92,7 @@ describe('Logs action', () => {
             jest.spyOn(apiPipelines, 'getPipelineLogs').mockRejectedValue({});
             return fetchContainerLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_LOGS_START, payload: false }],
+                    [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_FAIL, payload: { error: {} } }]
                 ]);
             });
@@ -117,15 +115,14 @@ describe('Logs action', () => {
         it('should dispatch FETCH_LOGS_START', () => {
             fetchJobHistoryLogs()(dispatch);
             expect(dispatch).toHaveBeenCalledWith({
-                type: FETCH_LOGS_START,
-                payload: false
+                type: FETCH_LOGS_START
             });
         });
 
         it('should dispatch FETCH_LOGS_SUCCESS on success', () => {
             return fetchJobHistoryLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_LOGS_START, payload: false }],
+                    [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_SUCCESS, payload: data }]
                 ]);
             });
@@ -135,7 +132,7 @@ describe('Logs action', () => {
             jest.spyOn(apiJobs, 'getJobHistoryLogs').mockRejectedValue({});
             return fetchJobHistoryLogs()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
-                    [{ type: FETCH_LOGS_START, payload: false }],
+                    [{ type: FETCH_LOGS_START }],
                     [{ type: FETCH_LOGS_FAIL, payload: { error: {} } }]
                 ]);
             });

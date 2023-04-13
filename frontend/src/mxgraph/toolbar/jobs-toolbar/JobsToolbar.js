@@ -161,6 +161,7 @@ export const JobsToolbar = ({
                 setDirty={setDirty}
                 refresh={() => getStatus(currentProject, currentJob)}
                 undoButtonsDisabling={undoButtonsDisabling}
+                status={stats}
             />
         </>
     );

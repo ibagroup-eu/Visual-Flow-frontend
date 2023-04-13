@@ -20,5 +20,6 @@
 import PropertyList from './PropertyList';
 
 export { default as PairsList } from './PairsList';
+export { default as PropertyListModal } from './PropertyListModal';
 
 export default PropertyList;

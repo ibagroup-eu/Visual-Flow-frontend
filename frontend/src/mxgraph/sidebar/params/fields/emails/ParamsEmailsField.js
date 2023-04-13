@@ -47,6 +47,7 @@ export const ParamsEmailsField = ({
 
     useEffect(() => {
         isEmpty(value) && currentUserEmail && handleChange([currentUserEmail]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

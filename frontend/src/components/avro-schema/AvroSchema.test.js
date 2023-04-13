@@ -30,7 +30,7 @@ import { omit } from 'lodash';
 describe('AvroSchema', () => {
     const init = props => {
         const defaultProps = {
-            onChange: jest.fn(),
+            onSave: jest.fn(),
             schemaFields: [
                 {
                     name: 'Field_1',
@@ -226,7 +226,8 @@ describe('AvroSchema', () => {
 
     it('should remove a row', () => {
         const defaultProps = {
-            onChange: jest.fn(),
+            setIsValid: jest.fn(),
+            onSave: jest.fn(),
             schemaFields: [
                 {
                     name: 'Field_1',
@@ -255,7 +256,8 @@ describe('AvroSchema', () => {
 
     it('should add a row', () => {
         const defaultProps = {
-            onChange: jest.fn(),
+            onSave: jest.fn(),
+            setIsValid: jest.fn(),
             schemaFields: [
                 {
                     name: 'Field_1',
@@ -284,7 +286,8 @@ describe('AvroSchema', () => {
 
     it('should move up', () => {
         const defaultProps = {
-            onChange: jest.fn(),
+            setIsValid: jest.fn(),
+            onSave: jest.fn(),
             schemaFields: [
                 {
                     name: 'Field_1',
@@ -316,7 +319,8 @@ describe('AvroSchema', () => {
 
     it('should move down', () => {
         const defaultProps = {
-            onChange: jest.fn(),
+            setIsValid: jest.fn(),
+            onSave: jest.fn(),
             schemaFields: [
                 {
                     name: 'Field_1',

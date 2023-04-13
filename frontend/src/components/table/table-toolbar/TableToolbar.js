@@ -26,9 +26,10 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import styles from './TableToolbar.Styles';
-import Action from '../action';
 import TableSort from '../table-sort';
+import ActionButton from '../../action-button';
 
 export const TableToolbar = ({
     selected = [],
@@ -49,6 +50,7 @@ export const TableToolbar = ({
     classes
 }) => {
     const numSelected = selected?.length || 0;
+    const { t } = useTranslation();
 
     return (
         <Toolbar className={classes.root} disableGutters>
@@ -62,7 +64,7 @@ export const TableToolbar = ({
                     />
                     {numSelected > 0 ? (
                         actions?.map(({ onClick, title, ...rest }) => (
-                            <Action
+                            <ActionButton
                                 key={title}
                                 title={title}
                                 {...rest}
@@ -83,6 +85,7 @@ export const TableToolbar = ({
                 <Grid item xs="auto">
                     <TablePagination
                         labelRowsPerPage={labelRowsPerPage}
+                        labelDisplayedRows={args => t('main:pagination.of', args)}
                         rowsPerPageOptions={rowsPerPageOptions}
                         component="div"
                         count={rowCount}

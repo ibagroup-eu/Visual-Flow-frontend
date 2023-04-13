@@ -42,7 +42,7 @@ export const ProfilePageModal = ({ display, onClose, title, userInfo }) => {
     const values = [
         userInfo?.username,
         userInfo?.displayName,
-        userInfo?.emails[0].value,
+        userInfo?.emails?.[0].value,
         userInfo?.accessToken && (
             <CopyToClipboard text={userInfo?.accessToken}>
                 <IconButton className={classes.token}>

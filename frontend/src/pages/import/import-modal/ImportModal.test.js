@@ -20,7 +20,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { Button, TablePagination, Checkbox, Grid } from '@material-ui/core';
-//import { TransformOutlinedIcon, Timeline } from '@material-ui/icons';
 import ImportModal from './ImportModal';
 import PopupForm from '../../../components/popup-form';
 
@@ -37,11 +36,11 @@ describe('Import modal', () => {
                 { kind: 'WorkflowTemplate', metadata: { name: 'job2' } },
                 { kind: 'default', metadata: { name: 'job3' } }
             ],
-            pipelines: [],
+            pipelines: [{ kind: 'WorkflowTemplate', metadata: { name: 'pipe1' } }],
             onClose: jest.fn(),
             importResources: jest.fn(),
             t: jest.fn(),
-            existedList: [{ id: 'job1' }],
+            existedList: [{ id: 'pipe1' }],
             confirmationWindow: jest.fn()
         };
 
@@ -131,9 +130,6 @@ describe('Import modal', () => {
 
     it('should show confirmation window', () => {
         wrapper = mount(<ImportModal {...defaultProps} />);
-        const [_, __, ___, grid] = wrapper.find(Grid).map(cb => cb);
-        grid.simulate('click');
-
         const [importButton] = wrapper.find(Button).map(button => button);
         importButton.simulate('click');
         expect(defaultProps.confirmationWindow).toHaveBeenCalled();

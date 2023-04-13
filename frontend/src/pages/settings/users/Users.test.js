@@ -41,7 +41,7 @@ describe('Users', () => {
             ],
             loadingUsers: true,
             roles: ['vf-admin', 'vf-editor', 'vf-operator'],
-            loadingRoles: false,
+            loading: false,
             getRoles: jest.fn(),
             getProjectUsers: jest.fn(),
             projectUsers: { grants: { name1: 'vf-editor' } },
@@ -58,6 +58,7 @@ describe('Users', () => {
     });
 
     it('should render PageSkeleton', () => {
+        wrapper = shallow(<Users {...props} loading={true} />);
         expect(wrapper.find(PageSkeleton)).toHaveLength(1);
     });
 

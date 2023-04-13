@@ -61,6 +61,7 @@ export const Zoom = ({ graph, zoomVal, zoom, setZoomVal, panning, setPan }) => {
             setZoomVal(1);
             setPan(false);
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 

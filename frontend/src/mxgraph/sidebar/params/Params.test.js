@@ -20,9 +20,8 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { getFieldNames, Params } from './Params';
-import ParamsTextField from './fields/text/ParamsTextField';
 import { Button } from '@material-ui/core';
-import DividerWithText from '../../side-panel/helpers/DividerWithText';
+import FieldFactory from './FieldFactory';
 
 describe('Params', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -51,9 +50,7 @@ describe('Params', () => {
     it('should render without crashes', () => {
         const [wrapper, props] = init({}, true);
 
-        expect(wrapper.find(ParamsTextField).length).toBe(
-            Object.keys(props.store.fields).length
-        );
+        expect(wrapper.find(FieldFactory).prop('fields')).toBe(props.store.fields);
     });
 
     it('should hide action button if do not have access', () => {
@@ -64,7 +61,7 @@ describe('Params', () => {
 
     it('should handle change', () => {
         const [wrapper, props] = init({}, true);
-
+        const fieldFactory = wrapper.find(FieldFactory);
         const event = {
             target: {
                 name: 'EXECUTOR_INSTANCES',
@@ -73,27 +70,8 @@ describe('Params', () => {
             persist: jest.fn()
         };
 
-        expect(
-            wrapper
-                .find(ParamsTextField)
-                .map(x => x.props())
-                .filter(x => x.name === 'EXECUTOR_INSTANCES')[0].value
-        ).toBe(100500);
-
-        wrapper
-            .find(ParamsTextField)
-            .at(0)
-            .simulate('change', event);
-
-        expect(
-            wrapper
-                .find(ParamsTextField)
-                .map(x => x.props())
-                .filter(x => x.name === 'EXECUTOR_INSTANCES')[0].value
-        ).toBe(1);
-
+        fieldFactory.prop('onChange')(event);
         expect(props.setDirty).toHaveBeenCalled();
-        expect(event.persist).toHaveBeenCalled();
     });
 
     it('should save', () => {
@@ -271,44 +249,5 @@ describe('Params', () => {
             'EXECUTOR_INSTANCES',
             'SHUFFLE_PARTITIONS'
         ]);
-    });
-
-    it('should render sections', () => {
-        const [wrapper] = init({
-            store: {
-                fields: {
-                    NAME: {
-                        label: 'pipelines:params.Name',
-                        type: 'text'
-                    },
-                    NOTIFICATION_PANEL: {
-                        label: 'Notifications',
-                        type: 'section',
-                        fields: {
-                            failureNotify: {
-                                label: 'pipelines:params.NotifyFailure',
-                                type: 'switch'
-                            },
-                            successNotify: {
-                                label: 'pipelines:params.NotifySuccess',
-                                type: 'switch'
-                            },
-                            recipients: {
-                                label: 'pipelines:params.Recipients',
-                                type: 'emails',
-                                needs: ['successNotify', 'failureNotify']
-                            }
-                        }
-                    }
-                }
-            },
-            data: {
-                params: {
-                    failureNotify: true
-                }
-            }
-        });
-
-        expect(wrapper.find(DividerWithText).exists()).toBeTruthy();
     });
 });

@@ -67,6 +67,7 @@ export const EnhancedTable = ({
 
     useEffect(() => {
         setTableOrderBy(orderBy, order);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { t } = useTranslation();
@@ -86,25 +87,21 @@ export const EnhancedTable = ({
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const items = data
-                ?.filter(
-                    item =>
-                        item.pipelineInstances === undefined ||
-                        item.pipelineInstances?.length === 0
-                )
-                .map(item => item.id);
+            const items = data.filter(
+                item => item.pipelineId === null || item.pipelineId === undefined
+            );
             setSelected(items);
         } else {
             setSelected([]);
         }
     };
 
-    const handleClick = (event, id) => {
-        const selectedIndex = selected.indexOf(id);
+    const handleClick = (event, item) => {
+        const selectedIndex = selected.indexOf(item);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
+            newSelected = newSelected.concat(selected, item);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -119,7 +116,7 @@ export const EnhancedTable = ({
         setSelected(newSelected);
     };
 
-    const isSelected = id => selected.indexOf(id) !== -1;
+    const isSelected = item => selected.indexOf(item) !== -1;
 
     return (
         <>
@@ -127,8 +124,8 @@ export const EnhancedTable = ({
                 rowCount={data?.length}
                 selected={selected}
                 onSelectAllClick={handleSelectAllClick}
-                actions={actions}
-                labelRowsPerPage={labelRowsPerPage}
+                actions={typeof actions === 'function' ? actions(selected) : actions}
+                labelRowsPerPage={labelRowsPerPage || t('main:pagination.Rows')}
                 rowsPerPageOptions={rowsPerPageOptions}
                 rowsPerPage={rowsPerPage}
                 page={page}
@@ -158,7 +155,7 @@ export const EnhancedTable = ({
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map(item => {
-                                    const checked = isSelected(item.id);
+                                    const checked = isSelected(item);
                                     return (
                                         <Paper
                                             component={TableRow}
@@ -170,7 +167,7 @@ export const EnhancedTable = ({
                                                 item,
                                                 checked,
                                                 onClick: event =>
-                                                    handleClick(event, item.id)
+                                                    handleClick(event, item)
                                             })}
                                         </Paper>
                                     );
@@ -189,7 +186,7 @@ export const EnhancedTable = ({
 
 EnhancedTable.propTypes = {
     data: PropTypes.array,
-    actions: PropTypes.arrayOf(PropTypes.object),
+    actions: PropTypes.oneOfType([PropTypes.func, PropTypes.array]),
     orderColumns: PropTypes.array,
     children: PropTypes.func,
     filter: PropTypes.object,
@@ -209,7 +206,6 @@ EnhancedTable.propTypes = {
 };
 
 EnhancedTable.defaultProps = {
-    labelRowsPerPage: 'Rows:',
     rowsPerPageOptions: [5, 10, 25, 50],
     setTableOrderBy: noop
 };

@@ -49,6 +49,7 @@ const NumberField = ({
             };
             handleInputChange(event);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

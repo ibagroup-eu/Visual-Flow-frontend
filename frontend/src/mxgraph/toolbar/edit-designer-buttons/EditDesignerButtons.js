@@ -22,6 +22,8 @@ import PropTypes from 'prop-types';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { Undo, Redo, Delete, Refresh } from '@material-ui/icons';
 import { has } from 'lodash';
+import { PENDING, RUNNING } from '../../constants';
+import AutoRefreshButton from '../auto-refresh-button';
 
 const PIPELINE = 'PIPELINE';
 
@@ -37,7 +39,8 @@ const EditDesignerButtons = ({
     t,
     undoButtonsDisabling,
     setCurrentCell,
-    type
+    type,
+    status
 }) => (
     <>
         {editable && (
@@ -88,11 +91,17 @@ const EditDesignerButtons = ({
             </>
         )}
         {has(data, 'editable') && (
-            <IconButton aria-label="refreshIcon" onClick={refresh}>
-                <Tooltip title={t('jobs:tooltip.Refresh')} arrow>
-                    <Refresh />
-                </Tooltip>
-            </IconButton>
+            <>
+                <IconButton aria-label="refreshIcon" onClick={refresh}>
+                    <Tooltip title={t('jobs:tooltip.Refresh')} arrow>
+                        <Refresh />
+                    </Tooltip>
+                </IconButton>
+                <AutoRefreshButton
+                    onRefresh={refresh}
+                    isRunning={[PENDING, RUNNING].includes(status)}
+                />
+            </>
         )}
     </>
 );
@@ -109,7 +118,8 @@ EditDesignerButtons.propTypes = {
     t: PropTypes.func,
     undoButtonsDisabling: PropTypes.object,
     setCurrentCell: PropTypes.func,
-    type: PropTypes.string
+    type: PropTypes.string,
+    status: PropTypes.string
 };
 
 export default EditDesignerButtons;

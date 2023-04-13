@@ -109,7 +109,7 @@ const getStrategyConfig = () => {
             clientID: CONFIG.AUTH.PROVIDER.GITHUB.APP_ID,
             clientSecret: CONFIG.AUTH.PROVIDER.GITHUB.APP_SECRET,
             callbackURL: CONFIG.AUTH.PROVIDER.GITHUB.CALLBACK_URL,
-            baseURL: CONFIG.AUTH.PROVIDER.GITHUB.BASE_URL
+            authorizationURL: CONFIG.AUTH.PROVIDER.GITHUB.BASE_URL
         },
         verify
     );

@@ -18,8 +18,8 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Button, TextField } from '@material-ui/core';
+import { mount, shallow } from 'enzyme';
+import { Button, Switch } from '@material-ui/core';
 import ValidateConfiguration from './ValidateConfiguration';
 import ValidateModal from './validate-modal';
 
@@ -44,9 +44,11 @@ describe('ValidateConfiguration', () => {
     });
 
     it('should call onChange prop', () => {
-        wrapper.find(TextField).prop('onChange')({
+        wrapper = mount(<ValidateConfiguration {...props} />);
+        wrapper.find(Switch).prop('onChange')({
             target: { name: 'isError', value: 'false' }
         });
+        expect(props.onChange).toHaveBeenCalled();
     });
 
     it('should call onClose prop', () => {

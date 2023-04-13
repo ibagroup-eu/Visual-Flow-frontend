@@ -327,7 +327,7 @@ const RenderJobConfiguration = ({
 
     useEffect(() => {
         setPanelDirty(!isEqual(configuration, state));
-    }, [state]);
+    }, [state, configuration, setPanelDirty]);
 
     if (state.operation) {
         const { component: Component, props } = jobsConfigurationComponents[

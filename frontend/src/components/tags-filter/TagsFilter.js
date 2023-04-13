@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
     Box,
@@ -53,34 +53,25 @@ const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [expand, setExpand] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-    const [lastSearchValue, setLastSearchValue] = useState('');
     const [expandSize, onExpandSize] = useState(0);
-    const arrayData = Object.entries(data);
+    const arrayData = useMemo(() => Object.entries(data), [data]);
     const [filterTags, setFilterTags] = useState(
         filteringTags(arrayData, searchValue)
     );
     const [foundTags, otherTags] = filterTags;
 
     useEffect(() => {
-        setFilterTags(filteringTags(arrayData, searchValue || lastSearchValue));
-    }, [checkedTags, searchValue, lastSearchValue]);
+        setFilterTags(filteringTags(arrayData, searchValue));
+    }, [arrayData, searchValue]);
 
     const onSearch = event => {
         setSearchValue(event.target.value);
-        if (lastSearchValue) {
-            setLastSearchValue('');
-        }
     };
 
     const handleClick = event => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
-        if (searchValue) {
-            setLastSearchValue(searchValue);
-        }
-        if (anchorEl === null) {
-            setSearchValue('');
-            setExpand(false);
-        }
+        setSearchValue('');
+        setExpand(false);
     };
 
     const menuContent = ({ TransitionProps }) => (
@@ -100,7 +91,7 @@ const TagsFilter = ({ data, onCheckTags, resetTags, checkedTags }) => {
                             placeholder={t('main:searchByTags')}
                         />
                         <Box className={classes.tags}>
-                            {(searchValue || lastSearchValue).trim() && (
+                            {searchValue.trim() && (
                                 <Box
                                     className={
                                         otherTags.length !== 0

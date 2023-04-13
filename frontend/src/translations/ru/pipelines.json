@@ -1,0 +1,39 @@
+{
+    "Progress": "Progress",
+    "tooltip": {
+        "Play": "Run",
+        "Stop": "Stop",
+        "Copy": "Copy",
+        "pipelineDesigner": "Pipeline Designer",
+        "Remove": "Remove",
+        "Remove selected": "Remove selected",
+        "Cron": "Cron",
+        "Scheduling": "Scheduling",
+        "OnOff": "On/Off",
+        "History": "History",
+        "Suspend": "Suspend",
+        "Resume": "Resume"
+    },
+    "changesNotSaved": "Please save pipeline changes to change cron",
+    "confirm": {
+        "delete": "Are you sure you want to delete {{name}} pipeline(s)?"
+    },
+    "params": {
+        "Name": "Name",
+        "NotifyFailure": "Notify about failure",
+        "NotifySuccess": "Notify about success",
+        "Recipients": "Recipients",
+        "Slack": "Slack",
+        "Email": "Email",
+        "Channels": "Channel",
+        "SlackNicknames": "Slack Nickname(s)",
+        "NotificationsPanel": "Notifications",
+        "Tags": "Tags",
+        "TagsHint": "Tag your job to categorize it"
+    },
+    "relatedJobs": "Export related jobs",
+    "importPipelinesNote": "Uncheck the pipeline if you want to export separate jobs",
+    "cronInfo": {
+        "nextAt": "Next at"
+    }
+}

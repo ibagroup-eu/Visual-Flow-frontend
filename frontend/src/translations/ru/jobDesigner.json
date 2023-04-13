@@ -1,0 +1,358 @@
+{
+    "jobTitle": "Job Designer - {{name}}",
+    "pipelineTitle": "Pipeline Designer - {{name}}",
+    "PALETTE": "PALETTE",
+    "PARAMS": "PARAMS",
+    "Parameter": "Parameter",
+    "untitled": "Untitled*",
+    "palette": {
+        "READ": "Read",
+        "WRITE": "Write",
+        "JOIN": "Join",
+        "GROUP": "Group By",
+        "REMOVE_DUPLICATES": "Remove\nDuplicates",
+        "FILTER": "Filter",
+        "TRANSFORM": "Transformer",
+        "UNION": "Union",
+        "CDC": "Change\nData Capture",
+        "JOB": "Job",
+        "PIPELINE": "Pipeline",
+        "WAIT": "Wait",
+        "NOTIFICATION": "Notification",
+        "CONTAINER": "Container",
+        "CACHE": "Cache",
+        "SLICE": "Slice",
+        "PIVOT": "Pivot",
+        "SORT": "Sort",
+        "STRING": "String\nFunctions",
+        "VALIDATE": "Validate",
+        "WITH_COLUMN": "Add/Update\nColumn",
+        "DATETIME": "Date/Time",
+        "HANDLE_NULL": "Drop/Fill\nNulls"
+    },
+    "readConfiguration": {
+        "Name": "Name",
+        "Storage": "Storage",
+        "writeMode": "Write mode",
+        "anonymousAccess": "Anonymous access",
+        "customSql": "Custom SQL",
+        "optiondbtable": "SQL statement",
+        "authType": "Authentication type",
+        "iamApiKey": "IAM api key",
+        "iamServiceId": "IAM service id",
+        "endpoint": "Endpoint",
+        "accessKey": "Access key",
+        "secretKey": "Secret key",
+        "bucket": "Bucket",
+        "path": "Path in bucket",
+        "jdbcUrl": "JDBC URL",
+        "user": "User",
+        "username": "Username",
+        "password": "Password",
+        "schema": "Schema",
+        "table": "Table",
+        "certData": "CertData",
+        "Fileformat": "File format",
+        "port": "Port",
+        "ssl": "SSL",
+        "nodes": "Nodes",
+        "index": "Index",
+        "database": "Database",
+        "collection": "Collection",
+        "host": "Host",
+        "keyspace": "Keyspace",
+        "pushdownEnabled": "Push down enabled",
+        "cluster": "Cluster (optional)",
+        "model": "Model",
+        "keyColumn": "Key column",
+        "readMode": "Read mode",
+        "keysPattern": "Keys pattern",
+        "binary": "Binary",
+        "hash": "Hash",
+        "ttl": "TTL",
+        "extraCopyOptions": "Extra copy options",
+        "query": "Query",
+        "quantity": "Quantity",
+        "tableName": "Table name",
+        "truncateMode": "Truncate Mode",
+        "Type": "Type",
+        "SchemaRead": "Schema on read",
+        "filePath": "File Path",
+        "fileName": "File Name",
+        "file": "File",
+        "subscribe": "Topic Name",
+        "truststore": "Certificate (optional)"
+    },
+    "writeConfiguration": {
+        "Header": "Header",
+        "Delimiter": "Delimiter",
+        "PartitionBy": "Partition By"
+    },
+    "unionConfiguration": {
+        "Name": "Name",
+        "Mode": "Mode",
+        "all": "All values",
+        "distinct": "Distinct"
+    },
+    "groupByConfiguration": {
+        "GroupBy": "Group By",
+        "DropGroupingColumns": "Drop grouping columns",
+        "AggregateFunctions": "Aggregate functions"
+    },
+    "edgeConfiguration": {
+        "Successpath": "Success path"
+    },
+    "joinConfiguration": {
+        "Name": "Name",
+        "JoinType": "Join type",
+        "LinkOrdering": "Link Ordering",
+        "Left": "Left",
+        "Right": "Right",
+        "Key": "Key"
+    },
+    "sliceConfiguration": {
+        "Name": "Name",
+        "Mode": "Mode",
+        "Columns": "Columns",
+        "keep": "Keep",
+        "drop": "Drop"
+    },
+    "pivotConfiguration": {
+        "Name": "Name",
+        "operationType": "Operation Type",
+        "option": {
+            "groupBy": "GroupBy",
+            "pivotColumns": "Pivot Columns",
+            "unpivotColumns": "Unpivot Columns",
+            "unpivotNames": "Unpivot Names",
+            "unchangedColumns": "Unchanged Columns",
+            "pivotValues": "Pivot Values",
+            "aggregation": "Aggregate function and Column"
+        },
+        "pivot": "pivot",
+        "unpivot": "unpivot",
+        "aggregation": "Aggregate function and Column"
+    },
+    "stringFunctionsConfiguration": {
+        "Name": "Name",
+        "OperationType": "Operation Type",
+        "SourceColumn": "Source Column",
+        "TargetColumn": "Target Column",
+        "Separator": "Separator",
+        "Charset": "Charset for decode",
+        "FormatNumber": "Decimal Places",
+        "FormatString": "Printf-style String",
+        "Substring": "Substring searched for",
+        "Position": "Position",
+        "Length": "Length",
+        "Pad": "String placeholder",
+        "Regex": "Regex string for searching",
+        "Limit": "Limit",
+        "trimString": "Character string for trim",
+        "groupIndex": "Ingex of regex group",
+        "RepeatNumber": "Number of repetitions",
+        "Delimiter": "Delimiter",
+        "Count": "Count"
+    },
+    "RemoveDuplConfiguration": {
+        "Key": "Key",
+        "OrderBy": "Order By"
+    },
+    "CDCConfiguration": {
+        "Name": "Name",
+        "LinkOrdering": "Link Ordering",
+        "After": "After",
+        "Before": "Before",
+        "Key": "Key",
+        "Mode": "Mode"
+    },
+    "transformConfiguration": {
+        "Name": "Name",
+        "Output": "Output",
+        "Placeholder": "column_name AS alias_name",
+        "Mode": "Mode",
+        "simple": "Simple",
+        "fullSql": "Full SQL",
+        "tableName": "Table name"
+    },
+    "filterConfiguration": {
+        "Name": "Name",
+        "Filter": "Filter"
+    },
+    "notificationConfiguration": {
+        "Name": "Name",
+        "Addressees": "To",
+        "Message": "Message"
+    },
+    "cacheConfiguration": {
+        "Name": "Name",
+        "useDisk": "Use disk",
+        "useMemory": "Use memory",
+        "useOffHeap": "Use off heap",
+        "deserialized": "Deserialized",
+        "replication": "Replication"
+    },
+    "sortConfiguration": {
+        "Name": "Name",
+        "SortType": "Sort type",
+        "OrderColumns": "Order columns"
+    },
+    "withColumnConfiguration": {
+        "Name": "Name",
+        "operationType": "Operation Type",
+        "Column": "Column",
+        "expression": "Expression",
+        "columnType": "Column Type",
+        "constant": "Constant",
+        "columnName": "Column Name",
+        "conditions": "Conditions",
+        "otherwise": "Otherwise",
+        "windowFunction": "Window Function",
+        "orderBy": "Order By",
+        "partitionBy": "Partition By",
+        "column": "Columns",
+        "n": "Number of buckets",
+        "offset": "Offset",
+        "defaultValue": "Default Value",
+        "deriveColumn": "deriveColumn",
+        "addConstant": "addConstant",
+        "changeType": "changeType",
+        "renameColumn": "renameColumn",
+        "useConditions": "useConditions",
+        "useWindowFunction": "useWindowFunction"
+    },
+    "kafkaConfiguration": {
+        "bootstrapServers": "Kafka Bootstrap Server URLs",
+        "hint": "Enter a comma-separated list of bootstrap server URLs including the port number.",
+        "option.kafka.ssl.truststore.location": "File path",
+        "configureOptions": "Configure Options",
+        "editOptions": "Edit Options",
+        "options": "Options"
+    },
+    "Zoom": {
+        "Zoom": "Zoom",
+        "In": "Zoom in",
+        "Out": "Zoom out",
+        "Restore": "Restore",
+        "Select": "Select",
+        "Move": "Move"
+    },
+    "dateTimeConfiguration": {
+        "operationType": "Operation Type",
+        "option": {
+            "sourceColumn": "Source Column",
+            "targetColumn": "Target Column",
+            "format": "Date Format",
+            "numMonths": "Number of Months",
+            "days": "Number of Days",
+            "startColumn": "Start Date Column",
+            "endColumn": "End Date Column",
+            "roundOff": "Round Off",
+            "dayOfWeek": "Day of Week"
+        }
+    },
+    "handleNullConfiguration": {
+        "Mode": "Mode",
+        "DropType": "Drop Type",
+        "DropChoice": "Drop Choice",
+        "DropColumns": "Drop Columns",
+        "fillValueType": "Fill Value Type",
+        "fillChoice": "Fill Choice",
+        "fillValues": "Fill Values",
+        "fillColumns": "Fill Columns",
+        "fillStrategy": "Fill Strategy",
+        "DROP": "Drop",
+        "fill": "Fill",
+        "fillNulls": "Fill nulls"
+    },
+    "Path": "Path",
+    "Configuration": "Configuration",
+    "STAGE": "STAGE",
+    "Column": "Column",
+    "Value": "Value",
+    "Function": "Func",
+    "avroSchema": {
+        "useSchema": {
+            "name": "Schema"
+        },
+        "modal": {
+            "title": "Avro schema"
+        },
+        "fields": {
+            "name": "Name",
+            "type": "Type",
+            "nullable": "Nullable"
+        },
+        "validation": {
+            "duplicatedRow": "Duplicated row"
+        },
+        "search": {
+            "placeholder": "Search ..."
+        }
+    },
+    "FileState": {
+        "Download": "Download",
+        "Upload": "Upload",
+        "Loading": "Loading"
+    },
+    "Dataframe": {
+        "modal": {
+            "title": "Dataframe"
+        },
+        "toolbar": {
+            "addColumn": "Add column",
+            "addRow": "Add row",
+            "remove": "Remove",
+            "columns": "Columns"
+        },
+        "columnMenu": {
+            "unsort": "Unsort",
+            "rename": "Rename",
+            "hide": "Hide",
+            "delete": "Delete"
+        },
+        "addColumn": {
+            "columnName": "Column Name",
+            "columnType": "Column Type",
+            "add": "Add",
+            "rename": "Rename"
+        },
+        "columns": {
+            "findColumn": "Find Column",
+            "columnTitle": "Column Title",
+            "showAll": "Show all",
+            "hideAll": "Hide all"
+        }
+    },
+    "Validate": {
+        "isError": "Fail job on validation error",
+        "modal": {
+            "addValidation": "Add Validation",
+            "editValidation": "Edit Validation"
+        },
+        "toolbar": {
+            "column": "column"
+        },
+        "columnMenu": {
+            "rename": "Rename",
+            "delete": "Delete"
+        },
+        "header": {
+            "type": "TYPE",
+            "parameter": "PARAMETER"
+        },
+        "popupMenu": {
+            "columnName": "Column Name",
+            "ok": "Ok",
+            "type": "Type",
+            "values": "Values"
+        }
+    },
+    "stagePopupMenu": {
+        "editStage": "Редактировать stage",
+        "copyStage": "Копировать stage",
+        "deleteStage": "Удалить stage",
+        "pasteStage": "Вставить stage",
+        "deleteConnection": "Удалить подключение"
+    }
+}

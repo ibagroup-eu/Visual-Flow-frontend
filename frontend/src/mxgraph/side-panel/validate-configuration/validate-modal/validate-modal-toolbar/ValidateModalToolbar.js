@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import {
@@ -51,16 +51,19 @@ const ValidateModalToolbar = ({
         findIndex(validationState, ['column', columnName.trim()]) !== -1 &&
         !!anchorEl;
 
-    const onAddColumn = event => {
-        setColumnName(renameColumn || '');
-        setAnchorEl(event.currentTarget);
-    };
+    const onAddColumn = useCallback(
+        event => {
+            setColumnName(renameColumn || '');
+            setAnchorEl(event.currentTarget);
+        },
+        [renameColumn]
+    );
 
     useEffect(() => {
         if (renameColumnIndex !== null) {
             onAddColumn({ currentTarget: buttonRef.current });
         }
-    }, [renameColumnIndex]);
+    }, [renameColumnIndex, onAddColumn]);
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -89,6 +92,7 @@ const ValidateModalToolbar = ({
             <TableRow>
                 <TableCell className={classes.cell}>
                     <Button
+                        autoFocus
                         className={classes.addButton}
                         ref={buttonRef}
                         disabled={!editable}

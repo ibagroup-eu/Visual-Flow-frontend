@@ -115,36 +115,45 @@ const JobsTable = ({
 
     const statuses = JOB_STATUSES.map(resolveStatus);
 
-    const getGlobalActions = () => [
+    const getGlobalActions = items => [
         {
-            title: t('jobs:tooltip.Remove selected'),
+            title: items?.some(item => item.pipelineInstances?.length !== 0)
+                ? t('jobs:tooltip.Disable remove')
+                : t('jobs:tooltip.Remove selected'),
             Icon: DeleteIcon,
-            onClick: selected =>
+            disabled: items?.some(item => item.pipelineInstances?.length !== 0),
+            onClick: selected => {
+                const jobId = selected.map(item => item.id);
                 confirmationWindow({
                     body: t('jobs:confirm.delete', {
-                        name: joinDataNames(selected, data)
+                        name: joinDataNames(jobId, data)
                     }),
                     callback: () => {
                         removeHandler(
                             projectId,
-                            selected,
+                            jobId,
                             data.length,
                             { rowsPerPage, currentPage },
                             remove,
                             setCurrentPage
                         );
                     }
-                })
+                });
+            }
         },
         {
             title: t('jobs:tooltip.Export selected'),
             Icon: ExportIcon,
             onClick: selected => {
+                const jobId = selected.map(item => item.id);
                 setShowModal(true);
-                setSelectedJobs(selected);
+                setSelectedJobs(jobId);
             }
         }
     ];
+
+    const getPipelineInstanceStatus = item =>
+        !item.runnable ? `&status=${item.status}` : '';
 
     const getActions = item =>
         [
@@ -152,13 +161,13 @@ const JobsTable = ({
                 ? {
                       title: t('jobs:tooltip.Play'),
                       Icon: PlayArrowOutlinedIcon,
-                      disable: !item.runnable,
+                      disabled: !item.runnable,
                       onClick: () => run(projectId, item.id)
                   }
                 : {
                       title: t('jobs:tooltip.Stop'),
                       Icon: StopOutlinedIcon,
-                      disable: !!item.pipelineId,
+                      disabled: !!item.pipelineId,
                       onClick: () => stop(projectId, item.id)
                   },
             {
@@ -171,29 +180,31 @@ const JobsTable = ({
             {
                 title: t('jobs:tooltip.Logs'),
                 Icon: DescriptionOutlinedIcon,
-                disable: [DRAFT, PENDING].includes(item.status) || !item.startedAt,
+                disabled: [DRAFT, PENDING].includes(item.status) || !item.startedAt,
                 onClick: () =>
                     history.push(
-                        `/jobs/${item.id}/logs/${projId}/?backTo=jobsTable&jobName=${item.name}`
+                        `/jobs/${item.id}/logs/${projId}/?backTo=jobsTable&jobName=${
+                            item.name
+                        }${getPipelineInstanceStatus(item)}`
                     )
             },
             {
                 title: t('jobs:tooltip.Copy'),
                 Icon: FileCopyOutlinedIcon,
-                disable: !!item.pipelineId,
+                disabled: !!item.pipelineId,
                 onClick: () => copy(projectId, item.id)
             },
             {
                 title: t('jobs:tooltip.History'),
                 Icon: HistoryOutlined,
-                disable: !!item.pipelineId,
+                disabled: !!item.pipelineId,
                 visible: UnitConfig.JOB.HISTORY,
                 onClick: () => setJobHistory({ data: item, display: true })
             },
             {
                 title: t('jobs:tooltip.Remove'),
                 Icon: DeleteOutlinedIcon,
-                disable: item.pipelineInstances?.length !== 0,
+                disabled: item.pipelineInstances?.length !== 0,
                 onClick: () =>
                     confirmationWindow({
                         body: t('jobs:confirm.delete', { name: item.name }),
@@ -226,7 +237,7 @@ const JobsTable = ({
             <EnhancedTable
                 data={filterData(data, status, lastRun)}
                 actions={
-                    ableToEdit ? getGlobalActions() : getGlobalActions().slice(-1)
+                    ableToEdit ? getGlobalActions : getGlobalActions().slice(-1)
                 }
                 orderColumns={[
                     { id: 'name', name: t('main:form.Name') },
@@ -277,7 +288,7 @@ const JobsTable = ({
                 {({ item, checked, onClick }) => (
                     <>
                         <TitleCell
-                            hasInstance={item.pipelineInstances?.length !== 0}
+                            hasInstance={item.pipelineId !== null}
                             checked={checked}
                             onClick={onClick}
                             title={item.name}

@@ -27,7 +27,7 @@ import SearchInput from '../../../../components/search-input';
 import { PageSkeleton } from '../../../../components/skeleton';
 import useStyles from './ParametersModal.Styles';
 import ModalConfirmButtons from '../connections-modal/confirmButtons/ModalConfirmButtons';
-import { valueIsLink } from '../../../../components/rw-text-fields/ReadWriteTextFields';
+import { valueIsLink } from '../../../../components/rw-text-fields/ReadWriteTextField';
 import ParametersModalRow from './parameters-modal-row/ParametersModalRow';
 
 const ParametersModal = ({
@@ -55,7 +55,7 @@ const ParametersModal = ({
         setSelectedValue(linkValue);
         setProjectParameters(params);
         setSearchValue('');
-    }, [display]);
+    }, [display, linkValue, params]);
 
     const handleChangeSearch = value => {
         setSearchValue(value);

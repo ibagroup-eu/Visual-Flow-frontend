@@ -1,0 +1,487 @@
+{
+    "name": {
+        "name": "Name",
+        "value": "Provide Stage name."
+    },
+    "chooseStorage": "Choose storage",
+    "storage": {
+        "name": "Storage",
+        "value1": "Depending on the selected storage type, the corresponding parameters are displayed."
+    },
+    "note": {
+        "name": "Note",
+        "value": "Read stage can have only one outgoing arrow. If need more, you can use Cache Stage."
+    },
+    "writeMode": {
+        "name": "Write mode",
+        "value": "1. Append. Append mode means that when saving a DataFrame to a data source, if data/table",
+        "value1": "already exists, contents of the DataFrame are expected to be appended to existing data.",
+        "value2": "2. Overwrite. It means that when saving a DataFrame to a data source, if data/table already",
+        "value3": "exists, existing data is expected to be overwritten by the contents of the DataFrame.",
+        "value4": "3. Error if table exists. This mode means that when saving a DataFrame to a data source, if data",
+        "value5": "already exists, an exception is expected to be thrown."
+    },
+    "truncateModeCascade": {
+        "name": "Truncate mode",
+        "value1": "3. Cascade. The cascade truncation use to overcome fail, if the target table has a primary key",
+        "value2": "which is referenced as a foreign key in other tables. The cascade truncation that would not only",
+        "value3": "delete the data from target table, but also from other tables that use target table's primary key as a foreign key constraint."
+    },
+    "truncateMode": {
+        "name": "Truncate mode",
+        "value1": "1. None. No truncation would occur, but the target table will be deleted and recreated. Note that all ",
+        "value2": "the indexes, constraints, etc that were defined for this table will be lost.",
+        "value3": "2. Simple. The standard truncation that would delete the data from the target table in the efficient",
+        "value4": "way, but would leave table's indexes, constraints and other modifiers intact.",
+        "value5": "However note that if the target table has a primary key which is referenced as a foreign key in other tables, ",
+        "value6": "the truncation will fail. To overcome this either drop constraints manually(outside of VF) prior to accessing the table with VF."
+    },
+    "DB2": {
+        "JDBCURL": {
+            "name": "JDBC URL",
+            "value": "A database connection URL is a string that your DBMS JDBC driver uses to connect to a database.",
+            "value1": "The connection URL format for the driver is:",
+            "value2": "jdbc:database-type://hostname:port[;property=value[;...]]."
+        },
+        "user": {
+            "name": "User",
+            "value": "User name for a JDBC connection."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password for a JDBC connection."
+        },
+        "customSql": {
+            "name": "Custom SQL",
+            "value": "Displays the schema and the table fields, if you choose false. If you choose true, you will be able to write your own SQL code in the provided field."
+        },
+        "schema": {
+            "name": "Schema",
+            "value": "Schema that the table used for reading belongs to."
+        },
+        "table": {
+            "name": "Table",
+            "value": "Database table name."
+        },
+        "optionDbtable": {
+            "name": "SQL statement",
+            "value": "The code of your own SQL query.",
+            "value1": "- You have to specify both schema name and table name in your custom SQL query.",
+            "value2": "- Column names must be surrounded by double quotes.",
+            "value3": "- Any syntactic error in SQL query wouldn't be highlighted."
+        },
+        "certData": {
+            "name": "CertData (optional)",
+            "value": "Enter certification data if needed."
+        }
+    },
+    "CLICKHOUSE": {
+        "host": {
+            "name": "Host",
+            "value": "ClickHouse hostname or IP address."
+        },
+        "port": {
+            "name": "Port",
+            "value": "ClickHouse port."
+        },
+        "user": {
+            "name": "User",
+            "value": "Name of the ClickHouse user."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password of the ClickHouse user."
+        },
+        "customSql": {
+            "name": "Custom SQL",
+            "value": "Displays the schema and the table fields, if you choose false. If you choose true, you will be able to write your own SQL code in the provided field."
+        },
+        "database": {
+            "name": "Database",
+            "value": "ClickHouse database name."
+        },
+        "schema": {
+            "name": "Schema",
+            "value": "Schema that the table used for reading belongs to."
+        },
+        "table": {
+            "name": "Table",
+            "value": "Database table name."
+        },
+        "optionDbtable": {
+            "name": "SQL statement",
+            "value": "The code of your own SQL query.",
+            "value1": "- You have to specify both schema name and table name in your custom SQL query.",
+            "value2": "- Column names must be surrounded by double quotes.",
+            "value3": "- Any syntactic error in SQL query wouldn't be highlighted."
+        }
+    },
+    "COS": {
+        "authType": {
+            "name": "Authentication type",
+            "value": "Authentication type which displays accessKey and secretKey, if you choose HMAC, or iamApiKey and iamServiceId, if you choose IAM."
+        },
+        "endpoint": {
+            "name": "Endpoint",
+            "value": "The endpoint that a service will talk to, for example, 's3.us-south.objectstorage.softlayer.net'."
+        },
+        "accessKey": {
+            "name": "Access key",
+            "value": "The COS access key ID."
+        },
+        "secretKey": {
+            "name": "Secret key",
+            "value": "The COS secret access key."
+        },
+        "iamApiKey": {
+            "name": "Api key",
+            "value": "The COS IAM api key."
+        },
+        "iamServiceId": {
+            "name": "ServiceId key",
+            "value": "The COS IAM service id."
+        },
+        "bucket": {
+            "name": "Bucket",
+            "value": "Name of the basic containers for holding your data."
+        },
+        "pathInBucket": {
+            "name": "Path in bucket",
+            "value": "Path in the bucket."
+        },
+        "format": {
+            "name": "File format",
+            "value": "Spark DataFrame format.",
+            "value1": "For CSV, please, specify Header and Delimiter."
+        },
+        "partitionBy": {
+            "name": "Partition By (optional)",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
+        },
+        "avroSchema": {
+            "readName": "Schema on read",
+            "writeName": "Schema on write",
+            "value": "Avro can be used to define the data schema for a record's value.",
+            "value1": "This schema describes the fields allowed in the value, along with their data types."
+        }
+    },
+    "AWS": {
+        "anonymousAccess": {
+            "name": "Anonymous access",
+            "value": "Anonymous access which does not display accessKey and secretKey."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Whether to enable SSL connections on all supported protocols.",
+            "value1": "False by default."
+        },
+        "endpoint": {
+            "name": "Endpoint",
+            "value": "The endpoint that a service will talk to, for example, 's3.us-south.objectstorage.softlayer.net'."
+        },
+        "accessKey": {
+            "name": "Access key",
+            "value": "The AWS access key ID."
+        },
+        "secretKey": {
+            "name": "Secret key",
+            "value": "The AWS secret access key."
+        },
+        "bucket": {
+            "name": "Bucket",
+            "value": "Name of the basic containers for holding your data."
+        },
+        "pathInBucket": {
+            "name": "Path in bucket",
+            "value": "Path in the bucket."
+        },
+        "format": {
+            "name": "File format",
+            "value": "Spark DataFrame format.",
+            "value1": "For CSV, please, specify Header and Delimiter."
+        },
+        "partitionBy": {
+            "name": "Partition By (optional)",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
+        },
+        "avroSchema": {
+            "readName": "Schema on read",
+            "writeName": "Schema on write",
+            "value": "Avro can be used to define the data schema for a record's value.",
+            "value1": "This schema describes the fields allowed in the value, along with their data types."
+        }
+    },
+    "ELASTIC": {
+        "nodes": {
+            "name": "Nodes",
+            "value": "Node is an instance of an Elasticsearch where you can store, index, and search data."
+        },
+        "port": {
+            "name": "Port",
+            "value": "Port to bind to for incoming HTTP requests."
+        },
+        "user": {
+            "name": "User",
+            "value": "User name for connection."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password for connection."
+        },
+        "index": {
+            "name": "Index",
+            "value": "The index where the document resides."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Whether to enable SSL connections on all supported protocols.",
+            "value1": "False by default.",
+            "value2": "If it set to True then CertData is available, but it is optional."
+        },
+        "certData": {
+            "name": "CertData (optional)",
+            "value": "Enabled when SSL is set to True.",
+            "value1": "Enter certification data for SSL connection if needed."
+        }
+    },
+    "MONGO": {
+        "database": {
+            "name": "Database",
+            "value": "MongoDB database name."
+        },
+        "collection": {
+            "name": "Collection",
+            "value": "MongoDB collection name."
+        },
+        "host": {
+            "name": "Host",
+            "value": "MongoDB hostname or IP address."
+        },
+        "port": {
+            "name": "Port",
+            "value": "MongoDB port."
+        },
+        "user": {
+            "name": "User",
+            "value": "Name of the MongoDB user."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password of the MongoDB user."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Enables/Disables SSL connection. Does not work with self-signed certificates."
+        }
+    },
+    "CASSANDRA": {
+        "keyspace": {
+            "name": "Keyspace",
+            "value": "Name of the keyspace to connect to."
+        },
+        "table": {
+            "name": "Table",
+            "value": "Name of the table to connect to."
+        },
+        "cluster": {
+            "name": "Cluster (optional)",
+            "value": "Name of the cluster to connect to."
+        },
+        "host": {
+            "name": "Host",
+            "value": "Contact point to connect to the Cassandra cluster."
+        },
+        "port": {
+            "name": "Port",
+            "value": "Cassandra native connection port."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Enable secure connection to Cassandra cluster."
+        },
+        "username": {
+            "name": "Username",
+            "value": "Login name for password authentication."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password for password authentication."
+        },
+        "pushdownEnabled": {
+            "name": "Push down enabled",
+            "value": "Whether to use pushdown optimizations."
+        },
+        "certData": {
+            "name": "CertData (optional)",
+            "value": "Custom certificate for SSL connection."
+        }
+    },
+    "REDIS": {
+        "host": {
+            "name": "Host",
+            "value": "Host or IP of the initial node we connect to. The connector will read the cluster topology from the initial node, so there is no need to provide the rest of the cluster nodes."
+        },
+        "port": {
+            "name": "Port",
+            "value": "The initial node's TCP Redis port."
+        },
+        "password": {
+            "name": "Password",
+            "value": "The initial node's AUTH password."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Set to true to use TLS. currently it's not allowed to pass client's certificate."
+        },
+        "model": {
+            "name": "Model [binary, hash]",
+            "value": "Defines the Redis model used to persist DataFrame, default is hash."
+        },
+        "keyColumn": {
+            "name": "Key column",
+            "value": "When writing - specifies unique column used as a Redis key, by default a key is auto-generated.",
+            "value1": "When reading - specifies column name to store hash key."
+        },
+        "readMode": {
+            "name": "Read mode [key, pattern]",
+            "value": "Defines the way that the read operation would be handled. If \"key\" is selected, then the read would be done based on the \"table\" field. In case of the \"pattern\", a provided pattern(option \"keysPattern\") will dictate what Redis keys will be read."
+        },
+        "table": {
+            "name": "Table",
+            "value": "The table name is used to organize Redis keys in a namespace."
+        },
+        "keysPattern": {
+            "name": "Keys pattern",
+            "value": "Spark-Redis tries to extract the key based on the key pattern:\nif the pattern ends with * and it's the only wildcard, the trailing substring will be extracted\notherwise there is no extraction - the key is kept as is."
+        },
+        "ttl": {
+            "name": "TTL",
+            "value": "Data time to live in seconds. Data doesn't expire if TTL is less than 1. By default, it's 0."
+        }
+    },
+    "REDSHIFT": {
+        "host": {
+            "name": "Host",
+            "value": "Host of the Redshift master node."
+        },
+        "port": {
+            "name": "Port",
+            "value": "Port of the Redshift master node."
+        },
+        "database": {
+            "name": "Database",
+            "value": "Identifies a Redshift database name."
+        },
+        "user": {
+            "name": "User",
+            "value": "Credentials to access the database."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Credentials to access the database."
+        },
+        "ssl": {
+            "name": "SSL",
+            "value": "Whether Redshift connection should be secured via SSL."
+        },
+        "tempdir": {
+            "name": "Bucket",
+            "value": "A writeable location in Amazon S3, to be used for unloaded data when reading and Avro data to be loaded into Redshift when writing.",
+            "value1": "If you're using Redshift data source for Spark as part of a regular ETL pipeline, it can be useful to set a Lifecycle Policy on a bucket and use that as a temp location for this data."
+        },
+        "accessKey": {
+            "name": "Access key",
+            "value": "AWS access key, must have write permissions to the S3 bucket."
+        },
+        "secretKey": {
+            "name": "Secret key",
+            "value": "AWS secret access key corresponding to provided access key."
+        },
+        "extraCopyOptions": {
+            "name": "Extra copy options (optional)",
+            "value": "A list of extra options to append to the Redshift COPY command when loading data, e.g. TRUNCATECOLUMNS or MAXERROR n (see the Redshift docs for other options).",
+            "value1": "Note that since these options are appended to the end of the COPY command, only options that make sense at the end of the command can be used, but that should cover most possible use cases."
+        },
+        "customSql": {
+            "name": "Custom SQL",
+            "value": "Whether to read from custom query or from the table."
+        },
+        "table": {
+            "name": "Table",
+            "value": "Database table to read/write."
+        },
+        "query": {
+            "name": "Query",
+            "value": "Custom SQL query that will be loaded into DataFrame."
+        }
+    },
+    "noAdditionalFields": "There are no additional fields.",
+    "STDOUT": {
+        "description": {
+            "name": "Description",
+            "value": "The results can be seen in the logs."
+        },
+        "quantity": {
+            "name": "Quantity",
+            "value": "Number of rows that will be displayed in the logs.",
+            "value1": "The default value is 10.",
+            "value2": "The minimum value is 1.",
+            "value3": "The maximum value is 2147483631."
+        }
+    },
+    "CLUSTER": {
+        "filePath": {
+            "name": "File Path",
+            "value": "File path."
+        },
+        "fileName": {
+            "name": "File Name",
+            "value": "File name."
+        },
+        "format": {
+            "name": "File format",
+            "value": "Spark DataFrame format.",
+            "value1": "For CSV, please, specify Header and Delimiter."
+        },
+        "avroSchema": {
+            "readName": "Schema on read",
+            "writeName": "Schema on write",
+            "value": "Avro can be used to define the data schema for a record's value.",
+            "value1": "This schema describes the fields allowed in the value, along with their data types."
+        },
+        "partitionBy": {
+            "name": "Partition By (optional)",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
+        }
+    },
+    "DATAFRAME": {
+        "dataframe": {
+            "name": "Spark Dataframe",
+            "value": "Represent data as a Spark dataframe."
+        }
+    },
+    "KAFKA": {
+        "bootstrapServers": {
+            "name": "Kafka Bootstrap Server URLs",
+            "value": "Enter a comma-separated list of host and port pairs that are the addresses of the Kafka brokers in a \"bootstrap\" Kafka cluster that a Kafka client connects to initially to bootstrap itself."
+        },
+        "topicName": {
+            "name": "Topic Name",
+            "value": "Provide the name of the topic you want to read events from in your Kafka data stream. Apache Kafka uses topics to organize and durably store events. You can use the drop-down list to select the topic from the Kafka data source. You can also use the field to search for the topic name."
+        },
+        "filePath": {
+            "name": "Certificate",
+            "value": "Upload certificate."
+        },
+        "options": {
+            "name": "Options",
+            "value": "Use 'Configure Options' button to set required key/value configuration."
+        }
+    }
+}

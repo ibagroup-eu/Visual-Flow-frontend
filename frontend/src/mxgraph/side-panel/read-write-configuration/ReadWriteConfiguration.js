@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Popper, TextField } from '@material-ui/core';
@@ -41,6 +41,8 @@ import ClusterStorage from './cluster-storage';
 import DataframeStorage from './dataframe-storage/DataframeStorage';
 import ClickHouseStorage from './clickhouse-storage';
 import ConfigurationDivider from '../../../components/divider';
+import KafkaStorage from './kafka-storage';
+import ApiStorage from './api-storage';
 
 const isTruncateStorage = storage =>
     [
@@ -89,6 +91,10 @@ export const getStorageComponent = name => {
             return DataframeStorage;
         case STORAGES.CLICKHOUSE.value:
             return ClickHouseStorage;
+        case STORAGES.KAFKA.value:
+            return KafkaStorage;
+        case STORAGES.API.value:
+            return ApiStorage;
         default:
             throw new Error(`Unsupported storage: ${name}`);
     }
@@ -96,6 +102,7 @@ export const getStorageComponent = name => {
 
 const ReadWriteConfiguration = ({
     state,
+    setState,
     ableToEdit,
     onChange,
     openModal,
@@ -119,7 +126,7 @@ const ReadWriteConfiguration = ({
                 truncateModeDefaultValues.value
             );
         }
-    }, [writeMode, storage, truncateMode]);
+    }, [writeMode, storage, truncateMode, onChange]);
 
     const changeStorage = value => {
         onChange('storage', value || undefined);
@@ -133,10 +140,22 @@ const ReadWriteConfiguration = ({
         ) {
             onChange('path', null);
         }
+        if (
+            state['option.avroSchema'] &&
+            (value === 'cos' || (state.storage === 'cos' && value !== 'cos'))
+        ) {
+            onChange('option.avroSchema', null);
+        }
     };
+
+    const handleInputChange = useCallback(
+        event => onChange(event.target.name, event.target.value),
+        [onChange]
+    );
 
     const renderStorageComponent = name => {
         const Comp = getStorageComponent(name);
+
         return (
             <>
                 {state.connectionName ? (
@@ -147,9 +166,8 @@ const ReadWriteConfiguration = ({
                 <Comp
                     ableToEdit={ableToEdit}
                     inputValues={state}
-                    handleInputChange={event =>
-                        onChange(event.target.name, event.target.value)
-                    }
+                    handleInputChange={handleInputChange}
+                    setState={setState}
                     openModal={openModal}
                     connection={connection}
                     stageId={stageId}
@@ -215,7 +233,8 @@ ReadWriteConfiguration.propTypes = {
     onChange: PropTypes.func,
     openModal: PropTypes.func,
     connection: PropTypes.object,
-    stageId: PropTypes.string
+    stageId: PropTypes.string,
+    setState: PropTypes.func
 };
 
 export default ReadWriteConfiguration;

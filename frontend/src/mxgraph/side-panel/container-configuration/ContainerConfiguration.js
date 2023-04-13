@@ -65,7 +65,6 @@ const ContainerConfiguration = ({
                                 'pipelineDesigner:containerConfiguration.Image'
                             )}
                             variant="outlined"
-                            margin="normal"
                             fullWidth
                             multiline
                             name="image"
@@ -106,6 +105,7 @@ const ContainerConfiguration = ({
                     />
                     {LIMITS.map(item => (
                         <CustomTextField
+                            className={classes.customField}
                             disabled={!ableToEdit}
                             value={state[item] || ''}
                             selectValues={
@@ -132,6 +132,7 @@ const ContainerConfiguration = ({
                             inputProps={{ min: 0 }}
                             required
                             defaultTextValue="1"
+                            margin="none"
                         />
                     ))}
                     <FormControlLabel

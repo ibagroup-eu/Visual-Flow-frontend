@@ -50,6 +50,7 @@ const withPagination = WrappedComponent => props => {
 
         const sorted = search.orderBy || search.order;
         sorted && dispatch(updateOrderBy(search.orderBy, search.order));
+        //  eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -61,7 +62,7 @@ const withPagination = WrappedComponent => props => {
                 window.location.pathname + urlSearch.search
             );
         }
-    }, [urlSearch.search]);
+    }, [urlSearch.isInitial, urlSearch.search]);
 
     return <WrappedComponent {...props} />;
 };

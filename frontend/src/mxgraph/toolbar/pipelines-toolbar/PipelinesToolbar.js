@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { IconButton, Divider, Typography, Tooltip } from '@material-ui/core';
+import { Divider, IconButton, Tooltip, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { HistoryOutlined, Save } from '@material-ui/icons';
 
@@ -31,11 +31,11 @@ import Status from '../../../components/status';
 import history from '../../../utils/history';
 import {
     createPipeline,
-    updatePipeline,
+    resumePipeline,
     runPipelineAndRefreshIt,
     stopPipelineAndRefreshIt,
     suspendPipeline,
-    resumePipeline
+    updatePipeline
 } from '../../../redux/actions/pipelinesActions';
 import EditDesignerButtons from '../edit-designer-buttons';
 import LinearProgressChart from '../../../components/chart/linear';
@@ -128,10 +128,10 @@ const PipelinesToolbar = ({
     const enableViewMode = () =>
         [SUSPENDED, PENDING, RUNNING].includes(data.status) ? false : data.editable;
 
-    const pipelineRefresh = () => {
-        getActualJobs(currentProject);
-        getActualPipeline(currentProject, currentPipeline);
-    };
+    const pipelineRefresh = useCallback(() => {
+        getActualJobs(currentProject, true);
+        getActualPipeline(currentProject, currentPipeline, t, true);
+    }, [getActualJobs, getActualPipeline, currentPipeline, currentProject, t]);
 
     const changesNotSaved = () => dirty || !validStages();
 
@@ -238,6 +238,7 @@ const PipelinesToolbar = ({
                 undoButtonsDisabling={undoButtonsDisabling}
                 setCurrentCell={setCurrentCell}
                 type="PIPELINE"
+                status={statusValue}
             />
         </>
     );

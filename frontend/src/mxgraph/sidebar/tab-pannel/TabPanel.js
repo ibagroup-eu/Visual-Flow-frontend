@@ -20,11 +20,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { withStyles } from '@material-ui/core';
+import classNames from 'classnames';
 import styles from './TabPanel.Styles';
 
-export const TabPanel = ({ children, value, index, classes }) =>
+export const TabPanel = ({ type, children, value, index, classes }) =>
     value === index && (
-        <div role="tabpanel" className={classes.root}>
+        <div
+            role="tabpanel"
+            className={
+                type === 'notifications'
+                    ? classNames(classes.root, classes.notificationTabs)
+                    : classNames(classes.root, classes.sidebarTab)
+            }
+        >
             {children}
         </div>
     );
@@ -33,7 +41,8 @@ TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.any.isRequired,
     value: PropTypes.any.isRequired,
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    type: PropTypes.string
 };
 
 export default withStyles(styles)(TabPanel);

@@ -95,7 +95,7 @@ export const Parameters = ({
 
     useEffect(() => {
         projectId && getParameters(projectId);
-    }, [projectId]);
+    }, [getParameters, projectId]);
 
     const onClose = () => setPanelIsOpen(false);
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -39,22 +39,27 @@ export const JobDesigner = ({
 }) => {
     const { t } = useTranslation();
 
-    const isValidPositive = value =>
-        value > 0 ? null : t('main:validation.positive');
+    const isValidPositive = useCallback(
+        value => (value > 0 ? null : t('main:validation.positive')),
+        [t]
+    );
 
-    const isValidName = value => {
-        const reg = /^[a-z0-9]([\w\\.-]*[a-z0-9])?$/i;
-        if (!value.trim()) {
-            return t('main:validation.notBlank');
-        }
-        if (value.length > 63) {
-            return t('main:validation.incorrectJobLength');
-        }
-        if (!reg.test(value)) {
-            return t('main:validation.incorrectCharacters');
-        }
-        return null;
-    };
+    const isValidName = useCallback(
+        value => {
+            const reg = /^[a-z0-9]([\w\\.-]*[a-z0-9])?$/i;
+            if (!value.trim()) {
+                return t('main:validation.notBlank');
+            }
+            if (value.length < 3 || value.length > 63) {
+                return t('main:validation.incorrectJobLength');
+            }
+            if (!reg.test(value)) {
+                return t('main:validation.incorrectCharacters');
+            }
+            return null;
+        },
+        [t]
+    );
 
     React.useEffect(() => {
         createFields({
@@ -141,7 +146,17 @@ export const JobDesigner = ({
             getParameters(project);
             getConnections(project);
         }
-    }, [project, jobId]);
+    }, [
+        project,
+        jobId,
+        createFields,
+        t,
+        isValidName,
+        isValidPositive,
+        getJob,
+        getParameters,
+        getConnections
+    ]);
 
     return loading ? <PageSkeleton /> : <GraphDesigner type={JOB} />;
 };

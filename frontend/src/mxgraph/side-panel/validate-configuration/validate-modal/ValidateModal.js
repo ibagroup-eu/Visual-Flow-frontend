@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Button,
@@ -48,20 +48,27 @@ const toJsonString = str => {
 const ValidateModal = ({ validateConfig, onChange, display, onClose, editable }) => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const parsedValidateConfig = toJsonString(validateConfig).map(item => ({
-        ...item,
-        id: item.column,
-        validations: toJsonString(item.validations)
-    }));
+    const parsedValidateConfig = useMemo(
+        () =>
+            toJsonString(validateConfig).map(item => ({
+                ...item,
+                id: item.column,
+                validations: toJsonString(item.validations)
+            })),
+        [validateConfig]
+    );
     const [validationState, setValidationState] = useState(parsedValidateConfig);
     const [renameIndex, setRenameIndex] = useState(null);
     const lastRowRef = useRef(null);
 
     useEffect(() => {
-        if (!isEqual(parsedValidateConfig, validationState)) {
-            setValidationState(parsedValidateConfig);
-        }
-    }, [validateConfig]);
+        setValidationState(prev => {
+            if (!isEqual(parsedValidateConfig, prev)) {
+                return parsedValidateConfig;
+            }
+            return prev;
+        });
+    }, [validateConfig, parsedValidateConfig]);
 
     useEffect(() => {
         lastRowRef?.current?.scrollIntoView({

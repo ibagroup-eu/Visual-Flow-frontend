@@ -150,7 +150,7 @@ const RenderPipelineConfiguration = ({
 
     useEffect(() => {
         setPanelDirty(!isEqual(configuration, state));
-    }, [state]);
+    }, [state, configuration, setPanelDirty]);
 
     if (state.operation !== WAIT) {
         const component = pipelinesConfigurationComponents[state.operation];
