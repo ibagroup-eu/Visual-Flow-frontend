@@ -21,7 +21,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 import { Box, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import Configuration from './Configuration';
+import Configuration, { isDuplicatedName } from './Configuration';
 import SaveCancelButtons from '../buttons/SaveCancelButtons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
 import { CDC, JOIN } from '../../constants';
@@ -46,7 +46,29 @@ describe('Configuration', () => {
             swapEdges: jest.fn(),
             selectedStorage: jest.fn(),
             sidePanelIsOpen: true,
-            graph: { getSelectionCell: jest.fn(), getIncomingEdges: jest.fn() },
+            graph: {
+                getSelectionCell: jest.fn(() => ({ id: 0 })),
+                getIncomingEdges: jest.fn(),
+                getModel: jest.fn().mockReturnValue({
+                    cells: [
+                        {
+                            id: 1,
+                            value: {
+                                attributes: {
+                                    attr1: {
+                                        nodeName: 'value1',
+                                        nodeValue: 'v2'
+                                    },
+                                    name: {
+                                        nodeName: 'name',
+                                        nodeValue: 'v2'
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                })
+            },
             Component: FakeComponent,
             connections: []
         };
@@ -211,19 +233,23 @@ describe('Configuration', () => {
         const [wrapper, props] = init(
             {
                 configuration: {},
-                state: { name: 'test', value: 'test' }
+                state: { name: 'v2', value: 'test' }
             },
             true
         );
 
         expect(wrapper.find(FakeComponent).prop('state')).toEqual({
-            name: 'test',
+            name: 'v2',
             value: 'test'
         });
 
         wrapper.find(TextField).prop('onChange')({
-            target: { name: 'key_1', value: 'value_1' }
+            target: { name: 'name', value: 'v2' }
         });
+
+        expect(wrapper.find(TextField).prop('helperText')).toEqual(
+            'main:validation.projectConnections.nameDuplication'
+        );
 
         expect(props.setState).toHaveBeenCalled();
     });
@@ -264,5 +290,43 @@ describe('Configuration', () => {
         expect(props.setState).toHaveBeenCalled();
 
         expect(props.swapEdges).toHaveBeenCalled();
+    });
+
+    describe('isDuplicatedName', () => {
+        const graph = {
+            getSelectionCell: jest.fn(() => ({ id: 0 })),
+            getModel: jest.fn().mockReturnValue({
+                cells: [
+                    {
+                        id: 1,
+                        value: {
+                            attributes: {
+                                name: {
+                                    nodeName: 'name',
+                                    nodeValue: 'theSameValue'
+                                }
+                            }
+                        }
+                    }
+                ]
+            })
+        };
+        it.each([
+            {
+                stageName: 'theSameValue',
+                graph: graph,
+                expected: true
+            },
+            {
+                stageName: 'otherValue',
+                graph: graph,
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $stageName',
+            ({ stageName, graph, expected }) => {
+                expect(isDuplicatedName(stageName, graph)).toBe(expected);
+            }
+        );
     });
 });

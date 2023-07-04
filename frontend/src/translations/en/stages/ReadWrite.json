@@ -493,10 +493,6 @@
             "name": "Method",
             "value": "API method(GET, POST, PUT, DELETE, PATCH)."
         },
-        "jsonPath": {
-            "name": "JSON Path",
-            "value": "JSON path is a query language for JSON."
-        },
         "headers": {
             "name": "Headers",
             "value": "Use 'ADD HEADERS' button to set API headers in key/value format."

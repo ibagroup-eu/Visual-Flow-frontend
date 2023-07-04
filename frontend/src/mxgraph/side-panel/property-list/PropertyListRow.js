@@ -23,7 +23,7 @@ import { DeleteOutline } from '@material-ui/icons';
 import { TableCell, TableRow, TextField, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import { Autocomplete } from '@material-ui/lab';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
@@ -41,9 +41,9 @@ const PropertyListRow = ({
     options,
     fieldName,
     size,
-    classes
+    classes,
+    errors
 }) => {
-    const [errors, setErrors] = useState({});
     const buttons = [];
 
     const { t } = useTranslation();
@@ -82,10 +82,6 @@ const PropertyListRow = ({
                     value={keyName}
                     onInputChange={(_, newValue) => {
                         onChange(index, [newValue, keyValue]);
-                        setErrors(prev => ({
-                            ...prev,
-                            nameValidationError: !newValue?.trim()
-                        }));
                     }}
                     renderInput={params => (
                         <TextField
@@ -93,12 +89,8 @@ const PropertyListRow = ({
                             variant="outlined"
                             placeholder={fieldName || t('jobDesigner:apiModal.key')}
                             label={fieldName || t('jobDesigner:apiModal.key')}
-                            error={errors.nameValidationError}
-                            helperText={
-                                errors.nameValidationError
-                                    ? t('main:validation.notBlank')
-                                    : undefined
-                            }
+                            error={!!errors?.nameValidationError}
+                            helperText={errors?.nameValidationError}
                             required
                         />
                     )}
@@ -114,21 +106,13 @@ const PropertyListRow = ({
                         event.persist();
                         const newValue = event.target.value;
                         onChange(index, [keyName, newValue]);
-                        setErrors(prev => ({
-                            ...prev,
-                            valueValidationError: !newValue?.trim()
-                        }));
                     }}
                     multiline
                     maxRows={4}
                     placeholder={t('setting:parameter.Value')}
                     label={t('setting:parameter.Value')}
-                    error={errors.valueValidationError}
-                    helperText={
-                        errors.valueValidationError
-                            ? t('main:validation.notBlank')
-                            : undefined
-                    }
+                    error={!!errors?.valueValidationError}
+                    helperText={errors?.valueValidationError}
                     required
                 />
             </TableCell>
@@ -148,7 +132,8 @@ PropertyListRow.propTypes = {
     keyValue: PropTypes.string,
     index: PropTypes.number,
     options: PropTypes.array,
-    fieldName: PropTypes.string
+    fieldName: PropTypes.string,
+    errors: PropTypes.object
 };
 
 export default compose(memo, withStyles(styles))(PropertyListRow);

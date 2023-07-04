@@ -19,8 +19,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Divider } from '@material-ui/core';
-import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE } from '../../../constants';
@@ -80,7 +78,6 @@ const MongoStorage = ({
 
         {!connectionPage && (
             <>
-                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
                 <ReadTextFields
                     ableToEdit={ableToEdit}
                     fields={fields[1]}

@@ -31,6 +31,9 @@ import {
     NTILE,
     READ,
     RENAME_COLUMN,
+    REPLACE_VALUES,
+    REPLACE_VALUES_CHAR_BY_CHAR,
+    REPLACE_VALUES_USING_CONDITIONS,
     STORAGES,
     SUM,
     USE_CONDITIONS,
@@ -38,6 +41,11 @@ import {
     WRITE
 } from '../../constants';
 import schemas from '../schemas';
+import {
+    isValidPrecision,
+    isValidScale,
+    parseDecimalType
+} from '../withcolumn-configuration/change-type-operation/ChangeTypeOperation';
 
 const MIN_QUANTITY = 1;
 const MAX_QUANTITY = 2147483631;
@@ -262,13 +270,30 @@ export const validations = {
     [STORAGES.ELASTIC.value]: checkElasticsearchRequiredFields,
     [STORAGES.CLICKHOUSE.value]: checkClickHouseRequiredFields,
     [STORAGES.KAFKA.value]: isAnyEmpty('bootstrapServers', 'subscribe'),
-    [STORAGES.API.value]: isAnyEmpty('method', 'host', 'jsonPath'),
+    [STORAGES.API.value]: isAnyEmpty('method', 'host'),
     [DERIVE_COLUMN]: isAnyEmpty('option.expression'),
     [ADD_CONSTANT]: isAnyEmpty('option.constant'),
-    [CHANGE_TYPE]: isAnyEmpty('option.columnType'),
+    [CHANGE_TYPE]: state => {
+        const empty = isAnyEmpty('option.columnType')(state);
+
+        if (empty) {
+            return true;
+        }
+        const columnType = state['option.columnType'];
+
+        if (columnType.includes('decimal')) {
+            const [precision, scale] = parseDecimalType(columnType);
+
+            return !!(isValidScale(scale, precision) || isValidPrecision(precision));
+        }
+        return false;
+    },
     [RENAME_COLUMN]: isAnyEmpty('option.columnName'),
     [USE_CONDITIONS]: isAnyEmpty('option.conditions'),
-    [USE_WINDOW_FUNCTION]: windowFunctionRequiredFields
+    [USE_WINDOW_FUNCTION]: windowFunctionRequiredFields,
+    [REPLACE_VALUES]: isAnyEmpty('option.oldValue', 'option.newValue'),
+    [REPLACE_VALUES_CHAR_BY_CHAR]: isAnyEmpty('option.oldChars', 'option.newChars'),
+    [REPLACE_VALUES_USING_CONDITIONS]: isAnyEmpty('option.conditions')
 };
 
 // eslint-disable-next-line complexity
@@ -376,7 +401,8 @@ export const checkSortFields = state =>
     /,:/.test(state.orderColumns);
 
 export const checkJoinFields = state =>
-    !state.name || !state.joinType || (!state.columns && state.joinType !== 'cross');
+    isAnyEmpty('name', 'joinType')(state) ||
+    (isAnyEmpty('leftColumns', 'rightColumns')(state) && state.joinType !== 'cross');
 
 export const checkGroupByFields = state =>
     !state.name ||

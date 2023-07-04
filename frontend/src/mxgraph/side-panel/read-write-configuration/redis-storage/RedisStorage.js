@@ -20,8 +20,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Divider } from '@material-ui/core';
-import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import { READ, WRITE, READWRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
@@ -94,9 +92,6 @@ const RedisStorage = ({
 
             {!connectionPage && (
                 <>
-                    {!isEqual(connection, {}) && (
-                        <Divider style={{ marginTop: 8 }} />
-                    )}
                     <ReadTextFields
                         fields={fields[1]}
                         openModal={openModal}

@@ -20,8 +20,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Divider } from '@material-ui/core';
-import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE } from '../../../constants';
@@ -71,7 +69,6 @@ const ElasticStorage = ({
 
         {!connectionPage && (
             <>
-                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
                 {inputValues.operation === WRITE && (
                     <WriteMode
                         disabled={!ableToEdit}

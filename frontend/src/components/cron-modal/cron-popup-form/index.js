@@ -17,21 +17,6 @@
  * limitations under the License.
  */
 
-import { shallow } from 'enzyme';
-import React from 'react';
-import { TabPanel } from './TabPanel';
+import CronPopupForm from './CronPopupForm';
 
-describe('TabPanel', () => {
-    it('should render tab panel', () => {
-        const defaultProps = {
-            children: 'children',
-            value: 0,
-            index: 0,
-            classes: {}
-        };
-
-        const wrapper = shallow(<TabPanel {...defaultProps} />);
-
-        expect(wrapper.find('div').text()).toBe(defaultProps.children);
-    });
-});
+export default CronPopupForm;

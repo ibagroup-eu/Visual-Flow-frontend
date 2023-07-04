@@ -20,10 +20,10 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { useTranslation } from 'react-i18next';
-import { Autocomplete } from '@material-ui/lab';
 import { Chip, IconButton } from '@material-ui/core';
 import JoinConfiguration from './JoinConfiguration';
 import SelectField from '../../../components/select-field';
+import AutocompleteParameter from '../autocomplete-parameter';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -34,7 +34,8 @@ describe('Join configuration', () => {
     let wrapper;
     const defaultProps = {
         state: {
-            columns: 'col1,col2',
+            leftColumns: 'col1',
+            rightColumns: 'col1',
             joinType: 'inner',
             name: 'join',
             operation: 'JOIN'
@@ -75,7 +76,7 @@ describe('Join configuration', () => {
         expect(wrapper.find(Chip)).toHaveLength(0);
     });
 
-    it('should render 2 chips for 2 keys(columns)', () => {
+    it('should render 2 chips for 2 keys(leftColumns,rightColumns)', () => {
         wrapper = mount(<JoinConfiguration {...defaultProps} />);
         expect(wrapper.find(Chip)).toHaveLength(2);
     });
@@ -86,8 +87,13 @@ describe('Join configuration', () => {
     });
 
     it('should call onChange prop by Autocomplete', () => {
-        wrapper.find(Autocomplete).simulate('change');
-        expect(defaultProps.onChange).toHaveBeenCalled();
+        wrapper
+            .find(AutocompleteParameter)
+            .at(0)
+            .prop('handleInputChange')({
+            target: { name: 'test', value: 'testValue' }
+        });
+        expect(defaultProps.onChange).toBeCalledWith('test', 'testValue');
     });
 
     it('should call handleSwap prop', () => {

@@ -107,7 +107,8 @@ export const setDatasetOnConnection = (
         [JOIN]: {
             operation: JOIN,
             joinType: get(target, 'value.attributes.joinType.value', ''),
-            columns: get(target, 'value.attributes.columns.value', ''),
+            leftColumns: get(target, 'value.attributes.leftColumns.value', ''),
+            rightColumns: get(target, 'value.attributes.rightColumns.value', ''),
             name: get(target, 'value.attributes.name.value', ''),
             leftDataset: firstEdge?.source?.id || '',
             rightDataset: secondEdge?.source?.id || ''

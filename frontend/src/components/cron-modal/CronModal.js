@@ -20,60 +20,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import cron from 'cron-validate';
-import { Button, Box, Switch, FormControlLabel } from '@material-ui/core';
+import { Box, Button, FormControlLabel, Switch } from '@material-ui/core';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import useStyles from './CronModal.Styles';
-import PopupForm from '../popup-form';
 import HelperTable from './helper-table';
 import CronInput from './cron-input/CronInput';
 import { createCron, getCron, updateCron } from '../../redux/actions/cronActions';
-import { PageSkeleton } from '../skeleton';
 import RunInfo from './run-info';
-
-const errorMessageParams = [
-    'minutes',
-    'hours',
-    'daysOfMonth',
-    'months',
-    'daysOfWeek'
-];
-
-const additionalCheckParams = [
-    {
-        index: 2,
-        value: 0,
-        message: "Number 0 in dayOfMonth field is smaller than lower limit '1'"
-    },
-    {
-        index: 3,
-        value: 0,
-        message: "Number 0 in months field is smaller than lower limit '1'"
-    },
-    {
-        index: 4,
-        value: 7,
-        message: "Number 7 in daysOfWeek field is bigger than upper limit '6'"
-    }
-];
-
-const defaultCronLabels = [
-    { label: 'MINUTE (0-59)', error: false },
-    { label: 'HOUR (0-23)', error: false },
-    { label: 'DAY OF MONTH (1-31)', error: false },
-    { label: 'MONTH (1-12)', error: false },
-    { label: 'DAY OF WEEK (0-6)', error: false }
-];
-
-const trimCronValue = value => value.trim().replace(/ {2,}/g, ' ');
-
-const correctDayOfWeekLabel = errorMessage => {
-    if (errorMessage.includes('daysOfWeek field is bigger than')) {
-        return errorMessage.replace("'7'", "'6'");
-    }
-    return errorMessage;
-};
+import CronPopupForm from './cron-popup-form/CronPopupForm';
+import trimCronValue from './trimCronValue';
 
 export const CronModal = ({
     cronPipeline: { pipelineId, cronExists },
@@ -97,12 +53,6 @@ export const CronModal = ({
         errorMessage: ''
     });
     const [lastCronValue, setLastCronValue] = React.useState('');
-    const [cronLabels, setCronLabels] = React.useState(defaultCronLabels);
-
-    const removeLabelsErrors = () =>
-        setCronLabels(prevState =>
-            prevState.map(label => ({ ...label, error: false }))
-        );
 
     const cronInit = (value, used) => {
         setCronValue({
@@ -116,110 +66,40 @@ export const CronModal = ({
         });
     };
 
+    const handleClose = () => {
+        cronValue.value &&
+            cronInit(cronState?.data.schedule, !cronState?.data.suspend);
+        onClose();
+    };
+
     React.useEffect(() => {
-        pipelineId && removeLabelsErrors();
-
-        pipelineId && cronExists && getCronValue(projectId, pipelineId);
-
-        pipelineId && !cronExists && cronInit('', false);
+        if (pipelineId) {
+            if (cronExists) {
+                getCronValue(projectId, pipelineId);
+            } else {
+                cronInit('', false);
+            }
+        }
     }, [pipelineId, projectId, cronExists, getCronValue]);
 
     React.useEffect(() => {
         cronInit(cronState?.data.schedule, !cronState?.data.suspend);
-    }, [cronState?.data.schedule, cronState?.data.suspend]);
-
-    const changeCronLabel = (index, value) =>
-        setCronLabels(prevState =>
-            prevState.map((label, i) => ({
-                ...label,
-                error: i === index ? value : label.error
-            }))
-        );
-
-    const cronChange = event => {
-        const inputValue = event.target.value;
-        const checkValue = trimCronValue(inputValue);
-
-        const cronValidate = cron(checkValue);
-        if (cronValidate.isValid()) {
-            setCronValue({ value: inputValue, errorMessage: '' });
-            removeLabelsErrors();
-        } else {
-            const errorValues = cronValidate.getError();
-
-            errorValues[0] = correctDayOfWeekLabel(errorValues[0]);
-
-            setCronValue({
-                value: inputValue,
-                errorMessage: errorValues[0].split(' (Input cron:')[0]
-            });
-
-            errorMessageParams.forEach((param, index) => {
-                changeCronLabel(
-                    index,
-                    errorValues.findIndex(value => value.includes(param)) !== -1
-                );
-            });
-        }
-
-        const valuesArray = checkValue.split(' ');
-        if (valuesArray.length === 5) {
-            valuesArray.forEach((value, index) => {
-                value.split(/,|-|\//).forEach(valueItem => {
-                    if (valueItem.length > 1 && valueItem[0] === '0') {
-                        setCronValue({
-                            value: inputValue,
-                            errorMessage: `Leading zeros (value ${valueItem}) in ${errorMessageParams[index]} field are invalid.`
-                        });
-                        changeCronLabel(index, true);
-                    }
-                });
-
-                if (value.includes('.')) {
-                    setCronValue({
-                        value: inputValue,
-                        errorMessage: `Element ${value} of ${errorMessageParams[index]} field is invalid.`
-                    });
-                    changeCronLabel(index, true);
-                }
-            });
-
-            additionalCheckParams.forEach(checkParams => {
-                if (
-                    valuesArray[checkParams.index]
-                        .split(/,|-|\//)
-                        .find(item => +item === checkParams.value)
-                ) {
-                    setCronValue({
-                        value: inputValue,
-                        errorMessage: checkParams.message
-                    });
-                    changeCronLabel(checkParams.index, true);
-                }
-            });
-        }
-    };
+    }, [cronState]);
 
     const disableSaveButton = () => {
         if (cronValue.errorMessage && isUseCron.current) {
             return true;
         }
-
         if (cronValue.value === '') {
             return true;
         }
-
         return (
             cronValue.value === lastCronValue &&
             isUseCron.current === isUseCron.initial
         );
     };
 
-    const updatePipeline = () => {
-        if (refreshPipeline) {
-            refreshPipeline();
-        }
-    };
+    const updatePipeline = () => refreshPipeline?.();
 
     const saveCron = () => {
         const cronData = {
@@ -235,62 +115,55 @@ export const CronModal = ({
     };
 
     return (
-        <PopupForm
+        <CronPopupForm
             display={!!pipelineId}
-            title={t('pipelines:tooltip.Scheduling')}
-            onClose={onClose}
-            isNotHelper
+            onClose={handleClose}
+            loading={!!cronState?.loading}
         >
-            {cronState?.loading ? (
-                <PageSkeleton />
-            ) : (
-                <>
-                    <Box className={classes.switchBox}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    color="primary"
-                                    onChange={event =>
-                                        setIsUseCron(prevState => ({
-                                            ...prevState,
-                                            current: event.target.checked
-                                        }))
-                                    }
-                                    checked={isUseCron.current}
-                                />
-                            }
-                            label={t('pipelines:tooltip.OnOff')}
-                        />
-                    </Box>
-                    <RunInfo cronValue={cronValue} isUseCron={isUseCron.current} />
-                    <CronInput
-                        cronValue={cronValue}
-                        isUseCron={isUseCron.current}
-                        cronChange={cronChange}
-                        cronLabels={cronLabels}
-                    />
-                    <HelperTable isUseCron={isUseCron.current} />
-                    <Box className={classes.buttonsGroup}>
-                        <Button
-                            disabled={disableSaveButton()}
-                            className={classes.button}
-                            variant="contained"
+            <Box className={classes.switchBox}>
+                <FormControlLabel
+                    control={
+                        <Switch
                             color="primary"
-                            onClick={saveCron}
-                        >
-                            {t('main:button.Save')}
-                        </Button>
-                        <Button
-                            className={classNames(classes.button, classes.cancelBtn)}
-                            variant="contained"
-                            onClick={() => onClose()}
-                        >
-                            {t('main:button.Cancel')}
-                        </Button>
-                    </Box>
-                </>
-            )}
-        </PopupForm>
+                            onChange={event =>
+                                setIsUseCron(prevState => ({
+                                    ...prevState,
+                                    current: event.target.checked
+                                }))
+                            }
+                            checked={isUseCron.current}
+                        />
+                    }
+                    label={t('pipelines:tooltip.OnOff')}
+                />
+            </Box>
+            <RunInfo cronValue={cronValue} isUseCron={isUseCron.current} />
+            <CronInput
+                cronValue={cronValue}
+                isUseCron={isUseCron.current}
+                setCronValue={setCronValue}
+                pipelineId={pipelineId}
+            />
+            <HelperTable isUseCron={isUseCron.current} />
+            <Box className={classes.buttonsGroup}>
+                <Button
+                    disabled={disableSaveButton()}
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    onClick={saveCron}
+                >
+                    {t('main:button.Save')}
+                </Button>
+                <Button
+                    className={classNames(classes.button, classes.cancelBtn)}
+                    variant="contained"
+                    onClick={handleClose}
+                >
+                    {t('main:button.Cancel')}
+                </Button>
+            </Box>
+        </CronPopupForm>
     );
 };
 

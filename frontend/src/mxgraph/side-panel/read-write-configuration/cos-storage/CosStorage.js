@@ -19,8 +19,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Divider } from '@material-ui/core';
-import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import CosProperties from '../common';
 import SelectField from '../../../../components/select-field';
@@ -101,9 +99,6 @@ const CosStorage = ({
             )}
             {!connectionPage && (
                 <>
-                    {!isEqual(connection, {}) && (
-                        <Divider style={{ marginTop: 8 }} />
-                    )}
                     <CosProperties
                         fields={fields}
                         openModal={openModal}

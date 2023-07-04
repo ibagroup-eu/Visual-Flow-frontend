@@ -466,6 +466,24 @@ describe('validation', () => {
                 source: {
                     name,
                     column: 'column',
+                    operationType: CHANGE_TYPE,
+                    'option.columnType': 'decimal(10,2)'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
+                    operationType: CHANGE_TYPE,
+                    'option.columnType': ''
+                },
+                expected: true
+            },
+            {
+                source: {
+                    name,
+                    column: 'column',
                     operationType: USE_CONDITIONS,
                     'option.conditions': 'test'
                 },

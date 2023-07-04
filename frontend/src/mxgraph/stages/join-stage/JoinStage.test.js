@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { shallow } from 'enzyme';
 import JoinStage from './JoinStage';
 import { JobStageTag } from '../../../components/stage-tag';
-import { TagsParameter } from '../parameters';
+import { Parameter } from '../parameters';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -15,7 +15,8 @@ describe('JoinStage', () => {
     const init = () => {
         const defaultProps = {
             stage: {
-                columns: 'one, two, three, four, five, six',
+                leftColumns: 'id',
+                rightColumns: 'id',
                 name: 'test',
                 operation: 'test',
                 joinType: 'test'
@@ -41,8 +42,8 @@ describe('JoinStage', () => {
         expect(wrapper.find(JobStageTag)).toBeDefined();
     });
 
-    it('should render TagsParameter', () => {
+    it('should render Parameters', () => {
         const wrapper = init();
-        expect(wrapper.find(TagsParameter)).toHaveLength(1);
+        expect(wrapper.find(Parameter)).toHaveLength(2);
     });
 });

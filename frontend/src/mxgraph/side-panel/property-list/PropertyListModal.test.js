@@ -39,8 +39,8 @@ describe('PropertyListModal', () => {
             onClose: jest.fn(),
             onSave: jest.fn(),
             items: [
-                ['a', 5],
-                ['b', 4]
+                ['a', '5'],
+                ['b', '4']
             ]
         };
 
@@ -104,5 +104,30 @@ describe('PropertyListModal', () => {
                 .at(0)
                 .prop('keyName')
         ).toBe('c');
+    });
+
+    it('should handle add item', () => {
+        const [wrapper] = init({}, true);
+        wrapper
+            .find(Button)
+            .at(0)
+            .prop('onClick')();
+
+        expect(wrapper.find(PropertyListRow)).toHaveLength(3);
+    });
+
+    it('should disable Save button if validation errors', () => {
+        const [wrapper] = init({}, true);
+        wrapper
+            .find(PropertyListRow)
+            .at(0)
+            .prop('onChange')(0, ['c', '']);
+
+        expect(
+            wrapper
+                .find(Button)
+                .at(1)
+                .prop('disabled')
+        ).toBe(true);
     });
 });

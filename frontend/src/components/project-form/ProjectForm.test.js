@@ -22,6 +22,7 @@ import { shallow } from 'enzyme';
 import { ProjectForm } from './ProjectForm';
 import FormWrapper from '../form-wrapper';
 import history from '../../utils/history';
+import { TextField } from '@material-ui/core';
 
 jest.mock('../../utils/history', () => ({
     push: jest.fn(),
@@ -37,7 +38,8 @@ describe('ProjectForm', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             update: jest.fn(),
-            create: jest.fn()
+            create: jest.fn(),
+            confirmationWindow: jest.fn()
         };
 
         const wrapper = func(<ProjectForm {...defaultProps} {...props} />);
@@ -76,10 +78,22 @@ describe('ProjectForm', () => {
     });
 
     it('should handle "onCancel" when a project does exist', () => {
-        const [wrapper] = init({ project: {} }, false);
+        const [wrapper, props] = init({ project: {} }, true);
 
         wrapper.find(FormWrapper).simulate('cancel');
+        expect(props.confirmationWindow).not.toHaveBeenCalled();
+        expect(history.push).not.toHaveBeenCalled();
+    });
 
+    it('should show confirmation window when cancel changes', () => {
+        const [wrapper, props] = init({ project: {} }, true);
+        const textField = wrapper.find(TextField);
+        textField.at(0).simulate('change', {
+            target: { name: 'name', value: 'test' },
+            persist: jest.fn()
+        });
+        wrapper.find(FormWrapper).simulate('cancel');
+        expect(props.confirmationWindow).toBeCalled();
         expect(history.push).not.toHaveBeenCalled();
     });
 });

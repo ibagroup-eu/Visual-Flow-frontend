@@ -50,7 +50,7 @@ export const SelectProject = ({ projects, getProjects, loading, projectId }) => 
         <Autocomplete
             id="combo-box"
             value={valueSelected || defaultText}
-            options={projects?.projects || []}
+            options={projects?.projects?.filter(e => !e.locked) || []}
             getOptionLabel={option => option.name}
             loading={loading}
             disableClearable

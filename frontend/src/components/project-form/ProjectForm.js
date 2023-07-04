@@ -34,11 +34,12 @@ import LimitsField from './limits';
 import LimitSubtitle from './limit-subtitle';
 import { isEmpty, isValidationPassed } from './validations/validations';
 import useUnsavedChangesWarning from '../../pages/settings/useUnsavedChangesWarning';
+import toggleConfirmationWindow from '../../redux/actions/modalsActions';
 
-export const ProjectForm = ({ project, create, update }) => {
+export const ProjectForm = ({ project, create, update, confirmationWindow }) => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning();
+    const [Prompt, setDirty, setPristine, dirty] = useUnsavedChangesWarning();
 
     const initialState = {
         id: get(project, 'id'),
@@ -89,10 +90,25 @@ export const ProjectForm = ({ project, create, update }) => {
 
     const onCancel = project
         ? () => {
-              setEditMode(false);
-              setCardState(initialState);
+              if (dirty) {
+                  confirmationWindow({
+                      body: `${t('main:confirm.unsaved')}`,
+                      callback: () => {
+                          setPristine();
+                          setEditMode(false);
+                          setCardState(initialState);
+                      }
+                  });
+              } else {
+                  setPristine();
+                  setEditMode(false);
+                  setCardState(initialState);
+              }
           }
-        : () => history.push('/');
+        : () => {
+              setPristine();
+              history.push('/');
+          };
 
     const editTitle = editMode ? 'editProject' : 'viewProject';
     const formTitle = project ? editTitle : 'createProject';
@@ -197,12 +213,14 @@ export const ProjectForm = ({ project, create, update }) => {
 ProjectForm.propTypes = {
     create: PropTypes.func,
     update: PropTypes.func,
-    project: PropTypes.object
+    project: PropTypes.object,
+    confirmationWindow: PropTypes.func
 };
 
 const mapDispatchToProps = {
     create: createProject,
-    update: updateProject
+    update: updateProject,
+    confirmationWindow: toggleConfirmationWindow
 };
 
 export default connect(null, mapDispatchToProps)(ProjectForm);

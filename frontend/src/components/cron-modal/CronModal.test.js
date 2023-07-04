@@ -20,10 +20,8 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { CronModal } from './CronModal';
-import PopupForm from '../popup-form';
-import { PageSkeleton } from '../skeleton';
 import { Button } from '@material-ui/core';
-import CronInput from './cron-input';
+import CronPopupForm from './cron-popup-form';
 
 describe('CronModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -49,27 +47,15 @@ describe('CronModal', () => {
     it('should render without crashes', () => {
         const [wrapper] = init();
 
-        expect(wrapper.find(PopupForm).exists()).toBeTruthy();
-        expect(wrapper.find(PageSkeleton).exists()).toBeFalsy();
+        expect(wrapper.find(CronPopupForm).exists()).toBeTruthy();
     });
 
     it('should handle "onClose"', () => {
         const [wrapper, props] = init({}, true);
 
-        wrapper.find(PopupForm).simulate('close');
+        wrapper.find(CronPopupForm).simulate('close');
 
         expect(props.onClose).toHaveBeenCalled();
-    });
-
-    it('should show skeleton', () => {
-        const [wrapper] = init({
-            cronState: {
-                data: {},
-                loading: true
-            }
-        });
-
-        expect(wrapper.find(PageSkeleton).exists()).toBeTruthy();
     });
 
     it('should handle "close" btn', () => {
@@ -114,36 +100,6 @@ describe('CronModal', () => {
         expect(props.updateCronValue).not.toHaveBeenCalled();
         expect(props.onClose).toHaveBeenCalled();
         expect(props.createCronValue).toHaveBeenCalled();
-    });
-
-    it('should handle "cronChange" with incorrect value', () => {
-        const [wrapper] = init();
-
-        const target = { value: '*' };
-
-        wrapper.find(CronInput).prop('cronChange')({ target });
-
-        wrapper.update();
-
-        expect(wrapper.find(CronInput).prop('cronValue')).toEqual({
-            errorMessage: 'Expected 5 values, but got 1.',
-            value: '*'
-        });
-    });
-
-    it('should handle "cronChange" with correct value', () => {
-        const [wrapper] = init();
-
-        const target = { value: '0 * * * *' };
-
-        wrapper.find(CronInput).prop('cronChange')({ target });
-
-        wrapper.update();
-
-        expect(wrapper.find(CronInput).prop('cronValue')).toEqual({
-            errorMessage: '',
-            value: '0 * * * *'
-        });
     });
 
     it('should handle "pipelineId" change', () => {

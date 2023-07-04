@@ -62,12 +62,4 @@ describe('RedisStorage', () => {
         expect(wrapper.find(ReadTextFields)).toHaveLength(6);
         expect(wrapper.find(WriteMode)).toHaveLength(1);
     });
-
-    it('should render component with connection', () => {
-        const changedProps = {
-            connection: { connectionName: 'test' }
-        };
-        wrapper = shallow(<RedshiftStorage {...props} {...changedProps} />);
-        expect(wrapper.find(Divider)).toHaveLength(1);
-    });
 });

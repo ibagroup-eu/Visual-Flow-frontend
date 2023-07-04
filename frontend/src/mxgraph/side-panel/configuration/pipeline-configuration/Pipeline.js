@@ -28,7 +28,14 @@ import { TextSkeleton } from '../../../../components/skeleton';
 import SingleSelectModal from '../modal';
 import ConfigurationDivider from '../../../../components/divider';
 
-const Pipeline = ({ data, loading, ableToEdit, state, onStateChange }) => {
+const Pipeline = ({
+    data,
+    loading,
+    ableToEdit,
+    state,
+    onStateChange,
+    duplicatedName
+}) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
@@ -69,6 +76,11 @@ const Pipeline = ({ data, loading, ableToEdit, state, onStateChange }) => {
                         onStateChange(event.target.name, event.target.value)
                     }
                     required
+                    helperText={
+                        duplicatedName &&
+                        t('main:validation.projectConnections.nameDuplication')
+                    }
+                    error={!!duplicatedName}
                 />
                 <ConfigurationDivider />
                 {loading ? (
@@ -113,7 +125,8 @@ Pipeline.propTypes = {
     data: PropTypes.array,
     ableToEdit: PropTypes.bool,
     state: PropTypes.object,
-    onStateChange: PropTypes.func
+    onStateChange: PropTypes.func,
+    duplicatedName: PropTypes.bool
 };
 
 const mapStateToProps = state => {

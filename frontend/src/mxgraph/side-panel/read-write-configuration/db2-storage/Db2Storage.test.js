@@ -60,14 +60,6 @@ describe('Db2 storage', () => {
         expect(wrapper).toBeDefined();
     });
 
-    it('should render Divider when connectionPage is false and connection isn`t empty', () => {
-        wrapper.setProps({
-            connectionPage: false,
-            connection: { someValue: 1 }
-        });
-        expect(wrapper.find(Divider)).toHaveLength(1);
-    });
-
     it('should render SelectField when operation is READ', () => {
         wrapper.setProps({
             inputValues: {

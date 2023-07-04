@@ -46,7 +46,8 @@ const Job = ({
     state,
     onStateChange,
     outputPaths,
-    onChangeOutputPaths
+    onChangeOutputPaths,
+    duplicatedName
 }) => {
     const classes = useStyles();
 
@@ -59,6 +60,8 @@ const Job = ({
         return jobById ? jobById.name : '';
     };
 
+    const helperText =
+        duplicatedName && t('main:validation.projectConnections.nameDuplication');
     return (
         <>
             <SingleSelectModal
@@ -89,6 +92,8 @@ const Job = ({
                         onStateChange(event.target.name, event.target.value)
                     }
                     required
+                    helperText={helperText}
+                    error={!!duplicatedName}
                 />
                 <ConfigurationDivider />
                 {loading ? (
@@ -179,7 +184,8 @@ Job.propTypes = {
     state: PropTypes.object,
     onStateChange: PropTypes.func,
     outputPaths: PropTypes.array,
-    onChangeOutputPaths: PropTypes.func
+    onChangeOutputPaths: PropTypes.func,
+    duplicatedName: PropTypes.bool
 };
 
 const mapStateToProps = state => {

@@ -19,18 +19,19 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import CronInput from './CronInput';
-import { TextField, Typography } from '@material-ui/core';
+import CronPopupForm from './index';
+import PopupForm from '../../popup-form';
+import { PageSkeleton } from '../../skeleton';
 
-describe('CronInput', () => {
+describe('CronPopupForm', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
-            cronValue: {},
-            isUseCron: true,
-            setCronValue: jest.fn()
+            display: 'pipelineId',
+            loading: false,
+            onClose: jest.fn()
         };
 
-        const wrapper = func(<CronInput {...defaultProps} {...props} />);
+        const wrapper = func(<CronPopupForm {...defaultProps} {...props} />);
 
         return returnProps ? [wrapper, { ...defaultProps, ...props }] : [wrapper];
     };
@@ -38,31 +39,11 @@ describe('CronInput', () => {
     it('should render without crashes', () => {
         const [wrapper] = init();
 
-        expect(wrapper).toBeDefined();
-        expect(wrapper.find(Typography).length).toBe(6);
+        expect(wrapper.find(PopupForm).exists()).toBeTruthy();
     });
 
-    it('should handle "cronChange" with correct value', () => {
-        const [wrapper, props] = init({}, true);
-
-        const target = { value: '0 * * * *' };
-
-        wrapper.find(TextField).prop('onChange')({ target });
-
-        wrapper.update();
-
-        expect(props.setCronValue).toHaveBeenCalled();
-    });
-
-    it('should handle "cronChange" with incorrect value', () => {
-        const [wrapper, props] = init({}, true);
-
-        const target = { value: '*' };
-
-        wrapper.find(TextField).prop('onChange')({ target });
-
-        wrapper.update();
-
-        expect(props.setCronValue).toHaveBeenCalled();
+    it('should show skeleton', () => {
+        const [wrapper] = init({ loading: true });
+        expect(wrapper.find(PageSkeleton).exists()).toBeTruthy();
     });
 });

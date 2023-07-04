@@ -60,14 +60,6 @@ describe('Mongo storage', () => {
         expect(wrapper.find(Ssl)).toHaveLength(1);
     });
 
-    it('should render Divider when connection is not empty', () => {
-        wrapper.setProps({
-            connectionPage: false,
-            connection: { someValue: 1 }
-        });
-        expect(wrapper.find(Divider)).toHaveLength(1);
-    });
-
     it('should render ReadWriteTextFields when connectionModal is false', () => {
         wrapper.setProps(connectionPageProps);
         expect(wrapper.find(ReadWriteTextFields)).toHaveLength(4);

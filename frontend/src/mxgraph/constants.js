@@ -68,6 +68,9 @@ export const CHANGE_TYPE = 'changeType';
 export const RENAME_COLUMN = 'renameColumn';
 export const USE_CONDITIONS = 'useConditions';
 export const USE_WINDOW_FUNCTION = 'useWindowFunction';
+export const REPLACE_VALUES = 'replaceValues';
+export const REPLACE_VALUES_USING_CONDITIONS = 'replaceValuesUsingConditions';
+export const REPLACE_VALUES_CHAR_BY_CHAR = 'replaceValuesCharByChar';
 
 export const RANK = 'rank';
 export const DENSE_RANK = 'dense_rank';
@@ -165,7 +168,7 @@ export const STORAGES = {
     },
     CLICKHOUSE: {
         value: 'clickhouse',
-        label: 'Click House'
+        label: 'ClickHouse'
     },
     KAFKA: {
         value: 'kafka',
@@ -173,9 +176,8 @@ export const STORAGES = {
         hide: [READ, WRITE]
     },
     API: {
-        value: 'api',
-        label: 'API',
-        hide: [READ, WRITE]
+        value: 'request',
+        label: 'API'
     }
 };
 

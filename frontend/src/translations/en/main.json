@@ -109,6 +109,10 @@
             "nameDuplication": "Name duplication",
             "nameLength": "Length must be in range 1-50",
             "nameSymbols": "Only A-Z, a-z, 0-9, -, _ are allowed"
+        },
+        "withColumnValidation": {
+            "range": "Value must be in range {{min}}-{{max}}.",
+            "integer": "Should be integer."
         }
     },
     "confirm": {
@@ -175,9 +179,9 @@
     "history": {
         "Started": "STARTED",
         "Duration": "DURATION",
-        "RunBy":"RUN BY",
+        "RunBy": "RUN BY",
         "Name": "NAME",
-        "Log":"LOG",
+        "Log": "LOG",
         "EmptyList": "History is empty",
         "LastRunBy": "Last Run by",
         "Today": "Today",

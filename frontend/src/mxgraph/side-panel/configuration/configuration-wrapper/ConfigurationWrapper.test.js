@@ -38,6 +38,23 @@ describe('ConfigurationWrapper', () => {
             onSave: jest.fn(),
             setPanelDirty: jest.fn(),
             sidePanelIsOpen: true,
+            graph: {
+                getSelectionCell: jest.fn(() => ({ id: 0 })),
+                getModel: jest.fn().mockReturnValue({
+                    cells: [
+                        {
+                            value: {
+                                attributes: {
+                                    attr1: {
+                                        nodeName: 'value1',
+                                        nodeValue: 'v2'
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                })
+            },
             render: () => {
                 const MockComponent = 'component-mock';
                 return <MockComponent />;

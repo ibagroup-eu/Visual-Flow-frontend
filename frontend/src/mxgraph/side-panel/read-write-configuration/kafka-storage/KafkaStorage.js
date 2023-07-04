@@ -35,6 +35,7 @@ import FileTextField from '../../../../components/file-text-field';
 import { uploadFile } from '../../../../redux/actions/filesActions';
 
 import history from '../../../../utils/history';
+import { HEADER_KEY_VALIDATIONS } from '../api-storage/ApiStorage';
 
 const subscribeField = [{ field: 'subscribe' }];
 
@@ -239,6 +240,7 @@ const KafkaStorage = ({
                     open={showModal}
                     onClose={() => setShowModal(false)}
                     onSave={handleOptionsSave}
+                    keyValidations={HEADER_KEY_VALIDATIONS}
                     options={optionsList}
                 />
             )}

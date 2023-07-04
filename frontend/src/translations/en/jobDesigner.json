@@ -115,7 +115,9 @@
         "LinkOrdering": "Link Ordering",
         "Left": "Left",
         "Right": "Right",
-        "Key": "Key"
+        "Key": "Key",
+        "rightKey": "Right key",
+        "leftKey": "Left key"
     },
     "sliceConfiguration": {
         "Name": "Name",
@@ -226,7 +228,16 @@
         "changeType": "changeType",
         "renameColumn": "renameColumn",
         "useConditions": "useConditions",
-        "useWindowFunction": "useWindowFunction"
+        "useWindowFunction": "useWindowFunction",
+        "replaceValues": "replaceValues",
+        "replaceValuesUsingConditions": "replaceValuesUsingConditions",
+        "replaceValuesCharByChar": "replaceValuesCharByChar",
+        "precision": "Precision",
+        "scale": "Scale",
+        "oldValue": "Old Value",
+        "newValue": "New Value",
+        "oldChars": "Old Chars",
+        "newChars": "New Chars"
     },
     "kafkaConfiguration": {
         "bootstrapServers": "Kafka Bootstrap Server URLs",

@@ -17,21 +17,23 @@
  * limitations under the License.
  */
 
-import { shallow } from 'enzyme';
 import React from 'react';
-import { TabPanel } from './TabPanel';
+import { shallow } from 'enzyme';
+import { TextField } from '@material-ui/core';
+import ReplaceValuesOperation from './index';
 
-describe('TabPanel', () => {
-    it('should render tab panel', () => {
+describe('ReplaceValuesOperation', () => {
+    const init = () => {
         const defaultProps = {
-            children: 'children',
-            value: 0,
-            index: 0,
-            classes: {}
+            state: { 'option.oldValue': 'value1', 'option.newValue': 'value2' },
+            ableToEdit: true,
+            handleInputChange: jest.fn()
         };
+        return shallow(<ReplaceValuesOperation {...defaultProps} />);
+    };
 
-        const wrapper = shallow(<TabPanel {...defaultProps} />);
-
-        expect(wrapper.find('div').text()).toBe(defaultProps.children);
+    it('should render without crashes', () => {
+        const wrapper = init();
+        expect(wrapper.find(TextField)).toHaveLength(2);
     });
 });

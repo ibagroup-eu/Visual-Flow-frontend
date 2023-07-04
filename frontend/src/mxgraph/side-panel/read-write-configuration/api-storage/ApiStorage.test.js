@@ -20,10 +20,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Button } from '@material-ui/core';
-import { fromState, toState } from './ApiStorage';
+import { fromState, HEADER_KEY_VALIDATIONS, toState } from "./ApiStorage";
 import PropertyListModal from '../../property-list/PropertyListModal';
 import { useTranslation } from 'react-i18next';
 import ApiStorage from './ApiStorage';
+import { MESSAGES } from "../../../../pages/settings/parameters/validation/useParamValidation";
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -89,5 +90,27 @@ describe('API storage', () => {
         const params = [['par1', 'val1']];
 
         expect(toState(params)).toEqual('par1:val1');
+    });
+
+    describe('HEADER_KEY_VALIDATIONS', () => {
+        it('VALUE_EMPTY', () => {
+            expect(HEADER_KEY_VALIDATIONS[MESSAGES.VALUE_EMPTY]('')).toBe(true);
+            expect(HEADER_KEY_VALIDATIONS[MESSAGES.VALUE_EMPTY](' ')).toBe(true);
+            expect(HEADER_KEY_VALIDATIONS[MESSAGES.VALUE_EMPTY]('a')).toBe(false);
+        });
+        it('KEY_DUPLICATION', () => {
+            expect(
+                HEADER_KEY_VALIDATIONS[MESSAGES.KEY_DUPLICATION]('a', [
+                    ['a', 'b'],
+                    ['a', 'c']
+                ])
+            ).toBe(true);
+            expect(
+                HEADER_KEY_VALIDATIONS[MESSAGES.KEY_DUPLICATION]('a', [
+                    ['b', 'c'],
+                    ['d', 'e']
+                ])
+            ).toBe(false);
+        });
     });
 });

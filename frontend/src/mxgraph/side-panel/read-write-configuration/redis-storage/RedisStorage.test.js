@@ -68,14 +68,6 @@ describe('Redis storage', () => {
         expect(wrapper.find(SelectField)).toHaveLength(1);
     });
 
-    it('should render Divider when connection isn`t empty', () => {
-        wrapper.setProps({
-            connectionPage: false,
-            connection: { someValue: 1 }
-        });
-        expect(wrapper.find(Divider)).toHaveLength(1);
-    });
-
     it('should render SelectFIeld when operation is READ', () => {
         wrapper.setProps({
             inputValues: {

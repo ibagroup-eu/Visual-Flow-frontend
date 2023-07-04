@@ -146,7 +146,7 @@ export const pingConnection = (projectName, { key, value }) => dispatch => {
             showNotification(
                 response.data.status
                     ? `Connection "${key}" is valid`
-                    : `Connection "${key}" is invalid`,
+                    : response.data.message || `Connection "${key}" is invalid`,
                 response.data.status ? 'success' : 'error'
             );
         },

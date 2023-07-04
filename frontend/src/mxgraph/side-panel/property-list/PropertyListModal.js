@@ -30,12 +30,15 @@ import {
 import { AddOutlined } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { isEqual } from 'lodash';
+import { isEmpty, isEqual, pickBy } from 'lodash';
 import PropTypes from 'prop-types';
 import PopupForm from '../../../components/popup-form';
 import styles from './PropertyListModal.Styles';
-import isBlank from '../../../utils/isBlank';
 import PropertyListRow from './PropertyListRow';
+import {
+    validate,
+    VALUE_VALIDATIONS
+} from '../../../pages/settings/parameters/validation/useParamValidation';
 
 const DEFAULT = [['', '']];
 
@@ -49,13 +52,33 @@ export const PropertyListModal = ({
     modalTitle,
     buttonTitle,
     fieldName,
+    keyValidations = VALUE_VALIDATIONS,
+    valueValidations = VALUE_VALIDATIONS,
     options = []
 }) => {
     const [items, setItems] = useState(initialItems);
+    const [errors, setErrors] = useState([]);
     const { t } = useTranslation();
 
+    const validateRow = ([key, value], arr) => {
+        const nameValidationError = validate(key, keyValidations, arr);
+        const valueValidationError = validate(value, valueValidations, arr);
+
+        return pickBy(
+            {
+                nameValidationError: t(nameValidationError),
+                valueValidationError: t(valueValidationError)
+            },
+            v => !isEmpty(v)
+        );
+    };
+
     const handleRemove = index => () =>
-        setItems(prev => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+        setItems(prev => {
+            const result = [...prev.slice(0, index), ...prev.slice(index + 1)];
+            setErrors(result.map(row => validateRow(row, result)));
+            return result;
+        });
 
     const handleMove = index => () => {
         setItems(prev => {
@@ -69,12 +92,17 @@ export const PropertyListModal = ({
         setItems(prev => {
             const copy = [...prev];
             copy[index] = value;
+            setErrors(copy.map(row => validateRow(row, copy)));
             return copy;
         });
     };
+
     const disabled = !editable;
 
-    const valid = !items.some(entry => entry.some(isBlank));
+    const valid = items.every(row => {
+        const value = validateRow(row, items);
+        return isEmpty(value);
+    });
 
     const renderItem = ([key, value], index) => {
         return (
@@ -85,6 +113,7 @@ export const PropertyListModal = ({
                 disabled={disabled}
                 keyName={key}
                 keyValue={value}
+                errors={errors[index]}
                 onChange={handleItemChange}
                 onMove={handleMove}
                 onRemove={handleRemove}
@@ -152,7 +181,9 @@ PropertyListModal.propTypes = {
     modalTitle: PropTypes.string,
     buttonTitle: PropTypes.string,
     options: PropTypes.array,
-    fieldName: PropTypes.string
+    fieldName: PropTypes.string,
+    keyValidations: PropTypes.object,
+    valueValidations: PropTypes.object
 };
 
 export default withStyles(styles)(PropertyListModal);

@@ -29,7 +29,8 @@ export const PipelineConfiguration = ({
     setPanelDirty,
     saveCell,
     state,
-    setState
+    setState,
+    graph
 }) => {
     return (
         <ConfigurationWrapper
@@ -41,6 +42,7 @@ export const PipelineConfiguration = ({
             state={state}
             setState={setState}
             render={Pipeline}
+            graph={graph}
         />
     );
 };
@@ -52,7 +54,8 @@ PipelineConfiguration.propTypes = {
     saveCell: PropTypes.func,
     setPanelDirty: PropTypes.func,
     state: PropTypes.object,
-    setState: PropTypes.func
+    setState: PropTypes.func,
+    graph: PropTypes.object
 };
 
 export default PipelineConfiguration;

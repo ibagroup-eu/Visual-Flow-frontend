@@ -32,7 +32,8 @@ const WithColumnModal = props => {
             paragraph4: t('withColumn:description.value4'),
             paragraph5: t('withColumn:description.value5'),
             paragraph6: t('withColumn:description.value6'),
-            paragraph7: t('withColumn:description.value7')
+            paragraph7: t('withColumn:description.value7'),
+            paragraph8: t('withColumn:description.value8')
         },
         {
             title: t('withColumn:name.name'),
@@ -45,7 +46,10 @@ const WithColumnModal = props => {
             paragraph3: t('withColumn:operationType.value3'),
             paragraph4: t('withColumn:operationType.value4'),
             paragraph5: t('withColumn:operationType.value5'),
-            paragraph6: t('withColumn:operationType.value6')
+            paragraph6: t('withColumn:operationType.value6'),
+            paragraph7: t('withColumn:operationType.value7'),
+            paragraph8: t('withColumn:operationType.value8'),
+            paragraph9: t('withColumn:operationType.value9')
         },
         {
             title: t('withColumn:column.name'),

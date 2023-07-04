@@ -561,10 +561,6 @@ const getAPI = t => [
         paragraph: t('ReadWrite:API.method.value')
     },
     {
-        title: t('ReadWrite:API.jsonPath.name'),
-        paragraph: t('ReadWrite:API.jsonPath.value')
-    },
-    {
         title: t('ReadWrite:API.headers.name'),
         paragraph: t('ReadWrite:API.headers.value')
     },

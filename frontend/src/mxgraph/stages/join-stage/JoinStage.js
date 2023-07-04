@@ -25,13 +25,13 @@ import useStyles from './JoinStage.Styles';
 import makeTooltip from '../helpers/makeTooltip';
 
 import { JobStageTag } from '../../../components/stage-tag';
-import { StageParameters, TagsParameter } from '../parameters';
+import { Parameter, StageParameters } from '../parameters';
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
 
 const JoinStage = ({ stage }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-    const columns = stage.columns?.split(',').map(el => el.trim());
+
     return (
         <ConfiguredStageWithIcon
             operation={stage.operation}
@@ -39,11 +39,14 @@ const JoinStage = ({ stage }) => {
         >
             {stage.joinType !== 'cross' && (
                 <StageParameters>
-                    <TagsParameter
-                        name={t('jobDesigner:joinConfiguration.Key')}
-                        values={columns}
-                        className={classes.key}
-                    />
+                    <Parameter name={t('jobDesigner:joinConfiguration.leftKey')}>
+                        {' '}
+                        {makeTooltip(stage.leftColumns, stage.leftColumns)}
+                    </Parameter>
+                    <Parameter name={t('jobDesigner:joinConfiguration.rightKey')}>
+                        {' '}
+                        {makeTooltip(stage.rightColumns, stage.rightColumns)}
+                    </Parameter>
                 </StageParameters>
             )}
             <JobStageTag className={classes.joinType}>{stage.joinType}</JobStageTag>

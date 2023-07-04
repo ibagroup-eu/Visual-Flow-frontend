@@ -20,14 +20,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { Box, Chip, IconButton, TextField, Typography } from '@material-ui/core';
+import { Box, IconButton, Typography } from '@material-ui/core';
 import { SwapVert } from '@material-ui/icons';
 
-import { Autocomplete } from '@material-ui/lab';
 import useStyles from './JoinConfiguration.Styles';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
 import ConfigurationDivider from '../../../components/divider';
+import AutocompleteParameter from '../autocomplete-parameter';
 
 const joinTypes = [
     {
@@ -130,37 +130,38 @@ const JoinConfiguration = ({
                         <>
                             <ConfigurationDivider />
                             <div className={classes.divider}>
-                                <Autocomplete
-                                    disabled={!ableToEdit}
-                                    id="columns"
-                                    multiple
-                                    freeSolo
-                                    autoSelect
-                                    options={[]}
-                                    value={state.columns?.split(',') || []}
-                                    onChange={(event, value) =>
-                                        onChange('columns', value?.join(','))
+                                <AutocompleteParameter
+                                    ableToEdit={ableToEdit}
+                                    id="leftColumns"
+                                    name="leftColumns"
+                                    handleInputChange={event =>
+                                        onChange(
+                                            event.target.name,
+                                            event.target.value
+                                        )
                                     }
-                                    renderTags={(value, getTagProps) =>
-                                        value.map((option, index) => (
-                                            <Chip
-                                                variant="outlined"
-                                                label={option}
-                                                {...getTagProps({ index })}
-                                            />
-                                        ))
-                                    }
-                                    renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            fullWidth
-                                            variant="outlined"
-                                            label={t(
-                                                'jobDesigner:joinConfiguration.Key'
-                                            )}
-                                            required
-                                        />
+                                    state={state}
+                                    label={t(
+                                        'jobDesigner:joinConfiguration.leftKey'
                                     )}
+                                    required
+                                />
+                                <AutocompleteParameter
+                                    className={classes.divider}
+                                    ableToEdit={ableToEdit}
+                                    id="rightColumns"
+                                    name="rightColumns"
+                                    handleInputChange={event =>
+                                        onChange(
+                                            event.target.name,
+                                            event.target.value
+                                        )
+                                    }
+                                    state={state}
+                                    label={t(
+                                        'jobDesigner:joinConfiguration.rightKey'
+                                    )}
+                                    required
                                 />
                             </div>
                         </>

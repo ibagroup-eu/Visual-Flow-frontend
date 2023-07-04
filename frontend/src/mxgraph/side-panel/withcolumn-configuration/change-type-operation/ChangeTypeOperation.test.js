@@ -18,16 +18,15 @@
  */
 
 import React from 'react';
-import { shallow} from 'enzyme';
+import { shallow } from 'enzyme';
 import ChangeTypeOperation from './index';
-import SelectField from "../../../../components/select-field";
+import SelectField from '../../../../components/select-field';
+import { TextField } from '@material-ui/core';
+import { isValidPrecision, isValidScale } from './ChangeTypeOperation';
 
 describe('ChangeTypeOperation', () => {
-    let wrapper;
-    let defaultProps;
-
-    beforeEach(() => {
-        defaultProps = {
+    const init = (props = {}, returnProps = false, func = shallow) => {
+        const defaultProps = {
             state: {
                 'option.columnType': 'boolean'
             },
@@ -35,14 +34,123 @@ describe('ChangeTypeOperation', () => {
             handleInputChange: jest.fn()
         };
 
-        wrapper = shallow(<ChangeTypeOperation {...defaultProps} />);
-    });
+        const wrapper = func(<ChangeTypeOperation {...defaultProps} {...props} />);
+
+        return returnProps ? [wrapper, { ...defaultProps, ...props }] : [wrapper];
+    };
 
     it('should render component', () => {
+        const [wrapper] = init({}, true);
         expect(wrapper).toBeDefined();
     });
 
     it('should render select field', () => {
+        const [wrapper] = init({}, true);
         expect(wrapper.find(SelectField)).toHaveLength(1);
+    });
+
+    it('should render precision and scale fields ', () => {
+        const [wrapper] = init({ state: { 'option.columnType': 'decimal' } }, true);
+        expect(wrapper.find(TextField)).toHaveLength(2);
+    });
+
+    it('should call handle column type change ', () => {
+        const [wrapper, props] = init({}, true);
+        const target = {
+            target: { name: 'option.columnType', value: 'date' }
+        };
+        wrapper.find(SelectField).prop('handleInputChange')(target);
+        expect(props.handleInputChange).toHaveBeenCalledWith(target);
+    });
+
+    it('should handle precision change ', () => {
+        const [wrapper, props] = init(
+            { state: { 'option.columnType': 'decimal' } },
+            true
+        );
+
+        wrapper
+            .find(TextField)
+            .at(0)
+            .prop('onChange')({
+            target: { name: 'precision', value: '5' }
+        });
+        expect(props.handleInputChange).toHaveBeenCalledWith({
+            target: { name: 'option.columnType', value: 'decimal(5,0)' }
+        });
+    });
+
+    it('should handle scale change ', () => {
+        const [wrapper, props] = init(
+            { state: { 'option.columnType': 'decimal' } },
+            true
+        );
+
+        wrapper
+            .find(TextField)
+            .at(1)
+            .prop('onChange')({
+            target: { name: 'scale', value: '2' }
+        });
+        expect(props.handleInputChange).toHaveBeenCalledWith({
+            target: { name: 'option.columnType', value: 'decimal(10,2)' }
+        });
+    });
+
+    describe('isValidPrecision', () => {
+        it.each([
+            { value: '5', expected: null },
+            { value: '', expected: ['main:validation.notBlank'] },
+            {
+                value: '5.2',
+                expected: ['main:validation.withColumnValidation.integer']
+            },
+            {
+                value: '40',
+                expected: [
+                    'main:validation.withColumnValidation.range',
+                    { min: 1, max: 38 }
+                ]
+            },
+            {
+                value: '0',
+                expected: [
+                    'main:validation.withColumnValidation.range',
+                    { min: 1, max: 38 }
+                ]
+            }
+        ])(
+            'should return $expected when called with $value',
+            ({ value, expected }) => {
+                expect(isValidPrecision(value)).toStrictEqual(expected);
+            }
+        );
+    });
+
+    describe('isValidScale', () => {
+        it.each([
+            { value: '4', expected: null },
+            { value: '', expected: ['main:validation.notBlank'] },
+            {
+                value: '7.1',
+                expected: ['main:validation.withColumnValidation.integer']
+            },
+            {
+                value: '38',
+                expected: [
+                    'main:validation.withColumnValidation.range',
+                    { min: 0, max: 37 }
+                ]
+            },
+            {
+                value: '0',
+                expected: null
+            }
+        ])(
+            'should return $expected when called with $value',
+            ({ value, expected }) => {
+                expect(isValidScale(value)).toStrictEqual(expected);
+            }
+        );
     });
 });

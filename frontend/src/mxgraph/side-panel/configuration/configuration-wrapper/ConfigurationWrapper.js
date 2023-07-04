@@ -20,8 +20,10 @@
 import React from 'react';
 import { Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
+
 import useStyles from '../job-configuration/JobConfiguration.Styles';
 import SaveCancelButtons from '../../buttons';
+import { isDuplicatedName } from '../Configuration';
 
 const ConfigurationWrapper = ({
     configuration,
@@ -31,9 +33,11 @@ const ConfigurationWrapper = ({
     setPanelDirty,
     render: Component,
     state,
-    setState
+    setState,
+    graph
 }) => {
     const classes = useStyles();
+    const duplicatedName = isDuplicatedName(state.name, graph);
 
     const handleInputChange = (key, value) =>
         setState(prevState => ({
@@ -52,12 +56,13 @@ const ConfigurationWrapper = ({
                 ableToEdit={ableToEdit}
                 state={state}
                 onStateChange={handleInputChange}
+                duplicatedName={duplicatedName}
             />
             <SaveCancelButtons
                 ableToEdit={ableToEdit}
                 saveCell={() => onSave(state)}
                 cancelChanges={cancelChanges}
-                isDisabled={isDisabled(state)}
+                isDisabled={isDisabled(state) || duplicatedName}
             />
         </Box>
     );
@@ -71,7 +76,8 @@ ConfigurationWrapper.propTypes = {
     setPanelDirty: PropTypes.func,
     render: PropTypes.elementType,
     state: PropTypes.object,
-    setState: PropTypes.func
+    setState: PropTypes.func,
+    graph: PropTypes.object
 };
 
 export default ConfigurationWrapper;

@@ -120,7 +120,8 @@ const useUnsavedChangesWarning = () => {
     return [
         routerPrompt,
         useCallback(() => setDirty(true), []),
-        useCallback(() => setDirty(false), [])
+        useCallback(() => setDirty(false), []),
+        isDirty
     ];
 };
 

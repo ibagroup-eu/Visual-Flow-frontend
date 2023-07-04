@@ -60,7 +60,6 @@ describe('PropertyListRow', () => {
 
     it('should handle change for autocomplete', () => {
         const [wrapper, props] = init({}, true, mount);
-        console.log(wrapper.debug());
         wrapper.find(Autocomplete).prop('onInputChange')(null, 'newValue');
 
         expect(props.onChange).toHaveBeenCalled();

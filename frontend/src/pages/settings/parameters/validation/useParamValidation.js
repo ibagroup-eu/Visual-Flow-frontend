@@ -41,12 +41,12 @@ export const VALUE_VALIDATIONS = {
     [MESSAGES.VALUE_EMPTY]: value => !value?.trim()
 };
 
-export const validate = (value, validationSchema) =>
+export const validate = (value, validationSchema, ...args) =>
     Object.entries(validationSchema).reduce((acc, [message, func]) => {
         if (acc) {
             return acc;
         }
-        return func(value) ? message : '';
+        return func(value, ...args) ? message : '';
     }, '');
 
 const useParamValidation = data => {

@@ -65,14 +65,6 @@ describe('Elastic storage', () => {
         expect(wrapper.find(ReadWriteTextFields)).toHaveLength(4);
     });
 
-    it('should render Divider when connection isn`t empty', () => {
-        wrapper.setProps({
-            connectionPage: false,
-            connection: { someValue: 1 }
-        });
-        expect(wrapper.find(Divider)).toHaveLength(1);
-    });
-
     it('should render WriteMode when operation is WRITE', () => {
         wrapper.setProps({
             connectionPage: false,

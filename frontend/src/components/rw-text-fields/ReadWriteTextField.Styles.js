@@ -22,7 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 export default makeStyles(theme => ({
     fieldWrapper: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'start',
         marginTop: theme.spacing(2)
     },
     button: {
@@ -30,7 +30,7 @@ export default makeStyles(theme => ({
         marginLeft: theme.spacing(1)
     },
     multilineButton: {
-        top: theme.spacing(1.75),
+        top: theme.spacing(2.1),
         position: 'absolute',
         right: theme.spacing(1.75)
     },

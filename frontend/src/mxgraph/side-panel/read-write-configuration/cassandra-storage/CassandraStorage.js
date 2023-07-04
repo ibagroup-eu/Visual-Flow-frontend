@@ -20,8 +20,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Divider } from '@material-ui/core';
-import { isEqual } from 'lodash';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import { WRITE, READWRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
@@ -98,7 +96,6 @@ const CassandraStorage = ({
 
         {!connectionPage && (
             <>
-                {!isEqual(connection, {}) && <Divider style={{ marginTop: 8 }} />}
                 <ReadTextFields
                     ableToEdit={ableToEdit}
                     fields={fields[1]}

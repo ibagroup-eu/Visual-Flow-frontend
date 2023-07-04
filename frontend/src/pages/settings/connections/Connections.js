@@ -39,14 +39,15 @@ import {
 import { PageSkeleton } from '../../../components/skeleton';
 import ConnectionsTableRow from './table';
 import useStyles from './Connections.Styles';
-import { STORAGES, READ, WRITE } from '../../../mxgraph/constants';
+import { STORAGES } from '../../../mxgraph/constants';
 import ConnectionsPanel from './panel';
 import ConnectionsSearchAndSelect from '../../../mxgraph/side-panel/read-write-configuration/connections-modal/searchAndSelect/ConnectionsSearchAndSelect';
 
+const excludedStorages = ['stdout', 'cluster', 'dataframe', 'request', 'kafka'];
 export const selectConnections = reduce(
     STORAGES,
-    (result, { value, label, hide }) => {
-        if (value !== 'cluster' && ![READ, WRITE].some(v => hide?.includes(v))) {
+    (result, { value, label }) => {
+        if (!excludedStorages.includes(value)) {
             result.push({ value, name: label });
         }
         return result;

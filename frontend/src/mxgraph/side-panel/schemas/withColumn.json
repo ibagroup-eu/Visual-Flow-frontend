@@ -51,6 +51,9 @@
             "conditions": [
                 {
                     "operationType": "useConditions"
+                },
+                {
+                    "operationType": "replaceValuesUsingConditions"
                 }
             ]
         },
@@ -59,6 +62,9 @@
             "conditions": [
                 {
                     "operationType": "useConditions"
+                },
+                {
+                    "operationType": "replaceValuesUsingConditions"
                 }
             ]
         },
@@ -143,6 +149,38 @@
                 {
                     "operationType": "useWindowFunction",
                     "option.windowFunction": "lead"
+                }
+            ]
+        },
+        {
+            "field": "option.oldValue",
+            "conditions": [
+                {
+                    "operationType": "replaceValues"
+                }
+            ]
+        },
+        {
+            "field": "option.newValue",
+            "conditions": [
+                {
+                    "operationType": "replaceValues"
+                }
+            ]
+        },
+        {
+            "field": "option.oldChars",
+            "conditions": [
+                {
+                    "operationType": "replaceValuesCharByChar"
+                }
+            ]
+        },
+        {
+            "field": "option.newChars",
+            "conditions": [
+                {
+                    "operationType": "replaceValuesCharByChar"
                 }
             ]
         }

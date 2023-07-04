@@ -11,7 +11,8 @@
         "value4": "3. Deriving new column from an existing column.",
         "value5": "4. Using conditions to provide column values.",
         "value6": "5. Changing column data type.",
-        "value7": "6. Working with Window Functions."
+        "value7": "6. Working with Window Functions.",
+        "value8": "7. Replacing column values that match the pattern with new ones, replace column values character by character, using conditions."
     },
     "operationType": {
         "name": "Operation Type",
@@ -21,7 +22,10 @@
         "value3": " 'changeType' — change column type.",
         "value4": " 'renameColumn' — rename the column.",
         "value5": " 'useConditions' — create a column with values that depend on some conditions.",
-        "value6": " 'useWindowFunction' — create a column with values obtained as a result of using the window function."
+        "value6": " 'useWindowFunction' — create a column with values obtained as a result of using the window function.",
+        "value7": " 'replaceValues' — replace column values that match the pattern with new ones.",
+        "value8": " 'replaceValuesUsingConditions' — replace values in the column using conditions.",
+        "value9": " 'replaceValuesCharByChar' — replace column values character by character."
     },
     "column": {
         "name": "Column",

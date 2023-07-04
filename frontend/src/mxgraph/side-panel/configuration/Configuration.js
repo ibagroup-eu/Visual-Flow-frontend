@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { get, has, keys, omit, pickBy, reduce } from 'lodash';
+import { get, has, isNil, keys, omit, pickBy, reduce } from 'lodash';
 import { Box, TextField, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -30,6 +30,21 @@ import SaveCancelButtons from '../buttons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
 import { CDC, DATETIME, JOIN, READ, WRITE } from '../../constants';
 import ConnectionsModal from '../read-write-configuration/connections-modal/ConnectionsModal';
+
+export const isDuplicatedName = (stageName, graph) => {
+    if (!isNil(stageName)) {
+        const cells = Object.values(graph.getModel().cells);
+
+        const currentGraphCells = cells
+            ?.filter(({ id }) => graph.getSelectionCell()?.id !== id)
+            .map(({ value: { attributes } = {} }) => attributes?.name?.nodeValue);
+
+        return currentGraphCells.some(
+            name => name?.toLowerCase() === stageName?.toLowerCase()
+        );
+    }
+    return false;
+};
 
 const Configuration = ({
     ableToEdit,
@@ -80,6 +95,7 @@ const Configuration = ({
                 : {},
         [connections, state.connectionName]
     );
+    const duplicatedName = isDuplicatedName(state.name, graph);
 
     useEffect(() => {
         if (state.operation === READ || state.operation === WRITE) {
@@ -235,6 +251,11 @@ const Configuration = ({
                         handleChange(event.target.name, event.target.value)
                     }
                     required
+                    helperText={
+                        duplicatedName &&
+                        t('main:validation.projectConnections.nameDuplication')
+                    }
+                    error={!!duplicatedName}
                 />
 
                 <Component
@@ -254,7 +275,7 @@ const Configuration = ({
                 ableToEdit={ableToEdit}
                 saveCell={() => handleSaveCell(state)}
                 cancelChanges={cancelChanges}
-                isDisabled={isDisabled(state)}
+                isDisabled={isDisabled(state) || duplicatedName}
             />
         </Box>
     );

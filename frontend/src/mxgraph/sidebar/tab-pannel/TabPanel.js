@@ -23,19 +23,17 @@ import { withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import styles from './TabPanel.Styles';
 
-export const TabPanel = ({ type, children, value, index, classes }) =>
-    value === index && (
-        <div
-            role="tabpanel"
-            className={
-                type === 'notifications'
-                    ? classNames(classes.root, classes.notificationTabs)
-                    : classNames(classes.root, classes.sidebarTab)
-            }
-        >
+export const TabPanel = ({ type, children, value, index, classes }) => {
+    const className = classNames(classes.root, {
+        [classes.sidebarTab]: type !== 'notifications',
+        [classes.visible]: value === index
+    });
+    return (
+        <div role="tabpanel" className={className}>
             {children}
         </div>
     );
+};
 
 TabPanel.propTypes = {
     children: PropTypes.node,

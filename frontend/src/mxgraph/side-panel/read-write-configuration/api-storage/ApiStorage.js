@@ -19,7 +19,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Typography } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import SelectField from '../../../../components/select-field';
@@ -27,6 +27,13 @@ import { READWRITE } from '../../../constants';
 import { PropertyListModal } from '../../property-list';
 
 import useStyles from './ApiStorage.Styles';
+import { MESSAGES } from '../../../../pages/settings/parameters/validation/useParamValidation';
+
+export const HEADER_KEY_VALIDATIONS = {
+    [MESSAGES.VALUE_EMPTY]: value => !value?.trim(),
+    [MESSAGES.KEY_DUPLICATION]: (value, arr) =>
+        arr?.filter(([key]) => key === value).length > 1
+};
 
 const method = [
     {
@@ -52,8 +59,6 @@ const method = [
 ];
 
 const hostField = [{ field: 'host' }];
-
-const jsonPath = [{ field: 'jsonPath' }];
 
 export const fromState = items => items?.split(';').map(v => v.split(':')) || [];
 
@@ -111,19 +116,6 @@ const ApiStorage = ({
                 connection={connection}
                 required
             />
-            <ReadTextFields
-                fields={jsonPath}
-                openModal={openModal}
-                inputValues={inputValues}
-                ableToEdit={ableToEdit}
-                handleInputChange={handleInputChange}
-                connection={connection}
-                required
-            />
-
-            <Typography variant="caption" className={classes.hint}>
-                {t('jobDesigner:readConfiguration.jsonPathHint')}
-            </Typography>
 
             {showModalParams && (
                 <PropertyListModal
@@ -156,6 +148,7 @@ const ApiStorage = ({
                     editable={ableToEdit}
                     open={showModalHeaders}
                     onSave={handleSave(apiHeaders)}
+                    keyValidations={HEADER_KEY_VALIDATIONS}
                     onClose={() => setShowModalHeaders(false)}
                 />
             )}

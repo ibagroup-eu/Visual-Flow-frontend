@@ -19,12 +19,20 @@
 
 export default theme => ({
     root: {
-        height: '100%'
+        height: 0,
+        position: 'absolute',
+        left: -1000,
+        overflow: 'hidden',
+        visibility: 'collapse',
+        padding: theme.spacing(3, 0, 0, 0)
     },
     sidebarTab: {
         padding: theme.spacing(4, 4, 0, 4)
     },
-    notificationTabs: {
-        padding: theme.spacing(3, 0, 0, 0)
+    visible: {
+        height: '100%',
+        overflow: 'auto',
+        visibility: 'visible',
+        position: 'static'
     }
 });

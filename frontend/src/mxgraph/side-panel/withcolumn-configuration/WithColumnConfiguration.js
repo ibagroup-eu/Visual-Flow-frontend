@@ -30,6 +30,9 @@ import {
     DERIVE_COLUMN,
     OTHER,
     RENAME_COLUMN,
+    REPLACE_VALUES,
+    REPLACE_VALUES_CHAR_BY_CHAR,
+    REPLACE_VALUES_USING_CONDITIONS,
     USE_CONDITIONS,
     USE_WINDOW_FUNCTION
 } from '../../constants';
@@ -40,6 +43,8 @@ import AddConstantOperation from './add-constant-operation';
 import RenameColumnOperation from './rename-column-operation';
 import UseConditionsOperation from './use-conditions-operation';
 import UseWindowFunctionOperation from './use-window-function-operation';
+import ReplaceValuesOperation from './replace-values-operation';
+import ReplaceValuesCharByCharOperation from './replace-values-byChar-operation';
 
 const OPERATION_TYPES = [
     {
@@ -65,6 +70,18 @@ const OPERATION_TYPES = [
     {
         value: 'useWindowFunction',
         label: 'useWindowFunction'
+    },
+    {
+        value: 'replaceValues',
+        label: 'replaceValues'
+    },
+    {
+        value: 'replaceValuesUsingConditions',
+        label: 'replaceValuesUsingConditions'
+    },
+    {
+        value: 'replaceValuesCharByChar',
+        label: 'replaceValuesCharByChar'
     }
 ];
 
@@ -79,9 +96,14 @@ export const getOperationComponent = name => {
         case RENAME_COLUMN:
             return RenameColumnOperation;
         case USE_CONDITIONS:
+        case REPLACE_VALUES_USING_CONDITIONS:
             return UseConditionsOperation;
         case USE_WINDOW_FUNCTION:
             return UseWindowFunctionOperation;
+        case REPLACE_VALUES:
+            return ReplaceValuesOperation;
+        case REPLACE_VALUES_CHAR_BY_CHAR:
+            return ReplaceValuesCharByCharOperation;
         default:
             throw new Error(`Unsupported operation: ${name}`);
     }

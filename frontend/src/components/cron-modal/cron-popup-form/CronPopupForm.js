@@ -17,21 +17,33 @@
  * limitations under the License.
  */
 
-import { shallow } from 'enzyme';
 import React from 'react';
-import { TabPanel } from './TabPanel';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import PopupForm from '../../popup-form';
+import { PageSkeleton } from '../../skeleton';
 
-describe('TabPanel', () => {
-    it('should render tab panel', () => {
-        const defaultProps = {
-            children: 'children',
-            value: 0,
-            index: 0,
-            classes: {}
-        };
+const CronPopupForm = ({ display, onClose, loading, children }) => {
+    const { t } = useTranslation();
 
-        const wrapper = shallow(<TabPanel {...defaultProps} />);
-
-        expect(wrapper.find('div').text()).toBe(defaultProps.children);
-    });
-});
+    return (
+        <PopupForm
+            display={display}
+            title={t('pipelines:tooltip.Scheduling')}
+            onClose={onClose}
+            isNotHelper
+        >
+            {loading ? <PageSkeleton /> : children}
+        </PopupForm>
+    );
+};
+CronPopupForm.propTypes = {
+    display: PropTypes.bool,
+    onClose: PropTypes.func,
+    loading: PropTypes.bool,
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ]).isRequired
+};
+export default CronPopupForm;

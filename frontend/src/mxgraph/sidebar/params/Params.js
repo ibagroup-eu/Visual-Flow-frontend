@@ -22,7 +22,7 @@ import { Button } from '@material-ui/core';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { cloneDeep, entries, get, identity, isEqual, set } from 'lodash';
+import { cloneDeep, entries, get, isEqual, isFunction, set } from 'lodash';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { setParams, setParamsDirty } from '../../../redux/actions/mxGraphActions';
@@ -31,15 +31,17 @@ import useStyles from './Params.Styles';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 import FieldFactory from './FieldFactory';
 
-export const getFieldNames = fields => {
+const getProperties = (fields, mapper) => {
     const names = [];
 
     const rec = structure => {
-        entries(structure).forEach(([k, v]) => {
+        entries(structure).forEach(entry => {
+            const [, v] = entry;
             if (v.fields) {
                 rec(v.fields);
             } else {
-                names.push(k);
+                const value = mapper(entry);
+                names.push(value);
             }
         });
     };
@@ -47,6 +49,10 @@ export const getFieldNames = fields => {
     rec(fields);
 
     return names;
+};
+
+export const getFieldNames = fields => {
+    return getProperties(fields, ([k]) => k);
 };
 
 const DEFAULT_PARAMS = {
@@ -101,6 +107,13 @@ export const Params = ({
     const [state, setState] = React.useState(initialState);
     const [errors, setErrors] = useState({});
 
+    const validators = getProperties(fields, ([key, { validate }]) => ({
+        key,
+        validate
+    })).filter(({ validate }) => isFunction(validate));
+
+    const hasErrors = validators.some(({ key, validate }) => validate(state[key]));
+
     const handleChange = event => {
         event.persist();
 
@@ -117,8 +130,7 @@ export const Params = ({
         setErrors(newValue);
     };
 
-    const isSaveBtnDisabled = () =>
-        isEqual(state, initialState) || Object.values(errors).some(identity);
+    const isSaveBtnDisabled = () => isEqual(state, initialState) || hasErrors;
 
     return (
         <div className={classes.root} ref={ref}>

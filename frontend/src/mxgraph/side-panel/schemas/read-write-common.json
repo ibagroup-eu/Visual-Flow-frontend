@@ -489,7 +489,7 @@
                     "storage": "clickhouse"
                 },
                 {
-                    "storage": "api"
+                    "storage": "request"
                 }
             ]
         },
@@ -578,15 +578,7 @@
             "field": "method",
             "conditions": [
                 {
-                    "storage": "api"
-                }
-            ]
-        },
-        {
-            "field": "jsonPath",
-            "conditions": [
-                {
-                    "storage": "api"
+                    "storage": "request"
                 }
             ]
         },
@@ -594,7 +586,7 @@
             "field": "option.params",
             "conditions": [
                 {
-                    "storage": "api"
+                    "storage": "request"
                 }
             ]
         },
@@ -602,7 +594,7 @@
             "field": "option.headers",
             "conditions": [
                 {
-                    "storage": "api"
+                    "storage": "request"
                 }
             ]
         }

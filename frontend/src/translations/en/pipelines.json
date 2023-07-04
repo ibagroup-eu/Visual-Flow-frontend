@@ -32,7 +32,7 @@
         "TagsHint": "Tag your job to categorize it"
     },
     "relatedJobs": "Export related jobs",
-    "importPipelinesNote": "Uncheck the pipeline if you want to export separate jobs",
+    "importPipelinesNote": "Uncheck the pipeline if you want to import separate jobs",
     "cronInfo": {
         "nextAt": "Next at",
         "helperText": "Enter cron expression in UTC timezone"

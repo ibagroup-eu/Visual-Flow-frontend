@@ -115,6 +115,7 @@ export const JobConfiguration = ({
             state={state}
             setState={setState}
             render={render}
+            graph={graph}
         />
     );
 };
