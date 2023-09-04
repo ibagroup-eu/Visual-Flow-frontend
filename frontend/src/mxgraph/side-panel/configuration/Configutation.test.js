@@ -294,7 +294,6 @@ describe('Configuration', () => {
 
     describe('isDuplicatedName', () => {
         const graph = {
-            getSelectionCell: jest.fn(() => ({ id: 0 })),
             getModel: jest.fn().mockReturnValue({
                 cells: [
                     {
@@ -303,7 +302,18 @@ describe('Configuration', () => {
                             attributes: {
                                 name: {
                                     nodeName: 'name',
-                                    nodeValue: 'theSameValue'
+                                    nodeValue: 'Cell1'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        id: 2,
+                        value: {
+                            attributes: {
+                                name: {
+                                    nodeName: 'name',
+                                    nodeValue: 'Cell2'
                                 }
                             }
                         }
@@ -313,19 +323,23 @@ describe('Configuration', () => {
         };
         it.each([
             {
-                stageName: 'theSameValue',
+                stageName: 'Cell2',
                 graph: graph,
+                currentCell: '1',
                 expected: true
             },
             {
                 stageName: 'otherValue',
+                currentCell: '1',
                 graph: graph,
                 expected: false
             }
         ])(
             'should return $expected when called with $stageName',
-            ({ stageName, graph, expected }) => {
-                expect(isDuplicatedName(stageName, graph)).toBe(expected);
+            ({ stageName, graph, currentCell, expected }) => {
+                expect(isDuplicatedName(stageName, graph, currentCell)).toBe(
+                    expected
+                );
             }
         );
     });

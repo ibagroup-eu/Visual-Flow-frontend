@@ -21,6 +21,7 @@ import React from 'react';
 import { Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
+import { connect } from 'react-redux';
 import useStyles from '../job-configuration/JobConfiguration.Styles';
 import SaveCancelButtons from '../../buttons';
 import { isDuplicatedName } from '../Configuration';
@@ -34,10 +35,11 @@ const ConfigurationWrapper = ({
     render: Component,
     state,
     setState,
-    graph
+    graph,
+    currentCell
 }) => {
     const classes = useStyles();
-    const duplicatedName = isDuplicatedName(state.name, graph);
+    const duplicatedName = isDuplicatedName(state.name, graph, currentCell);
 
     const handleInputChange = (key, value) =>
         setState(prevState => ({
@@ -77,7 +79,12 @@ ConfigurationWrapper.propTypes = {
     render: PropTypes.elementType,
     state: PropTypes.object,
     setState: PropTypes.func,
-    graph: PropTypes.object
+    graph: PropTypes.object,
+    currentCell: PropTypes.string
 };
 
-export default ConfigurationWrapper;
+const mapStateToProps = state => ({
+    currentCell: state.mxGraph.currentCell
+});
+
+export default connect(mapStateToProps)(ConfigurationWrapper);

@@ -31,12 +31,12 @@ import ParametersModal from '../read-write-configuration/parameters-modal';
 import { CDC, DATETIME, JOIN, READ, WRITE } from '../../constants';
 import ConnectionsModal from '../read-write-configuration/connections-modal/ConnectionsModal';
 
-export const isDuplicatedName = (stageName, graph) => {
+export const isDuplicatedName = (stageName, graph, currentCell) => {
     if (!isNil(stageName)) {
         const cells = Object.values(graph.getModel().cells);
 
         const currentGraphCells = cells
-            ?.filter(({ id }) => graph.getSelectionCell()?.id !== id)
+            ?.filter(({ id }) => currentCell !== id)
             .map(({ value: { attributes } = {} }) => attributes?.name?.nodeValue);
 
         return currentGraphCells.some(
@@ -61,15 +61,16 @@ const Configuration = ({
     params,
     connections,
     state,
-    setState
+    setState,
+    currentCell
 }) => {
     const { t } = useTranslation();
     const [showModal, setShowModal] = useState(false);
     const [fieldInModal, setFieldInModal] = useState(null);
     const [swap, setSwap] = useState(false);
 
-    const currentCell = graph.getSelectionCell();
-    const inputEdges = graph.getIncomingEdges(currentCell);
+    const selectedCell = graph.getSelectionCell();
+    const inputEdges = graph.getIncomingEdges(selectedCell);
     const edgeLabels = reduce(
         inputEdges,
         (result, edge) => ({
@@ -84,6 +85,7 @@ const Configuration = ({
     );
     const [connectionPrevState, setConnectionState] = useState({});
 
+    const duplicatedName = isDuplicatedName(state.name, graph, currentCell);
     const connection = useMemo(
         () =>
             state.connectionName
@@ -95,7 +97,6 @@ const Configuration = ({
                 : {},
         [connections, state.connectionName]
     );
-    const duplicatedName = isDuplicatedName(state.name, graph);
 
     useEffect(() => {
         if (state.operation === READ || state.operation === WRITE) {
@@ -296,12 +297,14 @@ Configuration.propTypes = {
     params: PropTypes.array,
     connections: PropTypes.array,
     state: PropTypes.object,
-    setState: PropTypes.func
+    setState: PropTypes.func,
+    currentCell: PropTypes.string
 };
 
 const mapStateToProps = state => ({
     params: state.pages.settingsParameters.params,
-    connections: state.pages.settingsConnections.connections
+    connections: state.pages.settingsConnections.connections,
+    currentCell: state.mxGraph.currentCell
 });
 
 export default compose(withStyles(styles), connect(mapStateToProps))(Configuration);
