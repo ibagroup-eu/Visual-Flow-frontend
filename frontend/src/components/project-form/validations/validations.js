@@ -17,10 +17,13 @@
  * limitations under the License.
  */
 
+import { DATABRICKS } from '../../../mxgraph/constants';
 import {
     isCorrectDescription,
     isCorrectName,
-    isPositiveNumber
+    isPositiveNumber,
+    isValidDemoLimitDate,
+    isValidDatabricksParams
 } from '../../../utils/projectValidations';
 
 export const isLimitsEmpty = ({
@@ -43,7 +46,42 @@ export const isValidationLimitsPassed = ({
     isPositiveNumber(Number(requestsCpu)) &&
     isPositiveNumber(Number(requestsMemory));
 
+export const isValidationDemoLimitsPassed = ({
+    jobsNumAllowed,
+    pipelinesNumAllowed,
+    expirationDate
+}) =>
+    isPositiveNumber(Number(jobsNumAllowed)) &&
+    isPositiveNumber(Number(pipelinesNumAllowed)) &&
+    isValidDemoLimitDate(expirationDate);
+
 export const isValidationPassed = ({ name, description, limits }) =>
     isCorrectName(name) &&
     isCorrectDescription(description) &&
     isValidationLimitsPassed(limits);
+
+export const isLimitsAndDemoLimitsValidationsPassed = ({
+    name,
+    description,
+    limits,
+    demo,
+    demoLimits
+}) =>
+    isValidationPassed({ name, description, limits }) &&
+    (demo ? isValidationDemoLimitsPassed(demoLimits) : true);
+
+export const isDatabricksValidationPassed = ({
+    host,
+    authentication: { token, clientId, secret, authenticationType },
+    pathToFile
+}) =>
+    window.PLATFORM === DATABRICKS
+        ? isValidDatabricksParams({
+              host,
+              token,
+              clientId,
+              secret,
+              authenticationType,
+              pathToFile
+          })
+        : true;

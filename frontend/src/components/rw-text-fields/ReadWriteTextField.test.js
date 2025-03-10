@@ -19,9 +19,13 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import ReadWriteTextField from './ReadWriteTextField';
-import { TextField } from '@material-ui/core';
+import { IconButton, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+
+import { Visibility } from '@material-ui/icons';
+
+import ReadWriteTextField from './ReadWriteTextField';
+import ConfirmationDialog from '../../mxgraph/side-panel/helpers/ConfirmationDialog';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -31,12 +35,18 @@ jest.mock('react-i18next', () => ({
 describe('ReadWriteTextField', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
-            inputValues: {},
+            inputValues: {
+                'option.dbtable': '#blabla'
+            },
             rows: 1,
             field: 'option.dbtable',
             nameWIthPoint: true,
-            visible: true
+            hidden: true,
+            openModal: jest.fn(),
+            handleInputChange: jest.fn()
         };
+
+        useTranslation.mockImplementation(() => ({ t: x => x }));
 
         const wrapper = func(<ReadWriteTextField {...defaultProps} {...props} />);
 
@@ -44,10 +54,125 @@ describe('ReadWriteTextField', () => {
     };
 
     it('should render without crashes', () => {
-        useTranslation.mockImplementation(() => ({ t: x => x }));
-
-        const [wrapper] = init({}, true, mount);
+        const [wrapper, props] = init({}, true, mount);
 
         expect(wrapper.find(TextField).length).toBe(1);
+        expect(wrapper.find(TextField).prop('type')).toBe('password');
+
+        expect(wrapper.find(IconButton).length).toBe(3);
+
+        wrapper
+            .find(IconButton)
+            .at(0)
+            .prop('onClick')();
+        expect(wrapper.find(Visibility).length).toBe(0);
+
+        wrapper
+            .find(IconButton)
+            .at(1)
+            .prop('onClick')();
+        expect(props.openModal).toHaveBeenCalled();
+    });
+
+    it('should render text field', () => {
+        const [wrapper] = init(
+            {
+                inputValues: {
+                    option: 'bla'
+                },
+                hidden: false
+            },
+            true,
+            mount
+        );
+
+        expect(wrapper.find(TextField).length).toBe(1);
+        expect(wrapper.find(TextField).prop('type')).toBe('text');
+        expect(wrapper.find(TextField).prop('disabled')).toBeTruthy();
+        expect(wrapper.find(TextField).prop('value')).toBe('');
+    });
+
+    it('should render text field', () => {
+        const [wrapper] = init(
+            {
+                ableToEdit: true,
+                inputValues: {
+                    'option.dbtable': '#blabla#'
+                },
+                rows: 3,
+                field: 'Option.dbtable',
+                hidden: false,
+                connection: {
+                    option: {
+                        smth: 'dbtable'
+                    }
+                },
+                nameWIthPoint: false
+            },
+            true,
+            mount
+        );
+
+        expect(wrapper.find(TextField).length).toBe(1);
+        expect(wrapper.find(TextField).prop('type')).toBe('text');
+        expect(wrapper.find(TextField).prop('disabled')).toBeFalsy();
+    });
+
+    it('should render ConfirmationDialog', () => {
+        const [wrapper, props] = init(
+            {
+                reset: true,
+                fieldToClear: 'fieldToClear',
+                inputValues: {
+                    field: 'vlaue',
+                    fieldToClear: 'fieldToClear'
+                },
+                field: 'filed'
+            },
+            true,
+            mount
+        );
+
+        expect(wrapper.find(TextField).length).toBe(1);
+
+        wrapper.find(TextField).prop('onFocus')({ target: { value: 'smth' } });
+        wrapper.find(TextField).prop('onBlur')({ target: { value: 'someting' } });
+
+        wrapper
+            .find(ConfirmationDialog)
+            .at(0)
+            .prop('onClose')();
+
+        expect(props.handleInputChange).toHaveBeenCalled();
+    });
+
+    it('should clear field after confirm in ConfirmationDialog', () => {
+        const [wrapper, props] = init(
+            {
+                reset: true,
+                fieldToClear: 'fieldToClear',
+                inputValues: {
+                    field: 'vlaue',
+                    fieldToClear: 'fieldToClear'
+                },
+                field: 'filed'
+            },
+            true,
+            mount
+        );
+
+        expect(wrapper.find(TextField).length).toBe(1);
+
+        wrapper.find(TextField).prop('onFocus')({ target: { value: 'smth' } });
+        wrapper.find(TextField).prop('onBlur')({ target: { value: 'someting' } });
+
+        wrapper
+            .find(ConfirmationDialog)
+            .at(0)
+            .prop('onConfirm')();
+
+        expect(props.handleInputChange).toHaveBeenCalledWith({
+            target: { name: 'fieldToClear', value: '' }
+        });
     });
 });

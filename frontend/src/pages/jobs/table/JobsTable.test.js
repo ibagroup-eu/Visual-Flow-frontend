@@ -170,7 +170,7 @@ describe('Jobs', () => {
                 .props()
                 .children({ item: props.data[0] })
                 .props.children.at(6).props.actions
-        ).toHaveLength(2);
+        ).toHaveLength(3);
     });
 
     it('should render correct actions prop in ActionsCell with withRunAction and should have 3 actions', () => {
@@ -183,7 +183,7 @@ describe('Jobs', () => {
                 .props()
                 .children({ item: { ...props.data[0], runnable: true } })
                 .props.children.at(6).props.actions
-        ).toHaveLength(3);
+        ).toHaveLength(4);
     });
 
     it('should call onClose prop', () => {

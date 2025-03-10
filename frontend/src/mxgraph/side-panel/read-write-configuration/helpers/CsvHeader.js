@@ -19,34 +19,28 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import SelectField from '../../../../components/select-field';
+import { useTranslation } from 'react-i18next';
 import { READWRITE } from '../../../constants';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 
-const csvModes = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
+const CsvHeader = ({ value, onChange, ableToEdit }) => {
+    const { t } = useTranslation();
 
-const CsvHeader = ({ value, onChange, ableToEdit }) => (
-    <SelectField
-        ableToEdit={ableToEdit}
-        label="jobDesigner:writeConfiguration.Header"
-        name="option.header"
-        value={value}
-        handleInputChange={onChange}
-        menuItems={csvModes}
-        type={READWRITE}
-    />
-);
+    return (
+        <ParamsSwitchField
+            ableToEdit={ableToEdit}
+            label={t('jobDesigner:writeConfiguration.Header')}
+            name="header"
+            value={value}
+            onChange={onChange}
+            type={READWRITE}
+            defaultValue={false}
+        />
+    );
+};
 
 CsvHeader.propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.any,
     onChange: PropTypes.func,
     ableToEdit: PropTypes.bool
 };

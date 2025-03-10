@@ -41,17 +41,9 @@ export const removeHandler = (
 export const findByProp = (objects, value, prop) =>
     objects?.find(obj => obj[prop] === value);
 
-export const runWithValidation = async (
-    projectId,
-    itemId,
-    { dataJobs, dataParams },
-    run,
-    message
-) => {
-    const pipelineData = await pipelinesApi
-        .getPipelineById(projectId, itemId)
-        .then(response => response.data);
+const isNotificationRequired = (pipelineData, dataJobs, dataParams) => {
     let runDisabled = false;
+    let showWarning = false;
 
     pipelineData.definition?.graph.forEach(stage => {
         if (
@@ -72,9 +64,41 @@ export const runWithValidation = async (
         ) {
             runDisabled = true;
         }
+        if (!runDisabled && stage.value.operation === 'JOB') {
+            const job = findByProp(dataJobs, stage.value.jobId, 'id');
+            if (!job.runnable) {
+                showWarning = true;
+            }
+        }
     });
+    return { runDisabled, showWarning };
+};
 
-    runDisabled ? showNotification(message, 'error') : run(projectId, itemId);
+export const runWithValidation = async (
+    projectId,
+    itemId,
+    { dataJobs, dataParams },
+    run,
+    message,
+    warning
+) => {
+    const pipelineData = await pipelinesApi
+        .getPipelineById(projectId, itemId)
+        .then(response => response.data);
+
+    const { runDisabled, showWarning } = isNotificationRequired(
+        pipelineData,
+        dataJobs,
+        dataParams
+    );
+
+    if (runDisabled) {
+        showNotification(message, 'error');
+    } else if (showWarning) {
+        warning();
+    } else {
+        run(projectId, itemId);
+    }
 };
 
 export const jobDesignerHendler = (projectId, item, data, history) => {

@@ -61,7 +61,7 @@ const PipelineTitleCell = ({
                 />
             </Typography>
             <TagsList
-                tags={tags}
+                tags={tags || []}
                 resetTags={resetTags}
                 onCheckTags={onCheckTags}
                 checkedTags={checkedTags}

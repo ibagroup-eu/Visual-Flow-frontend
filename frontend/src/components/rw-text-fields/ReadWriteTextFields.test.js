@@ -19,9 +19,10 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import ReadWriteTextFields from './ReadWriteTextFields';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+
+import ReadWriteTextFields from './ReadWriteTextFields';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -39,10 +40,14 @@ describe('ReadWriteTextFields', () => {
                 },
                 {
                     field: 'field2',
-                    rows: 2
+                    rows: 2,
+                    disabled: true
                 }
-            ]
+            ],
+            ableToEdit: true
         };
+
+        useTranslation.mockImplementation(() => ({ t: x => x }));
 
         const wrapper = func(<ReadWriteTextFields {...defaultProps} {...props} />);
 
@@ -50,10 +55,20 @@ describe('ReadWriteTextFields', () => {
     };
 
     it('should render without crashes', () => {
-        useTranslation.mockImplementation(() => ({ t: x => x }));
-
         const [wrapper, props] = init({}, true, mount);
 
         expect(wrapper.find(TextField).length).toBe(props.fields.length);
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('disabled')
+        ).toBeFalsy();
+        expect(
+            wrapper
+                .find(TextField)
+                .at(1)
+                .prop('disabled')
+        ).toBeTruthy();
     });
 });

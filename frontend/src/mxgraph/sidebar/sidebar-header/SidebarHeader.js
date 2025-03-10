@@ -37,6 +37,8 @@ import {
 import useStyles from './SidebarHeader.Styles';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 import history from '../../../utils/history';
+import { resetJobStatus as resetJob } from '../../../redux/actions/oneJobStatusAction';
+import { resetPipelineStatus as resetPipeline } from '../../../redux/actions/onePipelineStatusActions';
 
 export const SidebarHeader = ({
     name,
@@ -53,6 +55,8 @@ export const SidebarHeader = ({
     ableToEdit,
     confirmationWindow,
     setPanelDirty,
+    resetJobStatus,
+    resetPipelineStatus,
     query
 }) => {
     const { t } = useTranslation();
@@ -113,6 +117,8 @@ export const SidebarHeader = ({
     const goToLastPage = () => {
         setDirty(false);
         setPanelDirty(false);
+        resetJobStatus();
+        resetPipelineStatus();
 
         const [, designer, project] = history.location.pathname.split('/');
 
@@ -190,6 +196,8 @@ SidebarHeader.propTypes = {
     setDirty: PropTypes.func,
     confirmationWindow: PropTypes.func.isRequired,
     setPanelDirty: PropTypes.func,
+    resetJobStatus: PropTypes.func,
+    resetPipelineStatus: PropTypes.func,
     query: PropTypes.string
 };
 
@@ -209,7 +217,9 @@ const mapDispatchToProps = {
     updateCurrentPipeline: updatePipeline,
     setDirty: setParamsDirty,
     confirmationWindow: toggleConfirmationWindow,
-    setPanelDirty: setSidePanelDirty
+    setPanelDirty: setSidePanelDirty,
+    resetJobStatus: resetJob,
+    resetPipelineStatus: resetPipeline
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SidebarHeader);

@@ -52,6 +52,7 @@ export const PropertyListModal = ({
     modalTitle,
     buttonTitle,
     fieldName,
+    keyProperties,
     keyValidations = VALUE_VALIDATIONS,
     valueValidations = VALUE_VALIDATIONS,
     options = []
@@ -61,8 +62,11 @@ export const PropertyListModal = ({
     const { t } = useTranslation();
 
     const validateRow = ([key, value], arr) => {
+        const specValidations =
+            keyProperties?.[key]?.validations || valueValidations;
+
         const nameValidationError = validate(key, keyValidations, arr);
-        const valueValidationError = validate(value, valueValidations, arr);
+        const valueValidationError = validate(value, specValidations, arr);
 
         return pickBy(
             {
@@ -105,6 +109,7 @@ export const PropertyListModal = ({
     });
 
     const renderItem = ([key, value], index) => {
+        const { validations, ...props } = keyProperties?.[key] || {};
         return (
             <PropertyListRow
                 key={index}
@@ -119,6 +124,7 @@ export const PropertyListModal = ({
                 onRemove={handleRemove}
                 fieldName={fieldName}
                 options={options}
+                {...props}
             />
         );
     };
@@ -183,7 +189,8 @@ PropertyListModal.propTypes = {
     options: PropTypes.array,
     fieldName: PropTypes.string,
     keyValidations: PropTypes.object,
-    valueValidations: PropTypes.object
+    valueValidations: PropTypes.object,
+    keyProperties: PropTypes.object
 };
 
 export default withStyles(styles)(PropertyListModal);

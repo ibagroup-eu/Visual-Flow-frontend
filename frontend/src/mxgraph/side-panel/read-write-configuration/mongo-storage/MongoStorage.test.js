@@ -19,12 +19,13 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Divider } from '@material-ui/core';
+
 import MongoStorage from './MongoStorage';
 import ReadWriteTextFields from '../../../../components/rw-text-fields';
 import { WRITE } from '../../../constants';
 import Ssl from '../helpers/Ssl';
 import WriteMode from '../helpers/WriteMode';
+import IncrementalLoad from '../helpers/IncrementalLoad';
 
 describe('Mongo storage', () => {
     let wrapper;
@@ -56,8 +57,21 @@ describe('Mongo storage', () => {
         expect(wrapper).toBeDefined();
     });
 
-    it('should render Ssl', () => {
+    it('should render Ssl and IncrementalLoad', () => {
+        const props = {
+            ...defaultProps,
+            inputValues: {
+                ...defaultProps.inputValues,
+                ssl: 'true'
+            }
+        };
+
+        wrapper = shallow(<MongoStorage {...props} />);
+
         expect(wrapper.find(Ssl)).toHaveLength(1);
+        expect(wrapper.find(Ssl).prop('value')).toBeTruthy();
+
+        expect(wrapper.find(IncrementalLoad)).toHaveLength(1);
     });
 
     it('should render ReadWriteTextFields when connectionModal is false', () => {

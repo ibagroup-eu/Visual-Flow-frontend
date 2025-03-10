@@ -21,6 +21,7 @@ import {
     FETCH_PIPELINE_STATUS_START,
     FETCH_PIPELINE_STATUS_SUCCESS,
     FETCH_PIPELINE_STATUS_FAIL,
+    RESET_PIPELINE_STATUS_SUCCESS,
     UPDATE_PIPELINE_STATUS_START,
     UPDATE_PIPELINE_STATUS_SUCCESS,
     UPDATE_PIPELINE_STATUS_FAIL
@@ -48,6 +49,11 @@ const fetchPipelineStatus = (projectId, pipelineId) => dispatch => {
             })
     );
 };
+
+export const resetPipelineStatus = () => ({
+    type: RESET_PIPELINE_STATUS_SUCCESS,
+    payload: {}
+});
 
 export const updatePipelineStatus = (pipelineId, status, progress) => dispatch => {
     dispatch({

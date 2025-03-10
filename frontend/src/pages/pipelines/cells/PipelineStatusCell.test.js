@@ -18,10 +18,11 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { useTranslation } from 'react-i18next';
 import { TableCell, Chip, Typography } from '@material-ui/core';
 import PipelineStatusCell from './PipelineStatusCell';
+import { ERROR } from '../../../mxgraph/constants';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -30,17 +31,17 @@ jest.mock('react-i18next', () => ({
 
 describe('PipelineStatusCell', () => {
     let wrapper;
-    let props;
+    let defaultProps;
     useTranslation.mockImplementation(() => ({ t: x => x }));
 
     beforeEach(() => {
-        props = {
+        defaultProps = {
             projectId: 'vsw-frontend',
             pipelineId: '09ce421f-e632-4b91-9437-a853bf72cda8',
             status: 'Draft'
         };
 
-        wrapper = shallow(<PipelineStatusCell {...props} />);
+        wrapper = mount(<PipelineStatusCell {...defaultProps} />);
     });
 
     it('should render without crashes', () => {
@@ -48,23 +49,46 @@ describe('PipelineStatusCell', () => {
     });
 
     it('should render TableCell', () => {
-        expect(wrapper.find(TableCell)).toBeDefined();
+        expect(wrapper.find(TableCell).length).toBe(1);
     });
 
     it('should render Typography', () => {
-        expect(wrapper.find(Typography)).toBeDefined();
+        expect(wrapper.find(Typography).length).toBe(1);
     });
 
     it('should render Chip', () => {
-        expect(wrapper.find(Chip)).toBeDefined();
+        expect(wrapper.find(Chip).length).toBe(1);
+    });
+
+    it('should render Chip with status = ERROR', () => {
+        const props = {
+            ...defaultProps,
+            status: 'ERROR',
+            showRerun: false
+        };
+        wrapper = mount(<PipelineStatusCell {...props} />);
+
+        expect(wrapper.find(Chip).length).toBe(1);
+        expect(wrapper.find(Chip).prop('label')).toBe('pipelines:Error');
+    });
+
+    it('should render Chip', () => {
+        const props = {
+            ...defaultProps,
+            status: ERROR,
+            showRerun: true,
+            retry: jest.fn()
+        };
+        wrapper = mount(<PipelineStatusCell {...props} />);
+
+        expect(wrapper.find(Chip).length).toBe(1);
+        expect(wrapper.find(Chip).prop('label')).toBe('Error');
+
+        wrapper.find(Chip).prop('onClick')();
+        expect(props.retry).toHaveBeenCalled();
     });
 
     it('should text value to be "pipelines:Status"', () => {
-        expect(
-            wrapper
-                .dive()
-                .find(Typography)
-                .text()
-        ).toBe('pipelines:Status');
+        expect(wrapper.find(Typography).text()).toBe('pipelines:Status');
     });
 });

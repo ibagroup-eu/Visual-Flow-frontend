@@ -79,4 +79,20 @@ describe('TableTimeData', () => {
                 .text()
         ).toBe('filters:lastRun: Invalid date');
     });
+
+    it('The both Tooltip text value to be "filters:lastRun: filters:N/A"', () => {
+        wrapper.setProps({ lastRun: null, lastFinished: null });
+        expect(
+            wrapper
+                .find(Tooltip)
+                .at(0)
+                .text()
+        ).toBe('filters:lastRun: filters:N/A');
+        expect(
+            wrapper
+                .find(Tooltip)
+                .at(1)
+                .text()
+        ).toBe('filters:lastFinished: filters:N/A');
+    });
 });

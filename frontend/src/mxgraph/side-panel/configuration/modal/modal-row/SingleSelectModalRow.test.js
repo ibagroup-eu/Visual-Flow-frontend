@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Radio } from '@material-ui/core';
+import { Radio, TableRow } from '@material-ui/core';
 import SingleSelectModalRow from './SingleSelectModalRow';
 
 describe('SingleSelectModalRow', () => {
@@ -34,7 +34,8 @@ describe('SingleSelectModalRow', () => {
             secret: false,
             selectedValue: 'testkey',
             setSelectedValue: jest.fn(),
-            defaultSelected: false
+            defaultSelected: false,
+            tooltip: 'test tooltip'
         };
 
         wrapper = shallow(<SingleSelectModalRow {...props} />);
@@ -50,7 +51,51 @@ describe('SingleSelectModalRow', () => {
         wrapper = mount(<SingleSelectModalRow {...props} defaultSelected />);
     });
 
+    it('should render component with selected ref', () => {
+        wrapper = mount(<SingleSelectModalRow {...props} id="testkey" />);
+        expect(wrapper).toBeDefined();
+    });
+
+    it('should render TableCell because of able to aetit prop', () => {
+        wrapper = mount(
+            <SingleSelectModalRow {...props} selectedValue={undefined} />
+        );
+        expect(wrapper).toBeDefined();
+    });
+
     it('should calls onChange prop for Radio', () => {
         wrapper.find(Radio).prop('onChange')({ target: { value: 'test' } });
+    });
+
+    it('should display tooltip', () => {
+        wrapper.find(TableRow).simulate('mouseEnter');
+
+        const tooltip = wrapper.find('WithStyles(WithStyles(ForwardRef(Tooltip)))');
+
+        expect(tooltip.prop('open')).toBeTruthy();
+    });
+
+    it('should hide tooltip', () => {
+        wrapper.find(TableRow).simulate('mouseLeave');
+
+        const tooltip = wrapper.find('WithStyles(WithStyles(ForwardRef(Tooltip)))');
+
+        expect(tooltip.prop('open')).toBeFalsy();
+    });
+
+    it('should display tooltip 2', () => {
+        wrapper.find(Radio).prop('onFocus')();
+
+        const tooltip = wrapper.find('WithStyles(WithStyles(ForwardRef(Tooltip)))');
+
+        expect(tooltip.prop('open')).toBeTruthy();
+    });
+
+    it('should hide tooltip 2', () => {
+        wrapper.find(Radio).prop('onBlur')();
+
+        const tooltip = wrapper.find('WithStyles(WithStyles(ForwardRef(Tooltip)))');
+
+        expect(tooltip.prop('open')).toBeFalsy();
     });
 });

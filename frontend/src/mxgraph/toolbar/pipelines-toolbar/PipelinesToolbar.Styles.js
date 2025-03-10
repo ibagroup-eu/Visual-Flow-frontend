@@ -20,14 +20,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles(theme => ({
-    status: {
-        display: 'flex',
-        width: 144,
-        marginLeft: 16,
-        '& p': {
-            'align-self': 'center'
-        }
-    },
     hint: {
         color: theme.palette.text.hint,
         paddingRight: '14px'

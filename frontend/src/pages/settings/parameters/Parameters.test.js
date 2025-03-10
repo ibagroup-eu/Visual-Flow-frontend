@@ -25,6 +25,7 @@ import ParametersTableRow from './table';
 import ParametersPanel from './panel';
 import ParametersSearch from './search/ParametersSearch';
 import PropertySelect from '../../../components/property-select';
+import { PageSkeleton } from '../../../components/skeleton';
 
 describe('Parameters', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -52,7 +53,8 @@ describe('Parameters', () => {
             ],
             editStatus: {},
             deleteStatus: {},
-            saving: false
+            saving: false,
+            editable: true
         };
 
         const wrapper = func(<Parameters {...defaultProps} {...props} />);
@@ -199,5 +201,11 @@ describe('Parameters', () => {
         const [_, props] = init({}, true, mount);
 
         expect(props.getParameters).toHaveBeenCalledWith(props.projectId);
+    });
+
+    it('should show loading', () => {
+        const [wrapper] = init({ loading: true });
+
+        expect(wrapper.find(PageSkeleton)).toBeDefined();
     });
 });

@@ -23,7 +23,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Grid, Table, TableBody, TableContainer, Paper } from '@material-ui/core';
-import { reduce, get, isEqual } from 'lodash';
+import { reduce, get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import FormWrapper from '../../../components/form-wrapper';
@@ -42,10 +42,12 @@ import useStyles from './Connections.Styles';
 import { STORAGES } from '../../../mxgraph/constants';
 import ConnectionsPanel from './panel';
 import ConnectionsSearchAndSelect from '../../../mxgraph/side-panel/read-write-configuration/connections-modal/searchAndSelect/ConnectionsSearchAndSelect';
+import { stableSort, getComparator } from '../../../utils/sort';
 
-const excludedStorages = ['stdout', 'cluster', 'dataframe', 'request', 'kafka'];
+const excludedStorages = ['stdout', 'cluster', 'dataframe', 'request'];
+
 export const selectConnections = reduce(
-    STORAGES,
+    stableSort(STORAGES, getComparator('asc', 'label')),
     (result, { value, label }) => {
         if (!excludedStorages.includes(value)) {
             result.push({ value, name: label });
@@ -67,7 +69,8 @@ const Connections = ({
     connections,
     pingingConnections,
     deletingConnections,
-    uploading
+    uploading,
+    editable
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -79,7 +82,6 @@ const Connections = ({
     const [connectionConfig, setConnectionConfig] = useState(null);
     const [viewMode, setViewMode] = useState(false);
     const [title, setTitle] = useState('Configuration');
-    const [savingState, setSavingState] = useState(null);
 
     useEffect(() => {
         projectId && getParameters(projectId);
@@ -88,17 +90,7 @@ const Connections = ({
 
     useEffect(() => {
         setProjectConnections(connections);
-        if (
-            connections.find(
-                ({ key, value }) =>
-                    key === savingState?.value.connectionName &&
-                    isEqual(value, savingState?.value)
-            )
-        ) {
-            setPanelState(false);
-            setSavingState(null);
-        }
-    }, [connections, savingState?.value]);
+    }, [connections]);
 
     const removeConnection = removedKey => remove(projectId, removedKey);
 
@@ -112,10 +104,10 @@ const Connections = ({
     };
 
     const handleAddNewConnection = connection => {
-        setSavingState(connection);
         title === 'Edit'
             ? update(projectId, connection)
             : create(projectId, connection);
+        setPanelState(false);
     };
 
     const handleOpenConnection = (connection, editMode) => {
@@ -125,20 +117,21 @@ const Connections = ({
         setPanelState(true);
     };
 
-    const renderNewFieldDropdown = () => (
-        <PropertySelect
-            handleChange={handleClickNewFieldType}
-            placeholder={t('main:button.AddConnection')}
-            properties={selectConnections}
-            isConnections
-        />
-    );
+    const renderNewFieldDropdown = () =>
+        editable && (
+            <PropertySelect
+                handleChange={handleClickNewFieldType}
+                placeholder={t('main:button.AddConnection')}
+                properties={selectConnections}
+                isConnections
+            />
+        );
 
     const filterConnections = () =>
         projectConnections.filter(
             ({ value }) =>
                 value?.connectionName
-                    .toLowerCase()
+                    ?.toLowerCase()
                     .indexOf(searchValue.toLowerCase()) !== -1 &&
                 (!storageSelection || value.storage === storageSelection)
         );
@@ -193,7 +186,11 @@ const Connections = ({
                                                 )?.name
                                             }
                                         }}
-                                        pinging={get(pingingConnections, key, false)}
+                                        pinging={get(
+                                            pingingConnections,
+                                            value.connectionName,
+                                            false
+                                        )}
                                         deleting={get(
                                             deletingConnections,
                                             key,
@@ -203,6 +200,7 @@ const Connections = ({
                                         handleRemoveConnection={removeConnection}
                                         handleOpenConnection={handleOpenConnection}
                                         handlePingConnection={handlePingConnection}
+                                        editableMode={editable}
                                     />
                                 ))}
                             </TableBody>
@@ -245,7 +243,8 @@ const mapStateToProps = state => ({
     connections: state.pages.settingsConnections.connections,
     pingingConnections: state.pages.settingsConnections.pingingConnections,
     deletingConnections: state.pages.settingsConnections.deletingConnections,
-    uploading: state.pages.settingsConnections.uploading
+    uploading: state.pages.settingsConnections.uploading,
+    editable: state.pages.settingsConnections.editable
 });
 
 const mapDispatchToProps = {
@@ -269,7 +268,8 @@ Connections.propTypes = {
     connections: PropTypes.array,
     pingingConnections: PropTypes.object,
     deletingConnections: PropTypes.object,
-    uploading: PropTypes.bool
+    uploading: PropTypes.bool,
+    editable: PropTypes.bool
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Connections);

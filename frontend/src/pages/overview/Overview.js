@@ -30,6 +30,7 @@ import { setPipelinesStatus } from '../../redux/actions/pipelinesActions';
 import { setJobsStatus } from '../../redux/actions/jobsActions';
 import { setCurrentTablePage } from '../../redux/actions/enhancedTableActions';
 import styles from './Overview.Styles';
+import { DATABRICKS } from '../../mxgraph/constants';
 
 export const Overview = ({
     projectId,
@@ -71,7 +72,9 @@ export const Overview = ({
                     setStatus={setStatusPiplines}
                     setCurrentPage={setCurrentPage}
                 />
-                <Utilization loading={loading} data={data} />
+                {window.PLATFORM !== DATABRICKS && (
+                    <Utilization loading={loading} data={data} />
+                )}
             </Grid>
         </Box>
     );

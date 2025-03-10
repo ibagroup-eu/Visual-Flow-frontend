@@ -22,11 +22,13 @@ import {
     FETCH_PIPELINE_STATUS_START,
     FETCH_PIPELINE_STATUS_SUCCESS,
     FETCH_PIPELINE_STATUS_FAIL,
+    RESET_PIPELINE_STATUS_SUCCESS,
     UPDATE_PIPELINE_STATUS_START,
     UPDATE_PIPELINE_STATUS_SUCCESS,
     UPDATE_PIPELINE_STATUS_FAIL
 } from './types';
 import fetchPipelineStatus, {
+    resetPipelineStatus,
     updatePipelineStatus
 } from './onePipelineStatusActions';
 
@@ -43,6 +45,14 @@ describe('OnePipelineStatus action', () => {
             pipelineId = '';
             dispatch = jest.fn();
             jest.spyOn(api, 'getPipelineById').mockResolvedValue(data.status);
+        });
+
+        it('should dispatch RESET_PIPELINE_STATUS_SUCCESS', () => {
+            const expectedAction = {
+                type: RESET_PIPELINE_STATUS_SUCCESS,
+                payload: {}
+            };
+            expect(resetPipelineStatus()).toEqual(expectedAction);
         });
 
         it('should dispatch FETCH_PIPELINE_STATUS_START', () => {

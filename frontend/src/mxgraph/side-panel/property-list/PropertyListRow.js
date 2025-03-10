@@ -42,7 +42,8 @@ const PropertyListRow = ({
     fieldName,
     size,
     classes,
-    errors
+    errors,
+    valueRequired = true
 }) => {
     const buttons = [];
 
@@ -113,7 +114,7 @@ const PropertyListRow = ({
                     label={t('setting:parameter.Value')}
                     error={!!errors?.valueValidationError}
                     helperText={errors?.valueValidationError}
-                    required
+                    required={valueRequired}
                 />
             </TableCell>
             <ActionCell className={classes.cell} actions={buttons} />
@@ -133,7 +134,8 @@ PropertyListRow.propTypes = {
     index: PropTypes.number,
     options: PropTypes.array,
     fieldName: PropTypes.string,
-    errors: PropTypes.object
+    errors: PropTypes.object,
+    valueRequired: PropTypes.bool
 };
 
 export default compose(memo, withStyles(styles))(PropertyListRow);

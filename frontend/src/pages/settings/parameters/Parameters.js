@@ -83,7 +83,8 @@ export const Parameters = ({
     editStatus,
     deleteStatus,
     saving,
-    classes
+    classes,
+    editable
 }) => {
     const { t } = useTranslation();
 
@@ -126,14 +127,15 @@ export const Parameters = ({
         modify(projectId, param).then(onClose);
     };
 
-    const renderNewFieldDropdown = () => (
-        <PropertySelect
-            handleChange={onCreatePanel}
-            placeholder={t('main:button.AddParameter')}
-            properties={PARAMETER_TYPES}
-            isConnections
-        />
-    );
+    const renderNewFieldDropdown = () =>
+        editable && (
+            <PropertySelect
+                handleChange={onCreatePanel}
+                placeholder={t('main:button.AddParameter')}
+                properties={PARAMETER_TYPES}
+                isConnections
+            />
+        );
 
     const shouldAddButtonRepeat = () => {
         const shownRows = window.innerHeight / 73 - 3.5;
@@ -188,6 +190,7 @@ export const Parameters = ({
                                         deleting={get(deleteStatus, param.id, false)}
                                         handleEdit={onEditPanel(param)}
                                         handleRemove={onRemove(param)}
+                                        editableMode={editable}
                                     />
                                 ))}
                             </TableBody>
@@ -238,7 +241,8 @@ Parameters.propTypes = {
     ),
     editStatus: PropTypes.object,
     deleteStatus: PropTypes.object,
-    saving: PropTypes.bool
+    saving: PropTypes.bool,
+    editable: PropTypes.bool
 };
 
 Parameters.defaultProps = {
@@ -253,7 +257,8 @@ const mapStateToProps = state => ({
     deleteStatus: state.pages.settingsParameters.deleteStatus,
     editStatus: state.pages.settingsParameters.editStatus,
     loading: state.pages.settingsParameters.loading,
-    saving: state.pages.settingsParameters.saving
+    saving: state.pages.settingsParameters.saving,
+    editable: state.pages.settingsParameters.editable
 });
 
 const mapDispatchToProps = {

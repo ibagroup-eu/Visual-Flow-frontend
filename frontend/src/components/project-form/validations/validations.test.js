@@ -17,11 +17,15 @@
  * limitations under the License.
  */
 
+import { DATABRICKS } from '../../../mxgraph/constants';
 import {
     isValidationPassed,
     isEmpty,
     isLimitsEmpty,
-    isValidationLimitsPassed
+    isValidationLimitsPassed,
+    isValidationDemoLimitsPassed,
+    isLimitsAndDemoLimitsValidationsPassed,
+    isDatabricksValidationPassed
 } from './validations';
 
 describe('Project Validations', () => {
@@ -46,6 +50,19 @@ describe('Project Validations', () => {
         requestsMemory: '-4'
     };
 
+    const tomorrow = new Date(Date.now() + 86400000);
+    const validDemoLimits = {
+        jobsNumAllowed: '2',
+        pipelinesNumAllowed: '2',
+        expirationDate: tomorrow.toISOString().split('T')[0]
+    };
+
+    const invalidDemoLimits = {
+        jobsNumAllowed: '-1',
+        pipelinesNumAllowed: '-2',
+        expirationDate: '0000-23-32'
+    };
+
     it('should return true for isLimitsEmpty', () => {
         expect(isLimitsEmpty(emptyLimits)).toBeTruthy();
     });
@@ -60,6 +77,14 @@ describe('Project Validations', () => {
 
     it('should return false for isValidationLimitsPassed', () => {
         expect(isValidationLimitsPassed(invalidLimits)).toBeFalsy();
+    });
+
+    it('should return true for isValidationDemoLimitsPassed', () => {
+        expect(isValidationDemoLimitsPassed(validDemoLimits)).toBeTruthy();
+    });
+
+    it('should return false for isValidationDemoLimitsPassed', () => {
+        expect(isValidationDemoLimitsPassed(invalidDemoLimits)).toBeFalsy();
     });
 
     it('should return true for isEmpty', () => {
@@ -82,6 +107,63 @@ describe('Project Validations', () => {
                 name: 'name',
                 description: '',
                 limits: validLimits
+            })
+        ).toBeTruthy();
+    });
+
+    it('should return true for isLimitAndDemoLimitsValidationsPassed 1', () => {
+        expect(
+            isLimitsAndDemoLimitsValidationsPassed({
+                name: 'name',
+                description: '',
+                limits: validLimits,
+                demo: true,
+                demoLimits: validDemoLimits
+            })
+        ).toBeTruthy();
+    });
+
+    it('should return true for isLimitAndDemoLimitsValidationsPassed 2', () => {
+        expect(
+            isLimitsAndDemoLimitsValidationsPassed({
+                name: 'name',
+                description: '',
+                limits: validLimits,
+                demo: false,
+                demoLimits: validDemoLimits
+            })
+        ).toBeTruthy();
+    });
+
+    it('should return false for isDatabricksValidationPassed', () => {
+        Object.defineProperty(window, 'PLATFORM', {
+            value: DATABRICKS
+        });
+        expect(
+            isDatabricksValidationPassed({
+                host: 'a',
+                authentication: {
+                    token: 't',
+                    clientId: 'clientId',
+                    secret: 'secret',
+                    authenticationType: 'PAT'
+                },
+                pathToFile: 'a'
+            })
+        ).toBeFalsy();
+    });
+
+    it('should return true for isDatabricksValidationPassed', () => {
+        expect(
+            isDatabricksValidationPassed({
+                host: 'https://adb-908482742969127.7.azuredatabricks.net',
+                authentication: {
+                    token: 'token',
+                    clientId: 'clientId',
+                    secret: 'secret',
+                    authenticationType: 'PAT'
+                },
+                pathToFile: '/Volumes/sales/dims/jars/vf240729'
             })
         ).toBeTruthy();
     });

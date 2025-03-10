@@ -20,11 +20,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import useStyles from './PivotStage.Styles';
 import makeTooltip from '../helpers/makeTooltip';
 import { JobStageTag } from '../../../components/stage-tag';
-
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import InteractiveModeButtons from '../helpers/InteractiveModeButtons';
+import InteractiveModeTooltips from '../helpers/InteractiveModeTooltips';
+import { INTERACTIVE_RUNNING } from '../../constants';
+import Spinner from '../helpers/Spinner';
+
+import useStyles from './PivotStage.Styles';
 
 const PivotStage = ({ stage }) => {
     const classes = useStyles();
@@ -32,8 +36,19 @@ const PivotStage = ({ stage }) => {
     return (
         <ConfiguredStageWithIcon
             operation={stage.operation}
-            name={makeTooltip(stage.name, stage.name)}
+            name={
+                <>
+                    {makeTooltip(stage.name, stage.name)}
+                    {stage.interactiveMode && (
+                        <InteractiveModeButtons stage={stage} />
+                    )}
+                </>
+            }
         >
+            {stage.status === INTERACTIVE_RUNNING && <Spinner />}
+            {stage.status !== INTERACTIVE_RUNNING && (
+                <InteractiveModeTooltips stage={stage} />
+            )}
             <JobStageTag className={classes.type}>{stage.operationType}</JobStageTag>
         </ConfiguredStageWithIcon>
     );

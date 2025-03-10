@@ -34,7 +34,8 @@ const FileTextField = ({
     uploadStage,
     setFile,
     clearable,
-    label
+    label,
+    accept
 }) => {
     const classes = useStyles();
 
@@ -69,6 +70,7 @@ const FileTextField = ({
                                 hidden
                                 type="file"
                                 id="icon-button-file"
+                                accept={accept}
                                 onChange={e => selectFile(e)}
                             />
                             <label htmlFor="icon-button-file">
@@ -106,7 +108,8 @@ FileTextField.propTypes = {
     setFile: PropTypes.func,
     required: PropTypes.bool,
     clearable: PropTypes.bool,
-    label: PropTypes.string
+    label: PropTypes.string,
+    accept: PropTypes.string
 };
 
 export default FileTextField;

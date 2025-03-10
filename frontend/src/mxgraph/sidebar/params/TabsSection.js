@@ -24,6 +24,7 @@ import { entries } from 'lodash';
 import TabPanel from '../tab-pannel';
 import useStyles from './Params.Styles';
 import Section from './Section';
+import { DATABRICKS } from '../../constants';
 
 const TabsSection = ({ label: title, fields, render, ableToEdit }) => {
     const classes = useStyles();
@@ -38,9 +39,10 @@ const TabsSection = ({ label: title, fields, render, ableToEdit }) => {
                     textColor="primary"
                     indicatorColor="primary"
                 >
-                    {entries(fields).map(([, { label }]) => (
-                        <Tab key={label} label={label} />
-                    ))}
+                    {entries(fields).map(
+                        ([, { label, needs }]) =>
+                            needs !== DATABRICKS && <Tab key={label} label={label} />
+                    )}
                 </Tabs>
             </Box>
             <Box className={classes.content}>

@@ -66,4 +66,18 @@ describe('MenuBarItem', () => {
 
         expect(wrapper.find(ExpandMore).exists()).toBeTruthy();
     });
+
+    it('should call onClick props', () => {
+        const [wrapper, props] = init({ menuOpen: false }, true);
+        wrapper.find(MenuItem).simulate('click');
+
+        expect(props.onClick).toHaveBeenCalled();
+    });
+
+    it('should call onClick props', () => {
+        const [wrapper, props] = init({ menuOpen: true }, true);
+        wrapper.find(MenuItem).simulate('click');
+
+        expect(props.onClick).toHaveBeenCalled();
+    });
 });

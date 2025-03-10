@@ -20,14 +20,11 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Skeleton from '@material-ui/lab/Skeleton';
 import { Divider, IconButton, Tooltip, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { HistoryOutlined, Save } from '@material-ui/icons';
-
 import { has } from 'lodash';
 import useStyles from './PipelinesToolbar.Styles';
-import Status from '../../../components/status';
 import history from '../../../utils/history';
 import {
     createPipeline,
@@ -41,7 +38,8 @@ import EditDesignerButtons from '../edit-designer-buttons';
 import LinearProgressChart from '../../../components/chart/linear';
 import { fetchPipelineById } from '../../../redux/actions/mxGraphActions';
 import { fetchJobs } from '../../../redux/actions/jobsActions';
-import { PENDING, RUNNING, SUSPENDED } from '../../constants';
+import { DATABRICKS, PENDING, RUNNING, SUSPENDED } from '../../constants';
+import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 import { findByProp } from '../../../components/helpers/JobsPipelinesTable';
 import {
     findParamByKey,
@@ -51,6 +49,7 @@ import CronButton from '../cron-button';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
 import UnitConfig from '../../../unitConfig';
 import ControlButtons from '../control-buttons';
+import PipelinesStatus from './PipelinesStatus';
 
 const PipelinesToolbar = ({
     graph,
@@ -73,7 +72,9 @@ const PipelinesToolbar = ({
     jobs,
     params,
     setCurrentCell,
-    dirtyGraph
+    dirtyGraph,
+    confirmationWindow,
+    isUpdating
 }) => {
     const { t } = useTranslation();
     const classes = useStyles({ name: 'PipelineUtilizationCell' });
@@ -85,6 +86,31 @@ const PipelinesToolbar = ({
 
     const statusValue = currentPipeline === id ? status : data.status;
     const progressValue = currentPipeline === id ? progress : data.progress;
+
+    const isNotRunnableJobs = () => {
+        let notRunnable = false;
+        data.definition?.graph.forEach(stage => {
+            if (stage.value.operation === 'JOB') {
+                const job = findByProp(jobs, stage.value.jobId, 'id');
+                if (!job.runnable) {
+                    notRunnable = true;
+                }
+            }
+        });
+        return notRunnable;
+    };
+
+    const withWarning = action => () => {
+        if (isNotRunnableJobs()) {
+            confirmationWindow({
+                title: t('main:confirm.titleContinue'),
+                body: t('main:validation.pipelineWithEmpyJob'),
+                callback: action
+            });
+        } else {
+            action();
+        }
+    };
 
     const validStages = () => {
         let isValid = true;
@@ -140,17 +166,7 @@ const PipelinesToolbar = ({
 
     return (
         <>
-            <div className={classes.status}>
-                <Typography variant="body2" color="textSecondary">
-                    {t('pipelines:Status')}:
-                </Typography>
-                &nbsp;
-                {loading ? (
-                    <Skeleton variant="circle" width={90} height={25} />
-                ) : (
-                    <Status value={statusValue} />
-                )}
-            </div>
+            <PipelinesStatus loading={loading} value={statusValue} />
             <Divider orientation="vertical" flexItem />
             <div className={classes.progress}>
                 <Typography
@@ -172,9 +188,9 @@ const PipelinesToolbar = ({
                 {data.runnable && (
                     <ControlButtons
                         status={statusValue}
-                        runnable={data.runnable}
+                        runnable={data.runnable && isUpdating !== 'true'}
                         changesNotSaved={changesNotSaved()}
-                        run={getAction(run)}
+                        run={withWarning(getAction(run))}
                         stop={getAction(stop)}
                         suspend={getAction(suspend)}
                         resume={getAction(resume)}
@@ -200,7 +216,7 @@ const PipelinesToolbar = ({
                     />
                 )}
 
-                {UnitConfig.PIPELINE.HISTORY && (
+                {UnitConfig.PIPELINE.HISTORY && window.PLATFORM !== DATABRICKS && (
                     <>
                         <IconButton
                             onClick={() =>
@@ -265,7 +281,9 @@ PipelinesToolbar.propTypes = {
     jobs: PropTypes.array,
     params: PropTypes.array,
     setCurrentCell: PropTypes.func,
-    dirtyGraph: PropTypes.bool
+    dirtyGraph: PropTypes.bool,
+    confirmationWindow: PropTypes.func,
+    isUpdating: PropTypes.string
 };
 
 const mapStateToProps = state => ({
@@ -277,7 +295,8 @@ const mapStateToProps = state => ({
         state.mxGraph.paramsIsDirty ||
         state.mxGraph.sidePanelIsDirty,
     jobs: state.pages.jobs.data.jobs,
-    params: state.pages.settingsParameters.params
+    params: state.pages.settingsParameters.params,
+    isUpdating: state.pages.settingsBasic?.project?.isUpdating
 });
 
 const mapDispatchToProps = {
@@ -288,7 +307,8 @@ const mapDispatchToProps = {
     suspend: suspendPipeline,
     resume: resumePipeline,
     getActualPipeline: fetchPipelineById,
-    getActualJobs: fetchJobs
+    getActualJobs: fetchJobs,
+    confirmationWindow: toggleConfirmationWindow
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PipelinesToolbar);

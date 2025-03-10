@@ -32,6 +32,7 @@ export default theme => ({
     },
     form: {
         width: 350,
+        minWidth: 290,
         padding: '10px 30px 48px 30px'
     },
     separated: {

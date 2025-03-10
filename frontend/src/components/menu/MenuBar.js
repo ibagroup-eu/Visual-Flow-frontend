@@ -34,17 +34,20 @@ const MenuBar = ({ items, open, onItemClick }) => {
 
     return (
         <List component="nav" className={classes.root}>
-            {items.map(item => (
-                <MenuBarItem
-                    item={item}
-                    key={item.name}
-                    menuOpen={open}
-                    onClick={event => {
-                        onItemClick(event);
-                        dispatchEvents(item.dispatch);
-                    }}
-                />
-            ))}
+            {items.map(
+                item =>
+                    !item.hidden && (
+                        <MenuBarItem
+                            item={item}
+                            key={item.name}
+                            menuOpen={open}
+                            onClick={event => {
+                                onItemClick(event);
+                                dispatchEvents(item.dispatch);
+                            }}
+                        />
+                    )
+            )}
         </List>
     );
 };

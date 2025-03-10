@@ -22,13 +22,29 @@ import PropTypes from 'prop-types';
 
 import makeTooltip from '../helpers/makeTooltip';
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import InteractiveModeButtons from '../helpers/InteractiveModeButtons';
+import InteractiveModeTooltips from '../helpers/InteractiveModeTooltips';
+import { INTERACTIVE_RUNNING } from '../../constants';
+import Spinner from '../helpers/Spinner';
 
 const FilterStage = ({ stage }) => {
     return (
         <ConfiguredStageWithIcon
             operation={stage.operation}
-            name={makeTooltip(stage.name, stage.name)}
-        />
+            name={
+                <>
+                    {makeTooltip(stage.name, stage.name)}
+                    {stage.interactiveMode && (
+                        <InteractiveModeButtons stage={stage} />
+                    )}
+                </>
+            }
+        >
+            {stage.status === INTERACTIVE_RUNNING && <Spinner />}
+            {stage.status !== INTERACTIVE_RUNNING && (
+                <InteractiveModeTooltips stage={stage} />
+            )}
+        </ConfiguredStageWithIcon>
     );
 };
 

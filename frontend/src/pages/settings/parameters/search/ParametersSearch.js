@@ -42,7 +42,7 @@ export const ParametersSearch = ({
                     fullWidth
                     value={searchValue}
                     onChange={event => onFilter([event.target.value, filterValue])}
-                    placeholder={t('main:search')}
+                    placeholder={t('main:searchByName')}
                 />
             </Box>
             <Box className={classes.type}>

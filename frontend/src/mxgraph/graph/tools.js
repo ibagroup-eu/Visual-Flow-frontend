@@ -19,7 +19,7 @@
 
 /* eslint-disable no-param-reassign */
 
-import { get, set, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { get, set, isEmpty, isEqual, isNil, keyBy, upperFirst } from 'lodash';
 
 import { addStyles, toObject } from './utils';
 import {
@@ -158,14 +158,30 @@ export const setDatasetOnChangeConnection = (
     }
 };
 
-export const loadContent = (content, graph, stages, theme, type, jobsStatuses) => {
+export const loadContent = (
+    content,
+    graph,
+    stages,
+    theme,
+    type,
+    jobsStatuses,
+    interactiveMode,
+    jobStagesData
+) => {
     const jsonEncoder = new JsonCodec();
     const parent = graph.getDefaultParent();
 
-    graph.getModel().beginUpdate(); // Adds cells to the model in a single step
+    const stagesStatuses = keyBy(
+        jobStagesData?.map(stage => ({
+            ...stage,
+            status: upperFirst(stage.status)
+        })),
+        'id'
+    );
+
+    graph.getModel().beginUpdate();
 
     try {
-        // clear graph before render saved content
         graph.removeCells(graph.getChildVertices(graph.getDefaultParent()));
 
         const vertices = get(content, 'graph', [])
@@ -175,14 +191,40 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
                 const operation = xmlNode.getAttribute('operation');
 
                 if (operation !== EDGE) {
-                    const style = {
-                        fillColor: stages[operation]?.color,
+                    const baseStyle = {
+                        fillColor: get(stages, [operation, 'color'], null)
+                    };
+
+                    const nodeStatus = get(
+                        stagesStatuses,
+                        [node.id, 'status'],
+                        'Draft'
+                    );
+
+                    const borderColor = getBorderColor(
+                        nodeStatus,
+                        theme,
+                        interactiveMode
+                    );
+
+                    const jobStyle = {
+                        ...baseStyle,
+                        ...(interactiveMode && {
+                            strokeColor: borderColor,
+                            strokeWidth: borderColor ? 2 : 1
+                        })
+                    };
+
+                    const pipelineStyle = {
+                        ...baseStyle,
                         strokeWidth: theme.mxgraph.border.strong,
                         strokeColor:
                             operation !== WAIT
                                 ? getBorderColor(get(jobsStatuses, node.id), theme)
                                 : getWaitBorderColor(node, jobsStatuses, theme)
                     };
+
+                    const style = type === PIPELINE ? pipelineStyle : jobStyle;
 
                     acc[node.id] = graph.insertVertex(
                         parent,
@@ -194,11 +236,7 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
                             ? STAGE_WIDTH
                             : node.geometry.width,
                         node.geometry.height,
-                        addStyles(
-                            type === PIPELINE
-                                ? style
-                                : omit(style, ['strokeWidth', 'strokeColor'])
-                        )
+                        addStyles(style)
                     );
                 }
 
@@ -210,6 +248,7 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
             .forEach(node => {
                 const xmlNode = jsonEncoder.encode(node.value);
                 const { points } = node.geometry;
+
                 if (xmlNode.getAttribute('operation') === EDGE) {
                     const edgeColor =
                         xmlNode.getAttribute('successPath') === 'false'
@@ -229,6 +268,6 @@ export const loadContent = (content, graph, stages, theme, type, jobsStatuses) =
                 }
             });
     } finally {
-        graph.getModel().endUpdate(); // Updates the display
+        graph.getModel().endUpdate(); // Ends batched updates
     }
 };

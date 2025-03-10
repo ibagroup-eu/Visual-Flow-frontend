@@ -19,13 +19,13 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Divider } from '@material-ui/core';
 import { READ, WRITE } from '../../../constants';
 import ReadTextFields from '../../../../components/rw-text-fields';
+import ReadWriteEditorField from '../../../../components/rw-editor-field';
 import WriteMode from '../helpers/WriteMode';
 import RedshiftStorage from './RedshiftStorage';
 
-describe('RedisStorage', () => {
+describe('RedshiftStorage', () => {
     let wrapper;
     let props;
 
@@ -51,7 +51,8 @@ describe('RedisStorage', () => {
             inputValues: { operation: READ, customSql: 'true' }
         };
         wrapper = shallow(<RedshiftStorage {...props} {...changedProps} />);
-        expect(wrapper.find(ReadTextFields)).toHaveLength(6);
+        expect(wrapper.find(ReadTextFields)).toHaveLength(5);
+        expect(wrapper.find(ReadWriteEditorField)).toHaveLength(1);
     });
 
     it('should render component with WRITE operation', () => {

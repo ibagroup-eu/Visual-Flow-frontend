@@ -80,4 +80,18 @@ describe('StageWarning', () => {
 
         expect(wrapper.find('span').exists()).toBeFalsy();
     });
+
+    it('should set to null position', () => {
+        const [wrapper] = init({
+            stage: {
+                name: 'name',
+                operation: 'PIPELINE'
+            },
+            jobs: [],
+            params: [],
+            pipelines: []
+        });
+
+        expect(wrapper.find('span').exists()).toBeTruthy();
+    });
 });

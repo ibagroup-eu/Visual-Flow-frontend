@@ -221,8 +221,8 @@ describe('settingsConnectionsReducer', () => {
             type: UPDATE_CONNECTION_SUCCESS,
             payload: {
                 connection: {
-                    key: 'AWS_1',
-                    value: { connectionName: 'AWS_3', ssl: false }
+                    key: 'Id1',
+                    value: { connectionName: 'AWS_updated', ssl: false }
                 }
             }
         };
@@ -230,8 +230,8 @@ describe('settingsConnectionsReducer', () => {
         const initialState = {
             uploading: true,
             connections: [
-                { key: 'AWS_1', value: { connectionName: 'AWS_1' } },
-                { key: 'AWS_2', value: { connectionName: 'AWS_2' } }
+                { key: 'Id1', value: { connectionName: 'AWS_1' } },
+                { key: 'Id2', value: { connectionName: 'AWS_2' } }
             ],
             editable: undefined
         };
@@ -239,8 +239,8 @@ describe('settingsConnectionsReducer', () => {
         expect(settingsConnectionsReducer(initialState, action)).toEqual({
             uploading: false,
             connections: [
-                { key: 'AWS_3', value: { connectionName: 'AWS_3', ssl: false } },
-                { key: 'AWS_2', value: { connectionName: 'AWS_2' } }
+                { key: 'Id1', value: { connectionName: 'AWS_updated', ssl: false } },
+                { key: 'Id2', value: { connectionName: 'AWS_2' } }
             ],
             editable: undefined
         });
@@ -250,18 +250,16 @@ describe('settingsConnectionsReducer', () => {
         const action = {
             type: CREATE_CONNECTION_SUCCESS,
             payload: {
-                connection: {
-                    key: 'AWS_3',
-                    value: { connectionName: 'AWS_3', ssl: false }
-                }
+                key: 'Id3',
+                value: { connectionName: 'AWS_3', ssl: false }
             }
         };
 
         const initialState = {
             uploading: true,
             connections: [
-                { key: 'AWS_1', value: { connectionName: 'AWS_1' } },
-                { key: 'AWS_2', value: { connectionName: 'AWS_2' } }
+                { key: 'Id1', value: { connectionName: 'AWS_1' } },
+                { key: 'Id2', value: { connectionName: 'AWS_2' } }
             ],
             editable: undefined
         };
@@ -269,9 +267,9 @@ describe('settingsConnectionsReducer', () => {
         expect(settingsConnectionsReducer(initialState, action)).toEqual({
             uploading: false,
             connections: [
-                { key: 'AWS_1', value: { connectionName: 'AWS_1' } },
-                { key: 'AWS_2', value: { connectionName: 'AWS_2' } },
-                { key: 'AWS_3', value: { connectionName: 'AWS_3', ssl: false } }
+                { key: 'Id1', value: { connectionName: 'AWS_1' } },
+                { key: 'Id2', value: { connectionName: 'AWS_2' } },
+                { key: 'Id3', value: { connectionName: 'AWS_3', ssl: false } }
             ],
             editable: undefined
         });

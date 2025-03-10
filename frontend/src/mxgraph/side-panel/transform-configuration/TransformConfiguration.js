@@ -20,11 +20,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { TextField } from '@material-ui/core';
 import SelectField from '../../../components/select-field';
 import { OTHER } from '../../constants';
 import ReadTextFields from '../../../components/rw-text-fields';
 import ConfigurationDivider from '../../../components/divider';
+import ReadWriteEditorField from '../../../components/rw-editor-field';
 
 const mode = [
     {
@@ -76,7 +76,7 @@ const TransformConfiguration = ({
                             required={required}
                         />
                     ) : null}
-                    <TextField
+                    {/* <TextField
                         disabled={!ableToEdit}
                         label={t('jobDesigner:transformConfiguration.Output')}
                         placeholder={t(
@@ -92,6 +92,17 @@ const TransformConfiguration = ({
                         onChange={event =>
                             onChange(event.target.name, event.target.value)
                         }
+                        required
+                    /> */}
+                    <ReadWriteEditorField
+                        inputValues={state}
+                        name="statement"
+                        placeholder={t('jobDesigner:transformConfiguration.Output')}
+                        onChange={event =>
+                            onChange(event.target.name, event.target.value)
+                        }
+                        ableToEdit={ableToEdit}
+                        openModal={openModal}
                         required
                     />
                 </>

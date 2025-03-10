@@ -42,7 +42,8 @@ jest.mock('../unitConfig', () => ({
             PIVOT: true,
             DATETIME: true,
             STRING: true,
-            HANDLE_NULL: true
+            HANDLE_NULL: true,
+            AI_TEXT_TASK: true
         }
     }
 }));
@@ -52,7 +53,8 @@ describe('jobStages', () => {
         palette: {
             info: { background: '#E8F0FF', light: '#F3EAFF' },
             success: { background: '0001' },
-            warning: { background: '0002' }
+            warning: { background: '0002' },
+            primary: { background: '0003' }
         }
     };
 
@@ -273,6 +275,18 @@ describe('jobStages', () => {
                 minOutgoingConnections: 1,
                 maxOutgoingConnections: 1
             }
+        },
+        AI_TEXT_TASK: {
+            operation: 'AI_TEXT_TASK',
+            name: undefined,
+            color: '0003',
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: expect.any(Boolean)
         }
     };
 

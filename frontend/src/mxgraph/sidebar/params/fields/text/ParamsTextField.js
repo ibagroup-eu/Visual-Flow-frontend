@@ -27,6 +27,7 @@ const ParamsTextField = ({
     name,
     value,
     label,
+    placeholder,
     type,
     inputProps,
     adornment,
@@ -35,7 +36,10 @@ const ParamsTextField = ({
     ableToEdit,
     required,
     error,
-    onError
+    helperText,
+    onError,
+    multiline = false,
+    minRows = 1
 }) => {
     const handleChange = event => {
         if (isFunction(validate)) {
@@ -55,7 +59,7 @@ const ParamsTextField = ({
                 disabled={!ableToEdit}
                 name={name}
                 label={label}
-                placeholder={label}
+                placeholder={placeholder || label}
                 type={type}
                 variant="outlined"
                 value={value || ''}
@@ -70,7 +74,9 @@ const ParamsTextField = ({
                 InputLabelProps={{
                     shrink: true
                 }}
-                helperText={error}
+                multiline={multiline}
+                minRows={minRows}
+                helperText={error || helperText}
                 error={!!error}
                 required={required}
             />
@@ -82,6 +88,7 @@ ParamsTextField.propTypes = {
     name: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     label: PropTypes.string,
+    placeholder: PropTypes.string,
     type: PropTypes.string,
     inputProps: PropTypes.object,
     adornment: PropTypes.string,
@@ -90,7 +97,10 @@ ParamsTextField.propTypes = {
     ableToEdit: PropTypes.bool,
     required: PropTypes.bool,
     error: PropTypes.string,
-    onError: PropTypes.func
+    helperText: PropTypes.string,
+    onError: PropTypes.func,
+    multiline: PropTypes.bool,
+    minRows: PropTypes.number
 };
 
 export default ParamsTextField;

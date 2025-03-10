@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import CosProperties from '../common';
@@ -51,6 +51,21 @@ const CosStorage = ({
     connectionPage,
     connection
 }) => {
+    useEffect(() => {
+        if (
+            inputValues.authType &&
+            authType.every(type => type.value !== inputValues.authType)
+        ) {
+            handleInputChange({
+                target: {
+                    name: 'authType',
+                    value: ''
+                }
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <>
             <ReadTextFields
@@ -66,7 +81,10 @@ const CosStorage = ({
                 ableToEdit={ableToEdit}
                 label="jobDesigner:readConfiguration.authType"
                 name="authType"
-                value={inputValues.authType}
+                value={
+                    authType.find(item => item.value === inputValues.authType)
+                        ?.value || ''
+                }
                 handleInputChange={handleInputChange}
                 menuItems={authType}
                 type={READWRITE}

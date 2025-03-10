@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import SelectField from '../../../../components/select-field';
 import { READWRITE } from '../../../constants';
+import { stableSort, getComparator } from '../../../../utils/sort';
 
-const fileFormat = [
+const formats = [
     {
         value: 'csv',
         label: 'CSV'
@@ -30,6 +32,10 @@ const fileFormat = [
     {
         value: 'json',
         label: 'JSON'
+    },
+    {
+        value: 'delta',
+        label: 'Delta'
     },
     {
         value: 'parquet',
@@ -46,27 +52,57 @@ const fileFormat = [
     {
         value: 'avro',
         label: 'Avro'
+    },
+    {
+        value: 'binaryFile',
+        label: 'Binary',
+        conditions: [
+            { stage: ['READ'] },
+            { storage: ['s3', 'azure-blob-storage', 'google-cloud-storage'] }
+        ]
     }
 ];
 
-const FileFormat = ({ disabled, value, onChange, required }) => (
-    <SelectField
-        ableToEdit={!disabled}
-        label="jobDesigner:readConfiguration.Fileformat"
-        name="format"
-        value={value}
-        handleInputChange={onChange}
-        menuItems={fileFormat}
-        type={READWRITE}
-        required={required}
-    />
-);
+const FileFormat = ({ disabled, value, onChange, required, conditions }) => {
+    const fileFormat = useMemo(
+        () =>
+            stableSort(formats, getComparator('asc', 'label')).filter(format => {
+                let isValid = false;
+                if (!format.conditions) {
+                    isValid = true;
+                } else {
+                    format.conditions.forEach(criteria => {
+                        const [key] = Object.keys(criteria);
+                        if (get(conditions, key, []).includes(get(criteria, key))) {
+                            isValid = true;
+                        }
+                    });
+                }
+                return isValid;
+            }),
+        [conditions]
+    );
+
+    return (
+        <SelectField
+            ableToEdit={!disabled}
+            label="jobDesigner:readConfiguration.Fileformat"
+            name="format"
+            value={value}
+            handleInputChange={onChange}
+            menuItems={fileFormat}
+            type={READWRITE}
+            required={required}
+        />
+    );
+};
 
 FileFormat.propTypes = {
     disabled: PropTypes.bool,
     value: PropTypes.string,
     onChange: PropTypes.func,
-    required: PropTypes.bool
+    required: PropTypes.bool,
+    conditions: PropTypes.object
 };
 
 export default FileFormat;

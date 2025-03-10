@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useRef, useState } from 'react';
+import React, { Suspense, memo, useEffect, useRef, useState } from 'react';
 import { Button } from '@material-ui/core';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -30,6 +30,9 @@ import { setParams, setParamsDirty } from '../../../redux/actions/mxGraphActions
 import useStyles from './Params.Styles';
 import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 import FieldFactory from './FieldFactory';
+import { DATABRICKS } from '../../constants';
+import ClusterModal from '../../../components/cluster-modal';
+import { PageSkeleton } from '../../../components/skeleton';
 
 const getProperties = (fields, mapper) => {
     const names = [];
@@ -76,7 +79,64 @@ const DEFAULT_PARAMS = {
         RECIPIENTS: [],
         CHANNELS: []
     },
-    TAGS: []
+    TAGS: [],
+    CLUSTER_NAME: 'Job_cluster',
+    POLICY: 'unrestricted',
+    NODES: 'multy',
+    ACCESS_MODE: 'SINGLE_USER',
+    DATABRICKS_RUNTIME_VERSION: '13.3.x-scala2.12',
+    USE_PHOTON_ACCELERATION: true,
+    WORKER_TYPE: 'i3.xlarge',
+    WORKERS: 8,
+    MIN_WORKERS: 2,
+    MAX_WORKERS: 8,
+    DRIVER_TYPE: 'same',
+    NODE_TYPE: 'i3.xlarge',
+    AUTOSCALING_WORKERS: false,
+    AUTOSCALING_STORAGE: false,
+    INSTANCE_PROFILE: 'none',
+    CLUSTER_TAGS: null,
+    ON_DEMAND_SPOT: 1,
+    IS_ON_DEMAND_SPOT: true,
+    ENABLE_CREDENTIAL: false,
+    AVAILABILITY_ZONE: 'auto',
+    MAX_SPOT_PRICE: 100,
+    EBS_VOLUME_TYPE: 'none',
+    VOLUMES: '3',
+    DB_SIZE: '300',
+    SPARK_CONFIG: '',
+    ENV_VAR: '',
+    DESTINATION: 'none',
+    LOG_PATH: '',
+    REGION: 'auto',
+    CLUSTER_SCRIPTS: null,
+    SSH_PUBLIC_KEY: '',
+    UP_TO: 600,
+    INTERVALS: 30,
+    CLUSTER_DATABRICKS_SCHEMA: {
+        aws_attributes: {
+            first_on_demand: 1,
+            availability: 'SPOT_WITH_FALLBACK',
+            zone_id: 'auto',
+            spot_bid_price_percent: 100
+        },
+        availability: 'SPOT_WITH_FALLBACK',
+        first_on_demand: 1,
+        spot_bid_price_percent: 100,
+        zone_id: 'auto',
+        data_security_mode: 'SINGLE_USER',
+        enable_elastic_disk: false,
+        init_scripts: [],
+        node_type_id: 'i3.xlarge',
+        num_workers: 8,
+        runtime_engine: 'PHOTON',
+        spark_version: '13.3.x-scala2.12',
+        ssh_public_keys: []
+    },
+    PREEMPTIBLE_INSTANCES: false,
+    GOOGLE_SERVICE_ACCOUNT: '',
+    LOCAL_SSDS: 'default',
+    SPOT_INSTANCE: false
 };
 
 export const Params = ({
@@ -103,9 +163,47 @@ export const Params = ({
         (acc, name) => set(acc, name, get(params, name, get(DEFAULT_PARAMS, name))),
         {}
     );
-
     const [state, setState] = React.useState(initialState);
     const [errors, setErrors] = useState({});
+    const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        if (+state.UP_TO < +state.INTERVALS && !errors.INTERVALS) {
+            setErrors(prevState => ({
+                ...prevState,
+                INTERVALS: t('main:validation.perTryLessTotalTimeout')
+            }));
+        }
+
+        if (
+            (+state.UP_TO === +state.INTERVALS || +state.UP_TO > +state.INTERVALS) &&
+            !errors.UP_TO &&
+            errors.INTERVALS === t('main:validation.perTryLessTotalTimeout')
+        ) {
+            setErrors(prevState => ({
+                ...prevState,
+                INTERVALS: null
+            }));
+        }
+    }, [state.UP_TO, state.INTERVALS, errors.UP_TO, errors.INTERVALS, t]);
+
+    useEffect(() => {
+        if (+state.MIN_WORKERS > +state.MAX_WORKERS) {
+            setErrors(prevState => ({
+                ...prevState,
+                MIN_WORKERS: t('main:validation.minLessMax')
+            }));
+        }
+        if (
+            +state.MIN_WORKERS <= +state.MAX_WORKERS &&
+            errors.MIN_WORKERS === t('main:validation.minLessMax')
+        ) {
+            setErrors(prevState => ({
+                ...prevState,
+                MIN_WORKERS: null
+            }));
+        }
+    }, [state.MIN_WORKERS, state.MAX_WORKERS, errors.MIN_WORKERS, t]);
 
     const validators = getProperties(fields, ([key, { validate }]) => ({
         key,
@@ -145,6 +243,25 @@ export const Params = ({
                     parentRef={ref}
                 />
             </div>
+            {!fields?.NOTIFICATION_PANEL && window.PLATFORM === DATABRICKS && (
+                <Suspense fallback={<PageSkeleton />}>
+                    <ClusterModal
+                        fields={fields?.JOB_CLUSTER.fields}
+                        state={state}
+                        ableToEdit={ableToEdit}
+                        onChange={handleChange}
+                        onError={handleError}
+                        errors={errors}
+                        parentRef={ref}
+                        display={showModal}
+                        onClose={() => setShowModal(false)}
+                        setState={setState}
+                    />
+                    <Button variant="outlined" onClick={() => setShowModal(true)}>
+                        {t('main:button.EditCluster')}
+                    </Button>
+                </Suspense>
+            )}
             <div className={classes.buttons}>
                 {ableToEdit && (
                     <>

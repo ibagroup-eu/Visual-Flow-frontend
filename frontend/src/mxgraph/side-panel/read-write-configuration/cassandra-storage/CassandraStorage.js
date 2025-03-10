@@ -19,23 +19,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { useTranslation } from 'react-i18next';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import { WRITE, READWRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
-import SelectField from '../../../../components/select-field';
 import Ssl from '../helpers/Ssl';
-
-const dropdownOptions = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 
 const fields = [
     [
@@ -58,79 +47,91 @@ const CassandraStorage = ({
     ableToEdit,
     connectionPage,
     connection
-}) => (
-    <>
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={fields[0]}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-        />
-        <Ssl
-            ableToEdit={ableToEdit}
-            value={inputValues.ssl}
-            handleInputChange={handleInputChange}
-            connection={connection}
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={userFields}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            required
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={field}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            hidden
-            required
-        />
+}) => {
+    const { t } = useTranslation();
 
-        {!connectionPage && (
-            <>
-                <ReadTextFields
-                    ableToEdit={ableToEdit}
-                    fields={fields[1]}
-                    inputValues={inputValues}
-                    handleInputChange={handleInputChange}
-                    openModal={openModal}
-                    required
-                />
-                <SelectField
-                    ableToEdit={ableToEdit}
-                    label="jobDesigner:readConfiguration.pushdownEnabled"
-                    name="pushdownEnabled"
-                    value={inputValues.pushdownEnabled}
-                    handleInputChange={handleInputChange}
-                    menuItems={dropdownOptions}
-                    type={READWRITE}
-                />
-            </>
-        )}
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={[{ field: 'certData', rows: 6 }]}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-        />
-        {inputValues.operation === WRITE && (
-            <WriteMode
-                disabled={!ableToEdit}
-                value={inputValues.writeMode}
-                onChange={handleInputChange}
+    return (
+        <>
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={fields[0]}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
             />
-        )}
-    </>
-);
+            <Ssl
+                ableToEdit={ableToEdit}
+                value={
+                    inputValues.ssl === undefined
+                        ? undefined
+                        : inputValues.ssl === 'true'
+                }
+                handleInputChange={handleInputChange}
+                connection={connection}
+            />
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={userFields}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                required
+            />
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={field}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                hidden
+                required
+            />
+
+            {!connectionPage && (
+                <>
+                    <ReadTextFields
+                        ableToEdit={ableToEdit}
+                        fields={fields[1]}
+                        inputValues={inputValues}
+                        handleInputChange={handleInputChange}
+                        openModal={openModal}
+                        required
+                    />
+                    <ParamsSwitchField
+                        ableToEdit={ableToEdit}
+                        label={t('jobDesigner:readConfiguration.pushdownEnabled')}
+                        name="pushdownEnabled"
+                        value={
+                            inputValues.pushdownEnabled === undefined
+                                ? undefined
+                                : inputValues.pushdownEnabled === 'true'
+                        }
+                        onChange={handleInputChange}
+                        type={READWRITE}
+                        defaultValue={false}
+                    />
+                </>
+            )}
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={[{ field: 'certData', rows: 6 }]}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+            />
+            {inputValues.operation === WRITE && (
+                <WriteMode
+                    disabled={!ableToEdit}
+                    value={inputValues.writeMode}
+                    onChange={handleInputChange}
+                />
+            )}
+        </>
+    );
+};
 
 CassandraStorage.propTypes = {
     inputValues: PropTypes.object,

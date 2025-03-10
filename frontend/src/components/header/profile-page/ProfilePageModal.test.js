@@ -18,7 +18,8 @@ describe('ProfilePageModal', () => {
         const defaultProps = {
             display: true,
             title: 'test',
-            onClose: jest.fn()
+            onClose: jest.fn(),
+            userInfo: { accessToken: 'ololo' }
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));

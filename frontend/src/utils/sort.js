@@ -19,7 +19,11 @@
 
 import { isNil } from 'lodash';
 
-export const descendingComparator = (a, b) => {
+const toLowerCase = val => (typeof val === 'string' ? val.toLowerCase() : val);
+
+export const descendingComparator = (argA, argB) => {
+    const a = toLowerCase(argA);
+    const b = toLowerCase(argB);
     if ((isNil(b) && !isNil(a)) || b < a) {
         return -1;
     }
@@ -35,7 +39,8 @@ export const getComparator = (order, orderBy) =>
         ? (a, b) => descendingComparator(a[orderBy], b[orderBy])
         : (a, b) => -descendingComparator(a[orderBy], b[orderBy]);
 
-export const stableSort = (array, comparator) => {
+export const stableSort = (data, comparator) => {
+    const array = Array.isArray(data) ? data : Object.values(data);
     const stabilized = array.map((el, index) => [el, index]);
     stabilized.sort((a, b) => {
         const order = comparator(a[0], b[0]);

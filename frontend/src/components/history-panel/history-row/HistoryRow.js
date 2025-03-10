@@ -158,17 +158,19 @@ const HistoryRow = ({ data, latest, logsHandler, projectId, type, findName }) =>
                     {type === 'job' && (
                         <Box className={classes.logIconBox}>
                             <Tooltip title={t('jobs:tooltip.Logs')} arrow>
-                                <IconButton
-                                    className={classes.logIcon}
-                                    onClick={() =>
-                                        logsHandler({
-                                            jobId: data.id,
-                                            logId: data.logId
-                                        })
-                                    }
-                                >
-                                    <DescriptionOutlined />
-                                </IconButton>
+                                <div>
+                                    <IconButton
+                                        className={classes.logIcon}
+                                        onClick={() =>
+                                            logsHandler({
+                                                jobId: data.jobId || data.id,
+                                                logId: data.logId
+                                            })
+                                        }
+                                    >
+                                        <DescriptionOutlined />
+                                    </IconButton>
+                                </div>
                             </Tooltip>
                         </Box>
                     )}

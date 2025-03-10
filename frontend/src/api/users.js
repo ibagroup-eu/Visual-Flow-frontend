@@ -21,5 +21,6 @@ import axiosInstance from './axiosInstance';
 
 export default {
     getUsers: () => axiosInstance.get('/users'),
+    getCurrentUser: () => axiosInstance.get('/user'),
     getRoles: () => axiosInstance.get('/roles')
 };

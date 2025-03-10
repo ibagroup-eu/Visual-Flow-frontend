@@ -28,7 +28,9 @@
         "Disable remove": "You cannot delete a job which compounds a pipeline",
         "Export selected": "Export selected",
         "History": "History",
-        "cdcKey": "Please fill the comparison key"
+        "cdcKey": "Please fill the comparison key",
+        "Debug": "Debug",
+        "RunAll": "Run all"
     },
     "noItems": "No items to display",
     "changesNotSaved": "Please save your changes to run the job",
@@ -47,6 +49,11 @@
         "shufflePartitions": "Shuffle Partitions",
         "ResourcesPanel": "Resources",
         "Tags": "Tags",
-        "TagsHint": "Tag your job to categorize it"
+        "TagsHint": "Tag your job to categorize it",
+        "RetriesPanel": "Retries",
+        "retriesTimeoutPerTry": "Timeout per try",
+        "retriesTotalTimeout": "Total Timeout",
+        "TagsTotalTimeout": "Total Timeout specifies the maximum amount of time in seconds that can elapse before giving up.",
+        "TagsTimeoutPerTry": "Timeout per the request before the next retry."
     }
 }

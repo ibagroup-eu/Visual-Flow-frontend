@@ -74,9 +74,12 @@ describe('settings parameters reducer', () => {
             }
         ];
 
-        it.each(tests)('should return handle $action.type', ({ state, action, exp }) => {
-            expect(settingsParametersReducer(state, action)).toEqual(exp);
-        });
+        it.each(tests)(
+            'should return handle $action.type',
+            ({ state, action, exp }) => {
+                expect(settingsParametersReducer(state, action)).toEqual(exp);
+            }
+        );
     });
 
     describe('DELETE_PARAMETER', () => {
@@ -115,9 +118,12 @@ describe('settings parameters reducer', () => {
             }
         ];
 
-        it.each(tests)('should return handle $action.type', ({ state, action, exp }) => {
-            expect(settingsParametersReducer(state, action)).toEqual(exp);
-        });
+        it.each(tests)(
+            'should return handle $action.type',
+            ({ state, action, exp }) => {
+                expect(settingsParametersReducer(state, action)).toEqual(exp);
+            }
+        );
     });
 
     describe('CREATE_PARAMETER', () => {
@@ -154,9 +160,12 @@ describe('settings parameters reducer', () => {
             }
         ];
 
-        it.each(tests)('should return handle $action.type', ({ state, action, exp }) => {
-            expect(settingsParametersReducer(state, action)).toEqual(exp);
-        });
+        it.each(tests)(
+            'should return handle $action.type',
+            ({ state, action, exp }) => {
+                expect(settingsParametersReducer(state, action)).toEqual(exp);
+            }
+        );
     });
 
     describe('UPDATE_PARAMETER', () => {
@@ -195,8 +204,11 @@ describe('settings parameters reducer', () => {
             }
         ];
 
-        it.each(tests)('should return handle $action.type', ({ state, action, exp }) => {
-            expect(settingsParametersReducer(state, action)).toEqual(exp);
-        });
+        it.each(tests)(
+            'should return handle $action.type',
+            ({ state, action, exp }) => {
+                expect(settingsParametersReducer(state, action)).toEqual(exp);
+            }
+        );
     });
 });

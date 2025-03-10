@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import useStyles from './ConnectionsTableRow.Styles';
 import toggleConfirmationWindow from '../../../../redux/actions/modalsActions';
 import ActionButton from '../../../../components/action-button';
+import { DATABRICKS } from '../../../../mxgraph/constants';
 
 const ConnectionsTableRow = ({
     handleRemoveConnection,
@@ -41,23 +42,27 @@ const ConnectionsTableRow = ({
     deleting,
     confirmationWindow,
     handleOpenConnection,
-    handlePingConnection
+    handlePingConnection,
+    editableMode
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
+    const { connectionName, storageLabel } = value;
 
     const buttonsProps = [
         {
             title: t('setting:connection.tooltip.Open'),
             Icon: LaunchOutlined,
             disabled: pinging || deleting,
-            onClick: () => handleOpenConnection({ value, key }, false)
+            onClick: () => handleOpenConnection({ value, key }, false),
+            visible: true
         },
         {
             title: t('setting:connection.tooltip.Edit'),
             Icon: EditOutlined,
             disabled: pinging || deleting,
-            onClick: () => handleOpenConnection({ value, key }, true)
+            onClick: () => handleOpenConnection({ value, key }, true),
+            visible: editableMode
         },
         {
             title: t('setting:connection.tooltip.Delete'),
@@ -66,18 +71,20 @@ const ConnectionsTableRow = ({
             loading: deleting,
             onClick: () =>
                 confirmationWindow({
-                    body: `${t('main:confirm.sure')} '${value.connectionName}'?`,
+                    body: `${t('main:confirm.sure')} '${connectionName}'?`,
                     callback: () => handleRemoveConnection(key)
-                })
+                }),
+            visible: editableMode
         },
-        {
+        window.PLATFORM !== DATABRICKS && {
             title: t('setting:connection.tooltip.Ping'),
             Icon: WifiOutlined,
             disabled: pinging || deleting,
             loading: pinging,
-            onClick: () => handlePingConnection({ key, value })
+            onClick: () => handlePingConnection({ key, value }),
+            visible: true
         }
-    ];
+    ].filter(el => el);
 
     return (
         <TableRow>
@@ -86,7 +93,7 @@ const ConnectionsTableRow = ({
                     disabled
                     fullWidth
                     variant="outlined"
-                    value={value.storageLabel}
+                    value={storageLabel}
                     placeholder={t('setting:connection.Storage')}
                     label={t('setting:connection.Storage')}
                 />
@@ -96,16 +103,22 @@ const ConnectionsTableRow = ({
                     disabled
                     fullWidth
                     variant="outlined"
-                    value={value.connectionName}
+                    value={connectionName}
                     placeholder={t('setting:connection.Name')}
                     label={t('setting:connection.Name')}
                 />
             </TableCell>
             <TableCell className={classes.cell}>
                 <Box className={classes.buttonsGroup}>
-                    {buttonsProps.map(buttonProps => (
-                        <ActionButton key={buttonProps.title} {...buttonProps} />
-                    ))}
+                    {buttonsProps.map(
+                        buttonProps =>
+                            buttonProps.visible && (
+                                <ActionButton
+                                    key={buttonProps.title}
+                                    {...buttonProps}
+                                />
+                            )
+                    )}
                 </Box>
             </TableCell>
         </TableRow>
@@ -119,7 +132,8 @@ ConnectionsTableRow.propTypes = {
     pinging: PropTypes.bool,
     deleting: PropTypes.bool,
     handleOpenConnection: PropTypes.func,
-    handlePingConnection: PropTypes.func
+    handlePingConnection: PropTypes.func,
+    editableMode: PropTypes.bool
 };
 
 const mapDispatchToProps = {

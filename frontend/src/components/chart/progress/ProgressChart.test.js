@@ -19,8 +19,11 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import ProgressChart from './ProgressChart';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+import ProgressChart from './ProgressChart';
+import { DATABRICKS } from '../../../mxgraph/constants';
 
 describe('ProgressChart', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -45,5 +48,17 @@ describe('ProgressChart', () => {
         const text = wrapper.text();
 
         expect(text).toBe(`${props.value}%`);
+    });
+
+    it('should render "N/A"', () => {
+        Object.defineProperty(window, 'PLATFORM', {
+            value: DATABRICKS
+        });
+
+        const [wrapper] = init({}, true);
+
+        const text = wrapper.text();
+
+        expect(text).toBe('N/A');
     });
 });

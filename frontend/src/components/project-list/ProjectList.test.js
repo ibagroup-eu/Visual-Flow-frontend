@@ -22,6 +22,7 @@ import { mount, shallow } from 'enzyme';
 import { ProjectList } from './ProjectList';
 import { ProjectCardSkeleton } from '../project-card/ProjectCard';
 import ProjectCard from '../project-card';
+import { DATABRICKS } from '../../mxgraph/constants';
 
 describe('ProjectList', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -33,7 +34,8 @@ describe('ProjectList', () => {
                 },
                 loading: false
             },
-            getProjects: jest.fn()
+            getProjects: jest.fn(),
+            getCurrentUser: jest.fn()
         };
 
         const wrapper = func(<ProjectList {...defaultProps} {...props} />);
@@ -78,11 +80,23 @@ describe('ProjectList', () => {
                 loading: false
             }
         });
+        wrapper
+            .find(ProjectCard)
+            .at(0)
+            .prop('onClick')();
+        wrapper
+            .find(ProjectCard)
+            .at(1)
+            .prop('onClick')();
 
         expect(wrapper.find(ProjectCard).length).toBe(3);
     });
 
     it('should not able to add new projects', () => {
+        Object.defineProperty(window, 'PLATFORM', {
+            value: DATABRICKS
+        });
+
         const [wrapper] = init({
             projects: {
                 data: {
@@ -97,10 +111,19 @@ describe('ProjectList', () => {
                     ]
                 },
                 loading: false
+            },
+            currentUser: {
+                data: { superuser: true }
             }
         });
 
         expect(wrapper.find(ProjectCard).length).toBe(2);
+        expect(
+            wrapper
+                .find(ProjectCard)
+                .at(0)
+                .prop('superUser')
+        ).toBeTruthy();
     });
 
     it('should fetch projects', () => {
@@ -109,9 +132,16 @@ describe('ProjectList', () => {
                 projects: {
                     data: {
                         editable: false,
-                        projects: []
+                        projects: [
+                            {
+                                id: 'id_1'
+                            }
+                        ]
                     },
                     loading: true
+                },
+                currentUser: {
+                    data: { superuser: true }
                 }
             },
             false,
@@ -119,9 +149,11 @@ describe('ProjectList', () => {
         );
 
         const getProjects = jest.fn();
+        const getCurrentUser = jest.fn();
 
-        wrapper.setProps({ getProjects });
+        wrapper.setProps({ getProjects, getCurrentUser });
 
         expect(getProjects).toHaveBeenCalled();
+        expect(getCurrentUser).toHaveBeenCalled();
     });
 });

@@ -16,9 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from "react";
-import { shallow } from "enzyme";
-import { DesignerToolbar } from "./DesignerToolbar";
+
+// eslint-disable-next-line max-classes-per-file
+import React from 'react';
+import { shallow } from 'enzyme';
+import { DesignerToolbar } from './DesignerToolbar';
 
 describe('DesignerToolbar', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -28,9 +30,7 @@ describe('DesignerToolbar', () => {
             zoom: jest.fn()
         };
 
-        const wrapper = func(
-            <DesignerToolbar {...defaultProps} {...props} />
-        );
+        const wrapper = func(<DesignerToolbar {...defaultProps} {...props} />);
 
         return returnProps ? [wrapper, { ...defaultProps, ...props }] : [wrapper];
     };
@@ -60,6 +60,7 @@ describe('DesignerToolbar', () => {
         it('should return matching element for mxGeometryChange object', () => {
             class mxGeometryChange {
                 previous = {};
+
                 geometry = {};
             }
 

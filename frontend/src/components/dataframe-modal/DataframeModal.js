@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Box } from '@material-ui/core';
 import classNames from 'classnames';
@@ -59,13 +59,25 @@ const DataframeModal = ({
 }) => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const parsedRows = toJsonString(rowsData).map(row => ({
-        rowId: uniqueId(),
-        data: row
-    }));
-    const parsedColumns = toJsonString(schema);
+
+    const parsedRows = useMemo(() => {
+        return toJsonString(rowsData).map(row => ({
+            rowId: uniqueId(),
+            data: row
+        }));
+    }, [rowsData]);
+
+    const parsedColumns = useMemo(() => {
+        return toJsonString(schema);
+    }, [schema]);
+
     const [columnsState, setColumns] = useState(parsedColumns);
     const [rowsState, setRows] = useState(parsedRows);
+
+    useEffect(() => {
+        setColumns(parsedColumns);
+        setRows(parsedRows);
+    }, [parsedColumns, parsedRows]);
 
     const onSave = () => {
         onChange({

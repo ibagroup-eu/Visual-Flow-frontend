@@ -26,6 +26,7 @@ import MailOutlinedIcon from '@material-ui/icons/MailOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import PlaylistAddCheckSharpIcon from '@material-ui/icons/PlaylistAddCheckSharp';
+import SettingsEthernetOutlinedIcon from '@material-ui/icons/SettingsEthernetOutlined';
 import {
     CachedOutlined,
     CheckCircleOutlined,
@@ -62,7 +63,8 @@ import {
     VALIDATE,
     DATETIME,
     WITH_COLUMN,
-    HANDLE_NULL
+    HANDLE_NULL,
+    AI_TEXT_TASK
 } from '../../constants';
 
 import {
@@ -97,7 +99,8 @@ const icons = {
     [DATETIME]: ScheduleOutlined,
     [WITH_COLUMN]: ViewWeekIcon,
     [PIVOT]: CachedOutlined,
-    [HANDLE_NULL]: PlaylistAddCheckSharpIcon
+    [HANDLE_NULL]: PlaylistAddCheckSharpIcon,
+    [AI_TEXT_TASK]: SettingsEthernetOutlinedIcon
 };
 
 const StageIcon = ({ stageName }) => {

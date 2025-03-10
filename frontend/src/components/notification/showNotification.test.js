@@ -16,6 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { shallow } from 'enzyme';
+import CloseIcon from '@material-ui/icons/Close';
 
 import showNotification from './showNotification';
 import {
@@ -23,8 +25,6 @@ import {
     closeSnackbar
 } from '../../redux/actions/notificationsActions';
 import { store } from '../../redux';
-import { shallow } from 'enzyme';
-import CloseIcon from '@material-ui/icons/Close';
 
 jest.mock('../../redux/actions/notificationsActions', () => ({
     enqueueSnackbar: jest.fn(),

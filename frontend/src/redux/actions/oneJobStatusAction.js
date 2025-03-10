@@ -21,6 +21,7 @@ import {
     FETCH_JOB_STATUS_FAIL,
     FETCH_JOB_STATUS_START,
     FETCH_JOB_STATUS_SUCCESS,
+    RESET_JOB_STATUS_SUCCESS,
     UPDATE_JOB_STATUS_FAIL,
     UPDATE_JOB_STATUS_START,
     UPDATE_JOB_STATUS_SUCCESS
@@ -49,6 +50,11 @@ const fetchJobStatus = (projectId, jobId, withoutLoading = false) => dispatch =>
             })
     );
 };
+
+export const resetJobStatus = () => ({
+    type: RESET_JOB_STATUS_SUCCESS,
+    payload: {}
+});
 
 export const updateJobStatus = (id, status) => dispatch => {
     dispatch({

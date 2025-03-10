@@ -39,6 +39,11 @@ describe('CronRunInfo', () => {
         expect(wrapper.find(Typography).length).toBe(2);
     });
 
+    it('should throw an error', () => {
+        const [wrapper] = init({ cronValue: { value: '2-2 * * * *,2' } });
+        expect(wrapper.find(Typography).length).toBe(2);
+    });
+
     it('should correct a cron value', () => {
         expect(correctInvalidCron('2-2 * * * *,2')).toBe('2 * * * *,2');
         expect(correctInvalidCron('0-2 * * * *,2')).toBe('0-2 * * * *,2');
@@ -46,6 +51,11 @@ describe('CronRunInfo', () => {
 
     it('should render hint about UTC format for new cron', () => {
         const [wrapper] = init({ cronValue: { value: '', errorMessage: '' } });
-        expect(wrapper.find(Typography).at(0).text()).toBe('pipelines:cronInfo.helperText');
+        expect(
+            wrapper
+                .find(Typography)
+                .at(0)
+                .text()
+        ).toBe('pipelines:cronInfo.helperText');
     });
 });

@@ -20,7 +20,8 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import InfoModal from './InfoModal';
-import { STORAGES } from '../../../mxgraph/constants';
+import { DATABRICKS, STORAGES } from '../../../mxgraph/constants';
+import { Select } from '@material-ui/core';
 
 describe('InfoModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -56,6 +57,25 @@ describe('InfoModal', () => {
         });
     });
 
+    it('should render without crashes 2', () => {
+        Object.values(STORAGES).forEach(({ value }) => {
+            const [wrapper] = init(
+                {
+                    currentStorage: value,
+                    display: true,
+                    [value]: [
+                        { title: 'title', paragraph_1: 'paragraph', hide: ['Read'] }
+                    ],
+                    title: 'Write',
+                    storages: ['Dataframe', 'STDOUT', 'Databricks']
+                },
+                false,
+                mount
+            );
+            expect(wrapper).toBeDefined();
+        });
+    });
+
     it('should render with operations', () => {
         const [wrapper] = init(
             {
@@ -86,6 +106,7 @@ describe('InfoModal', () => {
             false,
             mount
         );
+        wrapper.find(Select).prop('onChange')({ target: { value: 'Date/Time' } });
         expect(wrapper).toBeDefined();
     });
 });

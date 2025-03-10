@@ -22,6 +22,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import styles from './ProgressChart.Styles';
+import { DATABRICKS } from '../../../mxgraph/constants';
 
 const ProgressChart = ({ value, thickness = 2, classes }) => (
     <div className={classes.root}>
@@ -43,10 +44,14 @@ const ProgressChart = ({ value, thickness = 2, classes }) => (
             value={value}
         />
         <div className={classes.caption}>
-            <div>
-                {`${Math.round(value)}`}
-                <small>%</small>
-            </div>
+            {window.PLATFORM === DATABRICKS ? (
+                'N/A'
+            ) : (
+                <div>
+                    {`${Math.round(value)}`}
+                    <small>%</small>
+                </div>
+            )}
         </div>
     </div>
 );

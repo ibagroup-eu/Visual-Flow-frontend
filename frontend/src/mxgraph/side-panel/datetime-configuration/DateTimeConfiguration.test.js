@@ -28,13 +28,13 @@ jest.mock('../schemas', () => ({
     DATETIME: [
         {},
         {
-            field: 'dayOfWeek'
+            field: 'option.dayOfWeek'
         },
         {
             field: 'roundOff',
             conditions: [
                 {
-                    operationType: 'months_between'
+                    function: 'months_between'
                 }
             ]
         },
@@ -42,7 +42,7 @@ jest.mock('../schemas', () => ({
             field: 'sourceColumn',
             conditions: [
                 {
-                    operationType: 'next_day'
+                    function: 'next_day'
                 }
             ]
         }
@@ -96,6 +96,12 @@ describe('DateTimeConfiguration', () => {
             .prop('onChange')({
             target: { name: 'testName', value: 'testValue' }
         });
+        expect(
+            wrapper
+                .find(TextField)
+                .at(1)
+                .prop('option.dayOfWeek')
+        ).toEqual();
         expect(props.onChange).toBeCalledWith('testName', 'testValue');
     });
 

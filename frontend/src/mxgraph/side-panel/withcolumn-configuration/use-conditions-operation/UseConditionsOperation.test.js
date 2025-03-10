@@ -23,8 +23,10 @@ import { TextField } from '@material-ui/core';
 import UseConditionsOperation from './UseConditionsOperation';
 
 describe('UseConditionsOperation', () => {
+    let defaultProps;
+
     const init = () => {
-        const defaultProps = {
+        defaultProps = {
             state: { 'option.conditions': 'test', 'option.otherwise': 'test' },
             ableToEdit: true,
             handleInputChange: jest.fn()
@@ -35,5 +37,28 @@ describe('UseConditionsOperation', () => {
     it('should render without crashes', () => {
         const wrapper = init();
         expect(wrapper.find(TextField)).toHaveLength(2);
+    });
+
+    it('should render with empty values', () => {
+        const props = {
+            ...defaultProps,
+            state: {}
+        };
+
+        const wrapper = shallow(<UseConditionsOperation {...props} />);
+        expect(wrapper.find(TextField)).toHaveLength(2);
+
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('value')
+        ).toBe('');
+        expect(
+            wrapper
+                .find(TextField)
+                .at(1)
+                .prop('value')
+        ).toBe('');
     });
 });

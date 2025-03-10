@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { getFieldNames, Params } from './Params';
 import { Button } from '@material-ui/core';
@@ -27,16 +27,24 @@ describe('Params', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             store: {
-                fields: { EXECUTOR_INSTANCES: 100500, EXECUTOR_MEMORY: 100500 },
+                fields: {
+                    EXECUTOR_INSTANCES: 100500,
+                    EXECUTOR_MEMORY: 100500,
+                    UP_TO: 30,
+                    INTERVALS: 30
+                },
                 data: {
                     params: {
                         DRIVER_REQUEST_CORES: 100500,
-                        EXECUTOR_INSTANCES: 100500
+                        EXECUTOR_INSTANCES: 100500,
+                        UP_TO: 30,
+                        INTERVALS: 30
                     },
                     name: 'name'
                 }
             },
             ableToEdit: true,
+            paramsIsDirty: true,
             setDirty: jest.fn(),
             save: jest.fn(),
             confirmationWindow: jest.fn()
@@ -60,17 +68,29 @@ describe('Params', () => {
     });
 
     it('should handle change', () => {
-        const [wrapper, props] = init({}, true);
+        const [wrapper, props] = init({}, true, mount);
         const fieldFactory = wrapper.find(FieldFactory);
-        const event = {
+
+        let event = {
             target: {
-                name: 'EXECUTOR_INSTANCES',
-                value: 1
+                name: 'INTERVALS',
+                value: 300
             },
             persist: jest.fn()
         };
-
         fieldFactory.prop('onChange')(event);
+        fieldFactory.prop('onError')(event);
+
+        event = {
+            target: {
+                name: 'UP_TO',
+                value: 300
+            },
+            persist: jest.fn()
+        };
+        fieldFactory.prop('onChange')(event);
+        fieldFactory.prop('onError')(event);
+
         expect(props.setDirty).toHaveBeenCalled();
     });
 

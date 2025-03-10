@@ -69,6 +69,10 @@ describe('PipelinesTable', () => {
     let wrapper;
     let props;
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     beforeEach(() => {
         props = {
             ableToEdit: true,
@@ -100,18 +104,20 @@ describe('PipelinesTable', () => {
             setCurrentPage: jest.fn(),
             currentPage: 0,
             rowsPerPage: 5,
-            jobs: {
-                finishedAt: null,
-                id: '00e10f35-4cda-43e7-8bef-070b91701ea9',
-                lastModified: '2022-03-23 08:42:19 +0000',
-                name: 'testTesttest',
-                pipelineId: null,
-                length: 0,
-                runnable: true,
-                startedAt: null,
-                status: 'Draft',
-                usage: null
-            },
+            jobs: [
+                {
+                    finishedAt: null,
+                    id: '00e10f35-4cda-43e7-8bef-070b91701ea9',
+                    lastModified: '2022-03-23 08:42:19 +0000',
+                    name: 'testTesttest',
+                    pipelineId: null,
+                    length: 0,
+                    runnable: true,
+                    startedAt: null,
+                    status: 'Draft',
+                    usage: null
+                }
+            ],
             params: [
                 {
                     key: 'NewParam',
@@ -127,7 +133,7 @@ describe('PipelinesTable', () => {
             status: '',
             onCheckTags: jest.fn(),
             resetTags: jest.fn(),
-            checkedTags: [['test', true]],
+            checkedTags: {},
             getPipeline: jest.fn(),
             pipelineData: { definition: { graph: [] } }
         };
@@ -270,7 +276,6 @@ describe('PipelinesTable', () => {
         expect(actions.map(x => x.title)).toEqual([
             'pipelines:tooltip.Play',
             'pipelines:tooltip.pipelineDesigner',
-            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.History',
             'pipelines:tooltip.Copy',
             'pipelines:tooltip.Remove'
@@ -297,13 +302,12 @@ describe('PipelinesTable', () => {
             'pipelines:tooltip.Stop',
             'pipelines:tooltip.Suspend',
             'pipelines:tooltip.pipelineDesigner',
-            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.History',
             'pipelines:tooltip.Copy',
             'pipelines:tooltip.Remove'
         ]);
 
-        const [stop, suspend, designer, scheduling, , copy, remove] = actions.map(
+        const [stop, suspend, designer, scheduling, copy, remove] = actions.map(
             x => x.onClick
         );
 
@@ -351,7 +355,6 @@ describe('PipelinesTable', () => {
             'pipelines:tooltip.Stop',
             'pipelines:tooltip.Resume',
             'pipelines:tooltip.pipelineDesigner',
-            'pipelines:tooltip.Scheduling',
             'pipelines:tooltip.History',
             'pipelines:tooltip.Copy',
             'pipelines:tooltip.Remove'

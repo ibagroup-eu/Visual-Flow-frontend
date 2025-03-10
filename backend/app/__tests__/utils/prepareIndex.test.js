@@ -59,7 +59,8 @@ describe('utils/prepareIndex.js', () => {
         prepareIndex({
             APP: {
                 BUILD_PATH: '',
-                BASE_URL: '/path'
+                BASE_URL: '/path',
+                PLATFORM: 'DATABRICKS'
             }
         });
 
@@ -82,7 +83,8 @@ describe('utils/prepareIndex.js', () => {
         prepareIndex({
             APP: {
                 BUILD_PATH: 'error',
-                BASE_URL: '/path'
+                BASE_URL: '/path',
+                PLATFORM: 'DATABRICKS'
             }
         });
 
@@ -100,7 +102,8 @@ describe('utils/prepareIndex.js', () => {
         prepareIndex({
             APP: {
                 BUILD_PATH: '',
-                BASE_URL: '/error'
+                BASE_URL: '/error',
+                PLATFORM: 'DATABRICKS'
             }
         });
 

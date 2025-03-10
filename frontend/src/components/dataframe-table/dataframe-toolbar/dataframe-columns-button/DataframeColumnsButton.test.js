@@ -62,6 +62,16 @@ describe('DataframeColumnsButton', () => {
         wrapper.find(TextField).prop('onChange')({ target: { value: 'test' } });
     });
 
+    it('should navigate to first page', () => {
+        wrapper = shallow(
+            <DataframeColumnsButton {...props} invisibled={['test2', 'test3']} />
+        );
+        wrapper
+            .find(Box)
+            .at(2)
+            .prop('onClick')();
+    });
+
     it('should calls onClick prop for hideAll', () => {
         wrapper
             .find(Button)

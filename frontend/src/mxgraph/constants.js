@@ -41,23 +41,36 @@ export const VALIDATE = 'VALIDATE';
 export const DATETIME = 'DATETIME';
 export const WITH_COLUMN = 'WITH_COLUMN';
 export const HANDLE_NULL = 'HANDLE_NULL';
+export const DATABRICKS = 'DATABRICKS';
+export const AI_TEXT_TASK = 'AI_TEXT_TASK';
 
 export const PENDING = 'Pending';
 export const RUNNING = 'Running';
+export const DEBUGGING = 'Debugging';
 export const DRAFT = 'Draft';
 export const SUCCEEDED = 'Succeeded';
 export const FAILED = 'Failed';
+export const UPSTREAM_FAILED = 'Upstream-failed';
 export const ERROR = 'Error';
 export const SKIPPED = 'Skipped';
 export const TERMINATED = 'Terminated';
 export const SUSPENDED = 'Suspended';
 const UNKNOWN = 'Unknown';
 
+export const RUN_ALL_EVENT = 'run-all';
+export const RUN_FAILED_EVENT = 'run-failed';
+export const RUN_EVENT = 'run';
+
+export const INTERACTIVE_SUCCEEDED = 'succeeded';
+export const INTERACTIVE_RUNNING = 'running';
+export const INTERACTIVE_FAILED = 'failed';
+
 export const OLD_STAGE_WIDTH = 130;
 export const STAGE_WIDTH = 120;
 export const STAGE_HEIGHT = 72;
 
 export const AUTO_REFRESH_TIMER = 5;
+export const PING_SESSION_TIMER = 30;
 
 export const READWRITE = 'ReadWrite';
 export const OTHER = 'Other';
@@ -99,7 +112,7 @@ export const PIPELINE_STATUSES = [
     TERMINATED
 ];
 
-export const STORAGES = {
+const COMMON_STORAGES = {
     AWS: {
         value: 's3',
         label: 'AWS S3'
@@ -172,12 +185,70 @@ export const STORAGES = {
     },
     KAFKA: {
         value: 'kafka',
-        label: 'Kafka',
-        hide: [READ, WRITE]
+        label: 'Kafka'
     },
     API: {
         value: 'request',
-        label: 'API'
+        label: 'API',
+        hide: [WRITE]
+    },
+    AZURE: {
+        value: 'azure-blob-storage',
+        label: 'Azure Blob Storage'
+    },
+    GOOGLECLOUD: {
+        value: 'google-cloud-storage',
+        label: 'Google Cloud Storage'
+    }
+};
+
+const DATABRICKS_STORAGES = { ...COMMON_STORAGES };
+DATABRICKS_STORAGES.DATABRICKS = {
+    value: 'databricks',
+    label: 'Databricks'
+};
+
+const VF_STORAGES = { ...COMMON_STORAGES };
+VF_STORAGES.DATABRICKSJDBC = {
+    value: 'databricks-jdbc',
+    label: 'Databricks JDBC'
+};
+
+export const STORAGES =
+    window.PLATFORM === DATABRICKS ? DATABRICKS_STORAGES : VF_STORAGES;
+
+export const FILE_FORMATS = {
+    CSV: {
+        value: 'csv',
+        label: 'CSV'
+    },
+    JSON: {
+        value: 'json',
+        label: 'JSON'
+    },
+    DELTA: {
+        value: 'delta',
+        label: 'Delta'
+    },
+    PARQUET: {
+        value: 'parquet',
+        label: 'Parquet'
+    },
+    ORC: {
+        value: 'orc',
+        label: 'ORC'
+    },
+    TEXT: {
+        value: 'text',
+        label: 'Text'
+    },
+    AVRO: {
+        value: 'avro',
+        label: 'Avro'
+    },
+    BINARY: {
+        value: 'binaryFile',
+        label: 'Binary'
     }
 };
 
@@ -193,3 +264,7 @@ export const SORT_TYPES = [
         label: 'Sort within partitions'
     }
 ];
+
+export const AWS = 'AWS';
+export const GCP = 'GCP';
+export const AZURE = 'Azure';

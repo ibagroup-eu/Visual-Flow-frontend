@@ -47,6 +47,10 @@ const PivotModal = props => {
             paragraph: t('pivot:pivotValues.value')
         },
         {
+            title: t('pivot:pivotColumns.name'),
+            paragraph: t('pivot:pivotColumns.value')
+        },
+        {
             title: t('pivot:unchangedColumns.name'),
             paragraph: t('pivot:unchangedColumns.value')
         },

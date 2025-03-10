@@ -73,12 +73,21 @@ describe('CDC configuration', () => {
         ]);
     });
 
-    it('shoul call onChange prop', () => {
+    it('should call onChange prop', () => {
         wrapper.find(Autocomplete).simulate('change');
         expect(defaultProps.onChange).toHaveBeenCalled();
     });
 
-    it('shoul call handleSwap prop', () => {
+    it('should set empty value to Autocomplete', () => {
+        defaultProps = {
+            ...defaultProps,
+            state: { ...defaultProps.state, keyColumns: undefined }
+        };
+        wrapper = mount(<CDCConfiguration {...defaultProps} />);
+        expect(wrapper.find(Autocomplete).prop('value')).toStrictEqual([]);
+    });
+
+    it('should call handleSwap prop', () => {
         wrapper.find(IconButton).simulate('click');
         expect(defaultProps.handleSwap).toHaveBeenCalled();
     });

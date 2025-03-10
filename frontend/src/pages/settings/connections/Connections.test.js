@@ -58,7 +58,8 @@ describe('Connections', () => {
                         storage: 'stor'
                     }
                 }
-            ]
+            ],
+            editable: true
         };
 
         wrapper = shallow(<Connections {...props} />);

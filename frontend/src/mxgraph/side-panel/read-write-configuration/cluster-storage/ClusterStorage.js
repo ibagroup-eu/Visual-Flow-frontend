@@ -27,7 +27,13 @@ import LoadLocalFile from '../../../../components/load-local-file';
 import { READ, WRITE } from '../../../constants';
 import history from '../../../../utils/history';
 
-const ClusterStorage = ({ inputValues, handleInputChange, ableToEdit, stageId }) => {
+const ClusterStorage = ({
+    inputValues,
+    handleInputChange,
+    openModal,
+    ableToEdit,
+    stageId
+}) => {
     const [file, setFile] = useState(null);
     const { t } = useTranslation();
     const currentProject = useMemo(
@@ -95,6 +101,7 @@ const ClusterStorage = ({ inputValues, handleInputChange, ableToEdit, stageId })
                 <>
                     <CosProperties
                         inputValues={inputValues}
+                        openModal={openModal}
                         ableToEdit={ableToEdit}
                         handleInputChange={handleInputChange}
                     />
@@ -114,6 +121,7 @@ const ClusterStorage = ({ inputValues, handleInputChange, ableToEdit, stageId })
 ClusterStorage.propTypes = {
     inputValues: PropTypes.object,
     handleInputChange: PropTypes.func,
+    openModal: PropTypes.func,
     ableToEdit: PropTypes.bool,
     stageId: PropTypes.string
 };

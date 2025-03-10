@@ -5,6 +5,7 @@ import ProfilePageModal from '../profile-page';
 import { ProfileMenu } from './ProfileMenu';
 import { MenuItem } from '@material-ui/core';
 import { LocalOffer } from '@material-ui/icons';
+import api from '../../../api/auth';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -44,6 +45,17 @@ describe('ProfileMenu', () => {
             .at(0)
             .prop('onClick')();
         expect(props.handleClose).toHaveBeenCalled();
+    });
+
+    it('should call logout', () => {
+        const spy = jest.spyOn(api, 'logout');
+        const [wrapper] = init();
+        wrapper
+            .find(MenuItem)
+            .at(1)
+            .prop('onClick')();
+
+        expect(spy).toHaveBeenCalled();
     });
 
     it('should show version', () => {

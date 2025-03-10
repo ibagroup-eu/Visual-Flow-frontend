@@ -17,22 +17,17 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Divider, Chip, Button } from '@material-ui/core';
+import { TextField, Chip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { get } from 'lodash';
 
 import { WRITE } from '../../../constants';
-import FileFormat from '../helpers/FileFormat';
-import CsvHeader from '../helpers/CsvHeader';
-import Delimiter from '../helpers/Delimiter';
 import WriteMode from '../helpers/WriteMode';
-import SchemaModal from '../../../../components/schema-modal';
 import ReadTextFields from '../../../../components/rw-text-fields';
-import UseSchema from '../helpers/UseSchema';
 import useStyles from './CosProperties.Styles';
+import FileFormatProperties from '../file-format-properties';
 
 // eslint-disable-next-line complexity
 const CosProperties = ({
@@ -44,11 +39,6 @@ const CosProperties = ({
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-
-    const [showSchemaModal, setShowSchemaModal] = useState(false);
-
-    const useSchema = get(inputValues, 'useSchema', 'false');
-    const optionAvroSchema = get(inputValues, 'option.avroSchema');
 
     return (
         <>
@@ -70,56 +60,16 @@ const CosProperties = ({
                         onChange={handleInputChange}
                     />
                 )}
-            <FileFormat
-                disabled={!ableToEdit}
-                value={inputValues.format || ''}
-                onChange={handleInputChange}
-                required
+            <FileFormatProperties
+                ableToEdit={ableToEdit}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                conditions={{
+                    stage: inputValues.operation,
+                    storage: inputValues.storage
+                }}
             />
-            {inputValues.format === 'csv' && (
-                <>
-                    <Divider className={classes.divider} />
-                    <CsvHeader
-                        value={inputValues['option.header'] || ''}
-                        onChange={handleInputChange}
-                        ableToEdit={ableToEdit}
-                    />
-                    <Delimiter
-                        value={inputValues['option.delimiter'] || ''}
-                        onChange={handleInputChange}
-                        ableToEdit={ableToEdit}
-                    />
-                </>
-            )}
-            {inputValues.format === 'avro' && (
-                <>
-                    <SchemaModal
-                        editable={ableToEdit}
-                        values={optionAvroSchema}
-                        onChange={handleInputChange}
-                        display={showSchemaModal}
-                        onClose={() => setShowSchemaModal(false)}
-                    />
-                    <UseSchema
-                        value={useSchema}
-                        onChange={event => handleInputChange(event)}
-                        ableToEdit={ableToEdit}
-                    />
-                    {useSchema === 'true' && (
-                        <Button
-                            className={classes.divider}
-                            variant="outlined"
-                            onClick={() => setShowSchemaModal(true)}
-                        >
-                            {t(
-                                optionAvroSchema
-                                    ? 'main:button.EditSchema'
-                                    : 'main:button.UseSchema'
-                            )}
-                        </Button>
-                    )}
-                </>
-            )}
             {inputValues.operation === WRITE && (
                 <Autocomplete
                     disabled={!ableToEdit}
@@ -165,13 +115,9 @@ CosProperties.propTypes = {
     fields: PropTypes.arrayOf(PropTypes.object),
     inputValues: PropTypes.shape({
         name: PropTypes.string,
-        format: PropTypes.string,
         operation: PropTypes.string,
         writeMode: PropTypes.string,
-        useSchema: PropTypes.string,
-        'option.header': PropTypes.string,
-        'option.delimiter': PropTypes.string,
-        'option.avroSchema': PropTypes.string,
+        optionAvroSchemaName: PropTypes.string,
         partitionBy: PropTypes.string,
         storage: PropTypes.string
     })

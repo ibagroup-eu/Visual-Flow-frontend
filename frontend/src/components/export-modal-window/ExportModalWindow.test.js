@@ -96,4 +96,59 @@ describe('ExportModalWindow', () => {
 
         expect(props.onClose).toHaveBeenCalled();
     });
+
+    it('should handle "save" with selected pipelines', () => {
+        const [wrapper, props] = init(
+            {
+                selectedPipelines: [{ id: 'someID' }, { id: 'someID2' }],
+                showModal: true,
+                isPipelineModal: true
+            },
+            true
+        );
+
+        const [saveBtn, _] = wrapper.find(Button).map(x => x);
+
+        saveBtn.simulate('click');
+
+        expect(props.setExportName).toHaveBeenCalled();
+        expect(props.exportFromProject).toHaveBeenCalled();
+    });
+
+    it('should handle "save" with selected pipelines', () => {
+        const [wrapper, props] = init(
+            {
+                selectedPipelines: [{ id: 'someID' }],
+                showModal: true,
+                display: true
+            },
+            true
+        );
+
+        wrapper
+            .find(TextField)
+            .simulate('change', { target: { name: 'export', value: 'test' } });
+
+        expect(wrapper).toBeDefined();
+    });
+
+    it('should run useEffect', () => {
+        const [wrapper, props] = init(
+            {
+                selectedPipelines: [{ id: 'someID' }, { id: 'someID2' }],
+                tableData: [{ id: 'someID' }],
+                showModal: true,
+                isPipelineModal: true,
+                display: true
+            },
+            true,
+            mount
+        );
+
+        wrapper
+            .find(TextField)
+            .simulate('change', { target: { name: 'export', value: 'test' } });
+
+        expect(wrapper).toBeDefined();
+    });
 });

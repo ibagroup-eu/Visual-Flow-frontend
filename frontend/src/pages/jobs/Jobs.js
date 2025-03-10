@@ -31,6 +31,7 @@ import PageHeader from '../../components/page-header';
 import history from '../../utils/history';
 import { PageSkeleton } from '../../components/skeleton';
 import { fetchPipelines } from '../../redux/actions/pipelinesActions';
+import { DATABRICKS } from '../../mxgraph/constants';
 
 export const sortTags = dataArray =>
     reduce(
@@ -64,17 +65,21 @@ const Jobs = ({
     setSearchField,
     searchField,
     setCurrentPage,
-    loadingExport
+    loadingExport,
+    project
 }) => {
     const { t } = useTranslation();
     const [list, setList] = React.useState([]);
     const [tags, setTags] = React.useState({});
     const filteredTags = useMemo(() => checkedTags(tags), [tags]);
+    const { demo, demoLimits } = project;
 
     React.useEffect(() => {
         if (projectId) {
             getJobs(projectId);
-            getPipelines(projectId);
+            if (window.PLATFORM !== DATABRICKS) {
+                getPipelines(projectId);
+            }
         }
     }, [getJobs, getPipelines, projectId]);
 
@@ -122,6 +127,11 @@ const Jobs = ({
             ...changedTag
         });
 
+    const disabled =
+        demo &&
+        list?.filter(item => item?.pipelineId === null).length >=
+            demoLimits?.jobsNumAllowed;
+
     return jobs.loading || loadingExport ? (
         <PageSkeleton />
     ) : (
@@ -132,6 +142,7 @@ const Jobs = ({
                         header="Jobs"
                         ableToEdit={jobs.data.editable}
                         buttonCaption={t('main:button.addJob')}
+                        disabled={disabled}
                         searchValue={searchField}
                         onSearch={event => setSearchField(event.target.value)}
                         onRefreshClick={() => getJobs(projectId)}
@@ -147,6 +158,7 @@ const Jobs = ({
                         data={list}
                         pipelines={pipelines.data.pipelines}
                         projectId={projectId}
+                        disabled={disabled}
                         ableToEdit={jobs.data.editable}
                         checkedTags={filteredTags}
                         onCheckTags={onCheckTags}
@@ -167,14 +179,16 @@ Jobs.propTypes = {
     getPipelines: PropTypes.func,
     setSearchField: PropTypes.func,
     setCurrentPage: PropTypes.func,
-    loadingExport: PropTypes.bool
+    loadingExport: PropTypes.bool,
+    project: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     jobs: state.pages.jobs,
     pipelines: state.pages.pipelines,
     searchField: state.pages.jobs.searchField,
-    loadingExport: state.importExport.loading
+    loadingExport: state.importExport.loading,
+    project: state.pages.settingsBasic.project ?? {}
 });
 
 const mapDispatchToProps = {

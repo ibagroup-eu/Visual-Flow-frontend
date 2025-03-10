@@ -24,6 +24,7 @@ import PopupForm from '../../../../components/popup-form';
 import { PageSkeleton } from '../../../../components/skeleton';
 import SearchInput from '../../../../components/search-input';
 import SingleSelectModalRow from './modal-row/SingleSelectModalRow';
+import TableSort from '../../../../components/table/table-sort';
 
 describe('SingleSelectModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -78,6 +79,47 @@ describe('SingleSelectModal', () => {
                 .at(0)
                 .prop('name')
         ).toBe('second');
+    });
+
+    it('should handle sorting', () => {
+        const items = [
+            { name: 'A', pipelineId: null },
+            { name: 'B', pipelineId: null }
+        ];
+
+        const [wrapper] = init({ loading: false, items }, false, shallow);
+
+        wrapper.find(TableSort).simulate('requestSort', null, 'name');
+        wrapper.update();
+
+        expect(
+            wrapper
+                .find(SingleSelectModalRow)
+                .at(0)
+                .prop('name')
+        ).toBe('B');
+        expect(
+            wrapper
+                .find(SingleSelectModalRow)
+                .at(1)
+                .prop('name')
+        ).toBe('A');
+
+        wrapper.find(TableSort).simulate('requestSort', null, 'name');
+        wrapper.update();
+
+        expect(
+            wrapper
+                .find(SingleSelectModalRow)
+                .at(0)
+                .prop('name')
+        ).toBe('A');
+        expect(
+            wrapper
+                .find(SingleSelectModalRow)
+                .at(1)
+                .prop('name')
+        ).toBe('B');
     });
 
     it('should call useEffect', () => {

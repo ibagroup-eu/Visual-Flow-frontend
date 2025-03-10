@@ -60,6 +60,7 @@ import DropdownFilter from '../../../components/table/dropdown-filter';
 import history from '../../../utils/history';
 import ExportModalWindow from '../../../components/export-modal-window';
 import {
+    DATABRICKS,
     PENDING,
     PIPELINE_STATUSES,
     RUNNING,
@@ -93,6 +94,7 @@ const utilizationField = (t, lastRun, onChange, classname) => (
 
 const PipelinesTable = ({
     ableToEdit,
+    disabled,
     projectId,
     data,
     remove,
@@ -115,7 +117,8 @@ const PipelinesTable = ({
     onCheckTags,
     checkedTags,
     getPipeline,
-    pipelineData
+    pipelineData,
+    isUpdating
 }) => {
     const { t } = useTranslation();
     const classes = withStyles();
@@ -148,14 +151,20 @@ const PipelinesTable = ({
                 ? {
                       title: t('pipelines:tooltip.Play'),
                       Icon: PlayArrowTwoToneIcon,
-                      disabled: !item.runnable,
-                      onClick: () => {
-                          runWithValidation(
+                      disabled: !item.runnable || isUpdating === 'true',
+                      onClick: async () => {
+                          await runWithValidation(
                               projectId,
                               item.id,
                               { dataJobs: jobs, dataParams: params },
                               run,
-                              t('main:validation.pipelineWithoutJobParams')
+                              t('main:validation.pipelineWithoutJobParams'),
+                              () =>
+                                  confirmationWindow({
+                                      title: t('main:confirm.titleContinue'),
+                                      body: t('main:validation.pipelineWithEmpyJob'),
+                                      callback: () => run(projectId, item.id)
+                                  })
                           );
                       }
                   }
@@ -173,7 +182,8 @@ const PipelinesTable = ({
                 onClick: () => {
                     suspend(projectId, item.id);
                 },
-                visible: item.status === RUNNING
+                visible: item.status === RUNNING,
+                disabled: window.PLATFORM === DATABRICKS
             },
             {
                 title: t('pipelines:tooltip.Resume'),
@@ -186,16 +196,18 @@ const PipelinesTable = ({
             {
                 title: t('pipelines:tooltip.pipelineDesigner'),
                 Icon: PaletteOutlinedIcon,
-                onClick: () => history.push(`/pipelines/${projectId}/${item.id}`)
+                onClick: () => history.push(`/pipelines/${projectId}/${item.id}`),
+                visible: true
             },
             {
                 title: t('pipelines:tooltip.Scheduling'),
                 Icon: item.cron && !item.cronSuspend ? EventIcon : CalendarTodayIcon,
                 disabled: !item.runnable,
                 onClick: () =>
-                    setCronPipeline({ pipelineId: item.id, cronExists: item.cron })
+                    setCronPipeline({ pipelineId: item.id, cronExists: item.cron }),
+                visible: !!item.runnable
             },
-            {
+            window.PLATFORM !== DATABRICKS && {
                 title: t('pipelines:tooltip.History'),
                 Icon: HistoryOutlined,
                 visible: UnitConfig.PIPELINE.HISTORY,
@@ -207,6 +219,7 @@ const PipelinesTable = ({
             {
                 title: t('pipelines:tooltip.Copy'),
                 Icon: FileCopyOutlinedIcon,
+                disabled,
                 onClick: () => copy(projectId, item.id)
             },
 
@@ -228,7 +241,7 @@ const PipelinesTable = ({
                         }
                     })
             }
-        ].filter(action => action.visible !== false);
+        ].filter(action => action.visible !== false && action !== false);
 
     const getGlobalActions = () => [
         {
@@ -265,7 +278,11 @@ const PipelinesTable = ({
     ];
 
     const withRunAction = act =>
-        act.runnable ? getActions(act).slice(0, 2) : getActions(act).slice(1, 2);
+        act.runnable
+            ? getActions(act)
+                  .slice(0, 1)
+                  .concat(getActions(act).filter(action => action.visible))
+            : getActions(act).filter(action => action.visible);
 
     const closeCronModal = () =>
         setCronPipeline({ pipelineId: '', cronExists: false });
@@ -297,6 +314,7 @@ const PipelinesTable = ({
                 orderColumns={[
                     { id: 'name', name: t('main:form.Name') },
                     { id: 'startedAt', name: t('filters:lastRun') },
+                    { id: 'lastModified', name: t('filters:lastEdit') },
                     { id: 'status', name: t('filters:status') }
                 ]}
                 tagsData={checkedTags}
@@ -388,6 +406,7 @@ const PipelinesTable = ({
 PipelinesTable.propTypes = {
     data: PropTypes.array,
     ableToEdit: PropTypes.bool,
+    disabled: PropTypes.bool,
     projectId: PropTypes.string,
     remove: PropTypes.func,
     run: PropTypes.func,
@@ -409,7 +428,8 @@ PipelinesTable.propTypes = {
     onCheckTags: PropTypes.func,
     checkedTags: PropTypes.object,
     getPipeline: PropTypes.func,
-    pipelineData: PropTypes.object
+    pipelineData: PropTypes.object,
+    isUpdating: PropTypes.string
 };
 
 const mapStateToProps = state => ({
@@ -417,7 +437,8 @@ const mapStateToProps = state => ({
     status: state.pages.pipelines.status,
     currentPage: state.enhancedTable.page,
     rowsPerPage: state.enhancedTable.rowsPerPage,
-    pipelineData: state.mxGraph.data
+    pipelineData: state.mxGraph.data,
+    isUpdating: state.pages.settingsBasic?.project?.isUpdating
 });
 
 const mapDispatchToProps = {

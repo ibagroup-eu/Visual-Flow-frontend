@@ -58,4 +58,19 @@ describe('ItemIcon', () => {
 
         expect(wrapper.find(Tooltip).exists()).toBeTruthy();
     });
+
+    it('should call isIconSelected ', () => {
+        const [wrapper] = init({
+            item: {
+                link: 'link',
+                items: [{ link: 'location' }],
+                Icon: FakeIcon,
+                name: 'name'
+            },
+            menuOpen: true,
+            location: { pathname: 'location' }
+        });
+
+        expect(wrapper.find(ListItemIcon).exists()).toBeTruthy();
+    });
 });

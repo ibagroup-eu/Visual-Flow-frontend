@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /*
  * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
  *
@@ -28,6 +29,7 @@ import { Description, Save, HistoryOutlined } from '@material-ui/icons';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
 import useStyles from './JobsToolbar.Styles';
 import {
+    stopJob,
     runJobAndRefreshIt,
     stopJobAndRefreshIt,
     updateJob
@@ -37,16 +39,32 @@ import Status from '../../../components/status';
 import history from '../../../utils/history';
 import RunStopButtons from '../run-stop-buttons';
 import EditDesignerButtons from '../edit-designer-buttons';
-import { fetchJob } from '../../../redux/actions/mxGraphActions';
-import { DRAFT, PENDING, RUNNING, SUSPENDED } from '../../constants';
+import DebugRunButtons from '../debug-run-buttons';
+import InteractiveModeToggle from '../interactive-mode-toggle';
+import {
+    fetchJob,
+    fetchJobMetadata,
+    interactiveSessionEvent
+} from '../../../redux/actions/mxGraphActions';
+import {
+    DATABRICKS,
+    DEBUGGING,
+    DRAFT,
+    PENDING,
+    RUN_ALL_EVENT,
+    RUN_FAILED_EVENT,
+    RUNNING,
+    SUSPENDED
+} from '../../constants';
 import UnitConfig from '../../../unitConfig';
 
 export const JobsToolbar = ({
     graph,
     reversible,
     data,
-    run,
+    runAndRefresh,
     stop,
+    stopAndRefresh,
     getStatus,
     getActualJob,
     storeStatus: { loading, status, id },
@@ -57,11 +75,17 @@ export const JobsToolbar = ({
     setShowModal,
     dirty,
     dirtyGraph,
-    undoButtonsDisabling
+    undoButtonsDisabling,
+    isUpdating,
+    interactiveMode,
+    toggleInteractiveMode,
+    getJobMetadata,
+    runId,
+    jobStagesData,
+    sendInteractiveEvent
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-
     const currentPath = history.location.pathname.split('/');
     const currentProject = currentPath.slice(-2, -1)[0];
     const currentJob = currentPath.slice(-1)[0];
@@ -72,14 +96,40 @@ export const JobsToolbar = ({
     const updateJobHandler = () => update(graph, currentProject, currentJob, data);
 
     const runAndUpdate = () =>
-        run(currentProject, currentJob).then(() => {
+        runAndRefresh(currentProject, currentJob).then(() => {
             getActualJob(currentProject, currentJob);
         });
 
     const enableViewMode = () =>
-        [SUSPENDED, PENDING, RUNNING].includes(status) ? false : data.editable;
+        !interactiveMode && [SUSPENDED, PENDING, RUNNING].includes(status)
+            ? false
+            : data.editable;
 
     const closeHistory = () => setJobHistory({ ...jobHistory, display: false });
+
+    const failedStages =
+        jobStagesData?.filter(stage => stage.status === 'failed') || [];
+    const hasFailedStages = failedStages.length > 0;
+
+    const handleDebug = () => {
+        if (hasFailedStages) {
+            sendInteractiveEvent(currentProject, currentJob, runId, {
+                session: runId,
+                command: RUN_FAILED_EVENT,
+                id: failedStages.map(stage => stage.id)
+            });
+        }
+    };
+
+    const handleRunAll = () => {
+        sendInteractiveEvent(currentProject, currentJob, runId, {
+            session: runId,
+            command: RUN_ALL_EVENT,
+            id: []
+        });
+    };
+
+    const displayedStatus = interactiveMode && stats === RUNNING ? DEBUGGING : stats;
 
     return (
         <>
@@ -91,21 +141,29 @@ export const JobsToolbar = ({
                 {loading ? (
                     <Skeleton variant="circle" width={90} height={25} />
                 ) : (
-                    <Status value={stats} />
+                    <Status value={displayedStatus} />
                 )}
             </div>
             <Divider orientation="vertical" flexItem />
             <div className={classes.buttons}>
-                {data.runnable && (
-                    <RunStopButtons
-                        isNotRunning={![RUNNING, PENDING].includes(stats)}
-                        runnable={data.runnable}
-                        stopable
-                        changesNotSaved={dirty}
-                        run={runAndUpdate}
-                        stop={() => stop(currentProject, currentJob)}
-                    />
-                )}
+                {data.runnable &&
+                    (interactiveMode ? (
+                        <DebugRunButtons
+                            hasFailedStages={hasFailedStages}
+                            isRunnable={data.runnable}
+                            onDebug={handleDebug}
+                            onRunAll={handleRunAll}
+                        />
+                    ) : (
+                        <RunStopButtons
+                            isNotRunning={![RUNNING, PENDING].includes(stats)}
+                            runnable={data.runnable && isUpdating !== 'true'}
+                            stopable
+                            changesNotSaved={dirty}
+                            run={runAndUpdate}
+                            stop={() => stopAndRefresh(currentProject, currentJob)}
+                        />
+                    ))}
                 {enableViewMode() && (
                     <IconButton
                         aria-label="saveIcon"
@@ -148,6 +206,19 @@ export const JobsToolbar = ({
                         />
                     </>
                 )}
+                {data.runnable && window.PLATFORM !== DATABRICKS && (
+                    <InteractiveModeToggle
+                        interactiveMode={interactiveMode}
+                        toggleInteractiveMode={toggleInteractiveMode}
+                        currentProject={currentProject}
+                        currentJob={currentJob}
+                        runId={runId}
+                        getJobMetadata={getJobMetadata}
+                        run={runAndRefresh}
+                        stop={stop}
+                        //ableToEdit={![RUNNING, PENDING].includes(stats)}
+                    />
+                )}
             </div>
             <Divider orientation="vertical" flexItem />
             <EditDesignerButtons
@@ -175,15 +246,23 @@ JobsToolbar.propTypes = {
     graph: PropTypes.object,
     data: PropTypes.object,
     update: PropTypes.func,
-    run: PropTypes.func,
     stop: PropTypes.func,
+    runAndRefresh: PropTypes.func,
+    stopAndRefresh: PropTypes.func,
     getStatus: PropTypes.func,
     storeStatus: PropTypes.object,
     reversible: PropTypes.object,
     getActualJob: PropTypes.func,
     dirty: PropTypes.bool,
     undoButtonsDisabling: PropTypes.object,
-    dirtyGraph: PropTypes.bool
+    dirtyGraph: PropTypes.bool,
+    isUpdating: PropTypes.string,
+    interactiveMode: PropTypes.bool,
+    toggleInteractiveMode: PropTypes.func,
+    getJobMetadata: PropTypes.func,
+    runId: PropTypes.string,
+    jobStagesData: PropTypes.array,
+    sendInteractiveEvent: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -193,15 +272,22 @@ const mapStateToProps = state => ({
         state.mxGraph.dirty ||
         state.mxGraph.graphWithParamsIsDirty ||
         state.mxGraph.paramsIsDirty ||
-        state.mxGraph.sidePanelIsDirty
+        state.mxGraph.sidePanelIsDirty,
+    isUpdating: state.pages.settingsBasic?.project?.isUpdating,
+    interactiveMode: state.mxGraph.interactive.interactiveMode,
+    runId: state.pages.jobs.runId,
+    jobStagesData: state.mxGraph.interactive.data
 });
 
 const mapDispatchToProps = {
     update: updateJob,
-    run: runJobAndRefreshIt,
-    stop: stopJobAndRefreshIt,
+    stop: stopJob,
+    runAndRefresh: runJobAndRefreshIt,
+    stopAndRefresh: stopJobAndRefreshIt,
     getStatus: fetchJobStatus,
-    getActualJob: fetchJob
+    getActualJob: fetchJob,
+    getJobMetadata: fetchJobMetadata,
+    sendInteractiveEvent: interactiveSessionEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JobsToolbar);

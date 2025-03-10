@@ -44,7 +44,7 @@ export default {
         axiosInstance.post(`/project/${projectId}/pipeline/${pipelineId}/retry`),
 
     copyPipeline: (projectId, pipelineId) =>
-        axiosInstance.post(`/project/${projectId}/${pipelineId}/copyPipeline`),
+        axiosInstance.post(`/project/${projectId}/pipeline/${pipelineId}/copy`),
 
     getPipelineLogs: (projectId, pipelineId, nodeId) =>
         axiosInstance.get(

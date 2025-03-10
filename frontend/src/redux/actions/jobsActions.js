@@ -45,7 +45,7 @@ import {
 } from './types';
 import api from '../../api/jobs';
 import history from '../../utils/history';
-import { fetchJob } from './mxGraphActions';
+import { fetchJob, deleteInteractiveJobSession } from './mxGraphActions';
 import fetchJobStatus from './oneJobStatusAction';
 import stringifyWithoutCircular from '../../utils/stringifyWithoutCircular';
 
@@ -155,12 +155,12 @@ export const updateJob = (graph, projectId, id, jobData) => dispatch => {
         );
 };
 
-export const runJob = (projId, jobId, disp) => dispatch => {
+export const runJob = (projId, jobId, interactive = false, disp) => dispatch => {
     dispatch({
         type: RUN_JOB_START
     });
 
-    return api.runJob(projId, jobId).then(
+    return api.runJob(projId, jobId, interactive).then(
         response => {
             dispatch({
                 type: RUN_JOB_SUCCESS,
@@ -175,34 +175,42 @@ export const runJob = (projId, jobId, disp) => dispatch => {
             })
     );
 };
-export const runJobAndRefreshIt = (projectId, jobId) =>
-    runJob(projectId, jobId, fetchJobStatus(projectId, jobId));
 
-export const stopJob = (projectId, jobId, disp) => dispatch => {
-    dispatch({
-        type: STOP_JOB_START
-    });
+export const runJobAndRefreshIt = (projectId, jobId, interactive) =>
+    runJob(projectId, jobId, interactive, fetchJobStatus(projectId, jobId));
 
-    return api.stopJob(projectId, jobId).then(
-        response => {
-            dispatch({
-                type: STOP_JOB_SUCCESS,
-                payload: response.data
-            });
-            setTimeout(
-                () => (disp ? dispatch(disp) : dispatch(fetchJobs(projectId))),
-                2000
-            );
-        },
-        error =>
-            dispatch({
-                type: STOP_JOB_FAIL,
-                payload: { error }
-            })
-    );
+export const stopJob = (projectId, jobId, interactive, disp) => async dispatch => {
+    dispatch({ type: STOP_JOB_START });
+
+    try {
+        const jobResponse = await api.getJobById(projectId, jobId);
+        const { runId } = jobResponse.data;
+        const hasInteractiveSession = await api
+            .getInteractiveJobSession(projectId, jobId, runId)
+            .then(response => !!response?.data?.graph)
+            .catch(() => false);
+
+        const response = await api.stopJob(projectId, jobId, hasInteractiveSession);
+        dispatch({ type: STOP_JOB_SUCCESS, payload: response.data });
+
+        if (hasInteractiveSession) {
+            await dispatch(deleteInteractiveJobSession(projectId, jobId, runId));
+        }
+
+        setTimeout(() => {
+            if (disp) {
+                dispatch(disp);
+            } else {
+                dispatch(fetchJobs(projectId));
+            }
+        }, 2000);
+    } catch (error) {
+        dispatch({ type: STOP_JOB_FAIL, payload: { error } });
+    }
 };
-export const stopJobAndRefreshIt = (projectId, jobId) =>
-    stopJob(projectId, jobId, fetchJobStatus(projectId, jobId));
+
+export const stopJobAndRefreshIt = (projectId, jobId, interactive) =>
+    stopJob(projectId, jobId, interactive, fetchJobStatus(projectId, jobId));
 
 export const setJobSearchField = searchField => ({
     type: SET_JOB_SEARCH_FIELD,

@@ -39,6 +39,7 @@ import PivotConfiguration from '../pivot-configuration';
 import StringFunctionsConfiguration from '../string-functions-configuration';
 import WithColumnConfiguration from '../withcolumn-configuration';
 import {
+    checkAiValidation,
     checkDatatimeFields,
     checkGroupByFields,
     checkHandleNullFields,
@@ -55,6 +56,7 @@ import {
 import ValidateConfiguration from '../validate-configuration';
 import DateTimeConfiguration from '../datetime-configuration';
 import HandleNullConfiguration from '../handlenull-configuration';
+import AiConfiguration from '../ai-configuration';
 
 const getJobsConfigurationComponents = (
     ableToEdit,
@@ -295,6 +297,18 @@ const getJobsConfigurationComponents = (
             saveCell,
             graph,
             selectedStorage
+        }
+    },
+    AI_TEXT_TASK: {
+        component: Configuration,
+        props: {
+            Component: AiConfiguration,
+            isDisabled: checkAiValidation,
+            ableToEdit,
+            setPanelDirty,
+            configuration,
+            saveCell,
+            graph
         }
     }
 });

@@ -25,7 +25,7 @@ import ReadWriteConfiguration, {
 } from './ReadWriteConfiguration';
 import DividerWithText from '../helpers/DividerWithText';
 import Db2Storage from './db2-storage';
-import { STORAGES } from '../../constants';
+import { DATABRICKS, READ, STORAGES } from '../../constants';
 import ConfigurationDivider from '../../../components/divider';
 
 describe('ReadWriteConfiguration', () => {
@@ -37,13 +37,23 @@ describe('ReadWriteConfiguration', () => {
             state: {
                 storage: 'db2',
                 connectionName: 'test',
-                writeMode: 'Overwrite'
+                writeMode: 'Overwrite',
+                operation: READ
             },
             ableToEdit: true,
             onChange: jest.fn(),
             openModal: jest.fn(),
             connection: { connectionName: 'test' },
-            stageId: 'test'
+            stageId: 'test',
+            project: {
+                demo: true,
+                demoLimits: {
+                    sourcesToShow: {
+                        READ: ['AWS', 'ELASTIC', 'CASSANDRA'],
+                        WRITE: ['AWS', 'ELASTIC', 'CASSANDRA']
+                    }
+                }
+            }
         };
 
         wrapper = shallow(<ReadWriteConfiguration {...props} />);
@@ -107,6 +117,17 @@ describe('ReadWriteConfiguration', () => {
         expect(props.onChange).toBeCalledWith('storage', 'test');
     });
 
+    it('should calls onChange prop with cos storage and avroSchema: true', () => {
+        wrapper = shallow(
+            <ReadWriteConfiguration
+                {...props}
+                state={{ storage: 'cos', avroSchema: true }}
+            />
+        );
+        wrapper.find(Autocomplete).prop('onChange')({}, { value: 'test' });
+        expect(props.onChange).toBeCalledWith('storage', 'test');
+    });
+
     it('should calls onClick for Autocomplete renderInput prop', () => {
         wrapper
             .find(Autocomplete)
@@ -135,10 +156,28 @@ describe('ReadWriteConfiguration', () => {
         STORAGES.STDOUT.value,
         STORAGES.CLUSTER.value,
         STORAGES.DATAFRAME.value,
-        STORAGES.CLICKHOUSE.value
+        STORAGES.CLICKHOUSE.value,
+        STORAGES.KAFKA.value,
+        STORAGES.API.value,
+        STORAGES.AZURE.value,
+        STORAGES.GOOGLECLOUD.value,
+        STORAGES?.DATABRICKS?.value,
+        STORAGES?.DATABRICKSJDBC?.value
     ];
     storages.forEach(storage => {
         it(`should render ${storage} storage`, () => {
+            wrapper = shallow(
+                <ReadWriteConfiguration {...props} state={{ storage }} />
+            );
+            expect(getStorageComponent(storage)).toHaveLength(1);
+        });
+    });
+
+    storages.forEach(storage => {
+        Object.defineProperty(window, 'PLATFORM', {
+            value: DATABRICKS
+        });
+        it(`should render ${storage} storage for DATABRICKS`, () => {
             wrapper = shallow(
                 <ReadWriteConfiguration {...props} state={{ storage }} />
             );

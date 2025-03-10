@@ -1,6 +1,6 @@
 import React from 'react';
 import ReadTextFields from '../../../../components/rw-text-fields';
-import SelectField from '../../../../components/select-field';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 import AwsStorage from './AwsStorage';
 import { shallow } from 'enzyme';
 
@@ -22,7 +22,13 @@ describe('AwsStorage', () => {
 
     it('should render without crashes', () => {
         const wrapper = init();
-        expect(wrapper.find(SelectField).exists()).toBeTruthy();
+        expect(wrapper.find(ParamsSwitchField).exists()).toBeTruthy();
+        expect(wrapper.find(ReadTextFields).exists()).toBeTruthy();
+    });
+
+    it('should render without crashes 2', () => {
+        const wrapper = init({ inputValues: { ssl: 'true' } });
+        expect(wrapper.find(ParamsSwitchField).exists()).toBeTruthy();
         expect(wrapper.find(ReadTextFields).exists()).toBeTruthy();
     });
 });

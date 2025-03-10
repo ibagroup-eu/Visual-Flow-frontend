@@ -17,12 +17,16 @@
  * limitations under the License.
  */
 
-import fetchJobStatus, { updateJobStatus } from './oneJobStatusAction';
+import fetchJobStatus, {
+    resetJobStatus,
+    updateJobStatus
+} from './oneJobStatusAction';
 import api from '../../api/jobs';
 import {
     FETCH_JOB_STATUS_START,
     FETCH_JOB_STATUS_SUCCESS,
     FETCH_JOB_STATUS_FAIL,
+    RESET_JOB_STATUS_SUCCESS,
     UPDATE_JOB_STATUS_START,
     UPDATE_JOB_STATUS_SUCCESS,
     UPDATE_JOB_STATUS_FAIL
@@ -40,6 +44,14 @@ describe('One Job Status action', () => {
             projectId = 'vf-test';
             jobId = 'vftestid0';
             dispatch = jest.fn();
+        });
+
+        it('should dispatch RESET_JOB_STATUS_SUCCESS', () => {
+            const expectedAction = {
+                type: RESET_JOB_STATUS_SUCCESS,
+                payload: {}
+            };
+            expect(resetJobStatus()).toEqual(expectedAction);
         });
 
         it('should dispatch FETCH_JOB_STATUS_START without using params', () => {
@@ -86,7 +98,7 @@ describe('One Job Status action', () => {
 
     describe('updateJobStatus', () => {
         it('should trigger UPDATE_JOB_STATUS_START', () => {
-            const dispatch = jest.fn();
+            dispatch = jest.fn();
 
             updateJobStatus()(dispatch);
 
@@ -96,7 +108,7 @@ describe('One Job Status action', () => {
         });
 
         it('should trigger UPDATE_JOB_STATUS_SUCCESS', () => {
-            const dispatch = jest.fn();
+            dispatch = jest.fn();
 
             updateJobStatus('pipelineId', 'status')(dispatch);
 
@@ -107,7 +119,7 @@ describe('One Job Status action', () => {
         });
 
         it('should trigger UPDATE_JOB_STATUS_FAIL', () => {
-            const dispatch = jest.fn();
+            dispatch = jest.fn();
 
             updateJobStatus(undefined, 'status')(dispatch);
 

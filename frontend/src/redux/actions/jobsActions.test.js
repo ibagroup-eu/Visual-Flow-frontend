@@ -70,7 +70,7 @@ describe('Jobs action', () => {
         });
 
         it('should not dispatch FETCH_JOBS_START if skipLoading equals true', () => {
-            fetchJobs('id',true)(dispatch);
+            fetchJobs('id', true)(dispatch);
             expect(dispatch).not.toHaveBeenCalledWith({ type: FETCH_JOBS_START });
         });
 

@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable spaced-comment */
 /*
  * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
  *
@@ -39,8 +41,36 @@ const chooseNotification = data => {
 };
 
 const interceptors = {
+    // eslint-disable-next-line complexity
     success: response => {
-        if (response.config.method !== 'get') {
+        if (
+            response.config.params?.interactive ||
+            (response.config.url.includes('session') &&
+                response.config.method !== 'get' &&
+                response.config.method !== 'delete')
+        ) {
+            showNotification(
+                response.statusText === 'Created' && response.status === 201
+                    ? i18n.t('main:interactiveNotifications.enabled')
+                    : response.config.method === 'post' &&
+                      response.config?.url.includes('/stop') &&
+                      response.config.params?.interactive &&
+                      response.status === 200
+                    ? i18n.t('main:interactiveNotifications.disabled')
+                    : response.config.method === 'post' &&
+                      response.status === 200 &&
+                      (response.config.data.includes('"command":"run"') ||
+                          response.config.data.includes('"command":"run-all"'))
+                    ? i18n.t('main:interactiveNotifications.running')
+                    : response.statusText,
+                'success'
+            );
+        } else if (
+            response.config.method === 'delete' &&
+            response.config.url.includes('session')
+        ) {
+            return response;
+        } else if (response.config.method !== 'get') {
             showNotification(
                 response.statusText === 'No Content'
                     ? i18n.t('main:Deleted')
@@ -51,14 +81,25 @@ const interceptors = {
         return response;
     },
     error: error => {
-        const { data, status } = error.response;
+        const { status, data, config } = error.response;
+
+        const isGetSessionRequest =
+            config.method === 'get' &&
+            config.url.includes('/session/') &&
+            !config.url.includes('/metadata');
+
+        if (status === 404 && isGetSessionRequest) {
+            return Promise.reject(error);
+        }
+
         if (status === 401) {
             login();
         } else {
-            error.response.config?.responseType === 'blob'
+            config?.responseType === 'blob'
                 ? data.text().then(message => chooseNotification({ message }))
                 : chooseNotification(data);
         }
+
         return Promise.reject(error);
     }
 };

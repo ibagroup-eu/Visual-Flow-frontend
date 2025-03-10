@@ -23,5 +23,8 @@ export default makeStyles(theme => ({
     partitionBy: {
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2)
+    },
+    windowFunction: {
+        maxHeight: 'none !important'
     }
 }));

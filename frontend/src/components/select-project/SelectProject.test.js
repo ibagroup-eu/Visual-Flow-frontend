@@ -19,18 +19,33 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { SelectProject } from './SelectProject';
+import { useTranslation } from 'react-i18next';
+import { PopperDropdown, SelectProject } from './SelectProject';
 import { Autocomplete } from '@material-ui/lab';
+import { Popper } from '@material-ui/core';
+import history from '../../utils/history';
+
+jest.mock('react-i18next', () => ({
+    ...jest.requireActual('react-i18next'),
+    useTranslation: jest.fn()
+}));
+
+jest.mock('../../utils/history', () => ({
+    push: jest.fn(),
+    listen: jest.fn()
+}));
 
 describe('SelectProject', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             projects: {
-                projects: []
+                projects: [{ id: 'id', name: 'name', locked: false }],
+                progectId: 'id'
             },
             getProjects: jest.fn(0)
         };
 
+        useTranslation.mockImplementation(() => ({ t: x => x }));
         const wrapper = func(<SelectProject {...defaultProps} {...props} />);
 
         return returnProps ? [wrapper, { ...defaultProps, ...props }] : [wrapper];
@@ -46,5 +61,43 @@ describe('SelectProject', () => {
         const [_, props] = init({ projects: {} }, true, mount);
 
         expect(props.getProjects).toHaveBeenCalled();
+    });
+
+    it('should show loading', () => {
+        const [wrapper] = init({ projects: {}, loading: true }, true, mount);
+
+        expect(wrapper.find(Autocomplete).prop('value')).toStrictEqual({
+            name: 'main:Loading'
+        });
+    });
+
+    it('should not call getProjects', () => {
+        const [_, props] = init({ projects: { id: 'id' } }, true, mount);
+
+        expect(props.getProjects).not.toHaveBeenCalled();
+    });
+
+    it('should handle onChange', () => {
+        const [wrapper] = init();
+
+        const event = {
+            target: {
+                value: { id: '1' }
+            },
+            persist: jest.fn()
+        };
+        wrapper.find(Autocomplete).prop('onChange')(event);
+
+        wrapper.update();
+
+        expect(history.push).toHaveBeenCalled();
+    });
+});
+
+describe('PopperDropdown', () => {
+    it('should render without crashes', () => {
+        const wrapper = shallow(<PopperDropdown />);
+
+        expect(wrapper.find(Popper).exists()).toBeTruthy();
     });
 });

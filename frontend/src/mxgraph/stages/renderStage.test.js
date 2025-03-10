@@ -18,7 +18,9 @@
  */
 
 import { shallow } from 'enzyme';
+
 import { MuiThemeProvider } from '@material-ui/core';
+
 import renderStage from './renderStage';
 import {
     CACHE,
@@ -40,8 +42,13 @@ import {
     UNION,
     VALIDATE,
     WITH_COLUMN,
-    WRITE
+    WRITE,
+    AI_TEXT_TASK,
+    STRING,
+    PIPELINE,
+    PIVOT
 } from '../constants';
+import { StageWithIcon } from '../sidebar/stage-icon';
 
 describe('should render the stage', () => {
     it.each([
@@ -64,7 +71,11 @@ describe('should render the stage', () => {
         VALIDATE,
         DATETIME,
         WITH_COLUMN,
-        HANDLE_NULL
+        HANDLE_NULL,
+        AI_TEXT_TASK,
+        STRING,
+        PIPELINE,
+        PIVOT
     ])('should render "%s" stage', operation => {
         const columns = 'col_1,col_2';
         const stage = {
@@ -90,5 +101,28 @@ describe('should render the stage', () => {
 
         const parent = wrapper.find(MuiThemeProvider);
         expect(parent.children()).toHaveLength(0);
+    });
+
+    it('should render StageWithIcon 1', () => {
+        const stage = {
+            operation: 'UNDEFINED'
+        };
+        const t = jest.fn();
+
+        const wrapper = shallow(renderStage(stage, t));
+
+        expect(wrapper.find(StageWithIcon).length).toBe(1);
+    });
+
+    it('should render StageWithIcon 2', () => {
+        const stage = {
+            operation: 'UNDEFINED',
+            jobName: 'jobName'
+        };
+        const t = jest.fn();
+
+        const wrapper = shallow(renderStage(stage, t));
+
+        expect(wrapper.find(StageWithIcon).length).toBe(1);
     });
 });

@@ -52,4 +52,26 @@ describe('LimitsField', () => {
 
         expect(props.handleChangeLimits).toHaveBeenCalled();
     });
+
+    it('should handle "onChange" 2', () => {
+        const [wrapper, props] = init(
+            { project: {}, editMode: false, card: { editable: false } },
+            true
+        );
+
+        wrapper.find(TextField).simulate('change');
+
+        expect(props.handleChangeLimits).toHaveBeenCalled();
+    });
+
+    it('should handle "onChange" 3', () => {
+        const [wrapper, props] = init(
+            { project: {}, editMode: true, card: { editable: false } },
+            true
+        );
+
+        wrapper.find(TextField).simulate('change');
+
+        expect(props.handleChangeLimits).toHaveBeenCalled();
+    });
 });

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import {
     FETCH_JOB_START,
     FETCH_JOB_SUCCESS,
@@ -34,7 +34,23 @@ import {
     SET_SIDE_PANEL_DIRTY,
     SET_ZOOM_VALUE,
     SET_PANNING,
-    SET_LOGS_MODAL
+    SET_LOGS_MODAL,
+    SET_STAGE_COPY,
+    SET_INTERACTIVE_MODE,
+    FETCH_JOB_METADATA_START,
+    FETCH_JOB_METADATA_SUCCESS,
+    FETCH_JOB_METADATA_FAIL,
+    INTERACTIVE_SESSION_EVENT_START,
+    INTERACTIVE_SESSION_EVENT_SUCCESS,
+    INTERACTIVE_SESSION_EVENT_FAIL,
+    UPDATE_JOB_DEFINITION,
+    SET_RUN_ID,
+    DELETE_INTERACTIVE_JOB_SESSION_SUCCESS,
+    DELETE_INTERACTIVE_JOB_SESSION_FAIL,
+    UPDATE_INTERACTIVE_JOB_SESSION_SUCCESS,
+    UPDATE_INTERACTIVE_JOB_SESSION_FAIL,
+    CLEAR_INTERACTIVE_DATA,
+    SET_INTERACTIVE_DATA
 } from './types';
 import jobsApi from '../../api/jobs';
 import pipelinesApi from '../../api/pipelines';
@@ -43,6 +59,7 @@ import { updatePipelineStatus } from './onePipelineStatusActions';
 import history from '../../utils/history';
 import showNotification from '../../components/notification/showNotification';
 import { DRAFT } from '../../mxgraph/constants';
+import { setTemporaryStatuses } from '../../utils/stageStatuses';
 
 export const setSidePanel = isOpen => ({
     type: SET_SIDE_PANEL,
@@ -103,11 +120,19 @@ export const fetchJob = (projectId, jobId, t) => dispatch => {
     dispatch({
         type: FETCH_JOB_START
     });
+
     const promise = jobId
         ? jobsApi.getJobById(projectId, jobId)
         : Promise.resolve({ data: { definition: {}, status: DRAFT, params: {} } });
+
     return promise.then(
         response => {
+            const { runId } = response.data;
+            dispatch({
+                type: SET_RUN_ID,
+                payload: runId
+            });
+
             checkIsCreatedFromUI(
                 dispatch,
                 response.data,
@@ -123,6 +148,90 @@ export const fetchJob = (projectId, jobId, t) => dispatch => {
                 payload: { error }
             })
     );
+};
+
+export const fetchJobMetadata = (projectId, jobId, runId) => (
+    dispatch,
+    getState
+) => {
+    const offset = get(getState(), 'mxGraph.interactive.offset', 0);
+
+    dispatch({
+        type: FETCH_JOB_METADATA_START
+    });
+
+    return jobsApi.fetchJobMetadata(projectId, jobId, runId, offset).then(
+        response =>
+            dispatch({
+                type: FETCH_JOB_METADATA_SUCCESS,
+                payload: response.data
+            }),
+        error =>
+            dispatch({
+                type: FETCH_JOB_METADATA_FAIL,
+                payload: { error }
+            })
+    );
+};
+
+export const getInteractiveJobSession = (projectId, jobId, runId) => dispatch => {
+    return jobsApi
+        .getInteractiveJobSession(projectId, jobId, runId)
+        .then(response => {
+            if (response?.data?.graph) {
+                dispatch({
+                    type: UPDATE_JOB_DEFINITION,
+                    payload: {
+                        definition: {
+                            graph: response.data.graph
+                        }
+                    }
+                });
+
+                dispatch({
+                    type: SET_INTERACTIVE_MODE,
+                    payload: true
+                });
+            }
+        });
+};
+
+export const clearInteractiveData = () => ({
+    type: CLEAR_INTERACTIVE_DATA
+});
+
+export const deleteInteractiveJobSession = (projectId, jobId, runId) => dispatch => {
+    return jobsApi.deleteInteractiveJobSession(projectId, jobId, runId).then(
+        () => {
+            dispatch({ type: DELETE_INTERACTIVE_JOB_SESSION_SUCCESS });
+            dispatch(clearInteractiveData());
+        },
+        error => {
+            dispatch({
+                type: DELETE_INTERACTIVE_JOB_SESSION_FAIL,
+                payload: { error }
+            });
+        }
+    );
+};
+
+export const updateInteractiveJobSession = (
+    projectId,
+    jobId,
+    runId,
+    definition
+) => dispatch => {
+    return jobsApi
+        .updateInteractiveJobSession(projectId, jobId, runId, definition)
+        .then(() => {
+            dispatch({ type: UPDATE_INTERACTIVE_JOB_SESSION_SUCCESS });
+        })
+        .catch(error => {
+            dispatch({
+                type: UPDATE_INTERACTIVE_JOB_SESSION_FAIL,
+                payload: { error }
+            });
+        });
 };
 
 export const fetchPipelineById = (
@@ -162,6 +271,54 @@ export const fetchPipelineById = (
     );
 };
 
+export const setInteractiveData = (
+    data = [],
+    command,
+    targetStageIds = [],
+    definition = {}
+) => {
+    const updatedData = setTemporaryStatuses(
+        data,
+        command,
+        targetStageIds,
+        definition
+    );
+    return {
+        type: SET_INTERACTIVE_DATA,
+        payload: updatedData
+    };
+};
+
+export const interactiveSessionEvent = (projectId, jobId, runId, data) => (
+    dispatch,
+    getState
+) => {
+    const definition = get(getState(), 'mxGraph.data.definition', {});
+    const interactiveData = get(getState(), 'mxGraph.interactive.data', []);
+
+    dispatch({
+        type: INTERACTIVE_SESSION_EVENT_START
+    });
+
+    return jobsApi
+        .interactiveSessionEvent(projectId, jobId, runId, data)
+        .then(() => {
+            const { command, id } = data;
+
+            dispatch(setInteractiveData(interactiveData, command, id, definition));
+
+            dispatch({
+                type: INTERACTIVE_SESSION_EVENT_SUCCESS
+            });
+        })
+        .catch(error => {
+            dispatch({
+                type: INTERACTIVE_SESSION_EVENT_FAIL,
+                payload: { error }
+            });
+        });
+};
+
 export const setZoomValue = val => ({
     type: SET_ZOOM_VALUE,
     payload: val
@@ -174,5 +331,15 @@ export const setPanning = val => ({
 
 export const setLogsModal = val => ({
     type: SET_LOGS_MODAL,
+    payload: val
+});
+
+export const setStageCopy = val => ({
+    type: SET_STAGE_COPY,
+    payload: val
+});
+
+export const setInteractiveMode = val => ({
+    type: SET_INTERACTIVE_MODE,
     payload: val
 });

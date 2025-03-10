@@ -28,7 +28,9 @@ import {
     FETCH_PIPELINE_START,
     FETCH_PIPELINE_SUCCESS,
     FETCH_PIPELINE_FAIL,
-    SET_ZOOM_VALUE
+    SET_ZOOM_VALUE,
+    SET_STAGE_COPY,
+    SET_RUN_ID
 } from './types';
 import {
     setFields,
@@ -37,7 +39,8 @@ import {
     setSidePanel,
     setZoomValue,
     fetchJob,
-    fetchPipelineById
+    fetchPipelineById,
+    setStageCopy
 } from './mxGraphActions';
 import api from '../../api/jobs';
 
@@ -71,6 +74,16 @@ describe('mxGraph actions', () => {
         expect(setZoomValue(0.4)).toEqual(expectedAction);
     });
 
+    it('should call SET_STAGE_COPY', () => {
+        const stageCopy = {
+            data: {},
+            project: 'vf-dev-backend',
+            type: 'PIPELINE'
+        };
+        const expectedAction = { type: SET_STAGE_COPY, payload: stageCopy };
+        expect(setStageCopy(stageCopy)).toEqual(expectedAction);
+    });
+
     describe('getJobById', () => {
         let data;
         let dispatch;
@@ -97,6 +110,7 @@ describe('mxGraph actions', () => {
             )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: FETCH_JOB_START }],
+                    [{ type: SET_RUN_ID, payload: undefined }],
                     [{ type: FETCH_JOB_SUCCESS, payload: data }],
                     [expect.any(Function)]
                 ]);
@@ -107,6 +121,7 @@ describe('mxGraph actions', () => {
             return fetchJob()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: FETCH_JOB_START }],
+                    [{ type: SET_RUN_ID, payload: undefined }],
                     [
                         {
                             type: FETCH_JOB_SUCCESS,

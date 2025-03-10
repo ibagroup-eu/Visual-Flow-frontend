@@ -20,21 +20,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { TextField, Box } from '@material-ui/core';
-import getMenuItems from '../helpers/getMenuItems';
+import { TextField, Box, Switch, FormControlLabel } from '@material-ui/core';
+import { isNil } from 'lodash';
 import useStyles from './CacheConfiguration.Styles';
 import ConfigurationDivider from '../../../components/divider';
-
-const values = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
 
 const cacheDefaultValues = [
     { field: 'useDisk', value: 'true' },
@@ -59,28 +48,47 @@ const CacheConfiguration = ({ state, ableToEdit, onChange }) => {
         <>
             {name && <ConfigurationDivider />}
             {name &&
-                cacheDefaultValues.map(({ field, value, props }, index) => (
-                    <Box className={classes.field}>
-                        <TextField
-                            /* eslint react/no-array-index-key: 0 */
-                            key={`${index}${field.slice(0, 4)}`}
-                            disabled={!ableToEdit}
-                            label={t(`jobDesigner:cacheConfiguration.${field}`)}
-                            placeholder={t(
-                                `jobDesigner:cacheConfiguration.${field}`
-                            )}
-                            variant="outlined"
-                            fullWidth
-                            select={field !== 'replication'}
-                            name={field}
-                            value={state[field] || value}
-                            inputProps={field !== 'replication' ? {} : props}
-                            onChange={event =>
-                                onChange(event.target.name, event.target.value)
-                            }
-                        >
-                            {field !== 'replication' && getMenuItems(values)}
-                        </TextField>
+                cacheDefaultValues.map(({ field, value, props }) => (
+                    <Box key={field} className={classes.field}>
+                        {field !== 'replication' ? (
+                            <FormControlLabel
+                                className={classes.root}
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        onChange={event =>
+                                            onChange(
+                                                field,
+                                                String(event.target.checked)
+                                            )
+                                        }
+                                        checked={
+                                            !isNil(value)
+                                                ? state[field] === 'true'
+                                                : false
+                                        }
+                                    />
+                                }
+                                label={t(`jobDesigner:cacheConfiguration.${field}`)}
+                                labelPlacement="start"
+                            />
+                        ) : (
+                            <TextField
+                                disabled={!ableToEdit}
+                                label={t(`jobDesigner:cacheConfiguration.${field}`)}
+                                placeholder={t(
+                                    `jobDesigner:cacheConfiguration.${field}`
+                                )}
+                                variant="outlined"
+                                fullWidth
+                                name={field}
+                                value={state[field] || value}
+                                inputProps={props}
+                                onChange={event =>
+                                    onChange(event.target.name, event.target.value)
+                                }
+                            />
+                        )}
                     </Box>
                 ))}
         </>

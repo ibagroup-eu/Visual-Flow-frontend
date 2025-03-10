@@ -17,7 +17,15 @@
  * limitations under the License.
  */
 
-import { duplicates, insert, remove, swap, update } from './array';
+import {
+    duplicates,
+    insert,
+    mapSortUnique,
+    remove,
+    sortUnique,
+    swap,
+    update
+} from './array';
 
 describe('array', () => {
     describe('should insert an element correctly', () => {
@@ -85,6 +93,56 @@ describe('array', () => {
         testCases.forEach(([arr, getHash, result]) =>
             it(`should return '[${result}]' for arr: '[${arr}]'`, () =>
                 expect([...duplicates(arr, getHash)]).toEqual(result))
+        );
+    });
+
+    describe('should return sorted array with unique elements', () => {
+        const testCases = [
+            [
+                [0, 1, 2, 3, 1, 1],
+                [0, 1, 2, 3]
+            ],
+            [
+                [5, 13, 9, 10, 3],
+                [3, 5, 9, 10, 13]
+            ],
+            [[0], [0]],
+            [
+                [3, 7, 1, 7, 7, 9],
+                [1, 3, 7, 9]
+            ],
+            [[], []],
+            [
+                ['job_id_2', 'job_id_1'],
+                ['job_id_1', 'job_id_2']
+            ]
+        ];
+
+        testCases.forEach(([arr, result]) =>
+            it(`should return '[${result}]' for arr: '[${arr}]'`, () =>
+                expect([...sortUnique(arr)]).toEqual(result))
+        );
+    });
+
+    describe('should apply function to the arrays sorted unique elements', () => {
+        const testCases = [
+            [[0, 1, 2, 3], el => el * 2, [0, 2, 4, 6]],
+            [
+                [
+                    { key1: 'val1', spec_key: 'val2', key3: 'val3' },
+                    { spec_key: 'val1', key2: 'val2' },
+                    { key1: 'val1', key2: 'val2', spec_key: 'val3' }
+                ],
+                el => el.spec_key,
+                ['val1', 'val2', 'val3']
+            ],
+            [[3, 7, 1, 7, 7, 9], el => el - 5, [-4, -2, 2, 4]],
+            [[], el => el / 3, []]
+        ];
+
+        testCases.forEach(([arr, fn, result]) =>
+            it(`should return '[${result}]' for arr: '[${arr}]' and func '${fn}'`, () =>
+                expect([...mapSortUnique(arr, fn)]).toEqual(result))
         );
     });
 });

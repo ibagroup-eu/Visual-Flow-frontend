@@ -19,9 +19,11 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
+
+import { TextField } from '@material-ui/core';
+
 import ChangeTypeOperation from './index';
 import SelectField from '../../../../components/select-field';
-import { TextField } from '@material-ui/core';
 import { isValidPrecision, isValidScale } from './ChangeTypeOperation';
 
 describe('ChangeTypeOperation', () => {
@@ -52,12 +54,43 @@ describe('ChangeTypeOperation', () => {
     it('should render precision and scale fields ', () => {
         const [wrapper] = init({ state: { 'option.columnType': 'decimal' } }, true);
         expect(wrapper.find(TextField)).toHaveLength(2);
+
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('value')
+        ).toEqual('10');
+    });
+
+    it('should render precision and scale fields ', () => {
+        const [wrapper] = init(
+            { state: { 'option.columnType': 'decimal(50,)' } },
+            true
+        );
+        expect(wrapper.find(TextField)).toHaveLength(2);
+
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('value')
+        ).toEqual('50');
     });
 
     it('should call handle column type change ', () => {
         const [wrapper, props] = init({}, true);
         const target = {
             target: { name: 'option.columnType', value: 'date' }
+        };
+        wrapper.find(SelectField).prop('handleInputChange')(target);
+        expect(props.handleInputChange).toHaveBeenCalledWith(target);
+    });
+
+    it('should call handle column type change (decimal)', () => {
+        const [wrapper, props] = init({}, true);
+        const target = {
+            target: { name: 'option.columnType', value: 'decimal(10,0)' }
         };
         wrapper.find(SelectField).prop('handleInputChange')(target);
         expect(props.handleInputChange).toHaveBeenCalledWith(target);
@@ -130,6 +163,14 @@ describe('ChangeTypeOperation', () => {
     describe('isValidScale', () => {
         it.each([
             { value: '4', expected: null },
+            {
+                value: '4',
+                precision: 1,
+                expected: [
+                    'main:validation.withColumnValidation.range',
+                    { max: 0, min: 0 }
+                ]
+            },
             { value: '', expected: ['main:validation.notBlank'] },
             {
                 value: '7.1',
@@ -148,8 +189,8 @@ describe('ChangeTypeOperation', () => {
             }
         ])(
             'should return $expected when called with $value',
-            ({ value, expected }) => {
-                expect(isValidScale(value)).toStrictEqual(expected);
+            ({ value, precision, expected }) => {
+                expect(isValidScale(value, precision)).toStrictEqual(expected);
             }
         );
     });

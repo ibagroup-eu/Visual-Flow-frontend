@@ -26,7 +26,7 @@ describe('StageWithIcon', () => {
     it('should render without crashes', () => {
         const defaultProps = {
             name: 'name',
-            operation: 'operation',
+            operation: 'operation'
         };
 
         const wrapper = shallow(<StageWithIcon {...defaultProps} />);

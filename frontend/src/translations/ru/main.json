@@ -37,7 +37,8 @@
         "CreateDataframe": "Create Dataframe",
         "EditDataframe": "Edit Dataframe",
         "AddValidation": "Add Validation",
-        "EditValidation": "Edit Validation"
+        "EditValidation": "Edit Validation",
+        "EditCluster": "Edit Cluster"
     },
     "importPage": {
         "FilePath": "Путь к файлу",
@@ -69,10 +70,26 @@
         },
         "Name": "Имя",
         "Description": "Описание",
+        "Cloud": "Обладный сервис",
+        "Host": "Адрес рабочей области Databricks",
+        "AuthenticationType": "Тип авторизации",
+        "ClientID": "Клиентский ID",
+        "Secret": "Сикрет",
+        "Token": "Токен персонального доступа",
+        "Path": "Путь к Visual Flow файлам",
         "Requests": "Требования",
-        "Limits": "Пределы"
+        "Limits": "Limits",
+        "DemoLimits": "Demo Limits",
+        "Limit": "Limit",
+        "Demo": "Demo",
+        "ExpirationDate": "ExpirationDate",
+        "SourceLimits": {
+            "read": "Source Limits: Read",
+            "write": "Source Limits: Write"
+        }
     },
     "confirm": {
+        "titleContinue": "Continue anyway?",
         "title": "Вы уверены?",
         "body": "Вы уверены?",
         "Yes": "Да",
@@ -106,6 +123,11 @@
             "nameSymbols": "Допустимые символы: A-Z, a-z, 0-9, -, _"
         },
         "positive": "Значение должно быть положительным.",
+        "multiple": "Значение должно быть кратно {{multiple}}.",
+        "range": "Значение должно быть меньше или равно {{max}} и больше или равно {{min}}.",
+        "minLessMax": "Min должно быть меньше чем Max",
+        "perTryLessTotalTimeout": "Значение поля 'попытаться через' должно быть меньше значения 'Таймаут через'.",
+        "validDate": "Значение должно соответствовать формату даты и быть больше текущей",
         "3to40chars": "Неправильный символ или длина строки (3-40 символов).",
         "moreThen500": "Длина должна быть менее 500 символов.",
         "notBlank": "Should not be blank.",
@@ -113,7 +135,11 @@
         "incorrectJobLength": "Must be no more than 63 characters.",
         "incorrectPipelineLength": "The name should have a total length between 3 and 40 characters max.",
         "incorrectCharacters": "Use alphanumeric characters, '-', '.' or '_'. Name must start and end with an alphanumeric.",
-        "pipelineWithoutJobParams": "Unable to run pipeline, missing job/parameter data."
+        "pipelineWithoutJobParams": "Unable to run pipeline, missing job/parameter data.",
+        "pipelineWithEmpyJob": "The pipeline contains empty job(s), their execution will lead to an error.",
+        "invalidJSONExtension": "The file extension must be json.",
+        "host": "Должен соответствовать 'https://host' паттерну",
+        "path": "Должен начинаться соответствовать /Volumes/catalog/schema/volume_path"
     },
     "title": "Visual Flow",
     "Jobs": "Jobs",
@@ -131,6 +157,11 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "noResult": "No result",
+    "interactiveNotifications": {
+        "enabled": "Interactive mode is enabled",
+        "disabled": "Interactive mode is disabled",
+        "running": "Running..."
+    },
     "sorted": {
         "descending": "sorted descending",
         "ascending": "sorted ascending"

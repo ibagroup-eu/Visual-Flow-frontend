@@ -37,6 +37,13 @@
                 },
                 {
                     "storage": "dataframe"
+                },
+                {
+                    "storage": "databricks"
+                },
+                {
+                    "storage": "databricks-jdbc",
+                    "customSql": "false"
                 }
             ]
         },
@@ -85,6 +92,14 @@
                 {
                     "storage": "redshift-jdbc",
                     "customSql": "false"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "table"
+                },
+                {
+                    "storage": "databricks-jdbc",
+                    "customSql": "false"
                 }
             ]
         },
@@ -127,6 +142,1713 @@
             "conditions": [
                 {
                     "storage": "dataframe"
+                }
+            ]
+        },
+        {
+            "field": "subscribe",
+            "conditions": [
+                {
+                    "storage": "kafka"
+                }
+            ]
+        },
+        {
+            "field": "mergeSchema",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "table"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "delta"
+                },
+                {
+                    "storage": "s3",
+                    "format": "delta"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "delta"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "delta"
+                },
+                {
+                    "storage": "cos",
+                    "format": "delta"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "delta"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "s3",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "cos",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "orc"
+                },
+                {
+                    "storage": "s3",
+                    "format": "orc"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "orc"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "orc"
+                },
+                {
+                    "storage": "cos",
+                    "format": "orc"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "orc"
+                }
+            ]
+        },
+        {
+            "field": "timestampAsOf",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "table"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "delta"
+                },
+                {
+                    "storage": "s3",
+                    "format": "delta"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "delta"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "delta"
+                },
+                {
+                    "storage": "cos",
+                    "format": "delta"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "delta"
+                }
+            ]
+        },
+        {
+            "field": "versionAsOf",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "table"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "delta"
+                },
+                {
+                    "storage": "s3",
+                    "format": "delta"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "delta"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "delta"
+                },
+                {
+                    "storage": "cos",
+                    "format": "delta"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "delta"
+                }
+            ]
+        },
+        {
+            "field": "sessionInitStatement",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc"
+                },
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "numPartitions",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "db2",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "readingInParallel": "true"
+                }
+            ]
+        },
+        {
+            "field": "partitionColumn",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "db2",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "readingInParallel": "true"
+                }
+            ]
+        },
+        {
+            "field": "lowerBound",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "db2",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "readingInParallel": "true"
+                }
+            ]
+        },
+        {
+            "field": "upperBound",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "db2",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "readingInParallel": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "readingInParallel": "true"
+                }
+            ]
+        },
+        {
+            "field": "fetchsize",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc"
+                },
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "customSchema",
+            "conditions": [
+                {
+                    "storage": "databricks-jdbc"
+                },
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                }
+            ]
+        },
+        {
+            "field": "fileSelection",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "s3",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "cos",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "parquet"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "orc"
+                },
+                {
+                    "storage": "s3",
+                    "format": "orc"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "orc"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "orc"
+                },
+                {
+                    "storage": "cos",
+                    "format": "orc"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "orc"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "json"
+                },
+                {
+                    "storage": "s3",
+                    "format": "json"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "json"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "json"
+                },
+                {
+                    "storage": "cos",
+                    "format": "json"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "json"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "text"
+                },
+                {
+                    "storage": "s3",
+                    "format": "text"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "text"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "text"
+                },
+                {
+                    "storage": "cos",
+                    "format": "text"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "text"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "avro"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "avro"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "avro"
+                },
+                {
+                    "storage": "cos",
+                    "format": "avro"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "avro"
+                },
+                {
+                    "storage": "s3",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile"
+                }
+            ]
+        },
+        {
+            "field": "pathGlobFilter",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                }
+            ]
+        },
+        {
+            "field": "recursiveFileLookup",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                }
+            ]
+        },
+        {
+            "field": "modifiedBefore",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                }
+            ]
+        },
+        {
+            "field": "modifiedAfter",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "parquet",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "orc",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "json",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "text",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "avro",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile",
+                    "fileSelection": "true"
+                }
+            ]
+        },
+        {
+            "field": "samplingRatio",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "json"
+                },
+                {
+                    "storage": "s3",
+                    "format": "json"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "json"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "json"
+                },
+                {
+                    "storage": "cos",
+                    "format": "json"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "json"
+                },
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv"
+                }
+            ]
+        },
+        {
+            "field": "wholetext",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "text"
+                },
+                {
+                    "storage": "s3",
+                    "format": "text"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "text"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "text"
+                },
+                {
+                    "storage": "cos",
+                    "format": "text"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "text"
+                }
+            ]
+        },
+        {
+            "field": "inferSchema",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv"
+                }
+            ]
+        },
+        {
+            "field": "enforceSchema",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv"
+                }
+            ]
+        },
+        {
+            "field": "nanValue",
+            "conditions": [
+                {
+                    "storage": "databricks",
+                    "objectType": "volume",
+                    "format": "csv",
+                    "fineTuneValues": "true"
+                },
+                {
+                    "storage": "s3",
+                    "format": "csv",
+                    "fineTuneValues": "true"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "csv",
+                    "fineTuneValues": "true"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "csv",
+                    "fineTuneValues": "true"
+                },
+                {
+                    "storage": "cos",
+                    "format": "csv",
+                    "fineTuneValues": "true"
+                },
+                {
+                    "storage": "cluster",
+                    "format": "csv",
+                    "fineTuneValues": "true"
+                }
+            ]
+        },
+        {
+            "field": "binaryFormat",
+            "conditions": [
+                {
+                    "storage": "s3",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile"
+                }
+            ]
+        },
+        {
+            "field": "outputContentColumn",
+            "conditions": [
+                {
+                    "storage": "s3",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile"
+                }
+            ]
+        },
+        {
+            "field": "outputPathColumn",
+            "conditions": [
+                {
+                    "storage": "s3",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "azure-blob-storage",
+                    "format": "binaryFile"
+                },
+                {
+                    "storage": "google-cloud-storage",
+                    "format": "binaryFile"
+                }
+            ]
+        },
+        {
+            "field": "incrementalLoad",
+            "conditions": [
+                {
+                    "storage": "db2"
+                },
+                {
+                    "storage": "postgresql"
+                },
+                {
+                    "storage": "oracle"
+                },
+                {
+                    "storage": "mysql"
+                },
+                {
+                    "storage": "mssql"
+                },
+                {
+                    "storage": "redshift-jdbc"
+                },
+                {
+                    "storage": "s3"
+                },
+                {
+                    "storage": "mongo"
+                },
+                {
+                    "storage": "kafka"
+                }
+            ]
+        },
+        {
+            "field": "incrementalOffsetKey",
+            "conditions": [
+                {
+                    "storage": "db2",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "s3",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "mongo",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "kafka",
+                    "incrementalLoad": "true"
+                }
+            ]
+        },
+        {
+            "field": "incrementalOffsetValue",
+            "conditions": [
+                {
+                    "storage": "db2",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "postgresql",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "oracle",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "mysql",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "mssql",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "redshift-jdbc",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "s3",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "mongo",
+                    "incrementalLoad": "true"
+                },
+                {
+                    "storage": "kafka",
+                    "incrementalLoad": "true"
                 }
             ]
         }

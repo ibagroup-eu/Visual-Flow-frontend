@@ -36,6 +36,10 @@ export default theme => ({
         color: theme.palette.info.main,
         borderColor: theme.palette.info.main
     },
+    chipDebugging: {
+        color: theme.palette.info.main,
+        borderColor: theme.palette.info.main
+    },
     chipSucceeded: {
         color: theme.palette.success.main,
         borderColor: theme.palette.success.main

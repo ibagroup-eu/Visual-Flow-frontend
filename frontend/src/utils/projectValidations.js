@@ -18,8 +18,54 @@
  */
 
 export const isCorrectName = value =>
-    /^[A-Za-z0-9 \\-_]{3,40}$/.test(value) || value.length === 0;
+    /^[A-Za-z0-9-_ ]{3,40}$/.test(value) || value.length === 0;
 
 export const isCorrectDescription = value => value.length <= 500;
 
 export const isPositiveNumber = value => value > 0;
+
+export const isValidDemoLimitDate = value => {
+    const currentTimestamp = new Date().getTime();
+    const futureTimestamp = new Date(value).getTime();
+    if (
+        /^\d{4}[-](0?[1-9]|1[0-2])[-](0?[1-9]|[1-2][0-9]|3[01])$/.test(value) &&
+        currentTimestamp < futureTimestamp
+    ) {
+        return true;
+    }
+    return false;
+};
+
+export const isCorrectHost = value =>
+    /^(https:\/\/)?((([a-z\d-]*)\.)+(cloud\.databricks\.com|azuredatabricks\.net|gcp\.databricks\.com))$/.test(
+        value
+    ) || value.length === 0;
+
+export const isCorrectPath = value =>
+    (value && /^\/Volumes\/(?:[A-Za-z0-9\-_]+\/){2,}[A-Za-z0-9\-_]+$/.test(value)) ||
+    value.length === 0;
+
+export const isValidDatabricksParams = ({
+    host,
+    token,
+    clientId,
+    secret,
+    authenticationType,
+    pathToFile
+}) => {
+    const fullValidHost = host && isCorrectHost(host);
+
+    const fullValidToken = token && isCorrectName(token);
+
+    const fullValidPath = pathToFile && isCorrectPath(pathToFile);
+
+    if (authenticationType === 'OAUTH') {
+        return fullValidHost && clientId && secret && fullValidPath;
+    }
+
+    if (authenticationType === 'PAT') {
+        return fullValidHost && fullValidToken && fullValidPath;
+    }
+
+    return false;
+};

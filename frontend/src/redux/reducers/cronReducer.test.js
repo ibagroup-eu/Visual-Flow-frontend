@@ -50,7 +50,10 @@ describe('cron Reducer', () => {
         const action = {
             type: FETCH_CRON_START
         };
-        expect(cronReducer(undefined, action)).toEqual({ ...initialState, loading: true });
+        expect(cronReducer(undefined, action)).toEqual({
+            ...initialState,
+            loading: true
+        });
     });
 
     it('should handle FETCH_CRON_SUCCESS', () => {
@@ -60,7 +63,8 @@ describe('cron Reducer', () => {
         };
         expect(cronReducer(undefined, action)).toEqual({
             ...initialState,
-            data: { ...mockData }, loading: false
+            data: { ...mockData },
+            loading: false
         });
     });
 
@@ -71,7 +75,8 @@ describe('cron Reducer', () => {
         };
         expect(cronReducer(undefined, action)).toEqual({
             ...initialState,
-            loading: false, error
+            loading: false,
+            error
         });
     });
 
@@ -79,7 +84,10 @@ describe('cron Reducer', () => {
         const action = {
             type: CREATE_CRON_START
         };
-        expect(cronReducer(undefined, action)).toEqual({ ...initialState, loading: true });
+        expect(cronReducer(undefined, action)).toEqual({
+            ...initialState,
+            loading: true
+        });
     });
 
     it('should handle CREATE_CRON_SUCCESS', () => {
@@ -89,7 +97,7 @@ describe('cron Reducer', () => {
         };
         expect(cronReducer(undefined, action)).toEqual({
             ...initialState,
-            loading: false,
+            loading: false
         });
     });
 
@@ -109,7 +117,10 @@ describe('cron Reducer', () => {
         const action = {
             type: UPDATE_CRON_START
         };
-        expect(cronReducer(undefined, action)).toEqual({ ...initialState, loading: true });
+        expect(cronReducer(undefined, action)).toEqual({
+            ...initialState,
+            loading: true
+        });
     });
 
     it('should handle UPDATE_CRON_SUCCESS', () => {
@@ -119,7 +130,7 @@ describe('cron Reducer', () => {
         };
         expect(cronReducer(undefined, action)).toEqual({
             ...initialState,
-            loading: false,
+            loading: false
         });
     });
 
@@ -134,5 +145,4 @@ describe('cron Reducer', () => {
             error
         });
     });
-
 });

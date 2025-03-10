@@ -220,6 +220,8 @@ describe('GraphDesigner', () => {
             setCell: jest.fn(),
             setPanel: jest.fn(),
             setLogs: jest.fn(),
+            deleteInteractiveData: jest.fn(),
+            inputData: [],
             t: x => x
         };
 
@@ -282,7 +284,29 @@ describe('GraphDesigner', () => {
         it.each([{ stage: JOIN }, { stage: CDC }])(
             'should remove attrs for "$stage" stage',
             ({ stage }) => {
-                const [wrapper] = init();
+                const attributes = {
+                    0: { nodeName: 'name', nodeValue: 'Test' },
+                    1: { nodeName: 'operation', nodeValue: stage },
+                    2: { nodeName: 'leftDataset', nodeValue: 'leftDataset' },
+                    3: { nodeName: 'rightDataset', nodeValue: 'rightDataset' },
+                    4: { nodeName: 'newDataset', nodeValue: 'newDataset' },
+                    5: { nodeName: 'oldDataset', nodeValue: 'oldDataset' }
+                };
+
+                const [wrapper] = init({
+                    stageCopy: {
+                        data: {
+                            value: {
+                                attributes
+                            },
+                            geometry: {
+                                width: 0,
+                                height: 1
+                            },
+                            target: 'target'
+                        }
+                    }
+                });
 
                 const graph = {
                     insertVertex: jest.fn(),
@@ -291,15 +315,6 @@ describe('GraphDesigner', () => {
                         y: 1
                     })),
                     getDefaultParent: jest.fn(() => 'defaultParent')
-                };
-
-                const attributes = {
-                    0: { nodeName: 'name', nodeValue: 'Test' },
-                    1: { nodeName: 'operation', nodeValue: stage },
-                    2: { nodeName: 'leftDataset', nodeValue: 'leftDataset' },
-                    3: { nodeName: 'rightDataset', nodeValue: 'rightDataset' },
-                    4: { nodeName: 'newDataset', nodeValue: 'newDataset' },
-                    5: { nodeName: 'oldDataset', nodeValue: 'oldDataset' }
                 };
 
                 const valuesCopy = {
@@ -312,16 +327,6 @@ describe('GraphDesigner', () => {
                 };
 
                 wrapper.setState({
-                    stageCopy: {
-                        value: {
-                            attributes
-                        },
-                        geometry: {
-                            width: 0,
-                            height: 1
-                        },
-                        target: 'target'
-                    },
                     stages: {
                         [stage]: {
                             color: 'green'
@@ -521,11 +526,10 @@ describe('GraphDesigner', () => {
         });
 
         it('should show "Paste stage" option', () => {
-            const [wrapper] = init({ type: JOB });
-
-            wrapper.setState({ stageCopy: {} });
-
-            wrapper.update();
+            const [wrapper] = init({
+                type: JOB,
+                stageCopy: { project: '', type: JOB }
+            });
 
             wrapper
                 .instance()
@@ -614,7 +618,7 @@ describe('GraphDesigner', () => {
         });
 
         it('should handle "Copy stage"', () => {
-            const [wrapper] = init({ type: JOB });
+            const [wrapper, props] = init({ type: JOB, copyStage: jest.fn() }, true);
 
             const graph = { removeCells: jest.fn() };
             const cell = {
@@ -632,7 +636,11 @@ describe('GraphDesigner', () => {
 
             wrapper.update();
 
-            expect(wrapper.state().stageCopy).toEqual(cell);
+            expect(props.copyStage).toHaveBeenCalledWith({
+                data: cell,
+                project: '',
+                type: JOB
+            });
         });
 
         it('should handle "Delete stage"', () => {
@@ -663,11 +671,17 @@ describe('GraphDesigner', () => {
         });
 
         it('Paste stage"', () => {
-            const [wrapper, props] = init({ type: JOB }, true);
-
-            wrapper.setState({ stageCopy: { value: { attributes: {} } } });
-
-            wrapper.update();
+            const [wrapper, props] = init(
+                {
+                    type: JOB,
+                    stageCopy: {
+                        data: { value: { attributes: {} } },
+                        project: '',
+                        type: JOB
+                    }
+                },
+                true
+            );
 
             const instance = wrapper.instance();
             const pasteCopyHandler = jest.fn();
@@ -914,6 +928,258 @@ describe('GraphDesigner', () => {
             expect(props.setLogs).toHaveBeenCalledWith(true);
         });
 
+        it('should open metadata modal without input schema', () => {
+            const [wrapper] = init(
+                {
+                    data: { id: 0 },
+                    jobs: []
+                },
+                true
+            );
+
+            const attrs = {
+                operation: JOB,
+                jobId: 0,
+                name: 'name'
+            };
+
+            const mouseEvent = {
+                target: {
+                    parentElement: {
+                        id: 'view-metadata-1',
+                        nodeName: 'svg'
+                    }
+                }
+            };
+
+            const cell = {
+                getAttribute: attr => attrs[attr],
+                edges: [{ id: 2 }],
+                parent: {
+                    children: [
+                        {
+                            edge: {},
+                            id: 1,
+                            source: { id: 3, getAttribute: attr => attrs[attr] }
+                        }
+                    ]
+                },
+                id: 0
+            };
+
+            const event = {
+                getProperty: name => (name === 'cell' ? cell : mouseEvent)
+            };
+
+            wrapper.instance().onClickListener('', event);
+
+            expect(wrapper.state().inputData).toBe(undefined);
+        });
+
+        it('should open metadata modal with input schema', () => {
+            const [wrapper] = init(
+                {
+                    data: { id: 0 },
+                    jobs: [],
+                    jobStagesData: [{ id: 3, 'row-count': 200 }]
+                },
+                true
+            );
+
+            const attrs = {
+                operation: JOB,
+                jobId: 0,
+                name: 'name'
+            };
+
+            const mouseEvent = {
+                target: {
+                    parentElement: {
+                        id: 'view-metadata-1',
+                        nodeName: 'svg'
+                    }
+                }
+            };
+
+            const cell = {
+                getAttribute: attr => attrs[attr],
+                edges: [{ id: 1 }, { id: 4 }],
+                parent: {
+                    children: [
+                        {
+                            edge: { id: 2 },
+                            id: 1,
+                            source: { id: 3, getAttribute: attr => attrs[attr] }
+                        }
+                    ]
+                },
+                id: 0
+            };
+
+            const event = {
+                getProperty: name => (name === 'cell' ? cell : mouseEvent)
+            };
+
+            wrapper.instance().onClickListener('', event);
+
+            expect(wrapper.state().inputData).toEqual([
+                { id: 3, name: 'name', 'row-count': 200 }
+            ]);
+        });
+
+        it('should run stage', () => {
+            const [wrapper, props] = init(
+                {
+                    data: { id: 0 },
+                    jobs: [],
+                    jobStagesData: [{ id: 3, rowCount: 200 }],
+                    sendInteractiveEvent: jest.fn()
+                },
+                true
+            );
+
+            const attrs = {
+                operation: JOB,
+                jobId: 0,
+                name: 'name'
+            };
+
+            const mouseEvent = {
+                target: {
+                    parentElement: {
+                        id: 'run-stage',
+                        nodeName: 'svg'
+                    }
+                }
+            };
+
+            const cell = {
+                getAttribute: attr => attrs[attr],
+                edges: [{ id: 1 }, { id: 4 }],
+                parent: {
+                    children: [
+                        {
+                            edge: { id: 2 },
+                            id: 1,
+                            source: { id: 3, getAttribute: attr => attrs[attr] }
+                        }
+                    ]
+                },
+                id: 0
+            };
+
+            const event = {
+                getProperty: name => (name === 'cell' ? cell : mouseEvent)
+            };
+
+            wrapper.instance().onClickListener('', event);
+
+            expect(props.sendInteractiveEvent).toHaveBeenCalled();
+        });
+
+        it('should render error', () => {
+            const [wrapper] = init(
+                {
+                    data: { id: 0 },
+                    jobs: [],
+                    jobStagesData: [{ id: 3, rowCount: 200 }],
+                    sendInteractiveEvent: jest.fn()
+                },
+                true
+            );
+
+            const attrs = {
+                operation: JOB,
+                jobId: 0,
+                name: 'name'
+            };
+
+            const mouseEvent = {
+                target: {
+                    parentElement: {
+                        id: 'error-1',
+                        nodeName: 'svg'
+                    }
+                }
+            };
+
+            const cell = {
+                getAttribute: attr => attrs[attr],
+                edges: [{ id: 1 }, { id: 4 }],
+                parent: {
+                    children: [
+                        {
+                            edge: { id: 2 },
+                            id: 1,
+                            source: { id: 3, getAttribute: attr => attrs[attr] }
+                        }
+                    ]
+                },
+                id: 0
+            };
+
+            const event = {
+                getProperty: name => (name === 'cell' ? cell : mouseEvent)
+            };
+
+            wrapper.instance().onClickListener('', event);
+
+            expect(wrapper.state().openPopper).toBeTruthy();
+            expect(wrapper.state().popoverType).toBe('error');
+        });
+
+        it('should render row count', () => {
+            const [wrapper] = init(
+                {
+                    data: { id: 0 },
+                    jobs: [],
+                    jobStagesData: [{ id: 0, rowCount: 200 }],
+                    sendInteractiveEvent: jest.fn()
+                },
+                true
+            );
+
+            const attrs = {
+                operation: JOB,
+                jobId: 0,
+                name: 'name'
+            };
+
+            const mouseEvent = {
+                target: {
+                    parentElement: {
+                        id: 'rowCount-1',
+                        nodeName: 'svg'
+                    }
+                }
+            };
+
+            const cell = {
+                getAttribute: attr => attrs[attr],
+                edges: [{ id: 1 }, { id: 4 }],
+                parent: {
+                    children: [
+                        {
+                            edge: { id: 2 },
+                            id: 1,
+                            source: { id: 3, getAttribute: attr => attrs[attr] }
+                        }
+                    ]
+                },
+                id: 0
+            };
+
+            const event = {
+                getProperty: name => (name === 'cell' ? cell : mouseEvent)
+            };
+
+            wrapper.instance().onClickListener('', event);
+
+            expect(wrapper.state().openPopper).toBeTruthy();
+            expect(wrapper.state().popoverType).toBe('message');
+            expect(wrapper.state().popoverText).toBe('Row count: 200');
+        });
+
         it('should set nodeId for containers', () => {
             const [wrapper, props] = init({ data: { id: 0 }, jobs: [] }, true);
 
@@ -1002,7 +1268,12 @@ describe('GraphDesigner', () => {
 
             expect(ReactDOMServer.renderToString).toHaveBeenCalled();
             expect(renderStage).toHaveBeenCalledWith(
-                { showLogs: true },
+                {
+                    showLogs: true,
+                    id: 2,
+                    interactiveMode: undefined,
+                    isRunEnabled: true
+                },
                 't',
                 'type',
                 props.jobs,
@@ -1049,7 +1320,11 @@ describe('GraphDesigner', () => {
 
             expect(ReactDOMServer.renderToString).toHaveBeenCalled();
             expect(renderStage).toHaveBeenCalledWith(
-                {},
+                {
+                    id: undefined,
+                    interactiveMode: undefined,
+                    isRunEnabled: true
+                },
                 't',
                 'type',
                 props.jobs,
@@ -1101,7 +1376,12 @@ describe('GraphDesigner', () => {
 
             expect(ReactDOMServer.renderToString).toHaveBeenCalled();
             expect(renderStage).toHaveBeenCalledWith(
-                { showLogs: true },
+                {
+                    showLogs: true,
+                    id: 100500,
+                    interactiveMode: undefined,
+                    isRunEnabled: true
+                },
                 't',
                 'type',
                 props.jobs,

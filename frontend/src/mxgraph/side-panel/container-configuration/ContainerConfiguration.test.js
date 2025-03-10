@@ -152,4 +152,19 @@ describe('Container configuration', () => {
         wrapper.find(ImagePullSecretType).prop('openModal')();
         expect(defaultProps.openModal).toHaveBeenCalled();
     });
+
+    it('should fill with empty values TextFields', () => {
+        defaultProps = {
+            ...defaultProps,
+            state: {
+                ...defaultProps.state,
+                command: undefined,
+                requestsMemory: undefined
+            }
+        };
+        wrapper = mount(<ContainerConfiguration {...defaultProps} />);
+        const [button] = wrapper.find(IconButton).map(b => b);
+        button.simulate('click');
+        expect(defaultProps.openModal).toHaveBeenCalledWith('image');
+    });
 });

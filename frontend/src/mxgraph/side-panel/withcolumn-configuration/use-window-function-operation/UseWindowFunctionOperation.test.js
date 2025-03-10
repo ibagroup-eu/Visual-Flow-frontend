@@ -56,6 +56,12 @@ describe('UseWindowFunctionOperation', () => {
         expect(wrapper.find(AutocompleteParameter).exists()).toBeTruthy();
     });
 
+    it(' SelectField should use windowFunction class', () => {
+        const [wrapper] = init({}, true);
+        const { className } = wrapper.find(SelectField).props();
+        expect(className.lastIndexOf('makeStyles-windowFunction')).toBe(0);
+    });
+
     windowFunctions.forEach(windowFunction => {
         it(`should render additional parameters for ${windowFunction} function `, () => {
             init({ state: { 'option.windowFunction': `${windowFunction}` } });

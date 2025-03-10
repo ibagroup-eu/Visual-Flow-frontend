@@ -190,8 +190,12 @@ Job.propTypes = {
 
 const mapStateToProps = state => {
     const { data, loading } = state.pages.jobs;
+    const filteredJobs = data.jobs?.filter(({ pipelineId }) => pipelineId === null);
     return {
-        data: data.jobs?.filter(({ pipelineId }) => pipelineId === null),
+        data: filteredJobs.map(item => ({
+            ...item,
+            lastRun: item.startedAt && new Date(item.startedAt)
+        })),
         loading
     };
 };

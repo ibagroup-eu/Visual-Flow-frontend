@@ -1,15 +1,16 @@
 import React from 'react';
+import { shallow } from 'enzyme';
 import ReadTextFields from '../../../../components/rw-text-fields';
-import SelectField from '../../../../components/select-field';
+import ReadWriteEditorField from '../../../../components/rw-editor-field';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 import { READ, WRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
 import ClickHouseStorage from './ClickHouseStorage';
-import { shallow } from 'enzyme';
 
 describe('ClickHouseStorage', () => {
-    const init = () => {
+    const init = (props = {}, func = shallow) => {
         const defaultProps = {
-            inputValues: { operation: READ, customSql: 'true' },
+            inputValues: { operation: WRITE, customSql: 'true' },
             ableToEdit: true,
             handleInputChange: jest.fn(),
             openModal: jest.fn(),
@@ -17,25 +18,21 @@ describe('ClickHouseStorage', () => {
             connection: {}
         };
 
-        const wrapper = shallow(<ClickHouseStorage {...defaultProps} />);
+        const wrapper = func(<ClickHouseStorage {...defaultProps} {...props} />);
 
-        return wrapper;
+        return [wrapper, { ...defaultProps, ...props }];
     };
 
     it('should render without crashes', () => {
-        const wrapper = init();
-        expect(wrapper.find(SelectField).exists()).toBeTruthy();
-        expect(
-            wrapper
-                .find(ReadTextFields)
-                .at(2)
-                .prop('fields')
-        ).toEqual([{ field: 'option.dbtable', rows: 6 }]);
+        const [wrapper] = init();
+        expect(wrapper.find(ReadWriteEditorField).prop('name')).toEqual(
+            'option.dbtable'
+        );
+        expect(wrapper.find(WriteMode)).toHaveLength(1);
     });
 
     it('should render schema and table fields when customSql is false', () => {
-        const wrapper = init();
-        wrapper.setProps({
+        const [wrapper] = init({
             inputValues: {
                 customSql: 'false'
             }
@@ -49,12 +46,12 @@ describe('ClickHouseStorage', () => {
     });
 
     it('should render WriteMide when operation is WRITE', () => {
-        const wrapper = init();
-        wrapper.setProps({
+        const [wrapper] = init({
             inputValues: {
-                operation: WRITE
+                operation: READ,
+                customSql: undefined
             }
         });
-        expect(wrapper.find(WriteMode)).toHaveLength(1);
+        expect(wrapper.find(ParamsSwitchField).exists()).toBeTruthy();
     });
 });

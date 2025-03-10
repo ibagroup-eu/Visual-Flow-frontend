@@ -40,4 +40,13 @@ describe('users', () => {
             expect(spy).toHaveBeenCalledWith(requestURL);
         });
     });
+
+    it('should get currentUser', () => {
+        const requestURL = '/user';
+        const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return users.getCurrentUser().then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL);
+        });
+    });
 });

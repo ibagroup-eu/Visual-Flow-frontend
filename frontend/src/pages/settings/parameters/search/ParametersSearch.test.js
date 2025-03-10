@@ -46,6 +46,17 @@ describe('ParametersSearch', () => {
         expect(wrapper.find(DropdownFilter).exists()).toBeTruthy();
     });
 
+    it('should have specific placeholder for search', () => {
+        const [wrapper] = init();
+
+        expect(
+            wrapper
+                .find(SearchInput)
+                .at(0)
+                .props().placeholder
+        ).toEqual('main:searchByName');
+    });
+
     it('should handle on search', () => {
         const [wrapper, props] = init({}, true);
 

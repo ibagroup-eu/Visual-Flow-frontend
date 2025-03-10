@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import {
@@ -31,7 +31,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
-import { get, isEmpty, isEqual, pickBy } from 'lodash';
+import { get, isEmpty, isEqual, isFunction, pickBy } from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import useStyles from './ConnectionsPanel.Styles';
@@ -47,8 +47,9 @@ import { validations } from '../../../../mxgraph/side-panel/render-configuration
 const validateConnectionName = (connections, currentKey, nameState) => {
     if (
         connections?.find(
-            ({ key }) =>
-                nameState?.toLowerCase() === key.toLowerCase() && currentKey !== key
+            ({ key, value }) =>
+                nameState?.toLowerCase() === value?.connectionName?.toLowerCase() &&
+                currentKey !== key
         )
     ) {
         return 'main:validation.projectConnections.nameDuplication';
@@ -100,30 +101,45 @@ const ConnectionsPanel = ({
         }
     }, [newConnection]);
 
-    const handleChange = event => {
-        if (event.persist) {
-            event.persist();
-        }
-        setConnectionState(prevState => ({
-            ...prevState,
-            value: pickBy(
-                {
-                    ...prevState.value,
-                    [event.target.name]: event.target.value
-                },
-                v => v !== ''
-            )
-        }));
-    };
+    const setState = useCallback(
+        value =>
+            setConnectionState(prevState => ({
+                ...prevState,
+                value: isFunction(value) ? value(prevState.value) : value
+            })),
+        [setConnectionState]
+    );
+
+    const handleChange = useCallback(
+        event => {
+            if (event.persist) {
+                event.persist();
+            }
+            setConnectionState(prevState => ({
+                ...prevState,
+                value: pickBy(
+                    {
+                        ...prevState.value,
+                        [event.target.name]: event.target.value
+                    },
+                    (v, k) =>
+                        k === 'option.kafka.ssl.endpoint.identification.algorithm' ||
+                        v !== ''
+                )
+            }));
+        },
+        [setConnectionState]
+    );
 
     const saveConnection = () =>
-        handleNewConnection({
-            key:
-                panelTitle === 'Edit'
-                    ? connectionState.key
-                    : connectionState.value.connectionName,
-            value: cleanUpConfiguration(connectionState.value, schema)
-        });
+        panelTitle === 'Edit'
+            ? handleNewConnection({
+                  key: connectionState.key,
+                  value: cleanUpConfiguration(connectionState.value, schema)
+              })
+            : handleNewConnection({
+                  value: cleanUpConfiguration(connectionState.value, schema)
+              });
 
     const pingConnection = () =>
         handlePingConnection({
@@ -179,6 +195,7 @@ const ConnectionsPanel = ({
             <Comp
                 ableToEdit={!viewMode && panelIsOpen && !uploading}
                 inputValues={connectionState.value}
+                setState={setState}
                 handleInputChange={handleChange}
                 openModal={openModal}
                 connectionPage

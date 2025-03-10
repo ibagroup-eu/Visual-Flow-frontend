@@ -36,7 +36,8 @@ import {
     VALIDATE,
     DATETIME,
     WITH_COLUMN,
-    HANDLE_NULL
+    HANDLE_NULL,
+    AI_TEXT_TASK
 } from './constants';
 import UnitConfig from '../unitConfig';
 
@@ -258,6 +259,18 @@ const jobStages = theme =>
                 maxOutgoingConnections: 1
             },
             show: UnitConfig.JOB.STAGES.VALIDATE
+        },
+        {
+            operation: AI_TEXT_TASK,
+            name: palette.AI_TEXT_TASK,
+            color: theme.palette.primary.background,
+            validation: {
+                minIncomingConnections: 1,
+                maxIncomingConnections: 1,
+                minOutgoingConnections: 1,
+                maxOutgoingConnections: 1
+            },
+            show: UnitConfig.JOB.STAGES.AI_TEXT_TASK
         }
     ].filter(stage => stage.show !== false);
 

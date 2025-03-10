@@ -20,7 +20,7 @@
 import React, { forwardRef, useImperativeHandle, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Fade } from '@material-ui/core';
-import { debounce, uniqueId, get } from 'lodash';
+import { uniqueId, get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import useStyles from './AvroSchema.Styles';
 import types, { NULL } from './types';
@@ -109,10 +109,13 @@ const AvroSchema = forwardRef(
             setIsValid(isValid(fields));
         }, [fields, setIsValid]);
 
-        const onChangeHandler = index => (name, value) =>
+        const onChangeHandler = index => event =>
             setFields(
                 checkDuplicates(
-                    update(fields, index, { ...fields[index], [name]: value })
+                    update(fields, index, {
+                        ...fields[index],
+                        [event.target.name]: event.target.value
+                    })
                 )
             );
 
@@ -138,6 +141,10 @@ const AvroSchema = forwardRef(
 
         const onSearch = ({ target: { value } }) => setCriteria(value?.trim());
 
+        const filteredFields = fields?.filter(field =>
+            field.name?.toUpperCase()?.includes(criteria?.toUpperCase())
+        );
+
         return (
             <Grid container direction="column" className={className}>
                 {filterable && (
@@ -152,26 +159,23 @@ const AvroSchema = forwardRef(
                     </Grid>
                 )}
 
-                {fields
-                    ?.filter(field =>
-                        field.name?.toUpperCase()?.includes(criteria?.toUpperCase())
-                    )
-                    .map((field, index) => (
-                        <Fade key={field.id} in>
-                            <Grid item>
-                                <Row
-                                    {...field}
-                                    index={index}
-                                    editable={editable}
-                                    onChange={debounce(onChangeHandler(index), 50)}
-                                    onAdd={onAddRow(index)}
-                                    onRemove={onRemoveRow(index)}
-                                    onMoveDown={onMoveRowDown(index)}
-                                    onMoveTop={onMoveRowTop(index)}
-                                />
-                            </Grid>
-                        </Fade>
-                    ))}
+                {filteredFields.map((field, index) => (
+                    <Fade key={field.id} in>
+                        <Grid item>
+                            <Row
+                                {...field}
+                                index={index}
+                                editable={editable}
+                                shouldDisableDeleteBtn={filteredFields.length < 2}
+                                onChange={onChangeHandler(index)}
+                                onAdd={onAddRow(index)}
+                                onRemove={onRemoveRow(index)}
+                                onMoveDown={onMoveRowDown(index)}
+                                onMoveTop={onMoveRowTop(index)}
+                            />
+                        </Grid>
+                    </Fade>
+                ))}
             </Grid>
         );
     }

@@ -32,7 +32,6 @@ import Section from './Section';
 const FIELD_COMPONENTS = {
     text: ParamsTextField,
     switch: ParamsSwitchField,
-    email_switch: ParamsSwitchField,
     email: ParamsEmailsField,
     chips: ParamsChipsField
 };
@@ -59,7 +58,7 @@ const FieldFactory = ({
 
     const getField = (key, field) => {
         const FieldComponent = get(FIELD_COMPONENTS, field.type, ParamsTextField);
-
+        // console.log(key, field);
         return (
             <FieldComponent
                 ableToEdit={ableToEdit}
@@ -92,6 +91,7 @@ const FieldFactory = ({
     );
 
     const resolveField = ([key, field]) => {
+        // console.log(key, field);
         if (field.type === 'section') {
             return getSection(key, field);
         }

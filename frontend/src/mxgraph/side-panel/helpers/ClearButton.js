@@ -17,33 +17,91 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import { isEmpty, isUndefined } from 'lodash';
 import { IconButton } from '@material-ui/core';
 import { Cancel } from '@material-ui/icons';
-import { READWRITE } from '../../constants';
-import useStyles from './ClearButton.Styles';
 
-const ClearButton = ({ name, value, ableToEdit, handleInputChange, type }) => {
+import { READWRITE } from '../../constants';
+
+import useStyles from './ClearButton.Styles';
+import ConfirmationDialog from './ConfirmationDialog';
+
+const ClearButton = ({
+    name,
+    value,
+    ableToEdit,
+    handleInputChange,
+    type,
+    hide,
+    showConfirm,
+    fieldToClear,
+    fieldToClearValue
+}) => {
     const classes = useStyles();
+    const { t } = useTranslation();
+
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => setOpen(false);
+
+    const handleOpen = () => setOpen(true);
+
+    const clearHandler = () => {
+        type === READWRITE
+            ? handleInputChange({
+                  target: {
+                      name,
+                      value: ''
+                  }
+              })
+            : handleInputChange(name, '');
+    };
+
+    const isValueEmpty = v => isEmpty(v) || isUndefined(v);
+
+    const clearAfterConfirm = () => {
+        if (fieldToClear && !isValueEmpty(fieldToClearValue)) {
+            handleInputChange({
+                target: {
+                    name: fieldToClear,
+                    value: ''
+                }
+            });
+        }
+
+        clearHandler();
+        handleClose();
+    };
 
     return (
-        <IconButton
-            className={classes.button}
-            disabled={!(ableToEdit && Boolean(value))}
-            onClick={() =>
-                type === READWRITE
-                    ? handleInputChange({
-                          target: {
-                              name,
-                              value: ''
-                          }
-                      })
-                    : handleInputChange(name, '')
-            }
-        >
-            <Cancel />
-        </IconButton>
+        <>
+            <ConfirmationDialog
+                open={open}
+                title={t(
+                    'jobDesigner:readConfiguration.incrementalLoadConfirmation.title'
+                )}
+                message={t(
+                    'jobDesigner:readConfiguration.incrementalLoadConfirmation.message'
+                )}
+                onClose={handleClose}
+                onConfirm={clearAfterConfirm}
+            />
+            <IconButton
+                className={hide ? classes.buttonHidden : classes.button}
+                disabled={!(ableToEdit && Boolean(value))}
+                onClick={
+                    showConfirm || (fieldToClear && !isValueEmpty(fieldToClearValue))
+                        ? handleOpen
+                        : clearHandler
+                }
+            >
+                <Cancel />
+            </IconButton>
+        </>
     );
 };
 ClearButton.propTypes = {
@@ -51,7 +109,11 @@ ClearButton.propTypes = {
     value: PropTypes.any,
     ableToEdit: PropTypes.bool,
     handleInputChange: PropTypes.func,
-    type: PropTypes.string
+    type: PropTypes.string,
+    hide: PropTypes.bool,
+    showConfirm: PropTypes.bool,
+    fieldToClear: PropTypes.string,
+    fieldToClearValue: PropTypes.any
 };
 
 export default ClearButton;

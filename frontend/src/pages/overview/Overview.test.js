@@ -19,7 +19,9 @@
 
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { Overview } from './Overview';
+import connectedOverview, { Overview } from './Overview';
+import configureMockStore from 'redux-mock-store';
+import { Skeleton } from '@material-ui/lab';
 
 describe('Overview', () => {
     const defaultProps = {
@@ -45,5 +47,15 @@ describe('Overview', () => {
         wrapper.setProps({ projectId });
 
         expect(defaultProps.getResourceUtilization).toBeCalledWith(projectId);
+    });
+
+    it('should show loading', () => {
+        const wrapper = mount(<Overview {...defaultProps} />);
+
+        const overview = { data: {}, loading: true };
+
+        wrapper.setProps({ overview });
+
+        expect(wrapper.find(Skeleton)).toBeDefined();
     });
 });

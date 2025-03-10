@@ -86,7 +86,7 @@ export const TitleCell = ({
                     />
                 </Typography>
                 <TagsList
-                    tags={tags}
+                    tags={tags || []}
                     checkedTags={checkedTags}
                     onCheckTags={onCheckTags}
                     resetTags={onCheckTags}

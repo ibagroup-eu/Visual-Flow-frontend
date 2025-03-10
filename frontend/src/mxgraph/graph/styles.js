@@ -22,6 +22,7 @@ import { mxConstants, mxEdgeStyle, mxPerimeter } from './graph';
 import {
     ERROR,
     FAILED,
+    UPSTREAM_FAILED,
     PENDING,
     RUNNING,
     SKIPPED,
@@ -49,7 +50,19 @@ export const getDefaultEdgeStyle = theme => ({
     [mxConstants.STYLE_ROUNDED]: 1
 });
 
-export const getBorderColor = (status, theme) => {
+export const getBorderColor = (status, theme, isInteractiveMode = false) => {
+    if (isInteractiveMode) {
+        const INTERACTIVE_COLORS = {
+            [RUNNING]: theme.palette.success.light,
+            // [SUCCEEDED]: theme.palette.success.dark,
+            [SUCCEEDED]: theme.palette.success.primary,
+            [FAILED]: theme.palette.error.light,
+            [UPSTREAM_FAILED]: theme.palette.warning.main
+        };
+
+        return INTERACTIVE_COLORS[status];
+    }
+
     const COLORS = {
         [SUCCEEDED]: theme.palette.success.light,
         [FAILED]: theme.palette.error.light,

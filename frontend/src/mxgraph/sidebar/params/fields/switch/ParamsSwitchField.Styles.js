@@ -27,5 +27,8 @@ export default makeStyles(theme => ({
     },
     disabled: {
         color: theme.palette.text.disabled
+    },
+    paddings: {
+        padding: '10px 50px 0px 10px'
     }
 }));

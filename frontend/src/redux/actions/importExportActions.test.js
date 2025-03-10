@@ -116,6 +116,27 @@ describe('ImportExport action', () => {
                 ]);
             });
         });
+
+        it('should throw error with message on failure', async () => {
+            const errorResponse = {
+                response: {
+                    data: {
+                        arr: ['smth'],
+                        obj: { keyObj: ['v1', 'v2'] }
+                    }
+                }
+            };
+            jest.spyOn(api, 'importResources').mockRejectedValue(errorResponse);
+
+            return importResources(
+                projectId,
+                data
+            )(dispatch).catch(error =>
+                expect(error.message).toMatch(
+                    'There are some failures:\nkeyObj - v1 v2'
+                )
+            );
+        });
     });
 
     describe('exportResources', () => {

@@ -24,6 +24,7 @@ import { TextField, InputAdornment, IconButton } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const PasswordInput = ({
+    id,
     className,
     onChange,
     placeholder,
@@ -44,6 +45,7 @@ const PasswordInput = ({
 
     return (
         <TextField
+            id={id}
             required={required}
             fullWidth={fullWidth}
             variant="outlined"
@@ -77,6 +79,7 @@ const PasswordInput = ({
 };
 
 PasswordInput.propTypes = {
+    id: PropTypes.string,
     className: PropTypes.string,
     onChange: PropTypes.func,
     label: PropTypes.string,

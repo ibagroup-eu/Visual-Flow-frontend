@@ -32,6 +32,7 @@ import logsReducer from './logsReducer';
 import modalsReducer from './modalsReducer';
 import mxGraphReducer from './mxGraphReducer';
 import settingsUsersRolesReducer from './settingsUsersRolesReducer';
+import currentUserReducer from './currentUserReducer';
 import usersReducer from './usersReducer';
 import rolesReducer from './rolesReducer';
 import oneJobStatusReducer from './oneJobStatusReducer';
@@ -46,6 +47,7 @@ import profileReducer from './profileReducer';
 import historyReducer from './historyReducer';
 import filesReducer from './filesReducer';
 import appSettingsReducer from './appSettingsReducer';
+import clusterUtilsReducer from './clusterUtilsReducer';
 
 const combine = combineReducers({
     routing: routerReducer,
@@ -69,6 +71,7 @@ const combine = combineReducers({
         history: historyReducer
     }),
     user: combineReducers({
+        currentUser: currentUserReducer,
         users: usersReducer,
         roles: rolesReducer,
         profile: profileReducer
@@ -76,7 +79,8 @@ const combine = combineReducers({
     importExport: importExportReducer,
     enhancedTable: enhancedTableReducer,
     files: filesReducer,
-    appSettings: appSettingsReducer
+    appSettings: appSettingsReducer,
+    clusterUtils: clusterUtilsReducer
 });
 
 const reducers = (state, action) =>

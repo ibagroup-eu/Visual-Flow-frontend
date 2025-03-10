@@ -19,29 +19,18 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { READWRITE } from '../../../constants';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import CosProperties from '../common/CosProperties';
-import SelectField from '../../../../components/select-field';
 import Ssl from '../helpers/Ssl';
-
-const anonymousAccess = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
+import IncrementalLoad from '../helpers/IncrementalLoad';
 
 const ANONYMOUS_ACCESS_DEFAULT_VALUES = 'true';
 
 const endpointField = [{ field: 'endpoint' }];
-
 const fields = [{ field: 'bucket' }, { field: 'path' }];
-
 const keyFields = [{ field: 'accessKey' }, { field: 'secretKey' }];
 
 const AwsStorage = ({
@@ -51,60 +40,80 @@ const AwsStorage = ({
     ableToEdit,
     connectionPage,
     connection
-}) => (
-    <>
-        <ReadTextFields
-            fields={endpointField}
-            openModal={openModal}
-            inputValues={inputValues}
-            ableToEdit={ableToEdit}
-            handleInputChange={handleInputChange}
-            connection={connection}
-            required
-        />
-        <SelectField
-            ableToEdit={ableToEdit}
-            label="jobDesigner:readConfiguration.anonymousAccess"
-            name="anonymousAccess"
-            value={inputValues.anonymousAccess}
-            handleInputChange={handleInputChange}
-            menuItems={anonymousAccess}
-            type={READWRITE}
-            defaultValue={ANONYMOUS_ACCESS_DEFAULT_VALUES}
-            connection={connection}
-            required
-        />
-        <Ssl
-            ableToEdit={ableToEdit}
-            value={inputValues.ssl}
-            handleInputChange={handleInputChange}
-            connection={connection}
-        />
-        {inputValues.anonymousAccess === 'false' && (
+}) => {
+    const { t } = useTranslation();
+
+    return (
+        <>
             <ReadTextFields
-                ableToEdit={ableToEdit}
-                fields={keyFields}
-                inputValues={inputValues}
-                handleInputChange={handleInputChange}
+                fields={endpointField}
                 openModal={openModal}
+                inputValues={inputValues}
+                ableToEdit={ableToEdit}
+                handleInputChange={handleInputChange}
                 connection={connection}
-                hidden
                 required
             />
-        )}
-        {!connectionPage && (
-            <>
-                <CosProperties
-                    fields={fields}
-                    openModal={openModal}
-                    inputValues={inputValues}
+
+            <IncrementalLoad
+                inputValues={inputValues}
+                ableToEdit={ableToEdit}
+                handleInputChange={handleInputChange}
+                connection={connection}
+                openModal={openModal}
+            />
+
+            <ParamsSwitchField
+                ableToEdit={ableToEdit}
+                label={t('jobDesigner:readConfiguration.anonymousAccess')}
+                name="anonymousAccess"
+                value={
+                    inputValues.anonymousAccess === undefined
+                        ? undefined
+                        : inputValues.anonymousAccess === 'true'
+                }
+                onChange={handleInputChange}
+                type={READWRITE}
+                defaultValue={ANONYMOUS_ACCESS_DEFAULT_VALUES === 'true'}
+                connection={connection}
+            />
+            {inputValues.anonymousAccess === 'false' && (
+                <ReadTextFields
                     ableToEdit={ableToEdit}
+                    fields={keyFields}
+                    inputValues={inputValues}
                     handleInputChange={handleInputChange}
+                    openModal={openModal}
+                    connection={connection}
+                    hidden
+                    required
                 />
-            </>
-        )}
-    </>
-);
+            )}
+
+            <Ssl
+                ableToEdit={ableToEdit}
+                value={
+                    inputValues.ssl === undefined
+                        ? undefined
+                        : inputValues.ssl === 'true'
+                }
+                handleInputChange={handleInputChange}
+                connection={connection}
+            />
+            {!connectionPage && (
+                <>
+                    <CosProperties
+                        fields={fields}
+                        openModal={openModal}
+                        inputValues={inputValues}
+                        ableToEdit={ableToEdit}
+                        handleInputChange={handleInputChange}
+                    />
+                </>
+            )}
+        </>
+    );
+};
 
 AwsStorage.propTypes = {
     inputValues: PropTypes.object,

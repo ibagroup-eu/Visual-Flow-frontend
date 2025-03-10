@@ -21,8 +21,15 @@ import oneJobStatusReducer from './oneJobStatusReducer';
 import {
     FETCH_JOB_STATUS_START,
     FETCH_JOB_STATUS_SUCCESS,
-    FETCH_JOB_STATUS_FAIL
+    FETCH_JOB_STATUS_FAIL,
+    RESET_JOB_STATUS_SUCCESS
 } from '../actions/types';
+
+jest.mock('react-i18next', () => ({
+    useTranslation: () => ({
+        t: key => key
+    })
+}));
 
 describe('Jobs Reducer', () => {
     const payload = {
@@ -31,6 +38,17 @@ describe('Jobs Reducer', () => {
 
     it('should return the initial state', () => {
         expect(oneJobStatusReducer(undefined)).toEqual({
+            loading: false,
+            status: ''
+        });
+    });
+
+    it('should handle RESET_JOB_STATUS_SUCCESS', () => {
+        const action = {
+            type: RESET_JOB_STATUS_SUCCESS,
+            payload
+        };
+        expect(oneJobStatusReducer(undefined, action)).toEqual({
             loading: false,
             status: ''
         });

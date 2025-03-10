@@ -31,7 +31,8 @@ jest.doMock('../config', () => ({
             },
             MOCK_SERVER: {}
         },
-        BASE_URL: '/vf/ui/'
+        BASE_URL: '/vf/ui/',
+        PLATFORM: 'DATABRICS'
     },
     AUTH: {
         STRATEGY: 'GITHUB',

@@ -39,7 +39,8 @@ describe('ParametersTableRow', () => {
             handleEdit: jest.fn(),
             handleRemove: jest.fn(),
             editing: false,
-            deleting: false
+            deleting: false,
+            editableMode: true
         };
 
         const wrapper = func(<ParametersTableRow {...defaultProps} {...props} />);

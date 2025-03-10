@@ -35,6 +35,9 @@ export default makeStyles(theme => ({
     },
     content: {
         padding: theme.spacing(0, 0.5),
-        color: theme.palette.text.secondary
+        color: theme.palette.text.secondary,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        flexShrink: 0
     }
 }));

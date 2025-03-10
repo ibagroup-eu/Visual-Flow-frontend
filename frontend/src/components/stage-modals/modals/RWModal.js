@@ -20,12 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoModal from '../info';
-import {
-    SHOW_DESCRIPTION,
-    STORAGES,
-    READ as CONSTANTS_READ,
-    WRITE as CONSTANTS_WRITE
-} from '../../../mxgraph/constants';
+import { SHOW_DESCRIPTION, STORAGES } from '../../../mxgraph/constants';
 
 const READ = 'Read';
 const WRITE = 'Write';
@@ -102,6 +97,117 @@ const getQuery = t => ({
     hide: [WRITE]
 });
 
+const getFormatRead = t => ({
+    title: t('ReadWrite:CLUSTER.format.name'),
+    paragraph: t('ReadWrite:CLUSTER.format.value'),
+    paragraph1: '1) Avro format',
+    paragraph2: `${t('ReadWrite:CLUSTER.avroSchema.readName')}. ${t(
+        'ReadWrite:CLUSTER.avroSchema.value'
+    )} ${t('ReadWrite:CLUSTER.avroSchema.value1')}`,
+    paragraph3: t('ReadWrite:CLUSTER.fileSection.name'),
+    paragraph4: t('ReadWrite:CLUSTER.fileSection.value1'),
+    paragraph5: t('ReadWrite:CLUSTER.fileSection.value2'),
+    paragraph6: t('ReadWrite:CLUSTER.fileSection.value3'),
+    paragraph7: t('ReadWrite:CLUSTER.fileSection.value4'),
+
+    paragraph8: '2) Binary format',
+    paragraph9: t('ReadWrite:CLUSTER.binaryFormat.value1'),
+    paragraph10: t('ReadWrite:CLUSTER.binaryFormat.value2'),
+    paragraph11: t('ReadWrite:CLUSTER.binaryFormat.value3'),
+
+    paragraph12: '3) CSV format',
+    paragraph13: t('ReadWrite:CLUSTER.csvFormatRead.value1'),
+    paragraph14: t('ReadWrite:CLUSTER.csvFormatRead.value2'),
+    paragraph15: t('ReadWrite:CLUSTER.fileSection.value1'),
+    paragraph16: t('ReadWrite:CLUSTER.fileSection.value2'),
+    paragraph17: t('ReadWrite:CLUSTER.fileSection.value3'),
+    paragraph18: t('ReadWrite:CLUSTER.fileSection.value4'),
+    paragraph19: t('ReadWrite:CLUSTER.csvFormatRead.value3'),
+    paragraph20: t('ReadWrite:CLUSTER.csvFormatRead.value4'),
+    paragraph21: t('ReadWrite:CLUSTER.csvFormatRead.value5'),
+    paragraph22: t('ReadWrite:CLUSTER.csvFormatRead.value6'),
+    paragraph23: t('ReadWrite:CLUSTER.csvFormatRead.value7'),
+    paragraph24: t('ReadWrite:CLUSTER.csvFormatRead.value8'),
+    paragraph25: t('ReadWrite:CLUSTER.csvFormatRead.value9'),
+    paragraph26: t('ReadWrite:CLUSTER.csvFormatRead.value10'),
+    paragraph27: t('ReadWrite:CLUSTER.csvFormatRead.value11'),
+
+    paragraph29: '4) Delta format',
+    paragraph30: t('ReadWrite:CLUSTER.deltaFormatRead.value1'),
+    paragraph31: t('ReadWrite:CLUSTER.deltaFormatRead.value2'),
+    paragraph32: t('ReadWrite:CLUSTER.deltaFormatRead.value3'),
+
+    paragraph33: '5) JSON format',
+    paragraph34: t('ReadWrite:CLUSTER.fileSection.value1'),
+    paragraph35: t('ReadWrite:CLUSTER.fileSection.value2'),
+    paragraph36: t('ReadWrite:CLUSTER.fileSection.value3'),
+    paragraph37: t('ReadWrite:CLUSTER.fileSection.value4'),
+    paragraph38: t('ReadWrite:CLUSTER.jsonFormatRead.value1'),
+
+    paragraph39: '6) ORC format',
+    paragraph40: t('ReadWrite:CLUSTER.fileSection.value1'),
+    paragraph41: t('ReadWrite:CLUSTER.fileSection.value2'),
+    paragraph42: t('ReadWrite:CLUSTER.fileSection.value3'),
+    paragraph43: t('ReadWrite:CLUSTER.fileSection.value4'),
+    paragraph44: t('ReadWrite:CLUSTER.orcFormatRead.value1'),
+
+    paragraph45: '7) Parquet format',
+    paragraph46: t('ReadWrite:CLUSTER.fileSection.value1'),
+    paragraph47: t('ReadWrite:CLUSTER.fileSection.value2'),
+    paragraph48: t('ReadWrite:CLUSTER.fileSection.value3'),
+    paragraph49: t('ReadWrite:CLUSTER.fileSection.value4'),
+    paragraph50: t('ReadWrite:CLUSTER.parquetFormatRead.value1'),
+
+    paragraph51: '8) Text format',
+    paragraph52: t('ReadWrite:CLUSTER.fileSection.value1'),
+    paragraph53: t('ReadWrite:CLUSTER.fileSection.value2'),
+    paragraph54: t('ReadWrite:CLUSTER.fileSection.value3'),
+    paragraph55: t('ReadWrite:CLUSTER.fileSection.value4'),
+    paragraph56: t('ReadWrite:CLUSTER.parquetFormatRead.value1'),
+
+    hide: [WRITE]
+});
+
+const getFormatWrite = t => ({
+    title: t('ReadWrite:CLUSTER.format.name'),
+    paragraph1: '1) Avro format',
+    paragraph2: `${t('ReadWrite:CLUSTER.avroSchema.readName')}. ${t(
+        'ReadWrite:CLUSTER.avroSchema.value'
+    )} ${t('ReadWrite:CLUSTER.avroSchema.value1')}`,
+    paragraph3: t('ReadWrite:CLUSTER.compressionCodec.value'),
+
+    paragraph4: '2) CSV format',
+    paragraph5: t('ReadWrite:CLUSTER.csvFormatWrite.value1'),
+    paragraph6: t('ReadWrite:CLUSTER.csvFormatWrite.value2'),
+    paragraph7: t('ReadWrite:CLUSTER.csvFormatWrite.value3'),
+    paragraph8: t('ReadWrite:CLUSTER.csvFormatWrite.value4'),
+    paragraph9: t('ReadWrite:CLUSTER.csvFormatWrite.value5'),
+    paragraph10: t('ReadWrite:CLUSTER.csvFormatWrite.value6'),
+    paragraph11: t('ReadWrite:CLUSTER.csvFormatWrite.value7'),
+    paragraph12: t('ReadWrite:CLUSTER.csvFormatWrite.value8'),
+    paragraph13: t('ReadWrite:CLUSTER.csvFormatWrite.value9'),
+    paragraph14: t('ReadWrite:CLUSTER.csvFormatWrite.value10'),
+
+    paragraph15: '3) Delta format',
+    paragraph16: t('ReadWrite:CLUSTER.deltaFormatWrite.value1'),
+    paragraph17: t('ReadWrite:CLUSTER.deltaFormatWrite.value2'),
+    paragraph18: t('ReadWrite:CLUSTER.deltaFormatWrite.value3'),
+
+    paragraph19: '4) JSON format',
+    paragraph20: t('ReadWrite:CLUSTER.jsonFormatWrite.value1'),
+
+    paragraph21: '4) ORC format',
+    paragraph22: t('ReadWrite:CLUSTER.orcFormatWrite.value1'),
+
+    paragraph23: '6) Parquet format',
+    paragraph24: t('ReadWrite:CLUSTER.parquetFormatWrite.value1'),
+
+    paragraph25: '7) Text format',
+    paragraph26: t('ReadWrite:CLUSTER.textFormatWrite.value1'),
+
+    hide: [READ]
+});
+
 const getCosInfo = (label, t) => [
     {
         title: t(`ReadWrite:${label}.accessKey.name`),
@@ -120,23 +226,25 @@ const getCosInfo = (label, t) => [
         paragraph: t(`ReadWrite:${label}.pathInBucket.value`)
     },
     getWriteMode(t),
-    {
-        title: t(`ReadWrite:${label}.format.name`),
-        paragraph: t(`ReadWrite:${label}.format.value`),
-        paragraph1: t(`ReadWrite:${label}.format.value1`)
-    },
-    {
-        title: t(`ReadWrite:${label}.avroSchema.writeName`),
-        paragraph: t(`ReadWrite:${label}.avroSchema.value`),
-        paragraph1: t(`ReadWrite:${label}.avroSchema.value1`),
-        hide: [READ]
-    },
-    {
-        title: t(`ReadWrite:${label}.avroSchema.readName`),
-        paragraph: t(`ReadWrite:${label}.avroSchema.value`),
-        paragraph1: t(`ReadWrite:${label}.avroSchema.value1`),
-        hide: [WRITE]
-    },
+    getFormatRead(t),
+    getFormatWrite(t),
+    // {
+    //     title: t(`ReadWrite:${label}.format.name`),
+    //     paragraph: t(`ReadWrite:${label}.format.value`),
+    //     paragraph1: t(`ReadWrite:${label}.format.value1`)
+    // },
+    // {
+    //     title: t(`ReadWrite:${label}.avroSchema.writeName`),
+    //     paragraph: t(`ReadWrite:${label}.avroSchema.value`),
+    //     paragraph1: t(`ReadWrite:${label}.avroSchema.value1`),
+    //     hide: [READ]
+    // },
+    // {
+    //     title: t(`ReadWrite:${label}.avroSchema.readName`),
+    //     paragraph: t(`ReadWrite:${label}.avroSchema.value`),
+    //     paragraph1: t(`ReadWrite:${label}.avroSchema.value1`),
+    //     hide: [WRITE]
+    // },
     {
         title: t(`ReadWrite:${label}.partitionBy.name`),
         paragraph: t(`ReadWrite:${label}.partitionBy.value`),
@@ -181,6 +289,50 @@ const getDB2 = t => [
     {
         title: t('ReadWrite:DB2.certData.name'),
         paragraph: t('ReadWrite:DB2.certData.value')
+    },
+    {
+        title: t('ReadWrite:DB2.prepareQuery.name'),
+        paragraph1: t('ReadWrite:DB2.prepareQuery.value'),
+        paragraph2: t('ReadWrite:DB2.prepareQuery.value1')
+    },
+    {
+        title: t('ReadWrite:DB2.sessionInitStatement.name'),
+        paragraph: t('ReadWrite:DB2.sessionInitStatement.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DB2.partitionColumn.name'),
+        paragraph: t('ReadWrite:DB2.partitionColumn.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DB2.numberOfpartitions.name'),
+        paragraph: t('ReadWrite:DB2.numberOfpartitions.value')
+    },
+    {
+        title: t('ReadWrite:DB2.fetchSize.name'),
+        paragraph: t('ReadWrite:DB2.fetchSize.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DB2.batchSize.name'),
+        paragraph: t('ReadWrite:DB2.batchSize.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DB2.createTableOptions.name'),
+        paragraph: t('ReadWrite:DB2.createTableOptions.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DB2.createTableColumnTypes.name'),
+        paragraph: t('ReadWrite:DB2.createTableColumnTypes.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DB2.customSchema.name'),
+        paragraph: t('ReadWrite:DB2.customSchema.value'),
+        hide: [WRITE]
     }
 ];
 
@@ -461,23 +613,20 @@ const getCluster = t => [
         paragraph: t('ReadWrite:CLUSTER.fileName.value'),
         hide: [READ]
     },
-    {
-        title: t('ReadWrite:CLUSTER.format.name'),
-        paragraph: t('ReadWrite:CLUSTER.format.value'),
-        paragraph1: t('ReadWrite:CLUSTER.format.value1')
-    },
-    {
-        title: t('ReadWrite:CLUSTER.avroSchema.writeName'),
-        paragraph: t('ReadWrite:CLUSTER.avroSchema.value'),
-        paragraph1: t('ReadWrite:CLUSTER.avroSchema.value1'),
-        hide: [READ]
-    },
-    {
-        title: t('ReadWrite:CLUSTER.avroSchema.readName'),
-        paragraph: t('ReadWrite:CLUSTER.avroSchema.value'),
-        paragraph1: t('ReadWrite:CLUSTER.avroSchema.value1'),
-        hide: [WRITE]
-    },
+    getFormatRead(t),
+    getFormatWrite(t),
+    // {
+    //     title: t('ReadWrite:CLUSTER.avroSchema.writeName'),
+    //     paragraph: t('ReadWrite:CLUSTER.avroSchema.value'),
+    //     paragraph1: t('ReadWrite:CLUSTER.avroSchema.value1'),
+    //     hide: [READ]
+    // },
+    // {
+    //     title: t('ReadWrite:CLUSTER.avroSchema.readName'),
+    //     paragraph: t('ReadWrite:CLUSTER.avroSchema.value'),
+    //     paragraph1: t('ReadWrite:CLUSTER.avroSchema.value1'),
+    //     hide: [WRITE]
+    // },
     {
         title: t('ReadWrite:CLUSTER.partitionBy.name'),
         paragraph: t('ReadWrite:CLUSTER.partitionBy.value'),
@@ -570,14 +719,255 @@ const getAPI = t => [
     }
 ];
 
+const getDatabricks = t => [
+    {
+        title: t('ReadWrite:DATABRICKS.catalog.name'),
+        paragraph: t('ReadWrite:DATABRICKS.catalog.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.schema.name'),
+        paragraph: t('ReadWrite:DATABRICKS.schema.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.objectType.name'),
+        paragraph: t('ReadWrite:DATABRICKS.objectType.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.tableRead.name'),
+        paragraph: t('ReadWrite:DATABRICKS.tableRead.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.tableWrite.name'),
+        paragraph: t('ReadWrite:DATABRICKS.tableWrite.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.volume.name'),
+        paragraph: t('ReadWrite:DATABRICKS.volume.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.overwriteSchema.name'),
+        paragraph: t('ReadWrite:DATABRICKS.overwriteSchema.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.mergeSchema.name'),
+        paragraph: t('ReadWrite:DATABRICKS.mergeSchema.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.tableVersionTimestamp.name'),
+        paragraph: t('ReadWrite:DATABRICKS.tableVersionTimestamp.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.tableVersion.name'),
+        paragraph: t('ReadWrite:DATABRICKS.tableVersion.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.replaceWhere.name'),
+        paragraph: t('ReadWrite:DATABRICKS.replaceWhere.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.maxRecordPerFile.name'),
+        paragraph: t('ReadWrite:DATABRICKS.maxRecordPerFile.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.path.name'),
+        paragraph: t('ReadWrite:DATABRICKS.path.value')
+    },
+    // {
+    //     title: t('ReadWrite:DATABRICKS.format.name'),
+    //     paragraph: t('ReadWrite:DATABRICKS.format.value'),
+    //     paragraph1: t('ReadWrite:DATABRICKS.format.value1')
+    // },
+    // {
+    //     title: t('ReadWrite:DATABRICKS.avroSchema.writeName'),
+    //     paragraph: t('ReadWrite:DATABRICKS.avroSchema.value'),
+    //     paragraph1: t('ReadWrite:DATABRICKS.avroSchema.value1'),
+    //     hide: [READ]
+    // },
+    // {
+    //     title: t('ReadWrite:DATABRICKS.avroSchema.readName'),
+    //     paragraph: t('ReadWrite:DATABRICKS.avroSchema.value'),
+    //     paragraph1: t('ReadWrite:DATABRICKS.avroSchema.value1'),
+    //     hide: [WRITE]
+    // },
+    getWriteMode(t),
+    getFormatRead(t),
+    getFormatWrite(t),
+    {
+        title: t('ReadWrite:DATABRICKS.partitionBy.name'),
+        paragraph: t('ReadWrite:DATABRICKS.partitionBy.value'),
+        paragraph1: t('ReadWrite:DATABRICKS.partitionBy.value1'),
+        paragraph2: t('ReadWrite:DATABRICKS.partitionBy.value2'),
+        hide: [READ]
+    }
+];
+
+const getDatabricksJDBC = t => [
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.JDBCURL.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.JDBCURL.value'),
+        paragraph1: t('ReadWrite:DATABRICKSJDBC.JDBCURL.value1'),
+        paragraph2: t('ReadWrite:DATABRICKSJDBC.JDBCURL.value2')
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.user.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.user.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.password.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.password.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.catalog.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.catalog.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.schema.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.schema.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.tableRead.name'),
+        paragraph: t('ReadWrite:DATABRICKS.tableRead.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKS.tableWrite.name'),
+        paragraph: t('ReadWrite:DATABRICKS.tableWrite.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.sqlStatement.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.sqlStatement.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.sessionInitStatement.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.sessionInitStatement.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.partitionColumn.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.partitionColumn.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.numberOfpartitions.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.numberOfpartitions.value')
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.fetchSize.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.fetchSize.value'),
+        hide: [WRITE]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.batchSize.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.batchSize.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.createTableOptions.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.createTableOptions.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.createTableColumnTypes.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.createTableColumnTypes.value'),
+        hide: [READ]
+    },
+    {
+        title: t('ReadWrite:DATABRICKSJDBC.customSchema.name'),
+        paragraph: t('ReadWrite:DATABRICKSJDBC.customSchema.value'),
+        hide: [WRITE]
+    },
+
+    getWriteMode(t)
+];
+
+const getAsure = t => [
+    {
+        title: t('ReadWrite:ASURE.storageAccount.name'),
+        paragraph: t('ReadWrite:ASURE.storageAccount.value')
+    },
+    {
+        title: t('ReadWrite:ASURE.authenticationType.name'),
+        paragraph: t('ReadWrite:ASURE.authenticationType.value')
+    },
+    {
+        title: t('ReadWrite:ASURE.storageAccountKey.name'),
+        paragraph: t('ReadWrite:ASURE.storageAccountKey.value')
+    },
+    {
+        title: t('ReadWrite:ASURE.SASToken.name'),
+        paragraph: t('ReadWrite:ASURE.SASToken.value')
+    },
+    {
+        title: t('ReadWrite:ASURE.container.name'),
+        paragraph: t('ReadWrite:ASURE.container.value')
+    },
+    {
+        title: t('ReadWrite:ASURE.pathInContainer.name'),
+        paragraph: t('ReadWrite:ASURE.pathInContainer.value')
+    },
+    {
+        title: t('ReadWrite:GOOGLE.writeMode.name'),
+        paragraph: t('ReadWrite:GOOGLE.writeMode.value'),
+        paragraph1: t('ReadWrite:GOOGLE.writeMode.value1'),
+        paragraph2: t('ReadWrite:GOOGLE.writeMode.value2'),
+        hide: [READ]
+    },
+    getFormatRead(t),
+    getFormatWrite(t),
+    {
+        title: t('ReadWrite:GOOGLE.partitionBy.name'),
+        paragraph: t('ReadWrite:GOOGLE.partitionBy.value'),
+        paragraph1: t('ReadWrite:GOOGLE.partitionBy.value1'),
+        paragraph2: t('ReadWrite:GOOGLE.partitionBy.value2'),
+        hide: [READ]
+    }
+];
+
+const getGoogle = t => [
+    {
+        title: t('ReadWrite:GOOGLE.pathToKey.name'),
+        paragraph: t('ReadWrite:GOOGLE.pathToKey.value')
+    },
+    {
+        title: t('ReadWrite:GOOGLE.bucket.name'),
+        paragraph: t('ReadWrite:GOOGLE.bucket.value')
+    },
+    {
+        title: t('ReadWrite:GOOGLE.pathInBucket.name'),
+        paragraph: t('ReadWrite:GOOGLE.pathInBucket.value')
+    },
+    {
+        title: t('ReadWrite:GOOGLE.writeMode.name'),
+        paragraph: t('ReadWrite:GOOGLE.writeMode.value'),
+        paragraph1: t('ReadWrite:GOOGLE.writeMode.value1'),
+        paragraph2: t('ReadWrite:GOOGLE.writeMode.value2'),
+        hide: [READ]
+    },
+    getFormatRead(t),
+    getFormatWrite(t),
+    {
+        title: t('ReadWrite:GOOGLE.partitionBy.name'),
+        paragraph: t('ReadWrite:GOOGLE.partitionBy.value'),
+        paragraph1: t('ReadWrite:GOOGLE.partitionBy.value1'),
+        paragraph2: t('ReadWrite:GOOGLE.partitionBy.value2'),
+        hide: [READ]
+    }
+];
+
 const RWModal = props => {
     const { t } = useTranslation();
 
     const storages = Object.values(STORAGES)
-        .filter(
-            ({ hide }) =>
-                ![CONSTANTS_READ, CONSTANTS_WRITE].every(v => hide?.includes(v))
-        )
         .map(v => v.label)
         .sort();
     return (
@@ -598,6 +988,10 @@ const RWModal = props => {
             clickhouse={getClickHouse(t)}
             kafka={getKafka(t)}
             api={getAPI(t)}
+            databricks={getDatabricks(t)}
+            databricksJDBC={getDatabricksJDBC(t)}
+            asure={getAsure(t)}
+            google={getGoogle(t)}
             {...props}
         />
     );

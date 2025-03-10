@@ -31,7 +31,10 @@ import {
     TextField
 } from '@material-ui/core';
 import { findIndex } from 'lodash';
+import classNames from 'classnames';
+import { AddOutlined } from '@material-ui/icons';
 import useStyles from './DataframeAddColumnButton.Styles';
+// import theme from '../../../../theme';
 
 const DataframeAddColumnButton = ({
     columns,
@@ -51,6 +54,8 @@ const DataframeAddColumnButton = ({
     const renameField = columns[renameFieldIndex];
     const sameName =
         findIndex(columns, ['column', columnName.trim()]) !== -1 && !!anchorEl;
+
+    const isDisabled = !editable;
 
     const onAddColumn = useCallback(
         event => {
@@ -92,10 +97,12 @@ const DataframeAddColumnButton = ({
     return (
         <>
             <Button
-                disabled={!editable}
+                className={classNames({ [classes.btn]: editable })}
+                disabled={isDisabled}
                 ref={buttonRef}
                 aria-describedby="add-column"
                 onClick={onAddColumn}
+                startIcon={<AddOutlined />}
             >
                 {t('jobDesigner:Dataframe.toolbar.addColumn')}
             </Button>

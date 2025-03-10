@@ -48,7 +48,8 @@ const theme = createTheme({
         success: {
             main: '#68C26B',
             light: '#81C784',
-            background: '#F0FFED'
+            background: '#F0FFED',
+            primary: '#539B56'
         },
         error: {
             main: '#FF5F53',

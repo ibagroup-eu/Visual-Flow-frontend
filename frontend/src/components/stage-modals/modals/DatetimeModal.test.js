@@ -33,5 +33,7 @@ describe('DatetimeModal', () => {
         ['trunc', 'date_trunc', 'to_unix_timestamp'].forEach((value, index) =>
             expect(formatType(value)).toBe(`value${index + 2}`)
         );
+
+        expect(formatType('default')).toBe('value1');
     });
 });

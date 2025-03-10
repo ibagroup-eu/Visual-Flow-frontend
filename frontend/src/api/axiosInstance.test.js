@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { axiosSimpleInstance, axiosInstance, getLocation } from './axiosInstance';
 import { set } from 'lodash';
+import { axiosSimpleInstance, axiosInstance, getLocation } from './axiosInstance';
 
 describe('axiosInstance', () => {
     require('./axiosInstance');
@@ -27,7 +27,9 @@ describe('axiosInstance', () => {
     describe('Response interceptor', () => {
         it('should return response', () => {
             [axiosInstance].forEach(value => {
-                const response = { config: { method: 'get' } };
+                const response = {
+                    config: { method: 'get', params: {}, url: '/something' }
+                };
                 const actual = value.interceptors.response.handlers[0].fulfilled(
                     response
                 );
@@ -38,7 +40,7 @@ describe('axiosInstance', () => {
         it('should return response without get and statusText "No Content"', () => {
             [axiosInstance].forEach(value => {
                 const response = {
-                    config: { method: 'post' },
+                    config: { method: 'post', params: {}, url: '/something' },
                     statusText: 'No Content'
                 };
                 const actual = value.interceptors.response.handlers[0].fulfilled(
@@ -51,7 +53,7 @@ describe('axiosInstance', () => {
         it('should return response without get and statusText "content"', () => {
             [axiosInstance].forEach(value => {
                 const response = {
-                    config: { method: 'post' },
+                    config: { method: 'post', params: {}, url: '/something' },
                     statusText: 'content'
                 };
                 const actual = value.interceptors.response.handlers[0].fulfilled(

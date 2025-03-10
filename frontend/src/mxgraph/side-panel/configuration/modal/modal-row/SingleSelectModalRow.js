@@ -21,8 +21,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import classNames from 'classnames';
-import { TableCell, TableRow, TextField, Radio } from '@material-ui/core';
+import {
+    TableCell,
+    TableRow,
+    TextField,
+    Radio,
+    Tooltip,
+    withStyles
+} from '@material-ui/core';
 import useStyles from './SingleSelectModalRow.Styles';
+
+const PositionedTooltip = withStyles(() => ({
+    tooltip: {
+        top: -7
+    }
+}))(Tooltip);
 
 const SingleSelectModalRow = ({
     ableToEdit,
@@ -30,11 +43,13 @@ const SingleSelectModalRow = ({
     name,
     selectedValue,
     setSelectedValue,
-    defaultSelected
+    defaultSelected,
+    tooltip
 }) => {
     const { t } = useTranslation();
     const selectedRef = React.useRef(null);
     const classes = useStyles();
+    const [tooltipOpened, setTooltipOpened] = React.useState(false);
 
     React.useEffect(() => {
         if (defaultSelected) {
@@ -43,17 +58,26 @@ const SingleSelectModalRow = ({
     }, [defaultSelected]);
 
     return (
-        <TableRow ref={selectedValue === id ? selectedRef : null} key={id}>
+        <TableRow
+            ref={selectedValue === id ? selectedRef : null}
+            key={id}
+            onMouseEnter={() => setTooltipOpened(true)}
+            onMouseLeave={() => setTooltipOpened(false)}
+        >
             {(!!selectedValue || ableToEdit) && (
                 <TableCell className={classes.cell}>
-                    <Radio
-                        disabled={!ableToEdit}
-                        className={classes.radioButtonCell}
-                        checked={selectedValue === id}
-                        onChange={event => setSelectedValue(event.target.value)}
-                        value={id}
-                        color="secondary"
-                    />
+                    <PositionedTooltip title={tooltip} open={tooltipOpened} arrow>
+                        <Radio
+                            disabled={!ableToEdit}
+                            className={classes.radioButtonCell}
+                            checked={selectedValue === id}
+                            onChange={event => setSelectedValue(event.target.value)}
+                            value={id}
+                            color="secondary"
+                            onFocus={() => setTooltipOpened(true)}
+                            onBlur={() => setTooltipOpened(false)}
+                        />
+                    </PositionedTooltip>
                 </TableCell>
             )}
             <TableCell className={classNames(classes.cell, classes.nameCell)}>
@@ -80,7 +104,8 @@ SingleSelectModalRow.propTypes = {
     name: PropTypes.string,
     selectedValue: PropTypes.string,
     setSelectedValue: PropTypes.func,
-    defaultSelected: PropTypes.bool
+    defaultSelected: PropTypes.bool,
+    tooltip: PropTypes.string
 };
 
 export default SingleSelectModalRow;

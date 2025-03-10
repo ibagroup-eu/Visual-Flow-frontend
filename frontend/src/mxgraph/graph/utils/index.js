@@ -20,3 +20,4 @@
 export { toObject, getNodeType } from './attr';
 export { findJobInstance } from './job';
 export { addStyles } from './addStyles';
+export { isStageRunnable } from './isStageRunnable';

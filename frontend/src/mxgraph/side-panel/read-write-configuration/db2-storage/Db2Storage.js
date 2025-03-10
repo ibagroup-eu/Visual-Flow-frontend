@@ -17,23 +17,17 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { READ, WRITE, READWRITE } from '../../../constants';
 import SelectField from '../../../../components/select-field';
-
-const customSql = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
+import ReadWriteEditorField from '../../../../components/rw-editor-field';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
+import JDBCProperties from '../jdbc-properties';
+import IncrementalLoad from '../helpers/IncrementalLoad';
 
 const customFields = [{ field: 'schema' }, { field: 'table' }];
 
@@ -76,13 +70,27 @@ const Db2Storage = ({
     connectionPage,
     connection
 }) => {
-    let value = inputValues.truncateMode;
-    if (!showCascade(inputValues.storage)) {
-        const valueTruncateMode = truncateMode.map(v => v.value);
-        if (!valueTruncateMode.includes(inputValues.truncateMode)) {
-            value = 'None';
+    const { t } = useTranslation();
+    const itemsList = showCascade(inputValues.storage)
+        ? truncateModeCascade
+        : truncateMode;
+
+    useEffect(() => {
+        if (
+            inputValues.operation === WRITE &&
+            inputValues.storage &&
+            !showCascade(inputValues.storage) &&
+            inputValues.truncateMode === 'Cascade'
+        ) {
+            handleInputChange({
+                target: {
+                    name: 'truncateMode',
+                    value: 'None'
+                }
+            });
         }
-    }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inputValues.storage]);
 
     return (
         <>
@@ -105,18 +113,55 @@ const Db2Storage = ({
                 hidden
                 required
             />
+
+            <IncrementalLoad
+                inputValues={inputValues}
+                ableToEdit={ableToEdit}
+                handleInputChange={handleInputChange}
+                connection={connection}
+                openModal={openModal}
+            />
+
             {inputValues.operation === READ && (
-                <SelectField
-                    ableToEdit={ableToEdit}
-                    label="jobDesigner:readConfiguration.customSql"
-                    name="customSql"
-                    value={inputValues.customSql}
-                    handleInputChange={handleInputChange}
-                    menuItems={customSql}
-                    type={READWRITE}
-                />
+                <>
+                    <ParamsSwitchField
+                        ableToEdit={ableToEdit}
+                        label={t('jobDesigner:readConfiguration.customSql')}
+                        name="customSql"
+                        value={
+                            inputValues.customSql === undefined
+                                ? undefined
+                                : inputValues.customSql === 'true'
+                        }
+                        onChange={handleInputChange}
+                        type={READWRITE}
+                        defaultValue={false}
+                    />
+                    {!inputValues.customSql || inputValues.customSql === 'false' ? (
+                        <ReadTextFields
+                            ableToEdit={ableToEdit}
+                            fields={customFields}
+                            inputValues={inputValues}
+                            handleInputChange={handleInputChange}
+                            openModal={openModal}
+                            required
+                        />
+                    ) : (
+                        <ReadWriteEditorField
+                            name="option.dbtable"
+                            placeholder={t(
+                                'jobDesigner:readConfiguration.optiondbtable'
+                            )}
+                            inputValues={inputValues}
+                            onChange={handleInputChange}
+                            ableToEdit={ableToEdit}
+                            openModal={openModal}
+                            storageName={inputValues.storage}
+                        />
+                    )}
+                </>
             )}
-            {inputValues.customSql === 'false' && (
+            {inputValues.operation === WRITE && (
                 <ReadTextFields
                     ableToEdit={ableToEdit}
                     fields={customFields}
@@ -126,26 +171,25 @@ const Db2Storage = ({
                     required
                 />
             )}
-            {inputValues.customSql === 'true' && (
-                <ReadTextFields
-                    ableToEdit={ableToEdit}
-                    fields={[{ field: 'option.dbtable', rows: 6 }]}
-                    inputValues={inputValues}
-                    handleInputChange={handleInputChange}
-                    openModal={openModal}
-                    nameWIthPoint
-                />
-            )}
-            {inputValues.operation === WRITE && (
+            {!connectionPage && (
                 <>
                     <ReadTextFields
                         ableToEdit={ableToEdit}
-                        fields={customFields}
+                        fields={[{ field: 'prepareQuery' }]}
                         inputValues={inputValues}
                         handleInputChange={handleInputChange}
                         openModal={openModal}
-                        required
                     />
+                    <JDBCProperties
+                        inputValues={inputValues}
+                        handleInputChange={handleInputChange}
+                        openModal={openModal}
+                        ableToEdit={ableToEdit}
+                    />
+                </>
+            )}
+            {inputValues.operation === WRITE && (
+                <>
                     <WriteMode
                         disabled={!ableToEdit}
                         value={inputValues.writeMode}
@@ -156,13 +200,13 @@ const Db2Storage = ({
                             ableToEdit={ableToEdit}
                             label="jobDesigner:readConfiguration.truncateMode"
                             name="truncateMode"
-                            value={value || ''}
-                            handleInputChange={handleInputChange}
-                            menuItems={
-                                showCascade(inputValues.storage)
-                                    ? truncateModeCascade
-                                    : truncateMode
+                            value={
+                                itemsList.find(
+                                    item => item.value === inputValues.truncateMode
+                                )?.value || ''
                             }
+                            handleInputChange={handleInputChange}
+                            menuItems={itemsList}
                             type={READWRITE}
                         />
                     )}

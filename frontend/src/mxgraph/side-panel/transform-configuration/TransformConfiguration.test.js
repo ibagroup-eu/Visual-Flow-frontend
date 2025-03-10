@@ -1,17 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import SelectField from '../../../components/select-field';
 import { shallow } from 'enzyme';
-import { TextField } from '@material-ui/core';
+import SelectField from '../../../components/select-field';
 import ReadTextFields from '../../../components/rw-text-fields';
 import TransformConfiguration from './TransformConfiguration';
+import ReadWriteEditorField from '../../../components/rw-editor-field';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
     useTranslation: jest.fn()
 }));
 
-describe('SortConfiguration', () => {
+describe('TransformConfiguration', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             state: { name: 'test', operation: 'TRANSFORM', mode: 'Full_SQL' },
@@ -52,7 +52,7 @@ describe('SortConfiguration', () => {
 
     it('TextFields should be render and change', () => {
         const [wrapper] = init({}, true);
-        wrapper.find(TextField).prop('onChange')({
+        wrapper.find(ReadWriteEditorField).prop('onChange')({
             target: { name: 'test', value: 1 }
         });
     });

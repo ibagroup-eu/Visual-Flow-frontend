@@ -21,10 +21,13 @@ import { mount } from 'enzyme';
 import React from 'react';
 import { Box, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { isFunction } from 'lodash';
+
 import Configuration, { isDuplicatedName } from './Configuration';
 import SaveCancelButtons from '../buttons/SaveCancelButtons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
 import { CDC, JOIN } from '../../constants';
+import ConnectionsModal from '../read-write-configuration/connections-modal';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -38,7 +41,9 @@ describe('Configuration', () => {
         const defaultProps = {
             configuration: {},
             state: {},
-            setState: jest.fn(),
+            setState: jest
+                .fn()
+                .mockImplementation(fn => (isFunction(fn) ? fn(props.state) : null)),
             ableToEdit: true,
             isDisabled: jest.fn(),
             saveCell: jest.fn(),
@@ -70,7 +75,8 @@ describe('Configuration', () => {
                 })
             },
             Component: FakeComponent,
-            connections: []
+            connections: [],
+            data: { definition: '' }
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));
@@ -100,21 +106,6 @@ describe('Configuration', () => {
         );
 
         expect(props.selectedStorage).toHaveBeenCalledWith('test');
-    });
-
-    it('should set connection with key = connectionName', () => {
-        init(
-            {
-                state: {
-                    operation: 'READ' || 'WRITE',
-                    storage: 'test',
-                    connectionName: 'test'
-                },
-                connections: [{ key: test }]
-            },
-            true,
-            mount
-        );
     });
 
     it('should set connection with connectionName = null', () => {
@@ -217,6 +208,39 @@ describe('Configuration', () => {
         wrapper.update();
 
         expect(wrapper.find(ParametersModal).prop('display')).toBeFalsy();
+    });
+
+    it('handleChangeConnection func should run', () => {
+        const [wrapper, props] = init(
+            {
+                configuration: {},
+                state: {
+                    operation: 'READ'
+                },
+                connections: [
+                    {
+                        key: '100500w',
+                        value: { storage: 'db2', connectionName: '100500w' }
+                    }
+                ]
+            },
+            true
+        );
+
+        wrapper.find(FakeComponent).prop('openModal')('connectionName');
+
+        wrapper.update();
+
+        expect(wrapper.find(ConnectionsModal).prop('display')).toBeTruthy();
+        wrapper.find(ConnectionsModal).prop('onSetValue')('100500w');
+
+        expect(props.setState).toHaveBeenCalled();
+
+        wrapper.find(ConnectionsModal).prop('onClose')();
+
+        wrapper.update();
+
+        expect(wrapper.find(ConnectionsModal).prop('display')).toBeFalsy();
     });
 
     it('should handle onSetValue', () => {

@@ -59,12 +59,14 @@ import {
     VALIDATE,
     WITH_COLUMN,
     DATETIME,
-    HANDLE_NULL
+    HANDLE_NULL,
+    AI_TEXT_TASK
 } from '../../../mxgraph/constants';
 import ValidateModal from '../modals/ValidateModal';
 import DatetimeModal from '../modals/DatetimeModal';
 import WithColumnModal from '../modals/WithColumnModal';
 import HandleNullModal from '../modals/HandleNullModal';
+import AiModal from '../modals/AiModal';
 
 const StageModal = ({ stageName, ...restProps }) => {
     // eslint-disable-next-line complexity
@@ -115,6 +117,8 @@ const StageModal = ({ stageName, ...restProps }) => {
                 return <DatetimeModal {...restProps} />;
             case HANDLE_NULL:
                 return <HandleNullModal {...restProps} />;
+            case AI_TEXT_TASK:
+                return <AiModal {...restProps} />;
             default:
                 return null;
         }

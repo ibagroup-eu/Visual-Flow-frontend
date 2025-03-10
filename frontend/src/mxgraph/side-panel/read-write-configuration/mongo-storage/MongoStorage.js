@@ -23,6 +23,7 @@ import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE } from '../../../constants';
 import Ssl from '../helpers/Ssl';
+import IncrementalLoad from '../helpers/IncrementalLoad';
 
 const fields = [
     [{ field: 'host' }, { field: 'port' }, { field: 'user' }],
@@ -69,9 +70,22 @@ const MongoStorage = ({
             connection={connection}
             required
         />
+
+        <IncrementalLoad
+            inputValues={inputValues}
+            ableToEdit={ableToEdit}
+            handleInputChange={handleInputChange}
+            connection={connection}
+            openModal={openModal}
+        />
+
         <Ssl
             ableToEdit={ableToEdit}
-            value={inputValues.ssl}
+            value={
+                inputValues.ssl === undefined
+                    ? undefined
+                    : inputValues.ssl === 'true'
+            }
             handleInputChange={handleInputChange}
             connection={connection}
         />

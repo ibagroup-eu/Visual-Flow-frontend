@@ -40,7 +40,8 @@ import {
     VALIDATE,
     WAIT,
     WITH_COLUMN,
-    WRITE
+    WRITE,
+    AI_TEXT_TASK
 } from '../../constants';
 import StageIcon from './StageIcon';
 
@@ -55,6 +56,7 @@ describe('StageIcon', () => {
         { key: JOIN, value: 'Join' },
         { key: CDC, value: 'ChangeDataCapture' },
         { key: UNION, value: 'Union' },
+        //{ key: AI_TEXT_TASK, value: 'AI Text Task' },
         { key: JOB, value: 'Memo(ForwardRef(TransformOutlinedIcon))' },
         { key: PIPELINE, value: 'Memo(ForwardRef(TimelineOutlinedIcon))' },
         { key: NOTIFICATION, value: 'Memo(ForwardRef(MailOutlinedIcon))' },

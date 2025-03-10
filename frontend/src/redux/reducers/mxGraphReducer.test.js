@@ -33,12 +33,14 @@ import {
     SET_SIDE_PANEL_DIRTY,
     SET_PARAMS_DIRTY,
     SET_PANNING,
-    SET_LOGS_MODAL
+    SET_LOGS_MODAL,
+    SET_STAGE_COPY
 } from '../actions/types';
 import mxGraphReducer from './mxGraphReducer';
 
 describe('mxGraph Reducer', () => {
     const initialState = {
+        stageCopy: {},
         currentCell: '',
         sidePanelIsOpen: false,
         data: {},
@@ -50,7 +52,13 @@ describe('mxGraph Reducer', () => {
         fields: null,
         zoomValue: 1,
         panning: false,
-        showLogsModal: false
+        showLogsModal: false,
+        interactive: {
+            data: [],
+            interactiveMode: false,
+            offset: 0
+        },
+        jobMetadata: null
     };
 
     it('should return the initial state', () => {
@@ -262,6 +270,23 @@ describe('mxGraph Reducer', () => {
         expect(mxGraphReducer(undefined, action)).toEqual({
             ...initialState,
             showLogsModal: 'dirty'
+        });
+    });
+
+    it('should handle SET_STAGE_COPY', () => {
+        const stageCopy = {
+            data: {},
+            project: 'vf-dev-backend',
+            type: 'PIPELINE'
+        };
+        const action = {
+            type: SET_STAGE_COPY,
+            payload: stageCopy
+        };
+
+        expect(mxGraphReducer(undefined, action)).toEqual({
+            ...initialState,
+            stageCopy
         });
     });
 });

@@ -23,8 +23,10 @@ import { TextField } from '@material-ui/core';
 import AddConstantOperation from './AddConstantOperation';
 
 describe('AddConstantOperation', () => {
+    let defaultProps;
+
     const init = () => {
-        const defaultProps = {
+        defaultProps = {
             state: { 'option.constant': 'test' },
             ableToEdit: true,
             handleInputChange: jest.fn()
@@ -35,5 +37,16 @@ describe('AddConstantOperation', () => {
     it('should render without crashes', () => {
         const wrapper = init();
         expect(wrapper.find(TextField).exists()).toBeTruthy();
+    });
+
+    it('should render with empty value', () => {
+        const props = {
+            ...defaultProps,
+            state: {}
+        };
+
+        const wrapper = shallow(<AddConstantOperation {...props} />);
+        expect(wrapper.find(TextField).exists()).toBeTruthy();
+        expect(wrapper.find(TextField).prop('value')).toBe('');
     });
 });

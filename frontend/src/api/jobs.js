@@ -25,8 +25,39 @@ export default {
     getJobById: (projectId, jobId) =>
         axiosInstance.get(`/project/${projectId}/job/${jobId}`),
 
+    getInteractiveJobSession: (projectId, jobId, runId) =>
+        axiosInstance.get(`/project/${projectId}/job/${jobId}/session/${runId}`),
+
+    deleteInteractiveJobSession: (projectId, jobId, runId) =>
+        axiosInstance.delete(`/project/${projectId}/job/${jobId}/session/${runId}`),
+
+    interactiveSessionEvent: (projectId, jobId, runId, data = {}) =>
+        axiosInstance.post(
+            `/project/${projectId}/job/${jobId}/session/${runId}/events`,
+            data
+        ),
+
+    updateInteractiveJobSession: (projectId, jobId, runId, data) =>
+        axiosInstance.put(
+            `/project/${projectId}/job/${jobId}/session/${runId}`,
+            data
+        ),
+
+    fetchJobMetadata: (projectId, jobId, runId, offset = 0) =>
+        axiosInstance.get(
+            `/project/${projectId}/job/${jobId}/session/${runId}/metadata`,
+            {
+                params: { offset }
+            }
+        ),
+
     getJobLogs: (projectId, jobId) =>
         axiosInstance.get(`/project/${projectId}/job/${jobId}/logs`),
+
+    getDatabricksJobLogs: (projectId, pipeLineId, jobName) =>
+        axiosInstance.get(
+            `/project/${projectId}/pipeline/${pipeLineId}/jobName/${jobName}/logs`
+        ),
 
     getJobHistoryLogs: (projectId, jobId, logId) =>
         axiosInstance.get(`/project/${projectId}/job/${jobId}/logsHistory/${logId}`),
@@ -40,14 +71,18 @@ export default {
     deleteJob: (projectId, jobId) =>
         axiosInstance.delete(`/project/${projectId}/job/${jobId}`),
 
-    runJob: (projectId, jobId) =>
-        axiosInstance.post(`/project/${projectId}/job/${jobId}/run`),
+    runJob: (projectId, jobId, interactive = false) =>
+        axiosInstance.post(`/project/${projectId}/job/${jobId}/run`, null, {
+            params: { interactive }
+        }),
 
-    stopJob: (projectId, jobId) =>
-        axiosInstance.post(`/project/${projectId}/job/${jobId}/stop`),
+    stopJob: (projectId, jobId, interactive = false) =>
+        axiosInstance.post(`/project/${projectId}/job/${jobId}/stop`, null, {
+            params: { interactive }
+        }),
 
     copyJob: (projectId, jobId) =>
-        axiosInstance.post(`/project/${projectId}/${jobId}/copyJob`),
+        axiosInstance.post(`/project/${projectId}/job/${jobId}/copy`),
 
     getJobHistory: (projectId, jobId) =>
         axiosInstance.get(`/project/${projectId}/job/${jobId}/history`)

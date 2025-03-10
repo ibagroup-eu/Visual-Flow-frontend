@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, CircularProgress } from '@material-ui/core';
 
 import useStyles from './ConnectionsPanelButtons.Styles';
+import { DATABRICKS } from '../../../../../mxgraph/constants';
 
 const ConnectionsPanelButtons = ({
     saveConnection,
@@ -61,19 +62,24 @@ const ConnectionsPanelButtons = ({
             >
                 {t('main:button.Cancel')}
             </Button>
-            <Button
-                onClick={pingConnection}
-                size="large"
-                variant="contained"
-                color="primary"
-                disabled={pingIsDisabled || pinging || uploading}
-                className={classes.button}
-            >
-                {t('main:button.Ping')}
-                {pinging && (
-                    <CircularProgress className={classes.buttonProgress} size={25} />
-                )}
-            </Button>
+            {window.PLATFORM !== DATABRICKS && (
+                <Button
+                    onClick={pingConnection}
+                    size="large"
+                    variant="contained"
+                    color="primary"
+                    disabled={pingIsDisabled || pinging || uploading}
+                    className={classes.button}
+                >
+                    {t('main:button.Ping')}
+                    {pinging && (
+                        <CircularProgress
+                            className={classes.buttonProgress}
+                            size={25}
+                        />
+                    )}
+                </Button>
+            )}
         </div>
     );
 };

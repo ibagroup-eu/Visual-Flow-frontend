@@ -44,7 +44,8 @@ describe('Jobs Reducer', () => {
             jobRun: false,
             data: [],
             searchField: '',
-            lastRun: '',
+            lastRun: null,
+            runId: '',
             status: ''
         });
     });
@@ -59,7 +60,8 @@ describe('Jobs Reducer', () => {
             jobRun: false,
             searchField: '',
             data: payload,
-            lastRun: '',
+            lastRun: null,
+            runId: '',
             status: ''
         });
     });
@@ -75,7 +77,8 @@ describe('Jobs Reducer', () => {
             data: [],
             searchField: '',
             error: {},
-            lastRun: '',
+            lastRun: null,
+            runId: '',
             status: ''
         });
     });
@@ -89,7 +92,8 @@ describe('Jobs Reducer', () => {
             jobRun: false,
             searchField: '',
             data: [],
-            lastRun: '',
+            lastRun: null,
+            runId: '',
             status: ''
         });
     });
@@ -126,7 +130,8 @@ describe('Jobs Reducer', () => {
             jobRun: false,
             loading: true,
             searchField: 'search',
-            lastRun: '',
+            lastRun: null,
+            runId: '',
             status: ''
         });
     });
@@ -139,7 +144,8 @@ describe('Jobs Reducer', () => {
                 data: [],
                 searchField: '',
                 jobRun: false,
-                lastRun: '',
+                lastRun: null,
+                runId: '',
                 status: ''
             };
         });

@@ -18,11 +18,10 @@
  */
 
 import { shallow } from 'enzyme';
-import React from 'react';
-
+import React, { Component } from 'react';
 import ConfigurationWrapper from './ConfigurationWrapper';
-
 import SaveCancelButtons from '../../buttons/SaveCancelButtons';
+import { isFunction } from 'lodash';
 
 describe('ConfigurationWrapper', () => {
     let wrapper;
@@ -32,7 +31,9 @@ describe('ConfigurationWrapper', () => {
         props = {
             configuration: {},
             state: { name: 'test' },
-            setState: jest.fn(),
+            setState: jest
+                .fn()
+                .mockImplementation(fn => (isFunction(fn) ? fn(props.state) : null)),
             ableToEdit: true,
             isDisabled: jest.fn(),
             onSave: jest.fn(),
@@ -55,10 +56,7 @@ describe('ConfigurationWrapper', () => {
                     ]
                 })
             },
-            render: () => {
-                const MockComponent = 'component-mock';
-                return <MockComponent />;
-            }
+            render: Component
         };
 
         wrapper = shallow(<ConfigurationWrapper {...props} />);
@@ -66,6 +64,11 @@ describe('ConfigurationWrapper', () => {
 
     it('should render component', () => {
         expect(wrapper).toBeDefined();
+    });
+
+    it('should change state', () => {
+        wrapper.find(Component).prop('onStateChange')('key', 'value');
+        expect(props.setState).toHaveBeenCalled();
     });
 
     it('should cancel changes', () => {

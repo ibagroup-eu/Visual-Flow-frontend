@@ -19,27 +19,21 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import ReadTextFields from '../../../../components/rw-text-fields';
-import SelectField from '../../../../components/select-field';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE, READWRITE } from '../../../constants';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
+import ReadWriteEditorField from '../../../../components/rw-editor-field';
 
 const fields = [
-    [{ field: 'host' }, { field: 'port' }, { field: 'user' }, { field: 'database' }]
+    { field: 'host' },
+    { field: 'port' },
+    { field: 'user' },
+    { field: 'database' }
 ];
 
 const field = [{ field: 'password' }];
-
-const customSql = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
 
 const customSqlFields = [[{ field: 'schema' }, { field: 'table' }]];
 
@@ -49,39 +43,60 @@ const ClickHouseStorage = ({
     openModal,
     ableToEdit,
     connectionPage,
-    connection
-}) => (
-    <>
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={fields[0]}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            required
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={field}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            hidden
-            required
-        />
+    connection,
+    storageName
+}) => {
+    const { t } = useTranslation();
+    return (
+        <>
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={fields}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                required
+            />
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={field}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                hidden
+                required
+            />
 
-        {!connectionPage && (
-            <>
-                {inputValues.operation === WRITE ? (
-                    <>
-                        <WriteMode
-                            disabled={!ableToEdit}
-                            value={inputValues.writeMode}
+            {!connectionPage && (
+                <>
+                    {inputValues.operation === WRITE ? (
+                        <>
+                            <WriteMode
+                                disabled={!ableToEdit}
+                                value={inputValues.writeMode}
+                                onChange={handleInputChange}
+                                storage="clickHouse"
+                            />
+                        </>
+                    ) : (
+                        <ParamsSwitchField
+                            ableToEdit={ableToEdit}
+                            label={t('jobDesigner:readConfiguration.customSql')}
+                            name="customSql"
+                            value={
+                                inputValues.customSql === undefined
+                                    ? undefined
+                                    : inputValues.customSql === 'true'
+                            }
                             onChange={handleInputChange}
-                            storage="clickHouse"
+                            type={READWRITE}
+                            defaultValue={false}
                         />
+                    )}
+                    {(!inputValues.customSql ||
+                        inputValues.customSql === 'false') && (
                         <ReadTextFields
                             ableToEdit={ableToEdit}
                             fields={customSqlFields[0]}
@@ -90,44 +105,26 @@ const ClickHouseStorage = ({
                             openModal={openModal}
                             required
                         />
-                    </>
-                ) : (
-                    <SelectField
-                        ableToEdit={ableToEdit}
-                        label="jobDesigner:readConfiguration.customSql"
-                        name="customSql"
-                        value={inputValues.customSql}
-                        handleInputChange={handleInputChange}
-                        menuItems={customSql}
-                        type={READWRITE}
-                        required
-                    />
-                )}
-                {inputValues.customSql === 'false' && (
-                    <ReadTextFields
-                        ableToEdit={ableToEdit}
-                        fields={customSqlFields[0]}
-                        inputValues={inputValues}
-                        handleInputChange={handleInputChange}
-                        openModal={openModal}
-                        required
-                    />
-                )}
-                {inputValues.customSql === 'true' && (
-                    <ReadTextFields
-                        ableToEdit={ableToEdit}
-                        fields={[{ field: 'option.dbtable', rows: 6 }]}
-                        inputValues={inputValues}
-                        handleInputChange={handleInputChange}
-                        openModal={openModal}
-                        nameWIthPoint
-                        required
-                    />
-                )}
-            </>
-        )}
-    </>
-);
+                    )}
+                    {inputValues.customSql === 'true' && (
+                        <ReadWriteEditorField
+                            name="option.dbtable"
+                            placeholder={t(
+                                'jobDesigner:readConfiguration.optiondbtable'
+                            )}
+                            inputValues={inputValues}
+                            onChange={handleInputChange}
+                            ableToEdit={ableToEdit}
+                            openModal={openModal}
+                            storageName={storageName}
+                            required
+                        />
+                    )}
+                </>
+            )}
+        </>
+    );
+};
 
 ClickHouseStorage.propTypes = {
     inputValues: PropTypes.object,
@@ -135,7 +132,8 @@ ClickHouseStorage.propTypes = {
     openModal: PropTypes.func,
     ableToEdit: PropTypes.bool,
     connectionPage: PropTypes.bool,
-    connection: PropTypes.object
+    connection: PropTypes.object,
+    storageName: PropTypes.string
 };
 
 export default ClickHouseStorage;

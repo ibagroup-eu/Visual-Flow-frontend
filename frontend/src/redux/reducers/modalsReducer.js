@@ -28,8 +28,9 @@ const modalsReducer = (state = initialState, action = {}) => {
             [action.payload.id]: {
                 ...action.payload,
                 open: !state[action.payload.id]?.open,
-                // when modal is being closed we need to keep body content
-                body: action.payload.body || state[action.payload.id]?.body
+                // when modal is being closed we need to keep body and title content
+                body: action.payload.body || state[action.payload.id]?.body,
+                title: action.payload.title || state[action.payload.id]?.title
             }
         };
     }

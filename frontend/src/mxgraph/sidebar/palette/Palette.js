@@ -121,16 +121,11 @@ export class Palette extends React.Component {
         const { graph } = this.props;
         const getRandomPoint = () => {
             const crypto = window.crypto || window.msCrypto;
-            const array = new Uint8Array(1);
+            const array = new Uint8Array(2);
             crypto.getRandomValues(array); // Compliant for security-sensitive use cases
-            const point = array[0];
-            if (point >= 150) {
-                return point / 2;
-            }
-            return point;
+            return array;
         };
-        const xPoint = getRandomPoint();
-        const yPoint = getRandomPoint();
+        const [xPoint, yPoint] = getRandomPoint();
         const graphTranslate = graph.getView().getTranslate();
         this.addCell(
             graph,

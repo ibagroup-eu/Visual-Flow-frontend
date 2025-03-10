@@ -94,7 +94,7 @@ const ConnectionsModal = ({
                     >
                         <Table>
                             <TableBody>
-                                {filterParameters().map(({ key, value }) => (
+                                {filterParameters()?.map(({ key, value }) => (
                                     <ConnectionsModalTableRow
                                         key={key}
                                         ableToEdit={ableToEdit}
@@ -120,6 +120,7 @@ const ConnectionsModal = ({
                         selectedValue={selectedValue}
                         onClose={onClose}
                         onSetValue={onSetValue}
+                        disabledConfirm={!selectedValue}
                     />
                 </Box>
             )}

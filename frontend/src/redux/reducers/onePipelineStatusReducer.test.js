@@ -20,11 +20,16 @@
 import {
     FETCH_PIPELINE_STATUS_START,
     FETCH_PIPELINE_STATUS_SUCCESS,
-    FETCH_PIPELINE_STATUS_FAIL
+    FETCH_PIPELINE_STATUS_FAIL,
+    RESET_PIPELINE_STATUS_SUCCESS
 } from '../actions/types';
 import onePipelineStatusReducer from './onePipelineStatusReducer';
 
 describe('OnePipelineStatusReducer', () => {
+    const payload = {
+        data: []
+    };
+
     const mockData = {
         status: 'status',
         progress: 2
@@ -33,6 +38,18 @@ describe('OnePipelineStatusReducer', () => {
 
     it('should return the initial state', () => {
         expect(onePipelineStatusReducer(undefined)).toEqual({
+            loading: false,
+            status: '',
+            progress: 0
+        });
+    });
+
+    it('should handle RESET_PIPELINE_STATUS_SUCCESS', () => {
+        const action = {
+            type: RESET_PIPELINE_STATUS_SUCCESS,
+            payload
+        };
+        expect(onePipelineStatusReducer(undefined, action)).toEqual({
             loading: false,
             status: '',
             progress: 0

@@ -1,7 +1,7 @@
 {
   "DATETIME": [
     {
-      "field": "operationType"
+      "field": "function"
     },
     {
       "field": "option.targetColumn"
@@ -10,70 +10,70 @@
       "field": "option.sourceColumn",
       "conditions": [
         {
-          "operationType": "date_format"
+          "function": "date_format"
         },
         {
-          "operationType": "to_date"
+          "function": "to_date"
         },
         {
-          "operationType": "add_months"
+          "function": "add_months"
         },
         {
-          "operationType": "date_add"
+          "function": "date_add"
         },
         {
-          "operationType": "date_sub"
+          "function": "date_sub"
         },
         {
-          "operationType": "next_day"
+          "function": "next_day"
         },
         {
-          "operationType": "year"
+          "function": "year"
         },
         {
-          "operationType": "quarter"
+          "function": "quarter"
         },
         {
-          "operationType": "month"
+          "function": "month"
         },
         {
-          "operationType": "dayofweek"
+          "function": "dayofweek"
         },
         {
-          "operationType": "dayofmonth"
+          "function": "dayofmonth"
         },
         {
-          "operationType": "dayofyear"
+          "function": "dayofyear"
         },
         {
-          "operationType": "weekofyear"
+          "function": "weekofyear"
         },
         {
-          "operationType": "last_day"
+          "function": "last_day"
         },
         {
-          "operationType": "trunc"
+          "function": "trunc"
         },
         {
-          "operationType": "hour"
+          "function": "hour"
         },
         {
-          "operationType": "minute"
+          "function": "minute"
         },
         {
-          "operationType": "second"
+          "function": "second"
         },
         {
-          "operationType": "to_timestamp"
+          "function": "to_timestamp"
         },
         {
-          "operationType": "date_trunc"
+          "function": "date_trunc"
         },
         {
-          "operationType": "to_unix_timestamp"
+          "function": "to_unix_timestamp"
         },
         {
-          "operationType": "from_unixtime"
+          "function": "from_unixtime"
         }
       ]
     },
@@ -81,25 +81,25 @@
       "field": "option.format",
       "conditions": [
         {
-          "operationType": "date_format"
-        }, 
+          "function": "date_format"
+        },
         {
-          "operationType": "to_date"
-        }, 
+          "function": "to_date"
+        },
         {
-          "operationType": "trunc"
-        }, 
+          "function": "trunc"
+        },
         {
-          "operationType": "to_timestamp"
-        }, 
+          "function": "to_timestamp"
+        },
         {
-          "operationType": "date_trunc"
-        }, 
+          "function": "date_trunc"
+        },
         {
-          "operationType": "to_unix_timestamp"
-        }, 
+          "function": "to_unix_timestamp"
+        },
         {
-          "operationType": "from_unixtime"
+          "function": "from_unixtime"
         }
       ]
     },
@@ -107,7 +107,7 @@
       "field": "option.numMonths",
       "conditions": [
         {
-          "operationType": "add_months"
+          "function": "add_months"
         }
       ]
     },
@@ -115,10 +115,10 @@
       "field": "option.startColumn",
       "conditions": [
         {
-          "operationType": "datediff"
+          "function": "datediff"
         },
         {
-          "operationType": "months_between"
+          "function": "months_between"
         }
       ]
     },
@@ -126,10 +126,10 @@
       "field": "option.endColumn",
       "conditions": [
         {
-          "operationType": "datediff"
+          "function": "datediff"
         },
         {
-          "operationType": "months_between"
+          "function": "months_between"
         }
       ]
     },
@@ -137,7 +137,7 @@
       "field": "option.roundOff",
       "conditions": [
         {
-          "operationType": "months_between"
+          "function": "months_between"
         }
       ]
     },
@@ -145,7 +145,7 @@
       "field": "option.dayOfWeek",
       "conditions": [
         {
-          "operationType": "next_day"
+          "function": "next_day"
         }
       ]
     },
@@ -153,10 +153,10 @@
       "field": "option.days",
       "conditions": [
         {
-          "operationType": "date_add"
+          "function": "date_add"
         },
         {
-          "operationType": "date_sub"
+          "function": "date_sub"
         }
       ]
     }

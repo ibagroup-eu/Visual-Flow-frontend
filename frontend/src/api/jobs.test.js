@@ -54,6 +54,14 @@ describe('jobs', () => {
         });
     });
 
+    it('should fetch logs by getJobHistoryLogs', () => {
+        const job = { graph: {} };
+        jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return jobs.getJobHistoryLogs(projectId, job, 1).then(result => {
+            expect(result).toEqual(expected);
+        });
+    });
+
     it('should delete jobs', () => {
         const requestURL = `/project/${projectId}/job/${jobId}`;
         const spy = jest.spyOn(axiosInstance, 'delete').mockResolvedValue(expected);
@@ -78,12 +86,14 @@ describe('jobs', () => {
         const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
         return jobs.runJob(projectId, jobId).then(result => {
             expect(result).toEqual(expected);
-            expect(spy).toHaveBeenCalledWith(requestURL);
+            expect(spy).toHaveBeenCalledWith(requestURL, null, {
+                params: { interactive: false }
+            });
         });
     });
 
     it('should copy job', () => {
-        const requestURL = `/project/${projectId}/${jobId}/copyJob`;
+        const requestURL = `/project/${projectId}/job/${jobId}/copy`;
         const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
         return jobs.copyJob(projectId, jobId).then(result => {
             expect(result).toEqual(expected);
@@ -101,12 +111,27 @@ describe('jobs', () => {
         });
     });
 
+    it('should run getDtabricksJobLogs', () => {
+        const jobName = 'fff';
+        const pipeLineId = 'fff';
+        const requestURL = `/project/${projectId}/pipeline/${pipeLineId}/jobName/${jobName}/logs`;
+        const spy = jest.spyOn(axiosInstance, 'get').mockResolvedValue(expected);
+        return jobs
+            .getDatabricksJobLogs(projectId, pipeLineId, jobName)
+            .then(result => {
+                expect(result).toEqual(expected);
+                expect(spy).toHaveBeenCalledWith(requestURL);
+            });
+    });
+
     it('should stop job', () => {
         const requestURL = `/project/${projectId}/job/${jobId}/stop`;
         const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
         return jobs.stopJob(projectId, jobId).then(result => {
             expect(result).toEqual(expected);
-            expect(spy).toHaveBeenCalledWith(requestURL);
+            expect(spy).toHaveBeenCalledWith(requestURL, null, {
+                params: { interactive: false }
+            });
         });
     });
 

@@ -1,6 +1,6 @@
 {
   "name": "vf-frontend",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Visual Flow is an ETL tool designed for effective data manipulation via convenient and user-friendly interface.",
   "license": "Apache-2.0"
 }

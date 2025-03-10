@@ -41,15 +41,18 @@ import {
     COPY_JOB_FAIL,
     SET_JOBS_LAST_RUN,
     SET_JOBS_STATUS,
-    SET_DEFAULT
+    SET_DEFAULT,
+    SET_RUN_ID,
+    DELETE_INTERACTIVE_JOB_SESSION_SUCCESS
 } from '../actions/types';
 
 const initialState = {
     loading: true,
     data: [],
     searchField: '',
+    runId: '',
     jobRun: false,
-    lastRun: '',
+    lastRun: null,
     status: ''
 };
 
@@ -106,6 +109,7 @@ const jobsReducer = (state = initialState, action = {}) => {
         case STOP_JOB_START:
             return {
                 ...state,
+                runId: action.payload,
                 jobRun: false
             };
         case RUN_JOB_FAIL:
@@ -132,6 +136,16 @@ const jobsReducer = (state = initialState, action = {}) => {
                 ...state,
                 lastRun: '',
                 status: ''
+            };
+        case SET_RUN_ID:
+            return {
+                ...state,
+                runId: action.payload || null
+            };
+        case DELETE_INTERACTIVE_JOB_SESSION_SUCCESS:
+            return {
+                ...state,
+                runId: null
             };
         default:
             return state;

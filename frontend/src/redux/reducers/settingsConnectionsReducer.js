@@ -83,7 +83,7 @@ const settingsConnectionsReducer = (state = initialState, action = {}) => {
             return {
                 ...state,
                 uploading: false,
-                connections: [...state.connections, action.payload.connection]
+                connections: [...state.connections, action.payload]
             };
         case UPDATE_CONNECTION_SUCCESS:
             return {
@@ -92,7 +92,7 @@ const settingsConnectionsReducer = (state = initialState, action = {}) => {
                 connections: state.connections.map(connection =>
                     connection.key === action.payload.connection.key
                         ? {
-                              key: action.payload.connection.value.connectionName,
+                              key: action.payload.connection.key,
                               value: action.payload.connection.value
                           }
                         : connection

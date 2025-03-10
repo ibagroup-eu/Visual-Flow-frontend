@@ -25,6 +25,11 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "noResult": "No result",
+    "interactiveNotifications": {
+        "enabled": "Interactive mode is enabled",
+        "disabled": "Interactive mode is disabled",
+        "running": "Running..."
+    },
     "sorted": {
         "descending": "sorted descending",
         "ascending": "sorted ascending"
@@ -55,8 +60,23 @@
         },
         "Name": "Name",
         "Description": "Description",
+        "Cloud": "Cloud",
+        "Host": "Databricks workspace URL",
+        "AuthenticationType": "Authentication type",
+        "ClientID": "Client ID",
+        "Secret": "Secret",
+        "Token": "Personal access token",
+        "Path": "Path to Visual Flow files",
         "Requests": "Requests",
-        "Limits": "Limits"
+        "Limits": "Limits",
+        "DemoLimits": "Demo Limits",
+        "Limit": "Limit",
+        "Demo": "Demo",
+        "ExpirationDate": "ExpirationDate",
+        "SourceLimits": {
+            "read": "Source Limits: Read",
+            "write": "Source Limits: Write"
+        }
     },
     "button": {
         "Save": "Save",
@@ -86,12 +106,18 @@
         "CreateDataframe": "Create Dataframe",
         "EditDataframe": "Edit Dataframe",
         "AddValidation": "Add Validation",
-        "EditValidation": "Edit Validation"
+        "EditValidation": "Edit Validation",
+        "EditCluster": "Edit Cluster"
     },
     "validation": {
         "3to40chars": "Wrong symbol or should be 3 to 40 characters long.",
         "moreThen500": "Should be less then 500 characters long.",
         "positive": "Should be positive.",
+        "multiple": "Should be multiple of {{multiple}}.",
+        "range": "Should be less than or equal to {{max}} and more or equal to {{min}}.",
+        "perTryLessTotalTimeout": "'Timeout per Try' value should be less then 'Total Timeout' value",
+        "minLessMax": "Min must be less than Max",
+        "validDate": "Should be valid date and more then current.",
         "notBlank": "Should not be blank.",
         "fieldsNotFilled": "Some fields are not filled.",
         "incorrectJobLength": "The name should have a total length between 3 and 63 characters max.",
@@ -113,9 +139,17 @@
         "withColumnValidation": {
             "range": "Value must be in range {{min}}-{{max}}.",
             "integer": "Should be integer."
-        }
+        },
+        "kafkaValidation": {
+            "badCertificate": "Invalid certificate extension"
+        },
+        "pipelineWithEmpyJob": "The pipeline contains empty job(s), their execution will lead to an error.",
+        "host": "Should matches 'https://host' pattern",
+        "invalidJSONExtension": "The file extension must be json.",
+        "path": "Should to correspond /Volumes/catalog/schema/volume_path"
     },
     "confirm": {
+        "titleContinue": "Continue anyway?",
         "title": "Are you sure?",
         "body": "Are you sure?",
         "Yes": "Yes",

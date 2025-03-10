@@ -43,11 +43,8 @@ export default {
             `/project/${projectName}/connections/${connectionId}`,
             connection
         ),
-    createProjectConnection: (projectName, connectionId, connection) =>
-        axiosInstance.post(
-            `/project/${projectName}/connections/${connectionId}`,
-            connection
-        ),
+    createProjectConnection: (projectName, connection) =>
+        axiosInstance.post(`/project/${projectName}/connection`, connection),
     deleteProjectConnection: (projectName, connectionId) =>
         axiosInstance.delete(`/project/${projectName}/connections/${connectionId}`),
     pingProjectConnection: (projectName, connection) =>

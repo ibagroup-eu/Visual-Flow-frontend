@@ -24,9 +24,16 @@ import PropTypes from 'prop-types';
 import InputBase from '@material-ui/core/InputBase';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { Popper } from '@material-ui/core';
 import history from '../../utils/history';
 import { fetchProjects } from '../../redux/actions/projectsActions';
 import useStyles from './SelectProject.Styles';
+
+const dropdownId = 'combo-box';
+export const PopperDropdown = props => {
+    const anchorEl = document.getElementById(dropdownId);
+    return <Popper {...props} anchorEl={anchorEl} disablePortal />;
+};
 
 export const SelectProject = ({ projects, getProjects, loading, projectId }) => {
     const { t } = useTranslation();
@@ -48,7 +55,7 @@ export const SelectProject = ({ projects, getProjects, loading, projectId }) => 
 
     return (
         <Autocomplete
-            id="combo-box"
+            id={dropdownId}
             value={valueSelected || defaultText}
             options={projects?.projects?.filter(e => !e.locked) || []}
             getOptionLabel={option => option.name}
@@ -58,6 +65,7 @@ export const SelectProject = ({ projects, getProjects, loading, projectId }) => 
                 setValueSelected(newValue);
                 history.push(`/${newValue?.id}/overview`);
             }}
+            PopperComponent={PopperDropdown}
             classes={{ root: classes.root }}
             renderInput={params => (
                 <div ref={params.InputProps.ref} className={classes.search}>

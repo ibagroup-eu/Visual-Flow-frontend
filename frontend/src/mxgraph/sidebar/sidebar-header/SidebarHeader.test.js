@@ -19,11 +19,11 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
-import { SidebarHeader } from './SidebarHeader';
 import AppBar from '@material-ui/core/AppBar';
 import { Button, IconButton, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { set } from 'lodash';
+import { SidebarHeader } from './SidebarHeader';
 
 import history from '../../../utils/history';
 
@@ -61,7 +61,9 @@ describe('SidebarHeader', () => {
             createNewPipeline: jest.fn(),
             updateCurrentPipeline: jest.fn(),
             setDirty: jest.fn(),
-            setPanelDirty: jest.fn()
+            setPanelDirty: jest.fn(),
+            resetJobStatus: jest.fn(),
+            resetPipelineStatus: jest.fn()
         };
 
         set(history, 'location.pathname', pathname);
@@ -102,12 +104,13 @@ describe('SidebarHeader', () => {
 
         expect(props.confirmationWindow).toHaveBeenCalled();
 
-        const callback = props.confirmationWindow.mock.calls[0][0].callback;
+        const { callback } = props.confirmationWindow.mock.calls[0][0];
 
         callback();
 
         expect(props.setDirty).toHaveBeenCalledWith(false);
         expect(props.setPanelDirty).toHaveBeenCalledWith(false);
+        expect(props.resetJobStatus).toHaveBeenCalled();
     });
 
     it('should show "enterJobName" validation message', () => {
@@ -136,7 +139,7 @@ describe('SidebarHeader', () => {
         const [wrapper] = init({ dirty: true }, false);
 
         expect(wrapper.find(Typography).text()).toBe(
-            `main:unsavedChanges.DesignerGraphIsDirty`
+            'main:unsavedChanges.DesignerGraphIsDirty'
         );
     });
 
@@ -155,6 +158,7 @@ describe('SidebarHeader', () => {
 
         expect(props.setDirty).toHaveBeenCalledWith(false);
         expect(props.setPanelDirty).toHaveBeenCalledWith(false);
+        expect(props.resetJobStatus).toHaveBeenCalled();
     });
 
     it('should update current job', () => {

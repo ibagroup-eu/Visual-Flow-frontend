@@ -20,13 +20,13 @@
 import React from 'react';
 import UseSchema from './UseSchema';
 import { shallow } from 'enzyme';
-import SelectField from '../../../../components/select-field';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 
 describe('UseSchema', () => {
     it('should render properly', () => {
         const wrapper = shallow(<UseSchema />);
 
         expect(wrapper).toBeDefined();
-        expect(wrapper.find(SelectField).length).toBe(1);
+        expect(wrapper.find(ParamsSwitchField).length).toBe(1);
     });
 });

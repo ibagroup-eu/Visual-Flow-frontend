@@ -22,5 +22,14 @@ import { makeStyles } from '@material-ui/core/styles';
 export default makeStyles(theme => ({
     field: {
         marginTop: theme.spacing(2)
+    },
+    root: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginLeft: theme.spacing(0),
+        marginTop: theme.spacing(1.5)
+    },
+    disabled: {
+        color: theme.palette.text.disabled
     }
 }));

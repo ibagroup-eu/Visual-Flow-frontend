@@ -17,20 +17,21 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Popper, TextField } from '@material-ui/core';
 
-import { get, sortBy } from 'lodash';
+import { get } from 'lodash';
 import { TuneOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import { connect } from 'react-redux';
 import Db2Storage from './db2-storage';
 import CosStorage from './cos-storage';
 import AwsStorage from './aws-storage';
 import ElasticStorage from './elastic-storage';
 import MongoStorage from './mongo-storage';
-import { STORAGES } from '../../constants';
+import { DATABRICKS, STORAGES } from '../../constants';
 import CassandraStorage from './cassandra-storage';
 import RedisStorage from './redis-storage';
 import RedShiftStorage from './redshift-storage';
@@ -43,6 +44,11 @@ import ClickHouseStorage from './clickhouse-storage';
 import ConfigurationDivider from '../../../components/divider';
 import KafkaStorage from './kafka-storage';
 import ApiStorage from './api-storage';
+import DatabricksStorage from './databricks-configuration';
+import DatabricksJDBCStorage from './databricks-jdbc-storage';
+import AzureBlobStorage from './azure-blob-storage';
+import GoogleCloudStorage from './google-cloud-storage';
+import { stableSort, getComparator } from '../../../utils/sort';
 
 const isTruncateStorage = storage =>
     [
@@ -61,7 +67,7 @@ const truncateModeDefaultValues = {
 
 // eslint-disable-next-line complexity
 export const getStorageComponent = name => {
-    switch (name.toLowerCase()) {
+    switch (name?.toLowerCase()) {
         case STORAGES.DB2.value:
         case STORAGES.POSTGRE.value:
         case STORAGES.ORACLE.value:
@@ -95,25 +101,50 @@ export const getStorageComponent = name => {
             return KafkaStorage;
         case STORAGES.API.value:
             return ApiStorage;
+        case STORAGES?.DATABRICKS?.value:
+            return DatabricksStorage;
+        case STORAGES?.DATABRICKSJDBC?.value:
+            return DatabricksJDBCStorage;
+        case STORAGES.AZURE.value:
+            return AzureBlobStorage;
+        case STORAGES.GOOGLECLOUD.value:
+            return GoogleCloudStorage;
         default:
             throw new Error(`Unsupported storage: ${name}`);
     }
 };
 
-const ReadWriteConfiguration = ({
+export const ReadWriteConfiguration = ({
     state,
     setState,
     ableToEdit,
     onChange,
     openModal,
     connection,
-    stageId
+    stageId,
+    project
 }) => {
     const ref = useRef();
     const { t } = useTranslation();
     const classes = useStyles();
-
     const { truncateMode, writeMode, storage } = state;
+    const { operation } = state;
+    const { demo, demoLimits } = project;
+
+    const storagesRes = useMemo(() => {
+        const sourcesToShow = demoLimits?.sourcesToShow[operation];
+        if (demo && sourcesToShow) {
+            const storageObj = {};
+            sourcesToShow.forEach(key => {
+                if (STORAGES[key]) {
+                    storageObj[key] = STORAGES[key];
+                }
+            });
+
+            return storageObj;
+        }
+        return STORAGES;
+    }, [demo, demoLimits, operation]);
 
     useEffect(() => {
         if (
@@ -141,15 +172,18 @@ const ReadWriteConfiguration = ({
             onChange('path', null);
         }
         if (
-            state['option.avroSchema'] &&
+            state.avroSchema &&
             (value === 'cos' || (state.storage === 'cos' && value !== 'cos'))
         ) {
-            onChange('option.avroSchema', null);
+            onChange('avroSchema', null);
         }
     };
 
     const handleInputChange = useCallback(
-        event => onChange(event.target.name, event.target.value),
+        event => {
+            // console.log(event)
+            onChange(event.target.name, event.target.value);
+        },
         [onChange]
     );
 
@@ -171,10 +205,12 @@ const ReadWriteConfiguration = ({
                     openModal={openModal}
                     connection={connection}
                     stageId={stageId}
+                    storageName={name}
                 />
             </>
         );
     };
+
     return (
         <div ref={ref}>
             <Autocomplete
@@ -195,13 +231,22 @@ const ReadWriteConfiguration = ({
                 )}
                 disabled={!ableToEdit}
                 name="storage"
-                options={sortBy(STORAGES, 'label').filter(
-                    st => !get(st, 'hide', []).includes(state.operation)
+                options={stableSort(
+                    storagesRes,
+                    getComparator('asc', 'label')
+                ).filter(
+                    st =>
+                        !get(st, 'hide', []).includes(operation) &&
+                        !(
+                            st.label === STORAGES?.DATABRICKS?.label &&
+                            window.PLATFORM !== DATABRICKS
+                        )
                 )}
                 getOptionLabel={option => option.label || option}
                 value={
-                    Object.values(STORAGES).find(el => el.value === state.storage) ||
-                    null
+                    Object.values(storagesRes).find(
+                        el => el.value === state.storage
+                    ) || null
                 }
                 onChange={(event, newValue) => changeStorage(newValue?.value)}
                 renderInput={params => (
@@ -234,7 +279,12 @@ ReadWriteConfiguration.propTypes = {
     openModal: PropTypes.func,
     connection: PropTypes.object,
     stageId: PropTypes.string,
-    setState: PropTypes.func
+    setState: PropTypes.func,
+    project: PropTypes.object
 };
 
-export default ReadWriteConfiguration;
+const mapStateToProps = state => ({
+    project: state.pages.settingsBasic.project ?? {}
+});
+
+export default connect(mapStateToProps)(ReadWriteConfiguration);

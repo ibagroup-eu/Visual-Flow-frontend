@@ -30,5 +30,8 @@ export default makeStyles(theme => ({
     },
     formControl: {
         minWidth: 100
+    },
+    btn: {
+        color: theme.palette.secondary.dark
     }
 }));

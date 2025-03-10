@@ -71,8 +71,45 @@
             "value3": "- Any syntactic error in SQL query wouldn't be highlighted."
         },
         "certData": {
-            "name": "CertData (optional)",
+            "name": "Certificate data (optional)",
             "value": "Enter certification data if needed."
+        },
+        "prepareQuery": {
+            "name": "Prepare query",
+            "value": "A prefix that will form the final query together with query. As the specified query will be parenthesized as a subquery in the FROM clause and some databases do not support all clauses in subqueries, the prepareQuery property offers a way to run such complex queries. As an example, spark will issue a query of the following form to the JDBC Source.",
+            "value1": "<prepareQuery> SELECT <columns> FROM (<user_specified_query>) spark_gen_alias"
+        },
+        "sessionInitStatement": {
+            "name": "Session init statement",
+            "value": "After each database session is opened to the remote DB and before starting to read data, this option executes a custom SQL statement (or a PL/SQL block). Use this to implement session initialization code. Example: option(\"sessionInitStatement\", \"\"\"BEGIN execute immediate \"alter session set \"_serial_direct_read\"=true\"; END;'\"')"
+        },
+        "partitionColumn": {
+            "name": "Partition column, Lower bound, Upper bound",
+            "value": "These options must all be specified if any of them is specified. In addition, numPartitions must be specified. They describe how to partition the table when reading in parallel from multiple workers. partitionColumn must be a numeric, date, or timestamp column from the table in question. Notice that lowerBound and upperBound are just used to decide the partition stride, not for filtering the rows in table. So all rows in the table will be partitioned and returned. This option applies only to reading."
+        },
+        "numberOfpartitions": {
+            "name": "Number of partitions",
+            "value": "The maximum number of partitions that can be used for parallelism in table reading and writing. This also determines the maximum number of concurrent JDBC connections. If the number of partitions to write exceeds this limit, we decrease it to this limit by calling coalesce(numPartitions) before writing."
+        },
+        "fetchSize": {
+            "name": "Fetch size",
+            "value": "The JDBC fetch size, which determines how many rows to fetch per round trip. This can help performance on JDBC drivers which default to low fetch size (e.g. Oracle with 10 rows)."
+        },
+        "batchSize": {
+            "name": "Batch size",
+            "value": "The JDBC batch size, which determines how many rows to insert per round trip. This can help performance on JDBC drivers. This option applies only to writing."
+        },
+        "createTableOptions": {
+            "name": "Create table options",
+            "value": "This is a JDBC writer related option. If specified, this option allows setting of database-specific table and partition options when creating a table (e.g., CREATE TABLE t (name string) ENGINE=InnoDB.)."
+        },
+        "createTableColumnTypes": {
+            "name": "Create table column types",
+            "value": "The database column data types to use instead of the defaults, when creating the table. Data type information should be specified in the same format as CREATE TABLE columns syntax (e.g: \"name CHAR(64), comments VARCHAR(1024)\"). The specified types should be valid spark sql data types."
+        },
+        "customSchema": {
+            "name": "Custom schema",
+            "value": "The custom schema to use for reading data from JDBC connectors. For example, \"id DECIMAL(38, 0), name STRING\". You can also specify partial fields, and the others use the default type mapping. For example, \"id DECIMAL(38, 0)\". The column names should be identical to the corresponding column names of JDBC table. Users can specify the corresponding data types of Spark SQL instead of using the defaults."
         }
     },
     "CLICKHOUSE": {
@@ -240,10 +277,10 @@
             "name": "SSL",
             "value": "Whether to enable SSL connections on all supported protocols.",
             "value1": "False by default.",
-            "value2": "If it set to True then CertData is available, but it is optional."
+            "value2": "If it set to True then Certificate data is available, but it is optional."
         },
         "certData": {
-            "name": "CertData (optional)",
+            "name": "Certificate data (optional)",
             "value": "Enabled when SSL is set to True.",
             "value1": "Enter certification data for SSL connection if needed."
         }
@@ -316,7 +353,7 @@
             "value": "Whether to use pushdown optimizations."
         },
         "certData": {
-            "name": "CertData (optional)",
+            "name": "Certificate data (optional)",
             "value": "Custom certificate for SSL connection."
         }
     },
@@ -482,6 +519,209 @@
         "options": {
             "name": "Options",
             "value": "Use 'Configure Options' button to set required key/value configuration."
+        }
+    },
+    "ASURE": {
+        "pathInContainer": {
+            "name": "Path in container",
+            "value": "Path in the container."
+        },
+        "container": {
+            "name": "Container",
+            "value": "Name of the basic containers for holding your data."
+        },
+        "storageAccount": {
+            "name": "Storage account",
+            "value": "Name of the storage account."
+        },
+        "authenticationType": {
+            "name": "Authentication type",
+            "value": "Can be either storage account key or SAS token."
+        },
+        "storageAccountKey": {
+            "name": "Storage account key",
+            "value": "Value of the storage account key."
+        },
+        "SASToken": {
+            "name": "SAS token",
+            "value": "Value of the SAS token."
+        },
+        "partitionBy": {
+            "name": "Partition by",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
+        },
+        "writeMode": {
+            "name": "Write mode",
+            "value": "1. Append. Append mode means that when saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.",
+            "value1": "2. Overwrite. It means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.",
+            "value2": "3. Error if table exists. This mode means that when saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown."
+        }
+    },
+    "GOOGLE": {
+        "pathToKey": {
+            "name": "Path to JSON key file",
+            "value": "Path to the key file."
+        },
+        "partitionBy": {
+            "name": "Partition by",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
+        },
+        "writeMode": {
+            "name": "Write mode",
+            "value": "1. Append. Append mode means that when saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.",
+            "value1": "2. Overwrite. It means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.",
+            "value2": "3. Error if table exists. This mode means that when saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown."
+        },
+        "pathInBucket": {
+            "name": "Path in bucket",
+            "value": "Path in the bucket."
+        },
+        "bucket": {
+            "name": "Bucket",
+            "value": "Name of the basic containers for holding your data."
+        }
+    },
+    "DATABRICKSJDBC": {
+        "JDBCURL": {
+            "name": "JDBC URL",
+            "value": "A database connection URL is a string that your DBMS JDBC driver uses to connect to a database.",
+            "value1": "The connection URL format for the driver is:",
+            "value2": "jdbc:database-type://hostname:port[;property=value[;...]]."
+        },
+        "user": {
+            "name": "User",
+            "value": "User name for a JDBC connection."
+        },
+        "password": {
+            "name": "Password",
+            "value": "Password for a JDBC connection."
+        },
+        "catalog": {
+            "name": "Catalog",
+            "value": "Databricks Unity Catalog has a three-level namespace. Catalog is the first layer of the object hierarchy, used to organize you data assets. Provide a catalog name."
+        },
+        "schema": {
+            "name": "Schema",
+            "value": "Name of the schema which is the second layer of the object hierarchy. It contains tables and views, or volumes."
+        },
+        "tableRead": {
+            "name": "Table",
+            "value": "Name of a table or a view that resides in the third layer of Unity Catalog's namespace."
+        },
+        "tableWrite": {
+            "name": "Table",
+            "value": "Name of a table that resides in the third layer of Unity Catalog's namespace."
+        },
+        "sessionInitStatement": {
+            "name": "Session init statement",
+            "value": "After each database session is opened to the remote DB and before starting to read data, this option executes a custom SQL statement (or a PL/SQL block). Use this to implement session initialization code. Example: option(\"sessionInitStatement\", \"\"\"BEGIN execute immediate \"alter session set \"_serial_direct_read\"=true\"; END;'\"')"
+        },
+        "partitionColumn": {
+            "name": "Partition column, Lower bound, Upper bound",
+            "value": "These options must all be specified if any of them is specified. In addition, numPartitions must be specified. They describe how to partition the table when reading in parallel from multiple workers. partitionColumn must be a numeric, date, or timestamp column from the table in question. Notice that lowerBound and upperBound are just used to decide the partition stride, not for filtering the rows in table. So all rows in the table will be partitioned and returned. This option applies only to reading."
+        },
+        "numberOfpartitions": {
+            "name": "Number of partitions",
+            "value": "The maximum number of partitions that can be used for parallelism in table reading and writing. This also determines the maximum number of concurrent JDBC connections. If the number of partitions to write exceeds this limit, we decrease it to this limit by calling coalesce(numPartitions) before writing."
+        },
+        "fetchSize": {
+            "name": "Fetch size",
+            "value": "The JDBC fetch size, which determines how many rows to fetch per round trip. This can help performance on JDBC drivers which default to low fetch size (e.g. Oracle with 10 rows)."
+        },
+        "batchSize": {
+            "name": "Batch size",
+            "value": "The JDBC batch size, which determines how many rows to insert per round trip. This can help performance on JDBC drivers. This option applies only to writing."
+        },
+        "createTableOptions": {
+            "name": "Create table options",
+            "value": "This is a JDBC writer related option. If specified, this option allows setting of database-specific table and partition options when creating a table (e.g., CREATE TABLE t (name string) ENGINE=InnoDB.)."
+        },
+        "createTableColumnTypes": {
+            "name": "Create table column types",
+            "value": "The database column data types to use instead of the defaults, when creating the table. Data type information should be specified in the same format as CREATE TABLE columns syntax (e.g: \"name CHAR(64), comments VARCHAR(1024)\"). The specified types should be valid spark sql data types."
+        },
+        "customSchema": {
+            "name": "Custom schema",
+            "value": "The custom schema to use for reading data from JDBC connectors. For example, \"id DECIMAL(38, 0), name STRING\". You can also specify partial fields, and the others use the default type mapping. For example, \"id DECIMAL(38, 0)\". The column names should be identical to the corresponding column names of JDBC table. Users can specify the corresponding data types of Spark SQL instead of using the defaults."
+        },
+        "sqlStatement": {
+            "name": "SQL statement",
+            "value": "Displays the schema and the table fields, if you choose false. If you choose true, you will be able to write your own SQL code in the provided field."
+        }
+    },
+    "DATABRICKS": {
+        "catalog": {
+            "name": "Catalog",
+            "value": "Databricks Unity Catalog has a three-level namespace. Catalog is the first layer of the object hierarchy, used to organize you data assets. Provide a catalog name."
+        },
+        "schema": {
+            "name": "Schema",
+            "value": "Name of the schema which is the second layer of the object hierarchy. It contains tables and views, or volumes."
+        },
+        "objectType": {
+            "name": "Object Type",
+            "value": "Depending on the object type a user selects which type of data to work with. Use Table to access tabular data or Volume to work with non-tabular data stored in cloud object storage."
+        },
+        "tableRead": {
+            "name": "Table",
+            "value": "Name of a table or a view that resides in the third layer of Unity Catalog's namespace."
+        },
+        "mergeSchema": {
+            "name": "Merge schema",
+            "value": "Columns that are present in the DataFrame but missing from the table are automatically added as part of a write transaction when mergeSchema is true."
+        },
+        "overwriteSchema": {
+            "name": "Overwrite schema",
+            "value": "By default, overwriting the data in a table does not overwrite the schema. When overwriting a table using mode('overwrite') without replaceWhere, you may still want to overwrite the schema of the data being written. You replace the schema and partitioning of the table by setting the overwriteSchema option to true."
+        },
+        "tableVersionTimestamp": {
+            "name": "Table version timestamp",
+            "value": "Delta time travel to specific timestamp. Read version of the data at specific timestamp."
+        },
+        "tableVersion": {
+            "name": "Table version",
+            "value": "Read specific version of the data."
+        },
+        "replaceWhere": {
+            "name": "Replace where",
+            "value": "Overwrite data matching a predicate over partition columns only."
+        },
+        "maxRecordPerFile": {
+            "name": "Max records per file",
+            "value": "Specify the maximum number of records to write to a single file for a Delta Lake table."
+        },
+        "tableWrite": {
+            "name": "Table",
+            "value": "Name of a table that resides in the third layer of Unity Catalog's namespace."
+        },
+        "path": {
+            "name": "Path",
+            "value": "A volume resides in the third layer of Unity Catalog's namespace. Volumes are siblings to tables, views, and other objects organized under a schema. They contain directories and files for data stored in numerous formats. Provide a path to a volume including its name and file name (<volume-name>/<file-name>)."
+        },
+        "volume": {
+            "name": "Volume",
+            "value": "Volume name."
+        },
+        "format": {
+            "name": "File format",
+            "value": "Spark DataFrame format.",
+            "value1": "For CSV, please, specify Header and Delimiter."
+        },
+        "avroSchema": {
+            "readName": "Schema on read",
+            "writeName": "Schema on write",
+            "value": "Avro can be used to define the data schema for a record's value.",
+            "value1": "This schema describes the fields allowed in the value, along with their data types."
+        },
+        "partitionBy": {
+            "name": "Partition by",
+            "value": "Partitions the output by the given columns on the file system. If specified, the output is laid out on the file system similar to Hive's partitioning scheme. As an example, when we partition a dataset by year and then month, the directory layout would look like:",
+            "value1": "- year=2016/month=01/",
+            "value2": "- year=2016/month=02/"
         }
     }
 }

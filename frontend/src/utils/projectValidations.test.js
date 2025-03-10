@@ -21,7 +21,9 @@ import React from 'react';
 
 import {
     isCorrectDescription,
+    isCorrectHost,
     isCorrectName,
+    isCorrectPath,
     isPositiveNumber
 } from './projectValidations';
 
@@ -49,5 +51,37 @@ describe('Project Validations', () => {
 
     it('should return false for isPositiveNumber', () => {
         expect(isPositiveNumber(-5)).toBeFalsy();
+    });
+
+    it('should return true for isCorrectHost', () => {
+        expect(
+            isCorrectHost('https://adb-908482742969127.7.azuredatabricks.net')
+        ).toBeTruthy();
+    });
+
+    it('should return false for isCorrectHost', () => {
+        expect(isCorrectHost('a')).toBeFalsy();
+    });
+
+    it('should return true for isCorrectPath 1', () => {
+        expect(isCorrectPath('/Volumes/catalog/schema/volume/path')).toBeTruthy();
+    });
+
+    it('should return true for isCorrectPath 2', () => {
+        expect(isCorrectPath('/Volumes/catalog/schema/volume_path')).toBeTruthy();
+    });
+
+    it('should return true for isCorrectPath 3', () => {
+        expect(
+            isCorrectPath('/Volumes/catalog/schema1/schema2/schema3/volume_path')
+        ).toBeTruthy();
+    });
+
+    it('should return false for isCorrectPath 1', () => {
+        expect(isCorrectPath('ololo')).toBeFalsy();
+    });
+
+    it('should return false for isCorrectPath 2', () => {
+        expect(isCorrectPath('/Volumes/catalog/schema')).toBeFalsy();
     });
 });

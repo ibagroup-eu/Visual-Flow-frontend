@@ -39,4 +39,11 @@ describe('FileFormat', () => {
     it('should render component', () => {
         expect(wrapper).toBeDefined();
     });
+
+    it('menuItems should be in alphabetical order', () => {
+        const menuItems = wrapper.find('SelectField').prop('menuItems');
+        expect(
+            menuItems.every((el, i) => i === 0 || el.label >= menuItems[i - 1].label)
+        ).toBe(true);
+    });
 });

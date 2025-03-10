@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -27,8 +27,9 @@ import GraphDesigner from '../../mxgraph';
 import { PageSkeleton } from '../../components/skeleton';
 import { fetchParameters } from '../../redux/actions/settingsParametersActions';
 import { fetchJobs } from '../../redux/actions/jobsActions';
-import { PIPELINE } from '../../mxgraph/constants';
+import { DATABRICKS, PIPELINE } from '../../mxgraph/constants';
 import fetchUsers from '../../redux/actions/usersActions';
+import validators from '../job-designer/validators';
 import { fetchPipelines } from '../../redux/actions/pipelinesActions';
 
 export const PipelineDesigner = ({
@@ -60,6 +61,17 @@ export const PipelineDesigner = ({
         [t]
     );
 
+    const isValidLimits = useCallback(
+        (value, multiple, min, max) =>
+            validators.isValidLimits(value, multiple, min, max, t),
+        [t]
+    );
+
+    const isDatabricksPlatform = useMemo(
+        () => window.PLATFORM !== DATABRICKS && [],
+        []
+    );
+
     React.useEffect(() => {
         createFields({
             NAME: {
@@ -80,18 +92,43 @@ export const PipelineDesigner = ({
                 type: 'tabs',
                 needs: ['NAME'],
                 fields: {
+                    EMAIL_TAB: {
+                        label: t('pipelines:params.Email'),
+                        type: 'tab',
+                        fields: {
+                            'EMAIL.NOTIFY_FAILURE': {
+                                label: t('pipelines:params.NotifyFailure'),
+                                type: 'switch'
+                            },
+
+                            'EMAIL.NOTIFY_SUCCESS': {
+                                label: t('pipelines:params.NotifySuccess'),
+                                type: 'switch'
+                            },
+
+                            'EMAIL.RECIPIENTS': {
+                                label: t('pipelines:params.Recipients'),
+                                type: 'email',
+                                needs: [
+                                    'EMAIL.NOTIFY_SUCCESS',
+                                    'EMAIL.NOTIFY_FAILURE'
+                                ]
+                            }
+                        }
+                    },
                     SLACK_TAB: {
                         label: t('pipelines:params.Slack'),
                         type: 'tab',
+                        needs: DATABRICKS,
                         fields: {
                             'SLACK.NOTIFY_FAILURE': {
                                 label: t('pipelines:params.NotifyFailure'),
-                                type: 'email_switch'
+                                type: 'switch'
                             },
 
                             'SLACK.NOTIFY_SUCCESS': {
                                 label: t('pipelines:params.NotifySuccess'),
-                                type: 'email_switch'
+                                type: 'switch'
                             },
                             'SLACK.CHANNELS': {
                                 label: t('pipelines:params.Channels'),
@@ -110,30 +147,32 @@ export const PipelineDesigner = ({
                                 ]
                             }
                         }
+                    }
+                }
+            },
+
+            RETRIES_PANEL: {
+                label: t('jobs:params.RetriesPanel'),
+                type: 'section',
+                needs: isDatabricksPlatform,
+                fields: {
+                    UP_TO: {
+                        label: t('jobs:params.retriesTotalTimeout'),
+                        type: 'number',
+                        inputProps: { step: 30, min: 30, max: 600 },
+                        adornment: 'SEC',
+                        helperText: t('jobs:params.TagsTotalTimeout'),
+                        validate: value => isValidLimits(value, 30, 30, 600),
+                        needs: isDatabricksPlatform
                     },
-                    EMAIL_TAB: {
-                        label: t('pipelines:params.Email'),
-                        type: 'tab',
-                        fields: {
-                            'EMAIL.NOTIFY_FAILURE': {
-                                label: t('pipelines:params.NotifyFailure'),
-                                type: 'email_switch'
-                            },
-
-                            'EMAIL.NOTIFY_SUCCESS': {
-                                label: t('pipelines:params.NotifySuccess'),
-                                type: 'email_switch'
-                            },
-
-                            'EMAIL.RECIPIENTS': {
-                                label: t('pipelines:params.Recipients'),
-                                type: 'email',
-                                needs: [
-                                    'EMAIL.NOTIFY_SUCCESS',
-                                    'EMAIL.NOTIFY_FAILURE'
-                                ]
-                            }
-                        }
+                    INTERVALS: {
+                        label: t('jobs:params.retriesTimeoutPerTry'),
+                        type: 'number',
+                        inputProps: { step: 30, min: 30, max: 600 },
+                        adornment: 'SEC',
+                        helperText: t('jobs:params.TagsTimeoutPerTry'),
+                        validate: value => isValidLimits(value, 30, 30, 600),
+                        needs: isDatabricksPlatform
                     }
                 }
             }
@@ -144,7 +183,9 @@ export const PipelineDesigner = ({
             getParameters(projectId);
             getJobs(projectId);
             getPipelines(projectId);
-            getUsers();
+            if (window.PLATFORM !== DATABRICKS) {
+                getUsers();
+            }
         }
     }, [
         projectId,

@@ -35,35 +35,7 @@ describe('CosProperties', () => {
         const [wrapper] = init({}, true);
         expect(wrapper.find(Autocomplete).exists()).toBeTruthy();
     });
-    it('SchemaModal should be render', () => {
-        const [wrapper] = init(
-            {
-                inputValues: {
-                    format: 'avro',
-                    useSchema: 'true'
-                }
-            },
-            true
-        );
-        expect(wrapper.find(SchemaModal).exists()).toBeTruthy();
-        wrapper.find(SchemaModal).prop('onClose')();
-        wrapper.find(Button).prop('onClick')();
-    });
-    it('Button should be render with EditSchema', () => {
-        const [wrapper] = init(
-            {
-                inputValues: {
-                    format: 'avro',
-                    useSchema: 'true',
-                    'option.avroSchema': 'schema'
-                }
-            },
-            true
-        );
-        expect(wrapper.find(SchemaModal).exists()).toBeTruthy();
-        wrapper.find(SchemaModal).prop('onClose')();
-        wrapper.find(Button).prop('onClick')();
-    });
+
     it('WriteMode should be render', () => {
         const [wrapper] = init(
             { inputValues: { operation: WRITE, storage: null } },
@@ -71,22 +43,12 @@ describe('CosProperties', () => {
         );
         expect(wrapper.find(WriteMode).exists()).toBeTruthy();
     });
-    it('should call handleInputChange prop', () => {
-        const [wrapper, props] = init({ inputValues: { operation: WRITE } }, true);
-        expect(wrapper.find(FileFormat).prop('value')).toEqual('');
-        wrapper.find(Autocomplete).prop('onChange')([]);
-        expect(props.handleInputChange).toHaveBeenCalled();
-    });
-
-    it('should call handleInputChange prop', () => {
-        const [wrapper, props] = init({ inputValues: { format: 'avro' } }, true);
-        wrapper.find(UseSchema).prop('onChange')();
-        expect(props.handleInputChange).toHaveBeenCalled();
-    });
 
     it('should call renderTags and renderInput prop of Autocomplete', () => {
-        const [wrapper] = init({}, true);
+        const [wrapper, props] = init({}, true);
         wrapper.find(Autocomplete).prop('renderTags')(['one', 'two'], jest.fn());
         wrapper.find(Autocomplete).prop('renderInput')();
+        wrapper.find(Autocomplete).prop('onChange')();
+        expect(props.handleInputChange).toHaveBeenCalled();
     });
 });

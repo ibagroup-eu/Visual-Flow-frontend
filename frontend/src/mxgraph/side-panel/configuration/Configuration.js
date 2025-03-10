@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { get, has, isNil, keys, omit, pickBy, reduce } from 'lodash';
 import { Box, TextField, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -30,6 +30,15 @@ import SaveCancelButtons from '../buttons';
 import ParametersModal from '../read-write-configuration/parameters-modal';
 import { CDC, DATETIME, JOIN, READ, WRITE } from '../../constants';
 import ConnectionsModal from '../read-write-configuration/connections-modal/ConnectionsModal';
+import SQLEditorModal from '../read-write-configuration/sql-editor-modal';
+import { updateInteractiveJobSession } from '../../../redux/actions/mxGraphActions';
+import history from '../../../utils/history';
+
+const sqlEditorFields = {
+    query: { config: 'readConfiguration', name: 'query' },
+    statement: { config: 'transformConfiguration', name: 'Output' },
+    'option.dbtable': { config: 'readConfiguration', name: 'optiondbtable' }
+};
 
 export const isDuplicatedName = (stageName, graph, currentCell) => {
     if (!isNil(stageName)) {
@@ -62,7 +71,11 @@ const Configuration = ({
     connections,
     state,
     setState,
-    currentCell
+    currentCell,
+    data: { definition },
+    interactiveMode,
+    updateJobSession,
+    runId
 }) => {
     const { t } = useTranslation();
     const [showModal, setShowModal] = useState(false);
@@ -83,20 +96,9 @@ const Configuration = ({
         }),
         {}
     );
-    const [connectionPrevState, setConnectionState] = useState({});
+    const [connectionState, setConnectionState] = useState({});
 
     const duplicatedName = isDuplicatedName(state.name, graph, currentCell);
-    const connection = useMemo(
-        () =>
-            state.connectionName
-                ? omit(
-                      connections.find(({ key }) => key === state.connectionName)
-                          ?.value,
-                      ['connectionName']
-                  )
-                : {},
-        [connections, state.connectionName]
-    );
 
     useEffect(() => {
         if (state.operation === READ || state.operation === WRITE) {
@@ -108,26 +110,33 @@ const Configuration = ({
     }, [state, selectedStorage]);
 
     useEffect(() => {
-        setState(prevState => {
-            if (prevState.operation === READ || prevState.operation === WRITE) {
-                if (prevState.connectionName) {
-                    return {
-                        ...omit(prevState, keys(connectionPrevState)),
-                        ...connection
-                    };
-                }
-                if (prevState.connectionName === null) {
+        const connection = state.connectionName
+            ? omit(
+                  connections.find(
+                      ({ value }) => value.connectionName === state.connectionName
+                  )?.value,
+                  ['connectionName']
+              )
+            : {};
+
+        setConnectionState(connection);
+    }, [connections, state.connectionName]);
+
+    useEffect(() => {
+        if (state.connectionName === null) {
+            setState(prevState => {
+                if (prevState.operation === READ || prevState.operation === WRITE) {
                     return omit(prevState, [
+                        'connectionId',
                         'connectionName',
-                        ...keys(omit(connectionPrevState, 'storage'))
+                        ...keys(omit(connectionState, 'storage'))
                     ]);
                 }
-            }
-            return prevState;
-        });
-    }, [state.connectionName, connectionPrevState, setState, connection]);
 
-    useEffect(() => setConnectionState(connection), [connection]);
+                return prevState;
+            });
+        }
+    }, [state.connectionName, connectionState, setState]);
 
     const handleChange = useCallback(
         (key, value) =>
@@ -137,7 +146,9 @@ const Configuration = ({
                         ...prevState,
                         [key]: value
                     },
-                    v => v !== ''
+                    (v, k) =>
+                        k === 'option.kafka.ssl.endpoint.identification.algorithm' ||
+                        v !== ''
                 )
             ),
         [setState]
@@ -186,23 +197,41 @@ const Configuration = ({
         }
     };
 
-    const handleSaveCell = inputValues => {
+    const handleSaveCell = async inputValues => {
+        const currentPath = history.location.pathname.split('/');
+        const currentProject = currentPath.slice(-2, -1)[0];
+        const currentJob = currentPath.slice(-1)[0];
+
+        let savedCell;
         if (inputValues.operation === CDC) {
-            saveCell({
+            savedCell = {
                 ...inputValues,
                 newDataset: get(inputEdges, '[0].source.id'),
                 oldDataset: get(inputEdges, '[1].source.id')
-            });
+            };
         } else if (inputValues.operation === JOIN) {
-            saveCell({
+            savedCell = {
                 ...inputValues,
                 leftDataset: get(inputEdges, '[0].source.id'),
                 rightDataset: get(inputEdges, '[1].source.id')
-            });
+            };
         } else {
-            saveCell(inputValues);
+            savedCell = inputValues;
         }
+
+        saveCell(savedCell);
         setSwap(false);
+
+        if (interactiveMode && runId && definition) {
+            const stageId = graph.getSelectionCell()?.id;
+
+            const updatedStageData = definition.graph.find(el => el.id === stageId);
+
+            if (updatedStageData) {
+                updatedStageData.value = savedCell;
+            }
+            updateJobSession(currentProject, currentJob, runId, definition);
+        }
     };
 
     const modalProps = () => ({
@@ -220,25 +249,70 @@ const Configuration = ({
         currentValue: get(state, fieldInModal, '')
     });
 
-    return (
-        <Box className={classes.root}>
-            {fieldInModal === 'connectionName' ? (
+    const handleChangeConnection = newValue => {
+        setShowModal(false);
+        setState(prevState => {
+            const { value: connection, key: connectionId } = connections.find(
+                ({ value }) => value.connectionName === newValue
+            );
+            let newState = prevState;
+            if (prevState.operation === READ || prevState.operation === WRITE) {
+                newState = {
+                    ...omit(prevState, keys(connectionState)),
+                    ...connection
+                };
+            }
+            setConnectionState(connection);
+            return {
+                ...newState,
+                [fieldInModal]: `${newValue}`,
+                connectionId
+            };
+        });
+    };
+
+    const handleSQLUpdate = newValue => {
+        setShowModal(false);
+        setState(prevState => ({ ...prevState, [fieldInModal]: newValue }));
+    };
+
+    const renderModalComponent = fieldName => {
+        const editorField = sqlEditorFields[fieldName];
+
+        if (editorField) {
+            return (
+                <SQLEditorModal
+                    {...modalProps()}
+                    title={t(
+                        `jobDesigner:${editorField.config}.${editorField.name}`
+                    )}
+                    onSetValue={handleSQLUpdate}
+                    storageName={state.storage}
+                    ableToEdit={ableToEdit && !has(connectionState, fieldInModal)}
+                />
+            );
+        }
+
+        if (fieldName === 'connectionName') {
+            return (
                 <ConnectionsModal
                     {...modalProps()}
-                    onSetValue={newValue => {
-                        setShowModal(false);
-                        setState({
-                            ...state,
-                            [fieldInModal]: `${newValue}`
-                        });
-                    }}
+                    onSetValue={handleChangeConnection}
                 />
-            ) : (
-                <ParametersModal
-                    {...modalProps()}
-                    ableToEdit={ableToEdit && !has(connection, fieldInModal)}
-                />
-            )}
+            );
+        }
+
+        return (
+            <ParametersModal
+                {...modalProps()}
+                ableToEdit={ableToEdit && !has(connectionState, fieldInModal)}
+            />
+        );
+    };
+
+    return (
+        <Box className={classes.root}>
+            {renderModalComponent(fieldInModal)}
             <Box className={classes.fieldWrapper}>
                 <TextField
                     disabled={!ableToEdit || !sidePanelIsOpen}
@@ -268,7 +342,7 @@ const Configuration = ({
                     edgeLabels={edgeLabels}
                     handleSwap={handleSwap}
                     params={params}
-                    connection={connection}
+                    connection={connectionState}
                     stageId={graph.getSelectionCell()?.id}
                 />
             </Box>
@@ -298,13 +372,27 @@ Configuration.propTypes = {
     connections: PropTypes.array,
     state: PropTypes.object,
     setState: PropTypes.func,
-    currentCell: PropTypes.string
+    currentCell: PropTypes.string,
+    data: PropTypes.object,
+    interactiveMode: PropTypes.bool,
+    updateJobSession: PropTypes.func,
+    runId: PropTypes.string
 };
 
 const mapStateToProps = state => ({
     params: state.pages.settingsParameters.params,
     connections: state.pages.settingsConnections.connections,
-    currentCell: state.mxGraph.currentCell
+    currentCell: state.mxGraph.currentCell,
+    data: state.mxGraph.data,
+    interactiveMode: state.mxGraph.interactive.interactiveMode,
+    runId: state.pages.jobs.runId
 });
 
-export default compose(withStyles(styles), connect(mapStateToProps))(Configuration);
+const mapDispatchToProps = {
+    updateJobSession: updateInteractiveJobSession
+};
+
+export default compose(
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps)
+)(Configuration);

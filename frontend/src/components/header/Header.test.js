@@ -19,11 +19,14 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Header } from './Header';
 import { useSelector } from 'react-redux';
+
 import AppBar from '@material-ui/core/AppBar';
-import { Drawer, IconButton } from '@material-ui/core';
+import { Avatar, Box, Drawer, IconButton, Toolbar } from '@material-ui/core';
+
 import MenuBar from '../menu';
+import ProfileMenu from './profile-menu';
+import { Header } from './Header';
 
 jest.mock('react-redux', () => ({
     ...jest.requireActual('react-redux'),
@@ -80,5 +83,37 @@ describe('Header', () => {
         wrapper.update();
 
         expect(wrapper.find(MenuBar).prop('open')).toBe(true);
+    });
+
+    it('should go To Projects Page', () => {
+        const [wrapper] = init({}, false);
+
+        wrapper.find(Box).simulate('click');
+        expect(wrapper.find(Box).exists()).toBeTruthy();
+    });
+
+    it('should Close Profile Menu', () => {
+        const [wrapper] = init({}, true);
+
+        wrapper.find(ProfileMenu).prop('handleClose')();
+        expect(wrapper.find(ProfileMenu).exists()).toBeTruthy();
+    });
+
+    it('should Open Profile Menu', () => {
+        const [wrapper] = init({}, true);
+
+        wrapper.find(Avatar).simulate('click', { currentTarget: {} });
+        expect(wrapper.find(Avatar).exists()).toBeTruthy();
+    });
+
+    it('should Open Drawer', () => {
+        const [wrapper] = init({}, false, shallow, 'id');
+
+        wrapper
+            .find(Toolbar)
+            .find(IconButton)
+            .at(0)
+            .simulate('click');
+        expect(wrapper.find(IconButton).exists()).toBeTruthy();
     });
 });

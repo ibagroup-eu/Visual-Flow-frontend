@@ -120,6 +120,63 @@ describe('settingsConnectionsActions', () => {
         });
     });
 
+    describe('fetchConnections for Kafka', () => {
+        const dataKafka = {
+            editable: true,
+            connections: [
+                {
+                    key: '1',
+                    value: {
+                        storage: 's3',
+                        connectionName: '1',
+                        anonymousAccess: 'false'
+                    }
+                },
+                {
+                    key: '2',
+                    value: {
+                        storage: 's3',
+                        connectionName: '2',
+                        anonymousAccess: 'true'
+                    }
+                },
+                {
+                    key: '3',
+                    value: {
+                        storage: 'kafka',
+                        connectionName: 'kafka_connection',
+                        anonymousAccess: 'true',
+                        subscribe: 'kafka_topic_name'
+                    }
+                }
+            ]
+        };
+
+        beforeEach(() => {
+            dispatch = jest.fn();
+            jest.spyOn(api, 'getProjectConnections').mockResolvedValue({
+                data: dataKafka
+            });
+        });
+
+        it('FETCH_CONNECTIONS_SUCCESS kafka', () => {
+            return fetchConnections('id')(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: FETCH_CONNECTIONS_START }],
+                    [
+                        {
+                            type: FETCH_CONNECTIONS_SUCCESS,
+                            payload: {
+                                ...dataKafka,
+                                connections: dataKafka.connections
+                            }
+                        }
+                    ]
+                ]);
+            });
+        });
+    });
+
     describe('updateConnection', () => {
         beforeEach(() => {
             dispatch = jest.fn();
@@ -182,12 +239,14 @@ describe('settingsConnectionsActions', () => {
     describe('createConnection', () => {
         beforeEach(() => {
             dispatch = jest.fn();
-            jest.spyOn(api, 'createProjectConnection').mockResolvedValue({});
+            const connectionId = 'id';
+            jest.spyOn(api, 'createProjectConnection').mockResolvedValue({
+                connectionId
+            });
         });
 
         it('CREATE_CONNECTION_SUCCESS', () => {
             return createConnection('projectName', {
-                key: 'connectionName',
                 value: {
                     connectionName: 'connectionName'
                 }
@@ -198,11 +257,8 @@ describe('settingsConnectionsActions', () => {
                         {
                             type: CREATE_CONNECTION_SUCCESS,
                             payload: {
-                                connection: {
-                                    key: 'connectionName',
-                                    value: {
-                                        connectionName: 'connectionName'
-                                    }
+                                value: {
+                                    connectionName: 'connectionName'
                                 }
                             }
                         }
@@ -211,9 +267,7 @@ describe('settingsConnectionsActions', () => {
 
                 expect(api.createProjectConnection).toHaveBeenCalledWith(
                     'projectName',
-                    'connectionName',
                     {
-                        key: 'connectionName',
                         value: {
                             connectionName: 'connectionName'
                         }
@@ -323,31 +377,33 @@ describe('settingsConnectionsActions', () => {
         });
 
         it('PING_CONNECTIONS_START', () => {
-            return pingConnection('projectName', { key: 'connectionId' })(
-                dispatch
-            ).then(() => {
+            return pingConnection('projectName', {
+                key: 'connectionName',
+                value: { connectionName: 'connectionName' }
+            })(dispatch).then(() => {
                 expect(dispatch).toHaveBeenCalledWith({
                     type: PING_CONNECTION_START,
-                    payload: { key: 'connectionId' }
+                    payload: { key: 'connectionName' }
                 });
             });
         });
 
         it('PING_CONNECTIONS_SUCCESS', () => {
-            return pingConnection('projectName', { key: 'connectionId' })(
-                dispatch
-            ).then(() => {
+            return pingConnection('projectName', {
+                key: 'connectionName',
+                value: { connectionName: 'connectionName' }
+            })(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [
                         {
                             type: PING_CONNECTION_START,
-                            payload: { key: 'connectionId' }
+                            payload: { key: 'connectionName' }
                         }
                     ],
                     [
                         {
                             type: PING_CONNECTION_SUCCESS,
-                            payload: { key: 'connectionId' }
+                            payload: { key: 'connectionName' }
                         }
                     ]
                 ]);
@@ -359,20 +415,23 @@ describe('settingsConnectionsActions', () => {
                 msg: 'Error'
             });
 
-            return pingConnection('projectName', { key: 'connectionId' })(
+            return pingConnection('projectName', { key: 'connectionName' })(
                 dispatch
             ).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [
                         {
                             type: PING_CONNECTION_START,
-                            payload: { key: 'connectionId' }
+                            payload: { key: 'connectionName' }
                         }
                     ],
                     [
                         {
                             type: PING_CONNECTION_FAIL,
-                            payload: { key: 'connectionId', error: { msg: 'Error' } }
+                            payload: {
+                                key: 'connectionName',
+                                error: { msg: 'Error' }
+                            }
                         }
                     ]
                 ]);

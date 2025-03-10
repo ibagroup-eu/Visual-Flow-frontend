@@ -19,18 +19,20 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-
+import { TextField } from '@material-ui/core';
 import WithColumnConfiguration, {
     getOperationComponent
 } from './WithColumnConfiguration';
-import { TextField } from '@material-ui/core';
+
 import {
     ADD_CONSTANT,
     CHANGE_TYPE,
     DERIVE_COLUMN,
     RENAME_COLUMN,
     USE_CONDITIONS,
-    USE_WINDOW_FUNCTION
+    USE_WINDOW_FUNCTION,
+    REPLACE_VALUES,
+    REPLACE_VALUES_CHAR_BY_CHAR
 } from '../../constants';
 import SelectField from '../../../components/select-field';
 
@@ -41,11 +43,15 @@ describe('WithColumnConfiguration', () => {
         CHANGE_TYPE,
         RENAME_COLUMN,
         USE_CONDITIONS,
-        USE_WINDOW_FUNCTION
+        USE_WINDOW_FUNCTION,
+        REPLACE_VALUES,
+        REPLACE_VALUES_CHAR_BY_CHAR
     ];
 
+    let defaultProps;
+
     const init = (props = {}, returnProps = false) => {
-        const defaultProps = {
+        defaultProps = {
             state: {
                 name: 'test',
                 operationType: 'renameColumn',
@@ -69,6 +75,12 @@ describe('WithColumnConfiguration', () => {
         expect(wrapper.find(TextField).exists()).toBeTruthy();
     });
 
+    it(' SelectField should use operationType class', () => {
+        const [wrapper] = init();
+        const { className } = wrapper.find(SelectField).props();
+        expect(className.lastIndexOf('makeStyles-operationType')).toBe(0);
+    });
+
     operationType.forEach(operation => {
         it(`should render  ${operation} component `, () => {
             init({ state: { operationType: `${operation}` } });
@@ -81,5 +93,14 @@ describe('WithColumnConfiguration', () => {
         expect(() =>
             init({ state: { operationType: 'test', name: 'test' } })
         ).toThrow();
+    });
+
+    it('should call onChange handler for column', () => {
+        const [wrapper] = init();
+        wrapper
+            .find(TextField)
+            .at(0)
+            .prop('onChange')({ target: { value: 'value', name: 'column' } });
+        expect(defaultProps.onChange).toHaveBeenCalled();
     });
 });

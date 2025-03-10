@@ -69,7 +69,8 @@ describe('Pipelines', () => {
             getParameters: jest.fn(),
             loadingExport: false,
             jobs: [],
-            params: []
+            params: [],
+            project: { demo: false, demoLimits: null }
         };
 
         wrapper = shallow(<Pipelines {...props} />);

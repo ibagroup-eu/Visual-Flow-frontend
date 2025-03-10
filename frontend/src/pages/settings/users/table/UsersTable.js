@@ -42,6 +42,7 @@ import { useTranslation } from 'react-i18next';
 import toggleConfirmationWindow from '../../../../redux/actions/modalsActions';
 import UsersTableToolbar from './UsersTableToolbar';
 import UsersTableHeader from './UsersTableHeader';
+import { stableSort, getComparator } from '../../../../utils/sort';
 import useStyles from './UsersTable.Styles';
 
 const headCells = [
@@ -64,33 +65,6 @@ const headCells = [
         label: 'Role'
     }
 ];
-
-const stableSort = (array, comparator) => {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const newOrder = comparator(a[0], b[0]);
-        if (newOrder !== 0) {
-            return newOrder;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map(el => el[0]);
-};
-
-const descendingComparator = (a, b, newOrderBy) => {
-    if (b[newOrderBy] < a[newOrderBy]) {
-        return -1;
-    }
-    if (b[newOrderBy] > a[newOrderBy]) {
-        return 1;
-    }
-    return 0;
-};
-
-const getComparator = (newOrder, newOrderBy) =>
-    newOrder === 'desc'
-        ? (a, b) => descendingComparator(a, b, newOrderBy)
-        : (a, b) => -descendingComparator(a, b, newOrderBy);
 
 const renderButtons = (classes, selected, role, t, handleSubmit, onCancel) => (
     <CardActions className={classes.buttonsGroup}>

@@ -29,6 +29,7 @@ const LogsModal = ({
     t,
     projectId,
     jobId,
+    jobName,
     pipelineId,
     nodeId,
     logId,
@@ -39,6 +40,7 @@ const LogsModal = ({
             modal
             projId={projectId}
             jobId={jobId}
+            jobName={jobName}
             pipelineId={pipelineId}
             nodeId={nodeId}
             logId={logId}
@@ -50,6 +52,7 @@ const LogsModal = ({
 LogsModal.propTypes = {
     projectId: PropTypes.string,
     jobId: PropTypes.string,
+    jobName: PropTypes.string,
     pipelineId: PropTypes.string,
     logId: PropTypes.string,
     nodeId: PropTypes.string,

@@ -18,20 +18,48 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReadWriteTextField from './ReadWriteTextField';
 
 const ReadWriteTextFields = props => {
-    const { fields, required, ...rest } = props;
+    const { fields, required, ableToEdit, ...rest } = props;
 
-    return fields.map(({ field, rows = 1, required: fieldRequired }) => (
-        <ReadWriteTextField
-            key={field}
-            field={field}
-            rows={rows}
-            required={required || fieldRequired}
-            {...rest}
-        />
-    ));
+    return fields.map(
+        ({
+            field,
+            rows = 1,
+            defaultValue,
+            required: fieldRequired,
+            disabled,
+            hideModal,
+            hideClearButton,
+            ableToClear,
+            showConfirmClearModal,
+            fieldToClear,
+            reset
+        }) => (
+            <ReadWriteTextField
+                key={field}
+                field={field}
+                rows={rows}
+                required={required || fieldRequired}
+                defaultValue={defaultValue}
+                ableToEdit={disabled !== undefined ? !disabled : ableToEdit}
+                hideModal={hideModal}
+                hideClearButton={hideClearButton}
+                ableToClear={ableToClear}
+                showConfirmClearModal={showConfirmClearModal}
+                fieldToClear={fieldToClear}
+                reset={reset}
+                {...rest}
+            />
+        )
+    );
+};
+
+ReadWriteTextFields.propTypes = {
+    fields: PropTypes.arrayOf(PropTypes.object),
+    required: PropTypes.bool
 };
 
 export default ReadWriteTextFields;

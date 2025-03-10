@@ -18,15 +18,15 @@
  */
 
 import React from 'react';
-import { Grid, Paper, TextField } from '@material-ui/core';
+import { Grid, MenuItem, Paper, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import useStyles from './Row.Styles';
 import types from '../types';
-import Select from './select';
 import Arrows from './arrows';
 import Actions from './actions';
+import { ParamsSwitchField } from '../../../mxgraph/sidebar/params/fields';
 
 const VALIDATION_ERROR = 'jobDesigner:avroSchema.validation.duplicatedRow';
 
@@ -34,6 +34,8 @@ const Row = ({
     defaultName,
     defaultType,
     defaultNullable,
+    nullable,
+    shouldDisableDeleteBtn = false,
     onChange,
     onAdd,
     onRemove,
@@ -49,14 +51,8 @@ const Row = ({
     return (
         <Paper className={classes.root} variatn="outlined">
             {editable && <Arrows onMoveDown={onMoveDown} onMoveTop={onMoveTop} />}
-            <Grid
-                container
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                spacing={1}
-            >
-                <Grid item xs={4}>
+            <Grid container direction="row" alignItems="center" spacing={1}>
+                <Grid item xl={5} xs={4}>
                     <TextField
                         disabled={!editable}
                         error={duplicated}
@@ -65,40 +61,42 @@ const Row = ({
                         label={t('jobDesigner:avroSchema.fields.name')}
                         variant="outlined"
                         defaultValue={defaultName}
-                        onChange={({ target: { value } }) => onChange('name', value)}
+                        onChange={onChange}
                         fullWidth
+                        name="name"
                     />
                 </Grid>
 
-                <Grid item xs={4}>
-                    <Select
+                <Grid item xl={5} xs={4}>
+                    <TextField
                         disabled={!editable}
                         error={duplicated}
                         helperText={duplicated && t(VALIDATION_ERROR)}
-                        defaultValue={defaultType}
+                        autoFocus={autoFocus}
                         label={t('jobDesigner:avroSchema.fields.type')}
-                        onChange={({ target: { value } }) => onChange('type', value)}
-                        values={Object.entries(types).map(([key, value]) => ({
-                            key,
-                            value
-                        }))}
-                    />
+                        variant="outlined"
+                        defaultValue={defaultType}
+                        onChange={onChange}
+                        fullWidth
+                        name="type"
+                        select
+                    >
+                        {Object.entries(types).map(([key, value]) => (
+                            <MenuItem key={key || value} value={value}>
+                                {key}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </Grid>
 
-                <Grid item xs={4}>
-                    <Select
-                        disabled={!editable}
-                        error={duplicated}
-                        helperText={duplicated && t(VALIDATION_ERROR)}
-                        defaultValue={defaultNullable}
+                <Grid item xl={1} xs={4}>
+                    <ParamsSwitchField
+                        ableToEdit={editable}
                         label={t('jobDesigner:avroSchema.fields.nullable')}
-                        onChange={({ target: { value } }) =>
-                            onChange('nullable', value)
-                        }
-                        values={[
-                            { key: 'True', value: true },
-                            { key: 'False', value: false }
-                        ]}
+                        name="nullable"
+                        value={nullable}
+                        onChange={onChange}
+                        defaultValue={defaultNullable}
                     />
                 </Grid>
             </Grid>
@@ -106,6 +104,7 @@ const Row = ({
             {editable && (
                 <Actions
                     className={classes.actions}
+                    shouldDisableDeleteBtn={shouldDisableDeleteBtn}
                     onAdd={onAdd}
                     onRemove={onRemove}
                 />
@@ -125,7 +124,9 @@ Row.propTypes = {
     duplicated: PropTypes.bool,
     defaultName: PropTypes.string,
     defaultType: PropTypes.oneOf(Object.values(types)),
-    defaultNullable: PropTypes.bool
+    defaultNullable: PropTypes.bool,
+    nullable: PropTypes.bool,
+    shouldDisableDeleteBtn: PropTypes.bool
 };
 
 export default Row;

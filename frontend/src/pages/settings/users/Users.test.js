@@ -27,6 +27,7 @@ import { synthHistory } from '../../../redux';
 import Users from './Users';
 import PopupForm from '../../../components/popup-form';
 import SearchInput from '../../../components/search-input';
+import UsersTable from './table';
 
 describe('Users', () => {
     let wrapper;
@@ -127,6 +128,50 @@ describe('Users', () => {
             .find(SearchInput)
             .at(1)
             .invoke('onChange')({ target: { value: 'name1' } });
+    });
+
+    it('should find name_2 data', () => {
+        props = {
+            ...props,
+            users: [
+                { id: '123', username: 'name1', name: 'testname_1' },
+                { id: '234', username: 'name2', name: 'testname_2' }
+            ]
+        };
+
+        wrapper = shallow(<Users {...props} />);
+        wrapper
+            .find(SearchInput)
+            .at(0)
+            .simulate('change', { target: { value: 'name_2' } });
+        const [users] = wrapper
+            .find(UsersTable)
+            .at(0)
+            .props().users;
+        expect(users.id).toBe('234');
+        expect(users.username).toBe('name2');
+        expect(users.name).toBe('testname_2');
+    });
+
+    it('should not find users', () => {
+        props = {
+            ...props,
+            users: [
+                { id: '123', username: 'name1', name: 'testname_1' },
+                { id: '234', username: 'name2', name: 'testname_2' }
+            ]
+        };
+
+        wrapper = shallow(<Users {...props} />);
+        wrapper
+            .find(SearchInput)
+            .at(0)
+            .simulate('change', { target: { value: 'name2' } });
+        const [users] = wrapper
+            .find(UsersTable)
+            .at(0)
+            .props().users;
+        expect(users).toBeUndefined();
     });
 
     it('should calls onClick prop', () => {

@@ -59,4 +59,10 @@ describe('LangMenu', () => {
             .simulate('click');
         expect(mockChangeLang).toHaveBeenCalledWith('en');
     });
+
+    it('should call "onClose"', () => {
+        const useStateSpy = jest.spyOn(React, 'useState');
+        wrapper.find(Menu).prop('onClose')();
+        expect(useStateSpy).toHaveBeenCalled();
+    });
 });

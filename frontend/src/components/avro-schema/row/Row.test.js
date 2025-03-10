@@ -21,11 +21,13 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { I18nextProvider } from 'react-i18next';
 
+import { TextField } from '@material-ui/core';
 import Row from './Row';
 import i18n from '../../../i18n';
 import Arrows from './arrows';
-import { TextField } from '@material-ui/core';
 import Select from './select';
+import Actions from './actions';
+import { ParamsSwitchField } from '../../../mxgraph/sidebar/params/fields';
 
 describe('Row', () => {
     let wrapper;
@@ -37,7 +39,8 @@ describe('Row', () => {
             onMoveDown: jest.fn(),
             onChange: jest.fn(),
             onRemove: jest.fn(),
-            onAdd: jest.fn()
+            onAdd: jest.fn(),
+            duplicated: true
         };
 
         wrapper = shallow(
@@ -55,7 +58,27 @@ describe('Row', () => {
 
     it('should render correct elements', () => {
         expect(wrapper.find(Arrows).length).toBe(1);
-        expect(wrapper.find(TextField).length).toBe(1);
-        expect(wrapper.find(Select).length).toBe(2);
+        expect(wrapper.find(TextField).length).toBe(2);
+        expect(wrapper.find(ParamsSwitchField).length).toBe(1);
+    });
+
+    it('should have default value for shouldDisableDeleteBtn property', () => {
+        expect(wrapper.find(Actions).prop('shouldDisableDeleteBtn')).toBe(false);
+    });
+
+    it('should not use default value for shouldDisableDeleteBtn property', () => {
+        props = {
+            ...props,
+            shouldDisableDeleteBtn: true
+        };
+        wrapper = shallow(
+            <I18nextProvider i18n={i18n}>
+                <Row {...props} />
+            </I18nextProvider>
+        )
+            .dive()
+            .dive();
+
+        expect(wrapper.find(Actions).prop('shouldDisableDeleteBtn')).toBe(true);
     });
 });

@@ -47,6 +47,11 @@
         "shufflePartitions": "Shuffle Partitions",
         "ResourcesPanel": "Resources",
         "Tags": "Tags",
-        "TagsHint": "Tag your job to categorize it"
+        "TagsHint": "Tag your job to categorize it",
+        "RetriesPanel": "Retries",
+        "retriesTimeoutPerTry": "Timeout per Try",
+        "retriesTotalTimeout": "Total Timeout",
+        "TagsTotalTimeout": "Total Timeout specifies the maximum amount of time in seconds that can elapse before giving up.",
+        "TagsTimeoutPerTry": "Timeout per the request before the next retry."
     }
 }

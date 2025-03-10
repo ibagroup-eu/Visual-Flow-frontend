@@ -40,7 +40,7 @@ describe('files', () => {
             expect(spy).toHaveBeenCalledWith(requestURL, {
                 params: {
                     downloadFilePath: filePath,
-                    projectID: projectId,
+                    projectId,
                     fileName: data
                 },
                 responseType: 'blob'

@@ -35,7 +35,7 @@ const Fake = ({ param }) => {
 describe('useParamValidation', () => {
     describe('validate', () => {
         const tests = [
-            { value: '', schema: {}, exp: '' },
+            { value: '', schema: {}, exp: null },
             {
                 value: '',
                 schema: KEY_VALIDATIONS,
@@ -83,7 +83,7 @@ describe('useParamValidation', () => {
                     DIGITS: x => x.includes('5'),
                     SPACES: x => x.includes(' ')
                 },
-                exp: ''
+                exp: null
             },
             {
                 value: null,
@@ -91,7 +91,7 @@ describe('useParamValidation', () => {
                     DIGITS: x => x?.includes('5'),
                     SPACES: x => x?.includes(' ')
                 },
-                exp: ''
+                exp: null
             }
         ];
 

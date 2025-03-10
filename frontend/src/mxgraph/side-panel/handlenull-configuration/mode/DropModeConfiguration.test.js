@@ -21,7 +21,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import DropModeConfiguration from './DropModeConfiguration';
 import SelectField from '../../../../components/select-field';
-import AutocompleteParameter from "../../autocomplete-parameter";
+import AutocompleteParameter from '../../autocomplete-parameter';
 
 describe('DropModeConfiguration ', () => {
     let wrapper;

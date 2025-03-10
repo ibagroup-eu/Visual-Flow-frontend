@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import {
     SET_CURRENT_CELL,
     SET_SIDE_PANEL,
@@ -33,13 +32,31 @@ import {
     SET_PARAMS_DIRTY,
     SET_ZOOM_VALUE,
     SET_PANNING,
-    SET_LOGS_MODAL
+    SET_LOGS_MODAL,
+    SET_STAGE_COPY,
+    SET_INTERACTIVE_MODE,
+    FETCH_JOB_METADATA_START,
+    FETCH_JOB_METADATA_SUCCESS,
+    FETCH_JOB_METADATA_FAIL,
+    UPDATE_JOB_DEFINITION,
+    DELETE_INTERACTIVE_JOB_SESSION_SUCCESS,
+    DELETE_INTERACTIVE_JOB_SESSION_FAIL,
+    INTERACTIVE_SESSION_EVENT_START,
+    INTERACTIVE_SESSION_EVENT_SUCCESS,
+    INTERACTIVE_SESSION_EVENT_FAIL,
+    UPDATE_INTERACTIVE_JOB_SESSION_SUCCESS,
+    UPDATE_INTERACTIVE_JOB_SESSION_FAIL,
+    SET_INTERACTIVE_DATA,
+    CLEAR_INTERACTIVE_DATA
 } from '../actions/types';
+import { mergeLatestData } from '../../utils/mergeLatestData';
 
 const initialState = {
+    stageCopy: {},
     currentCell: '',
     sidePanelIsOpen: false,
     data: {},
+    jobMetadata: null,
     loading: false,
     fields: null,
     dirty: false,
@@ -48,7 +65,12 @@ const initialState = {
     graphWithParamsIsDirty: false,
     zoomValue: 1,
     panning: false,
-    showLogsModal: false
+    showLogsModal: false,
+    interactive: {
+        interactiveMode: false,
+        offset: 0,
+        data: []
+    }
 };
 
 // eslint-disable-next-line complexity
@@ -133,6 +155,77 @@ const mxGraphReducer = (state = initialState, action = {}) => {
             return {
                 ...state,
                 showLogsModal: action.payload
+            };
+        case SET_STAGE_COPY:
+            return {
+                ...state,
+                stageCopy: action.payload
+            };
+        case SET_INTERACTIVE_MODE:
+            return {
+                ...state,
+                interactive: {
+                    ...initialState.interactive,
+                    interactiveMode: action.payload
+                }
+            };
+        case FETCH_JOB_METADATA_START:
+            return {
+                ...state
+            };
+        case FETCH_JOB_METADATA_SUCCESS:
+            return {
+                ...state,
+                interactive: {
+                    ...state.interactive,
+                    session: action.payload.session,
+                    offset: action.payload.offset,
+                    data: mergeLatestData(
+                        state.interactive.data,
+                        action.payload.data
+                    )
+                }
+            };
+        case UPDATE_JOB_DEFINITION:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    definition: action.payload.definition
+                }
+            };
+        case SET_INTERACTIVE_DATA: {
+            return {
+                ...state,
+                interactive: {
+                    ...state.interactive,
+                    data: action.payload
+                }
+            };
+        }
+        case CLEAR_INTERACTIVE_DATA:
+            return {
+                ...state,
+                interactive: {
+                    ...state.interactive,
+                    data: [],
+                    offset: 0
+                }
+            };
+        case INTERACTIVE_SESSION_EVENT_START:
+        case INTERACTIVE_SESSION_EVENT_SUCCESS:
+        case FETCH_JOB_METADATA_FAIL:
+        case DELETE_INTERACTIVE_JOB_SESSION_FAIL:
+        case UPDATE_INTERACTIVE_JOB_SESSION_SUCCESS:
+        case DELETE_INTERACTIVE_JOB_SESSION_SUCCESS:
+            return {
+                ...state
+            };
+        case INTERACTIVE_SESSION_EVENT_FAIL:
+        case UPDATE_INTERACTIVE_JOB_SESSION_FAIL:
+            return {
+                ...state,
+                error: action.payload.error
             };
         default:
             return state;

@@ -28,6 +28,10 @@ import {
 } from '../../redux/actions/notificationsActions';
 
 const showNotification = (message, variant, persist) => {
+    if (typeof message !== 'string') {
+        return;
+    }
+
     store.dispatch(
         enqueueSnackbar({
             message,
@@ -35,6 +39,7 @@ const showNotification = (message, variant, persist) => {
                 variant,
                 persist,
                 key: nanoid(),
+                style: { whiteSpace: 'pre-wrap' },
                 action: key => (
                     <IconButton
                         color="inherit"

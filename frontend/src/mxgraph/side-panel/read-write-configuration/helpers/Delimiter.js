@@ -19,6 +19,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { TextField, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import ClearButton from '../../helpers/ClearButton';
@@ -29,18 +30,18 @@ const Delimiter = ({ value, onChange, ableToEdit }) => {
     const classes = useStyles();
     const { t } = useTranslation();
     return (
-        <Box className={classes.wrapper}>
+        <Box className={classNames(classes.wrapper, classes.delimiter)}>
             <TextField
                 label={t('jobDesigner:writeConfiguration.Delimiter')}
                 placeholder={t('jobDesigner:writeConfiguration.Delimiter')}
                 variant="outlined"
                 fullWidth
-                name="option.delimiter"
+                name="delimiter"
                 value={value || ''}
                 onChange={onChange}
             />
             <ClearButton
-                name="option.delimiter"
+                name="delimiter"
                 value={value}
                 ableToEdit={ableToEdit}
                 handleInputChange={onChange}

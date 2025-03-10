@@ -25,5 +25,8 @@ export default makeStyles(theme => ({
         justifyContent: 'space-between',
         backgroundColor: theme.palette.grey[50],
         flexWrap: 'wrap'
+    },
+    btn: {
+        color: theme.palette.secondary.dark
     }
 }));

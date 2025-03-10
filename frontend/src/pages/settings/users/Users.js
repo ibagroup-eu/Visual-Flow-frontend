@@ -124,7 +124,6 @@ export const Users = ({
     ]);
 
     const searchFilter = (user, value) =>
-        user.username.toLowerCase().indexOf(value.toLowerCase()) !== -1 ||
         user.name.toLowerCase().indexOf(value.toLowerCase()) !== -1;
 
     const handleChangeSearch = value => {
@@ -193,7 +192,7 @@ export const Users = ({
                 <SearchInput
                     value={searchNewUsersValue}
                     onChange={event => handleSearchNewUsers(event.target.value)}
-                    placeholder={t('main:search')}
+                    placeholder={t('main:searchByName')}
                 />
                 <UsersTable
                     users={newUsers}
@@ -232,7 +231,7 @@ export const Users = ({
                                 onChange={event =>
                                     handleChangeSearch(event.target.value)
                                 }
-                                placeholder={t('main:search')}
+                                placeholder={t('main:searchByName')}
                             />
                         </Box>
                         {editMode && !showModal && (

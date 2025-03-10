@@ -19,11 +19,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import useStyles from './SortStage.Styles';
-import { SORT_TYPES } from '../../constants';
+
+import { INTERACTIVE_RUNNING, SORT_TYPES } from '../../constants';
 import makeTooltip from '../helpers/makeTooltip';
 import { JobStageTag } from '../../../components/stage-tag';
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import InteractiveModeButtons from '../helpers/InteractiveModeButtons';
+import InteractiveModeTooltips from '../helpers/InteractiveModeTooltips';
+import Spinner from '../helpers/Spinner';
+
+import useStyles from './SortStage.Styles';
 
 const SortStage = ({ stage }) => {
     const classes = useStyles();
@@ -36,8 +41,19 @@ const SortStage = ({ stage }) => {
     return (
         <ConfiguredStageWithIcon
             operation={stage.operation}
-            name={makeTooltip(stage.name, stage.name)}
+            name={
+                <>
+                    {makeTooltip(stage.name, stage.name)}
+                    {stage.interactiveMode && (
+                        <InteractiveModeButtons stage={stage} />
+                    )}
+                </>
+            }
         >
+            {stage.status === INTERACTIVE_RUNNING && <Spinner />}
+            {stage.status !== INTERACTIVE_RUNNING && (
+                <InteractiveModeTooltips stage={stage} />
+            )}
             <JobStageTag className={classes.sortType}>{sortType}</JobStageTag>
         </ConfiguredStageWithIcon>
     );

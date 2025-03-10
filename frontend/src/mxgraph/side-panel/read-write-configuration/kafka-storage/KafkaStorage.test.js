@@ -20,10 +20,13 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { Button } from '@material-ui/core';
-import KafkaStorage, { fromState, toState } from './KafkaStorage';
-import PropertyListModal from '../../property-list/PropertyListModal';
 import { useTranslation } from 'react-i18next';
+
+import KafkaStorage, { fromState, toState } from './KafkaStorage';
+import ReadTextFields from '../../../../components/rw-text-fields';
+import PropertyListModal from '../../property-list/PropertyListModal';
 import FileTextField from '../../../../components/file-text-field';
+import { WRITE } from '../../../constants';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -42,7 +45,7 @@ describe('Kafka storage', () => {
             ableToEdit: true,
             setState: jest.fn(),
             connection: {},
-            uploadLocalFile: jest.fn()
+            uploadLocalFile: jest.fn().mockImplementation(() => Promise.resolve())
         };
         useTranslation.mockImplementation(() => ({ t: x => x }));
         const wrapper = func(<KafkaStorage {...defaultProps} {...props} />);
@@ -98,10 +101,31 @@ describe('Kafka storage', () => {
         });
     });
 
-    it('should calls uploadCertificate', () => {
+    it('should calls uploadCertificate', async () => {
         const [wrapper, props] = init({}, true, mount);
-        wrapper.find(FileTextField).invoke('setFile')({ name: 'testFile' });
-        expect(props.handleInputChange).toHaveBeenCalled();
+        wrapper.find(FileTextField).invoke('setFile')({ name: 'testFile.jks' });
+        expect(await props.handleInputChange).toHaveBeenCalled();
         expect(props.uploadLocalFile).toHaveBeenCalled();
+    });
+
+    it('should render ReadTextFields for WRITE', () => {
+        const [wrapper] = init(
+            {
+                inputValues: {
+                    operation: WRITE,
+                    storage: 'kafka'
+                }
+            },
+            true
+        );
+
+        const expectedFields = [{ field: 'topic' }];
+
+        expect(
+            wrapper
+                .find(ReadTextFields)
+                .at(0)
+                .prop('fields')
+        ).toEqual(expectedFields);
     });
 });

@@ -19,12 +19,12 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TextField } from '@material-ui/core';
 import { TextSkeleton } from '../../../../components/skeleton';
 
-import { useTranslation } from 'react-i18next';
 import SingleSelectModal from '../modal';
-import Pipeline from './Pipeline';
+import Pipeline, { mapStateToProps } from './Pipeline';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -35,10 +35,11 @@ describe('Pipeline', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             loading: false,
-            data: [],
+            data: [{ id: 'id', name: 'name' }],
             ableToEdit: true,
             state: {},
-            onStateChange: jest.fn()
+            onStateChange: jest.fn(),
+            duplicatedName: true
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));
@@ -112,5 +113,44 @@ describe('Pipeline', () => {
 
         field.simulate('change', { target: { name: 'name', value: 'value' } });
         expect(props.onStateChange).toHaveBeenCalledWith('name', 'value');
+    });
+
+    it('should map redux state to props', () => {
+        const pages = {
+            pipelines: {
+                loading: false,
+                data: {
+                    pipelines: [
+                        { id: '1', startedAt: null },
+                        { id: '2', startedAt: '2024-04-26 08:45:51 +0000' }
+                    ]
+                }
+            }
+        };
+        const mxGraph = {
+            data: {
+                id: '2'
+            }
+        };
+        const mxGraph2 = {
+            data: {
+                id: '1'
+            }
+        };
+
+        expect(mapStateToProps({ pages, mxGraph })).toStrictEqual({
+            data: [{ ...pages.pipelines.data.pipelines[0], lastRun: null }],
+            loading: false
+        });
+
+        expect(mapStateToProps({ pages, mxGraph: mxGraph2 })).toStrictEqual({
+            data: [
+                {
+                    ...pages.pipelines.data.pipelines[1],
+                    lastRun: new Date(pages.pipelines.data.pipelines[1].startedAt)
+                }
+            ],
+            loading: false
+        });
     });
 });

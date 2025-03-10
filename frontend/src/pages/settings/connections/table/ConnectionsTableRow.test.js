@@ -41,7 +41,8 @@ describe('ConnectionsTableRow', () => {
             handleRemoveConnection: jest.fn(),
             confirmationWindow: jest.fn(),
             handleOpenConnection: jest.fn(),
-            handlePingConnection: jest.fn()
+            handlePingConnection: jest.fn(),
+            editableMode: true
         };
 
         wrapper = shallow(<ConnectionsTableRow {...props} />);

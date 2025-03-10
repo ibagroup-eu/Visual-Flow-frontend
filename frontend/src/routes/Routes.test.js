@@ -18,13 +18,47 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
-
+import { shallow, mount } from 'enzyme';
+import history from '../utils/history';
 import Routes from './Routes';
+import { Router } from 'react-router';
+import { set } from 'lodash';
+import redux from 'react-redux';
+import * as settingsActions from '../redux/actions/settingsActions';
 
 describe('Main routes', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('should render without error', () => {
         const wrapper = shallow(<Routes />);
         expect(wrapper).toBeDefined();
+    });
+
+    it.each([
+        { route: 'Overview', path: '/vf-dev-backend/overview' },
+        {
+            route: 'Logs',
+            path: '/jobs/b6a095a3-86b9-40e4-a891-31e08588bf25/logs/vf-dev-backend/'
+        },
+        {
+            route: 'JobDesigner',
+            path: '/jobs/vf-dev-backend/b6a095a3-86b9-40e4-a891-31e08588bf25'
+        }
+    ])('should process "$route" route', ({ path }) => {
+        set(history, 'location.pathname', path);
+        const dispatch = jest.fn();
+        const func = jest.fn();
+
+        jest.spyOn(redux, 'useDispatch').mockReturnValue(dispatch);
+        jest.spyOn(settingsActions, 'getProject').mockReturnValue(func);
+
+        mount(
+            <Router history={{ location: {}, listen: jest.fn() }}>
+                <Routes />
+            </Router>
+        );
+        expect(dispatch).toHaveBeenCalledWith(func);
     });
 });

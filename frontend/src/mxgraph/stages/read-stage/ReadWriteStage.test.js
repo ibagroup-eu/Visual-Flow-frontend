@@ -103,5 +103,15 @@ describe('ReadWriteStage', () => {
                 storage: STORAGES.API.value
             }
         });
+        wrapper.setProps({
+            stage: {
+                storage: STORAGES.AZURE.value
+            }
+        });
+        wrapper.setProps({
+            stage: {
+                storage: STORAGES.GOOGLECLOUD.value
+            }
+        });
     });
 });

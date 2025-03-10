@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { IconButton, Tooltip, useTheme } from '@material-ui/core';
 import { PlayArrow, Stop, PauseTwoTone } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import { PENDING, RUNNING, SUSPENDED } from '../../constants';
+import { DATABRICKS, PENDING, RUNNING, SUSPENDED } from '../../constants';
 
 const ControlButtons = ({
     status,
@@ -70,9 +70,19 @@ const ControlButtons = ({
                 </IconButton>
             )}
             {status === RUNNING && (
-                <IconButton aria-label="suspendIcon" onClick={suspend}>
+                <IconButton
+                    aria-label="suspendIcon"
+                    onClick={suspend}
+                    disabled={window.PLATFORM === DATABRICKS}
+                >
                     <Tooltip title={t('pipelines:tooltip.Suspend')} arrow>
-                        <PauseTwoTone htmlColor={theme.palette.warning.main} />
+                        <PauseTwoTone
+                            htmlColor={
+                                window.PLATFORM === DATABRICKS
+                                    ? 'lightgrey'
+                                    : theme.palette.warning.main
+                            }
+                        />
                     </Tooltip>
                 </IconButton>
             )}

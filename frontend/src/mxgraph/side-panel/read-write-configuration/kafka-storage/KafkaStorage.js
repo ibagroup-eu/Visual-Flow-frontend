@@ -33,20 +33,22 @@ import useStyles from './KafkaStorage.Styles';
 import { PropertyListModal } from '../../property-list';
 import FileTextField from '../../../../components/file-text-field';
 import { uploadFile } from '../../../../redux/actions/filesActions';
-
-import history from '../../../../utils/history';
 import { HEADER_KEY_VALIDATIONS } from '../api-storage/ApiStorage';
-
-const subscribeField = [{ field: 'subscribe' }];
+import { WRITE } from '../../../constants';
+import history from '../../../../utils/history';
+import showNotification from '../../../../components/notification/showNotification';
+import IncrementalLoad from '../helpers/IncrementalLoad';
 
 const certificate = 'option.kafka.ssl.truststore.location';
 
 const fields = [
     'name',
+    'connectionName',
     'operation',
     'storage',
     'bootstrapServers',
     'subscribe',
+    'topic',
     certificate
 ];
 const prefix = 'option.kafka.';
@@ -148,13 +150,18 @@ const KafkaStorage = ({
     ableToEdit,
     connection,
     uploadLocalFile,
+    currentProject,
     error
 }) => {
     const classes = useStyles();
 
-    const currentProject = history.location.pathname.split('/')[2];
     const id = uuidv4();
     const [showModal, setShowModal] = useState(false);
+
+    const subscribeField =
+        inputValues.operation === WRITE
+            ? [{ field: 'topic' }]
+            : [{ field: 'subscribe' }];
 
     const { t } = useTranslation();
 
@@ -178,21 +185,39 @@ const KafkaStorage = ({
         setShowModal(false);
     };
 
-    const uploadCertificate = fileData => {
-        const value = `/${currentProject}/${id}/${fileData.name.replace(
-            /[,()[\]{}\s]/g,
-            '_'
-        )}`;
-        const formData = new FormData();
-        formData.append('fileToUpload', fileData);
-        uploadLocalFile(currentProject, value, formData);
+    const isValidFileExtension = value => {
+        let fileExtension = '';
+        if (value.lastIndexOf('.') > 0) {
+            fileExtension = value.substring(
+                value.lastIndexOf('.') + 1,
+                value.length
+            );
+        }
+        return fileExtension.toLowerCase() === 'jks';
+    };
 
-        handleInputChange({
-            target: {
-                name: certificate,
-                value
-            }
-        });
+    const uploadCertificate = fileData => {
+        if (isValidFileExtension(fileData.name)) {
+            const value = `/files/${currentProject}/${id}/${fileData.name.replace(
+                /[,()[\]{}\s]/g,
+                '_'
+            )}`;
+            const formData = new FormData();
+            formData.append('fileToUpload', fileData);
+            uploadLocalFile(currentProject, value, formData).then(() => {
+                handleInputChange({
+                    target: {
+                        name: certificate,
+                        value
+                    }
+                });
+            });
+        } else {
+            showNotification(
+                t('main:validation.kafkaValidation.badCertificate'),
+                'error'
+            );
+        }
     };
 
     return (
@@ -226,8 +251,17 @@ const KafkaStorage = ({
                 ableToEdit={ableToEdit}
                 handleInputChange={handleInputChange}
                 label={t('jobDesigner:readConfiguration.truststore')}
+                accept=".jks"
                 uploadStage
                 clearable
+            />
+
+            <IncrementalLoad
+                inputValues={inputValues}
+                ableToEdit={ableToEdit}
+                handleInputChange={handleInputChange}
+                connection={connection}
+                openModal={openModal}
             />
 
             {showModal && (
@@ -241,6 +275,12 @@ const KafkaStorage = ({
                     onClose={() => setShowModal(false)}
                     onSave={handleOptionsSave}
                     keyValidations={HEADER_KEY_VALIDATIONS}
+                    keyProperties={{
+                        'ssl.endpoint.identification.algorithm': {
+                            valueRequired: false,
+                            validations: {}
+                        }
+                    }}
                     options={optionsList}
                 />
             )}
@@ -266,11 +306,14 @@ KafkaStorage.propTypes = {
     setState: PropTypes.func,
     connection: PropTypes.object,
     uploadLocalFile: PropTypes.func,
-    error: PropTypes.object
+    error: PropTypes.object,
+    currentProject: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-    error: state.files.error
+    error: state.files.error,
+    currentProject:
+        state.projects.currentProject ?? history.location.pathname.split('/')[2]
 });
 
 const mapDispatchToProps = {

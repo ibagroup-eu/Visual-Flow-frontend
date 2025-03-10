@@ -18,7 +18,7 @@
  */
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { CONTAINER, NOTIFICATION } from '../../constants';
+import { NOTIFICATION, WAIT } from '../../constants';
 import RenderPipelineConfiguration, {
     checkContainerFields,
     checkNotification
@@ -46,30 +46,24 @@ describe('RenderPipelineConfiguration', () => {
         expect(wrapper.find(Configuration).exists()).toBeTruthy();
     });
 
-    it('should update state', () => {
-        const props = {
-            setPanelDirty: jest.fn(),
-            configuration: {
-                operation: NOTIFICATION
-            },
-            graph: { getSelectionCell: jest.fn(), getIncomingEdges: jest.fn() }
+    it('should render null', () => {
+        const configuration = {
+            operation: WAIT
         };
 
-        const wrapper = mount(<RenderPipelineConfiguration {...props} />);
-
-        wrapper.setProps({
-            configuration: {
-                operation: CONTAINER
-            }
-        });
-        wrapper.update();
-        expect(props.setPanelDirty).toHaveBeenCalled();
+        const wrapper = shallow(
+            <RenderPipelineConfiguration configuration={configuration} />
+        );
+        expect(wrapper.find(Configuration).exists()).toBeFalsy();
     });
 
     it('should not render when operation does not exist', () => {
         const configuration = {};
-        const wrapper = shallow(
-            <RenderPipelineConfiguration configuration={configuration} />
+        const wrapper = mount(
+            <RenderPipelineConfiguration
+                configuration={configuration}
+                setPanelDirty={jest.fn()}
+            />
         );
         expect(wrapper.children().length).toBe(0);
     });
@@ -103,6 +97,8 @@ describe('checkContainerFields', () => {
     const fields = {
         name: 'name',
         image: 'image',
+        username: 'username',
+        password: 'password',
         requestsCpu: 'requestsCpu',
         requestsMemory: 'requestsMemory',
         limitsCpu: 'limitsCpu',

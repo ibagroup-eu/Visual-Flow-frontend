@@ -61,8 +61,9 @@ import {
     updatePipeline,
     copyPipeline,
     retryPipeline,
-    suspendPipeline, resumePipeline
-} from "./pipelinesActions";
+    suspendPipeline,
+    resumePipeline
+} from './pipelinesActions';
 import fetchPipelineStatus from './onePipelineStatusActions';
 
 describe('Pipelines action', () => {
@@ -586,6 +587,4 @@ describe('Pipelines action', () => {
             });
         });
     });
-
-
 });

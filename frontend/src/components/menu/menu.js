@@ -27,6 +27,7 @@ import {
 } from '@material-ui/icons';
 import i18n from '../../i18n';
 import { setTableDefault } from '../../redux/actions/enhancedTableActions';
+import { DATABRICKS } from '../../mxgraph/constants';
 
 const menu = id =>
     id && [
@@ -69,7 +70,8 @@ const menu = id =>
                 },
                 {
                     name: i18n.t('main:Users/Roles'),
-                    link: `/${id}/settings/users`
+                    link: `/${id}/settings/users`,
+                    hidden: window.PLATFORM === DATABRICKS
                 }
             ],
             Icon: Settings

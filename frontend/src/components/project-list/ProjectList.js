@@ -24,13 +24,25 @@ import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import history from '../../utils/history';
 import { fetchProjects } from '../../redux/actions/projectsActions';
+import { fetchCurrentUser } from '../../redux/actions/currentUserActions';
 import ProjectCard from '../project-card';
 import { ProjectCardSkeleton } from '../project-card/ProjectCard';
 
-export const ProjectList = ({ projects: { data, loading }, getProjects }) => {
+export const ProjectList = ({
+    projects: { data, loading },
+    currentUser,
+    getProjects,
+    getCurrentUser
+}) => {
     React.useEffect(() => {
         getProjects();
-    }, [getProjects]);
+        getCurrentUser();
+    }, [getProjects, getCurrentUser]);
+
+    const superUser =
+        window.PLATFORM === 'DATABRICKS'
+            ? currentUser.data.superuser
+            : data.editable;
 
     const projectsWithAdd = () =>
         data.editable ? [{}].concat(data?.projects) : data?.projects;
@@ -53,7 +65,7 @@ export const ProjectList = ({ projects: { data, loading }, getProjects }) => {
                                 <ProjectCard
                                     key={project.id}
                                     project={project}
-                                    superUser={data.editable}
+                                    superUser={superUser}
                                     onClick={() => {
                                         project.id
                                             ? history.push(`/${project.id}/overview`)
@@ -73,15 +85,19 @@ export const ProjectList = ({ projects: { data, loading }, getProjects }) => {
 
 ProjectList.propTypes = {
     projects: PropTypes.object,
-    getProjects: PropTypes.func
+    getProjects: PropTypes.func,
+    getCurrentUser: PropTypes.func,
+    currentUser: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    projects: state.projects
+    projects: state.projects,
+    currentUser: state.user.currentUser
 });
 
 const mapDispatchToProps = {
-    getProjects: fetchProjects
+    getProjects: fetchProjects,
+    getCurrentUser: fetchCurrentUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);

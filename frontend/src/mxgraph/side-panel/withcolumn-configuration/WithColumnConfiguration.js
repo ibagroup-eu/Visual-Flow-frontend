@@ -139,6 +139,7 @@ const WithColumnConfiguration = ({ ableToEdit, state, onChange }) => {
                         menuItems={OPERATION_TYPES}
                         type={OTHER}
                         required
+                        className={classes.operationType}
                     />
                     <Divider className={classes.divider} />
                     <TextField

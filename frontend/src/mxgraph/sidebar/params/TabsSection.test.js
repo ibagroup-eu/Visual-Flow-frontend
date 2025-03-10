@@ -36,7 +36,7 @@ describe('TabsSection', () => {
                     fields: {
                         'SLACK.NOTIFY_FAILURE': {
                             label: 'NotifyFailure',
-                            type: 'email_switch'
+                            type: 'switch'
                         }
                     }
                 },
@@ -46,7 +46,7 @@ describe('TabsSection', () => {
                     fields: {
                         'EMAIL.NOTIFY_FAILURE': {
                             label: 'NotifyFailure',
-                            type: 'email_switch'
+                            type: 'switch'
                         }
                     }
                 }

@@ -46,8 +46,8 @@ export const validate = (value, validationSchema, ...args) =>
         if (acc) {
             return acc;
         }
-        return func(value, ...args) ? message : '';
-    }, '');
+        return func(value, ...args) ? message : null;
+    }, null);
 
 const useParamValidation = data => {
     const [param, setParam] = useState(data);

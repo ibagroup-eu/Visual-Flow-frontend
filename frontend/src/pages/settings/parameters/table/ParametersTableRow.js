@@ -38,7 +38,8 @@ export const ParametersTableRow = ({
     confirmationWindow,
     handleEdit,
     handleRemove,
-    classes
+    classes,
+    editableMode
 }) => {
     const { t } = useTranslation();
 
@@ -48,7 +49,8 @@ export const ParametersTableRow = ({
             Icon: EditOutlined,
             disabled: editing || deleting,
             loading: editing,
-            onClick: handleEdit
+            onClick: handleEdit,
+            visible: editableMode
         },
         {
             title: t('setting:parameter.tooltip.Delete'),
@@ -59,7 +61,8 @@ export const ParametersTableRow = ({
                 confirmationWindow({
                     body: `${t('main:confirm.sure')} '${key}'?`,
                     callback: handleRemove
-                })
+                }),
+            visible: editableMode
         }
     ];
 
@@ -96,9 +99,15 @@ export const ParametersTableRow = ({
             </TableCell>
             <TableCell className={classes.cell}>
                 <Box className={classes.buttonsGroup}>
-                    {buttonsProps.map(buttonProps => (
-                        <ActionButton key={buttonProps.title} {...buttonProps} />
-                    ))}
+                    {buttonsProps.map(
+                        buttonProps =>
+                            buttonProps.visible && (
+                                <ActionButton
+                                    key={buttonProps.title}
+                                    {...buttonProps}
+                                />
+                            )
+                    )}
                 </Box>
             </TableCell>
         </TableRow>
@@ -116,7 +125,8 @@ ParametersTableRow.propTypes = {
     handleRemove: PropTypes.func,
     editing: PropTypes.bool,
     deleting: PropTypes.bool,
-    classes: PropTypes.object
+    classes: PropTypes.object,
+    editableMode: PropTypes.bool
 };
 
 const mapDispatchToProps = {

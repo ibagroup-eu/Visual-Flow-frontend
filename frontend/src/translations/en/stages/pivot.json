@@ -21,6 +21,10 @@
         "name": "Pivot Values",
         "value": "Value(s) from pivot column to be used (optional)."
     },
+    "pivotColumns": {
+        "name": "Pivot Columns",
+        "value": "Columns for pivoting."
+    },
     "unchangedColumns": {
         "name": "Unchanged Columns",
         "value": "Unchanged column(s)."

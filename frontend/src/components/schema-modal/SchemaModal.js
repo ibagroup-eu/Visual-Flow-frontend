@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Box } from '@material-ui/core';
 import classNames from 'classnames';
@@ -33,15 +33,21 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
     const { t } = useTranslation();
     const avroSchema = useRef(null);
 
-    const DEFAULT_SCHEMA = {
-        type: 'record',
-        name: `schema_${uuidv4().replaceAll('-', '')}`,
-        fields: [],
-        ...JSON.parse(values || '{}')
-    };
+    const DEFAULT_SCHEMA = useMemo(() => {
+        return {
+            type: 'record',
+            name: `schema_${uuidv4().replaceAll('-', '')}`,
+            fields: [],
+            ...JSON.parse(values || '{}')
+        };
+    }, [values]);
 
     const [schema, setSchema] = useState(DEFAULT_SCHEMA);
     const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+        setSchema(DEFAULT_SCHEMA);
+    }, [DEFAULT_SCHEMA]);
 
     const onCancel = () => {
         setSchema(DEFAULT_SCHEMA);
@@ -57,7 +63,7 @@ const SchemaModal = ({ values, onChange, display, onClose, editable = true }) =>
         setSchema(updatedSchema);
         onChange({
             target: {
-                name: 'option.avroSchema',
+                name: 'avroSchema',
                 value: JSON.stringify(updatedSchema)
             }
         });

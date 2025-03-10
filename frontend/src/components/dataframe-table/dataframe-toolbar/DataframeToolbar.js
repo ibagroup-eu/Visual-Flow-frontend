@@ -21,6 +21,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@material-ui/core';
+import classNames from 'classnames';
+import { AddOutlined } from '@material-ui/icons';
 import useStyles from './DataframeToolbar.Styles';
 import DataframeAddColumnButton from './dataframe-add-column-button/DataframeAddColumnButton';
 import DataframeColumnsButton from './dataframe-columns-button/DataframeColumnsButton';
@@ -41,6 +43,8 @@ const DataframeToolbar = ({
 }) => {
     const classes = useStyles();
     const { t } = useTranslation();
+    const isDisabledAddRowBtn = columns.length === 0 || !editable;
+    const isDisabledDeleteBtn = deleteDisabled || !editable;
 
     return (
         <Box className={classes.root}>
@@ -54,13 +58,16 @@ const DataframeToolbar = ({
                     editable={editable}
                 />
                 <Button
-                    disabled={columns.length === 0 || !editable}
+                    disabled={isDisabledAddRowBtn}
+                    className={classNames({ [classes.btn]: !isDisabledAddRowBtn })}
                     onClick={addRow}
+                    startIcon={<AddOutlined />}
                 >
                     {t('jobDesigner:Dataframe.toolbar.addRow')}
                 </Button>
                 <Button
-                    disabled={deleteDisabled || !editable}
+                    disabled={isDisabledDeleteBtn}
+                    className={classNames({ [classes.btn]: !isDisabledDeleteBtn })}
                     onClick={onDeleteRows}
                 >
                     {t('jobDesigner:Dataframe.toolbar.remove')}

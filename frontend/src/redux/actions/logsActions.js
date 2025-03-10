@@ -40,6 +40,29 @@ export const fetchJobLogs = (projectId, jobId) => dispatch => {
     );
 };
 
+export const fetchDatabricksJobLogs = (
+    projectId,
+    pipelineId,
+    jobName
+) => dispatch => {
+    dispatch({
+        type: FETCH_LOGS_START
+    });
+
+    return apiJobs.getDatabricksJobLogs(projectId, pipelineId, jobName).then(
+        response =>
+            dispatch({
+                type: FETCH_LOGS_SUCCESS,
+                payload: response.data
+            }),
+        error =>
+            dispatch({
+                type: FETCH_LOGS_FAIL,
+                payload: { error }
+            })
+    );
+};
+
 export const fetchContainerLogs = (projectId, pipelineId, nodeId) => dispatch => {
     dispatch({ type: FETCH_LOGS_START });
 

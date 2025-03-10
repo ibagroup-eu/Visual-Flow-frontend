@@ -35,7 +35,7 @@ describe('Job', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {
             loading: true,
-            data: [],
+            data: [{ id: 'id_1', name: 'name' }],
             ableToEdit: true,
             state: {},
             onStateChange: jest.fn(),
@@ -43,7 +43,8 @@ describe('Job', () => {
                 { id: 'id_1', successPath: 'value_1', job: 'target_value_1' },
                 { id: 'id_2', successPath: 'value_2', job: 'target_value_2' }
             ],
-            onChangeOutputPaths: jest.fn()
+            onChangeOutputPaths: jest.fn(),
+            duplicatedName: true
         };
 
         useTranslation.mockImplementation(() => ({ t: x => x }));

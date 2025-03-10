@@ -83,7 +83,7 @@ const ModalGridRow = ({
                         color="textSecondary"
                         className={classes.truncate}
                     >
-                        {metadata?.labels?.name}
+                        {metadata?.name}
                     </Typography>
                     <Typography
                         component="div"
@@ -91,8 +91,7 @@ const ModalGridRow = ({
                         className={classes.hint}
                     >
                         {t('main:importPage.LastUpdated')}:{' '}
-                        {formatDate(metadata?.annotations?.lastModified) ||
-                            t('main:N/A')}
+                        {formatDate(metadata?.lastModified) || t('main:N/A')}
                     </Typography>
                 </Grid>
             </Grid>

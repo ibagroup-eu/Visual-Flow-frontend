@@ -31,10 +31,10 @@ jest.mock('react-i18next', () => ({
 
 describe('RunStopButtons', () => {
     let wrapper;
-    let props;
+    let defaultProps;
 
     beforeEach(() => {
-        props = {
+        defaultProps = {
             isNotRunning: true,
             runnable: true,
             run: jest.fn(),
@@ -45,7 +45,7 @@ describe('RunStopButtons', () => {
 
         useTranslation.mockImplementation(() => ({ t: x => x }));
 
-        wrapper = shallow(<RunStopButtons {...props} />);
+        wrapper = shallow(<RunStopButtons {...defaultProps} />);
     });
 
     it('should render without crashes', () => {
@@ -66,5 +66,19 @@ describe('RunStopButtons', () => {
 
     it('should render Stop', () => {
         expect(wrapper.find(Stop)).toBeDefined();
+    });
+
+    it('should render IconButton', () => {
+        const props = {
+            ...defaultProps,
+            changesNotSaved: true,
+            stopable: false,
+            isNotRunning: false
+        };
+
+        wrapper = shallow(<RunStopButtons {...props} />);
+
+        expect(wrapper.find(IconButton).length).toBe(1);
+        expect(wrapper.find(IconButton).prop('disabled')).toBeTruthy();
     });
 });

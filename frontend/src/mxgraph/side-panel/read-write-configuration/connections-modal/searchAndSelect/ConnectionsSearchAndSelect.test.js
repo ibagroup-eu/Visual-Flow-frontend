@@ -43,6 +43,15 @@ describe('ConnectionsSearchAndSelect', () => {
         expect(wrapper).toBeDefined();
     });
 
+    it('should have specific placeholder for search', () => {
+        expect(
+            wrapper
+                .find(SearchInput)
+                .at(0)
+                .props().placeholder
+        ).toEqual('main:searchByName');
+    });
+
     it('should calls onChange prop for SearchInput', () => {
         wrapper.find(SearchInput).prop('onChange')({ target: { value: 'test' } });
         expect(props.setSearchValue).toBeCalledWith('test');

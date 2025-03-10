@@ -38,7 +38,8 @@ const PageHeader = ({
     tagsData,
     onCheckTags,
     resetTags,
-    checkedTags
+    checkedTags,
+    disabled
 }) => {
     const { t } = useTranslation();
     const classes = useStyles();
@@ -92,6 +93,7 @@ const PageHeader = ({
                                 )}
                                 variant="contained"
                                 color="primary"
+                                disabled={disabled}
                                 onClick={onAddClick}
                             >
                                 {buttonCaption}
@@ -115,7 +117,8 @@ PageHeader.propTypes = {
     tagsData: PropTypes.object,
     onCheckTags: PropTypes.func,
     resetTags: PropTypes.func,
-    checkedTags: PropTypes.object
+    checkedTags: PropTypes.object,
+    disabled: PropTypes.bool
 };
 
 export default PageHeader;

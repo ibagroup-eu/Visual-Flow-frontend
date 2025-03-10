@@ -23,6 +23,16 @@ import { mount, shallow } from 'enzyme';
 import { Logs } from './Logs';
 import LogsList from '../logs-list';
 import LogsPageHeader from '../../../components/logs-page-header';
+import { DATABRICKS } from '../../../mxgraph/constants';
+import history from '../../../utils/history';
+
+jest.mock('../../../utils/history', () => ({
+    ...jest.requireActual('history'),
+    listen: jest.fn(),
+    location: {
+        search: ''
+    }
+}));
 
 describe('Logs', () => {
     let wrapper;
@@ -55,6 +65,9 @@ describe('Logs', () => {
         };
 
         wrapper = shallow(<Logs {...props} />);
+
+        jest.clearAllMocks();
+        history.location.search = '';
     });
 
     it('should render without crashes', () => {
@@ -63,6 +76,7 @@ describe('Logs', () => {
 
     it('should render LogsList', () => {
         expect(wrapper.find(LogsList)).toBeDefined();
+        expect(wrapper.find(LogsList).prop('isRunning')).toBe(false);
     });
 
     it('should render LogsPageHeader', () => {
@@ -70,6 +84,12 @@ describe('Logs', () => {
     });
 
     it('should return default link', () => {
+        const mockSearch = '?backTo=jobsTable';
+        Object.defineProperty(history.location, 'search', {
+            value: mockSearch,
+            writable: true
+        });
+
         expect(wrapper.find(LogsPageHeader).prop('arrowLink')).toBe(
             '/pipelines/vsw-frontend/null'
         );
@@ -84,6 +104,84 @@ describe('Logs', () => {
             logs: { data: [], loading: true },
             getContainerLogs: jest.fn(),
             getJobLogs: jest.fn(),
+            getJobStatus: jest.fn(),
+            getJobHistoryLogs: jest.fn(),
+            getJob: jest.fn(),
+            jobStatus: { id: 'fcf5055a-e138-4e65-a2f1-581580c79dd8' },
+            status: 'RUNNING'
+        };
+
+        const mountedWrapper = mount(<Logs {...defaultProps} />);
+
+        expect(mountedWrapper.find(LogsList).prop('isRunning')).toBe(false);
+
+        // getContainerLogs should be called
+        mountedWrapper.setProps({ nodeId: 'newNodeId' });
+
+        expect(defaultProps.getContainerLogs).toHaveBeenCalledWith(
+            defaultProps.projId,
+            defaultProps.pipelineId,
+            'newNodeId'
+        );
+
+        // getJobLogs should be called
+        mountedWrapper.setProps({ nodeId: undefined, jobId: 'newJobId' });
+
+        expect(defaultProps.getJobLogs).toHaveBeenCalledWith(
+            defaultProps.projId,
+            'newJobId'
+        );
+
+        // getJobHistoryLogs should be called
+        mountedWrapper.setProps({ nodeId: 'newNodeId', logId: 'logId' });
+
+        expect(defaultProps.getJobHistoryLogs).toHaveBeenCalledWith(
+            defaultProps.projId,
+            'newJobId',
+            'logId'
+        );
+    });
+    it('should call "getContainerLogs" for global version', () => {
+        const defaultProps = {
+            projId: 'projId',
+            jobId: 'newJobId',
+            jobName: 'newJobName',
+            modal: true,
+            logs: { data: [], loading: true },
+            getContainerLogs: jest.fn(),
+            getJobLogs: jest.fn(),
+            getDatabricksJobLogs: jest.fn(),
+            getJobStatus: jest.fn(),
+            getJobHistoryLogs: jest.fn(),
+            getJob: jest.fn(),
+            jobStatus: { id: 'fcf5055a-e138-4e65-a2f1-581580c79dd8' }
+        };
+
+        const mountedWrapper = mount(<Logs {...defaultProps} />);
+
+        mountedWrapper.setProps({
+            jobId: 'newJobId'
+        });
+
+        expect(defaultProps.getJobLogs).toHaveBeenCalledWith(
+            defaultProps.projId,
+            defaultProps.jobId
+        );
+    });
+
+    it('should call "getContainerLogs" & "getDatabricksJobLogs" & "getJobHistoryLogs" functions', () => {
+        Object.defineProperty(window, 'PLATFORM', {
+            value: DATABRICKS
+        });
+        const defaultProps = {
+            projId: 'projId',
+            modal: true,
+            pipelineId: 'pipelineId',
+            nodeId: 'nodeId',
+            logs: { data: [], loading: true },
+            getContainerLogs: jest.fn(),
+            getJobLogs: jest.fn(),
+            getDatabricksJobLogs: jest.fn(),
             getJobStatus: jest.fn(),
             getJobHistoryLogs: jest.fn(),
             getJob: jest.fn(),
@@ -102,11 +200,16 @@ describe('Logs', () => {
         );
 
         // getJobLogs should be called
-        mountedWrapper.setProps({ nodeId: undefined, jobId: 'newJobId' });
+        mountedWrapper.setProps({
+            nodeId: undefined,
+            jobId: 'newJobId',
+            jobName: 'jobName'
+        });
 
-        expect(defaultProps.getJobLogs).toHaveBeenCalledWith(
+        expect(defaultProps.getDatabricksJobLogs).toHaveBeenCalledWith(
             defaultProps.projId,
-            'newJobId'
+            defaultProps.pipelineId,
+            'jobName'
         );
 
         // getJobHistoryLogs should be called

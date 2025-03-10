@@ -162,6 +162,7 @@ const UseWindowFunctionOperation = ({ state, ableToEdit, handleInputChange }) =>
                 handleInputChange={handleInputChange}
                 type={READWRITE}
                 required
+                className={classes.windowFunction}
             />
             {state[windowFunction] && (
                 <>

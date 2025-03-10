@@ -19,6 +19,7 @@
 
 import { shallow } from 'enzyme';
 import React from 'react';
+import { Button } from '@material-ui/core';
 import DataframeToolbar from './DataframeToolbar';
 
 describe('DataframeToolbar', () => {
@@ -53,5 +54,20 @@ describe('DataframeToolbar', () => {
 
     it('should render component with deleteDisabled', () => {
         wrapper = shallow(<DataframeToolbar {...props} deleteDisabled />);
+    });
+
+    it('should have secondary dark text color', () => {
+        props = {
+            ...props,
+            columns: [{ column: 'columnName' }]
+        };
+
+        wrapper = shallow(<DataframeToolbar {...props} />);
+
+        const { className } = wrapper
+            .find(Button)
+            .first()
+            .props();
+        expect(className.lastIndexOf('makeStyles-btn')).toBe(0);
     });
 });

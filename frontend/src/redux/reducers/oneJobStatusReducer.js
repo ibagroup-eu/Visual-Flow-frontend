@@ -21,6 +21,7 @@ import {
     FETCH_JOB_STATUS_START,
     FETCH_JOB_STATUS_SUCCESS,
     FETCH_JOB_STATUS_FAIL,
+    RESET_JOB_STATUS_SUCCESS,
     UPDATE_JOB_STATUS_FAIL,
     UPDATE_JOB_STATUS_START,
     UPDATE_JOB_STATUS_SUCCESS
@@ -57,6 +58,10 @@ const oneJobStatusReducer = (state = initialState, action = {}) => {
                 ...state,
                 loading: false,
                 error: action.payload.error
+            };
+        case RESET_JOB_STATUS_SUCCESS:
+            return {
+                ...initialState
             };
         default:
             return state;

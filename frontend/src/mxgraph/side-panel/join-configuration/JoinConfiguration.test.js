@@ -93,6 +93,26 @@ describe('Join configuration', () => {
             .prop('handleInputChange')({
             target: { name: 'test', value: 'testValue' }
         });
+        expect(
+            wrapper
+                .find(AutocompleteParameter)
+                .at(0)
+                .prop('name')
+        ).toEqual('leftColumns');
+        expect(defaultProps.onChange).toBeCalledWith('test', 'testValue');
+
+        wrapper
+            .find(AutocompleteParameter)
+            .at(1)
+            .prop('handleInputChange')({
+            target: { name: 'test', value: 'testValue' }
+        });
+        expect(
+            wrapper
+                .find(AutocompleteParameter)
+                .at(1)
+                .prop('name')
+        ).toEqual('rightColumns');
         expect(defaultProps.onChange).toBeCalledWith('test', 'testValue');
     });
 

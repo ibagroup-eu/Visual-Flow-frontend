@@ -43,13 +43,15 @@ const Pipelines = ({
     getJobs,
     jobs,
     params,
-    getParameters
+    getParameters,
+    project
 }) => {
     const { t } = useTranslation();
     const [search, setSearch] = React.useState('');
     const [list, setList] = React.useState([]);
     const [tags, setTags] = React.useState({});
     const filteredTags = useMemo(() => checkedTags(tags), [tags]);
+    const { demo, demoLimits } = project;
 
     React.useEffect(() => {
         if (projectId) {
@@ -99,6 +101,8 @@ const Pipelines = ({
             ...changedTag
         });
 
+    const disabled = demo && list?.length >= demoLimits?.pipelinesNumAllowed;
+
     return loading || loadingExport ? (
         <PageSkeleton />
     ) : (
@@ -108,6 +112,7 @@ const Pipelines = ({
                     header="Pipelines"
                     ableToEdit={data.editable}
                     buttonCaption={t('main:button.addPipeline')}
+                    disabled={disabled}
                     searchValue={search}
                     onSearch={event => setSearch(event.target.value)}
                     onRefreshClick={() => getPipelines(projectId)}
@@ -121,6 +126,7 @@ const Pipelines = ({
             <Grid item xs={12}>
                 <PipelinesTable
                     data={list}
+                    disabled={disabled}
                     ableToEdit={data.editable}
                     projectId={projectId}
                     jobs={jobs}
@@ -143,14 +149,16 @@ Pipelines.propTypes = {
     getJobs: PropTypes.func,
     jobs: PropTypes.array,
     params: PropTypes.array,
-    getParameters: PropTypes.func
+    getParameters: PropTypes.func,
+    project: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     pipelines: state.pages.pipelines,
     loadingExport: state.importExport.loading,
     jobs: state.pages.jobs.data.jobs,
-    params: state.pages.settingsParameters.params
+    params: state.pages.settingsParameters.params,
+    project: state.pages.settingsBasic.project ?? {}
 });
 
 const mapDispatchToProps = {

@@ -20,8 +20,9 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { CronModal } from './CronModal';
-import { Button } from '@material-ui/core';
+import { Button, FormControlLabel, Switch, TextField } from '@material-ui/core';
 import CronPopupForm from './cron-popup-form';
+import CronInput from './cron-input/CronInput';
 
 describe('CronModal', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
@@ -106,5 +107,94 @@ describe('CronModal', () => {
         const [_, props] = init({}, true, mount);
 
         expect(props.getCronValue).toHaveBeenCalled();
+    });
+
+    it('should calls onChanged prop with checked', () => {
+        const [wrapper] = init();
+        wrapper
+            .find(FormControlLabel)
+            .prop('control')
+            .props.onChange({
+                target: { checked: true }
+            });
+        expect(
+            wrapper.find(FormControlLabel).prop('control').props.checked
+        ).toBeTruthy();
+    });
+
+    it('should handle "close" btn with mount', () => {
+        const [wrapper, props] = init({}, true, mount);
+
+        const [_, closeBtn] = wrapper.find(Button).map(x => x);
+
+        closeBtn.simulate('click');
+
+        expect(props.onClose).toHaveBeenCalled();
+    });
+
+    it('should handle "close" btn with mount', () => {
+        const [wrapper] = init({ cronPipeline: {} }, true, mount);
+
+        expect(wrapper.find(CronPopupForm).exists()).toBeTruthy();
+    });
+
+    it('should onChange cron with error', () => {
+        const [wrapper, props] = init(
+            {
+                cronPipeline: { pipelineId: 'pipelineId', cronExists: false }
+            },
+            true
+        );
+        wrapper
+            .find(CronInput)
+            .dive()
+            .find(TextField)
+            .simulate('change', {
+                target: { value: 'value_1' }
+            });
+        wrapper
+            .find(FormControlLabel)
+            .prop('control')
+            .props.onChange({
+                target: { checked: true }
+            });
+        const [saveBtn, _] = wrapper.find(Button).map(x => x);
+
+        saveBtn.simulate('click');
+
+        expect(props.updateCronValue).not.toHaveBeenCalled();
+        expect(props.onClose).toHaveBeenCalled();
+        expect(props.createCronValue).toHaveBeenCalled();
+        expect(wrapper.find(CronPopupForm).exists()).toBeTruthy();
+    });
+
+    it('should onChange cron with error', () => {
+        const [wrapper, props] = init(
+            {
+                cronPipeline: { pipelineId: 'pipelineId', cronExists: false }
+            },
+            true
+        );
+        wrapper
+            .find(CronInput)
+            .dive()
+            .find(TextField)
+            .simulate('change', {
+                target: { value: 'value_1' }
+            });
+        wrapper
+            .find(FormControlLabel)
+            .prop('control')
+            .props.onChange({
+                target: { checked: true }
+            });
+        const [saveBtn, _] = wrapper.find(Button).map(x => x);
+
+        saveBtn.simulate('click');
+
+        expect(props.updateCronValue).not.toHaveBeenCalled();
+        expect(props.onClose).toHaveBeenCalled();
+        expect(props.createCronValue).toHaveBeenCalled();
+        expect(wrapper.find(CronPopupForm).exists()).toBeTruthy();
     });
 });

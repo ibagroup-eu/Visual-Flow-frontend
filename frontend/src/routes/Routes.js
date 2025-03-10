@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import NotFound from '../pages/not-found';
 import Overview from '../pages/overview';
 import Pipelines from '../pages/pipelines';
@@ -32,64 +33,113 @@ import PrivateRoute from '../components/routes/private';
 import JobDesigner from '../pages/job-designer';
 import PipelineDesigner from '../pages/pipeline-designer';
 import Import from '../pages/import';
+import history from '../utils/history';
+import { getProject } from '../redux/actions/settingsActions';
 
-const Routes = () => (
-    <Switch>
-        <PrivateRoute exact path="/" component={withParams(Main)} />
-        <PrivateRoute
-            exact
-            path="/:projectId/overview"
-            component={withParams(Overview)}
-        />
-        <PrivateRoute
-            exact
-            path="/:projectId/pipelines"
-            component={withParams(Pipelines)}
-        />
-        <PrivateRoute exact path="/:projectId/jobs" component={withParams(Jobs)} />
-        <PrivateRoute
-            exact
-            path="/jobs/:jobId/logs/:projId"
-            component={withParams(Logs)}
-        />
-        <PrivateRoute
-            exact
-            path="/:projectId/settings/basic"
-            component={withParams(Basic)}
-        />
-        <PrivateRoute
-            exact
-            path="/:projectId/settings/parameters"
-            component={withParams(Parameters)}
-        />
-        <PrivateRoute
-            exact
-            path="/:projectId/settings/users"
-            component={withParams(Users)}
-        />
-        <PrivateRoute
-            exact
-            path="/:projectId/settings/connections"
-            component={withParams(Connections)}
-        />
-        <PrivateRoute exact path="/addProject" component={withParams(AddProject)} />
-        <PrivateRoute
-            exact
-            path="/jobs/:project/:jobId?"
-            component={withParams(JobDesigner)}
-        />
-        <PrivateRoute
-            exact
-            path="/pipelines/:projectId/:pipelineId?"
-            component={withParams(PipelineDesigner)}
-        />
-        <PrivateRoute
-            exact
-            path="/:projectId/import"
-            component={withParams(Import)}
-        />
-        <Route component={NotFound} />
-    </Switch>
-);
+const isFirst = currentPath =>
+    currentPath.length === 3 &&
+    ['overview', 'pipelines', 'jobs', 'import'].includes(currentPath[2]);
+
+const isFirstOther = currentPath =>
+    currentPath[2] === 'settings' &&
+    ['basic', 'parameters', 'users', 'connections'].includes(currentPath[3]);
+
+const isSecond = currentPath =>
+    currentPath.length === 4 &&
+    (currentPath[1] === 'jobs' || currentPath[1] === 'pipelines');
+
+const isSecondOther = currentPath =>
+    currentPath.length === 3 && currentPath[1] === 'jobs';
+
+const isFourth = currentPath =>
+    currentPath.length === 6 && currentPath[1] === 'jobs';
+
+const Routes = () => {
+    const dispatch = useDispatch();
+
+    const currentPath = history?.location?.pathname?.split('/');
+    // must be revised to get the path variable
+    let projectId = null;
+    if (isFirst(currentPath) || isFirstOther(currentPath)) {
+        [, projectId] = currentPath;
+    } else if (isSecond(currentPath) || isSecondOther(currentPath)) {
+        [, , projectId] = currentPath;
+    } else if (isFourth(currentPath)) {
+        [, , , , projectId] = currentPath;
+    }
+
+    useEffect(() => {
+        if (projectId) {
+            dispatch(getProject(projectId));
+        }
+    }, [projectId, dispatch]);
+
+    return (
+        <Switch>
+            <PrivateRoute exact path="/" component={withParams(Main)} />
+            <PrivateRoute
+                exact
+                path="/:projectId/overview"
+                component={withParams(Overview)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/pipelines"
+                component={withParams(Pipelines)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/jobs"
+                component={withParams(Jobs)}
+            />
+            <PrivateRoute
+                exact
+                path="/jobs/:jobId/logs/:projId"
+                component={withParams(Logs)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/settings/basic"
+                component={withParams(Basic)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/settings/parameters"
+                component={withParams(Parameters)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/settings/users"
+                component={withParams(Users)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/settings/connections"
+                component={withParams(Connections)}
+            />
+            <PrivateRoute
+                exact
+                path="/addProject"
+                component={withParams(AddProject)}
+            />
+            <PrivateRoute
+                exact
+                path="/jobs/:project/:jobId?"
+                component={withParams(JobDesigner)}
+            />
+            <PrivateRoute
+                exact
+                path="/pipelines/:projectId/:pipelineId?"
+                component={withParams(PipelineDesigner)}
+            />
+            <PrivateRoute
+                exact
+                path="/:projectId/import"
+                component={withParams(Import)}
+            />
+            <Route component={NotFound} />
+        </Switch>
+    );
+};
 
 export default Routes;

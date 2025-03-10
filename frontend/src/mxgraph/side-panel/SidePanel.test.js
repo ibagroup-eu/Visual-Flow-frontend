@@ -84,6 +84,16 @@ describe('SidePanel', () => {
         expect(instance.state.storageValue).toEqual(currentState);
     });
 
+    it('storageValueHandler should update state else branch', () => {
+        const [wrapper] = init();
+        const instance = wrapper.instance();
+        const currentState = 'updated_value';
+
+        wrapper.setState({ storageValue: 'value' });
+        instance.storageValueHandler(currentState);
+        expect(instance.state.storageValue).toEqual(currentState);
+    });
+
     describe('saveCell', () => {
         const [wrapper, props] = init({}, true);
         const instance = wrapper.instance();

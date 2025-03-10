@@ -43,7 +43,7 @@ const ConnectionsSearchAndSelect = ({
                     fullWidth
                     value={searchValue}
                     onChange={event => setSearchValue(event.target.value)}
-                    placeholder={t('main:search')}
+                    placeholder={t('main:searchByName')}
                 />
             </Box>
             <Box className={classes.storage}>

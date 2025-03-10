@@ -24,7 +24,6 @@ import { TextField } from '@material-ui/core';
 import { ValueField } from './ValueField';
 import PasswordInput from '../../../../../components/password-input';
 
-
 describe('ValueField', () => {
     const init = (props = {}, returnProps = false, func = shallow) => {
         const defaultProps = {

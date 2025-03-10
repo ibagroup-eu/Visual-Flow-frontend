@@ -21,13 +21,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import useStyles from './ReadWriteStage.Styles';
-import { STORAGES } from '../../constants';
+import { INTERACTIVE_RUNNING, STORAGES } from '../../constants';
 import makeTooltip from '../helpers/makeTooltip';
-
 import { JobStageTag } from '../../../components/stage-tag';
 import { StageParameters, Parameter } from '../parameters';
 import { ConfiguredStageWithIcon } from '../../sidebar/stage-icon';
+import InteractiveModeButtons from '../helpers/InteractiveModeButtons';
+import InteractiveModeTooltips from '../helpers/InteractiveModeTooltips';
+import Spinner from '../helpers/Spinner';
+
+import useStyles from './ReadWriteStage.Styles';
 
 const ReadWriteStage = ({ stage }) => {
     const { t } = useTranslation();
@@ -46,6 +49,13 @@ const ReadWriteStage = ({ stage }) => {
         </>
     );
 
+    const tableField = () => (
+        <Parameter name={t('jobDesigner:readConfiguration.table')}>
+            {' '}
+            {makeTooltip(stage.table, stage.table)}
+        </Parameter>
+    );
+
     // eslint-disable-next-line complexity
     const renderStorageData = () => {
         switch (stage.storage.toLowerCase()) {
@@ -56,16 +66,32 @@ const ReadWriteStage = ({ stage }) => {
             case STORAGES.MSSQL.value:
             case STORAGES.REDSHIFTJDBC.value:
             case STORAGES.CLICKHOUSE.value:
+            case STORAGES?.DATABRICKSJDBC?.value:
                 return (
                     <>
                         <Parameter name={t('jobDesigner:readConfiguration.schema')}>
                             {' '}
                             {makeTooltip(stage.schema, stage.schema)}
                         </Parameter>
-                        <Parameter name={t('jobDesigner:readConfiguration.table')}>
+                        {tableField()}
+                    </>
+                );
+            case STORAGES?.DATABRICKS?.value:
+                return (
+                    <>
+                        <Parameter name={t('jobDesigner:readConfiguration.schema')}>
                             {' '}
-                            {makeTooltip(stage.table, stage.table)}
+                            {makeTooltip(stage.schema, stage.schema)}
                         </Parameter>
+                        {stage.objectType === 'table' && tableField()}
+                        {stage.objectType === 'volume' && (
+                            <Parameter
+                                name={t('jobDesigner:readConfiguration.volume')}
+                            >
+                                {' '}
+                                {makeTooltip(stage.volume, stage.volume)}
+                            </Parameter>
+                        )}
                     </>
                 );
             case STORAGES.ELASTIC.value:
@@ -77,6 +103,7 @@ const ReadWriteStage = ({ stage }) => {
                 );
             case STORAGES.COS.value:
             case STORAGES.AWS.value:
+            case STORAGES.GOOGLECLOUD.value:
                 return cosStageFields();
             case STORAGES.MONGO.value:
                 return (
@@ -119,10 +146,7 @@ const ReadWriteStage = ({ stage }) => {
                             {' '}
                             {makeTooltip(stage.keyspace, stage.keyspace)}
                         </Parameter>
-                        <Parameter name={t('jobDesigner:readConfiguration.table')}>
-                            {' '}
-                            {makeTooltip(stage.table, stage.table)}
-                        </Parameter>
+                        {tableField()}
                     </>
                 );
             case STORAGES.REDIS.value:
@@ -161,25 +185,59 @@ const ReadWriteStage = ({ stage }) => {
                         {makeTooltip(stage.method, stage.method)}
                     </Parameter>
                 );
+            case STORAGES.AZURE.value:
+                return (
+                    <>
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.container')}
+                        >
+                            {' '}
+                            {makeTooltip(stage.container, stage.container)}
+                        </Parameter>
+                        <Parameter
+                            name={t('jobDesigner:readConfiguration.containerPath')}
+                        >
+                            {' '}
+                            {makeTooltip(stage.containerPath, stage.containerPath)}
+                        </Parameter>
+                    </>
+                );
             default:
                 throw new Error(`Unsupported storage: ${stage.storage}`);
         }
     };
 
     return (
-        <ConfiguredStageWithIcon
-            operation={stage.operation}
-            name={makeTooltip(stage.name, stage.name)}
-        >
-            <StageParameters>{stage.storage && renderStorageData()}</StageParameters>
-            <JobStageTag className={classes.storage}>
-                {
-                    Object.values(STORAGES).find(
-                        ({ value }) => value === stage.storage
-                    )?.label
+        <>
+            <ConfiguredStageWithIcon
+                operation={stage.operation}
+                name={
+                    <>
+                        {makeTooltip(stage.name, stage.name)}
+
+                        {stage.interactiveMode && (
+                            <InteractiveModeButtons stage={stage} />
+                        )}
+                    </>
                 }
-            </JobStageTag>
-        </ConfiguredStageWithIcon>
+            >
+                {stage.status === INTERACTIVE_RUNNING && <Spinner />}
+                <StageParameters>
+                    {stage.storage && renderStorageData()}
+                </StageParameters>
+
+                {stage.status !== INTERACTIVE_RUNNING && (
+                    <InteractiveModeTooltips stage={stage} />
+                )}
+                <JobStageTag className={classes.storage}>
+                    {
+                        Object.values(STORAGES).find(
+                            ({ value }) => value === stage.storage
+                        )?.label
+                    }
+                </JobStageTag>
+            </ConfiguredStageWithIcon>
+        </>
     );
 };
 

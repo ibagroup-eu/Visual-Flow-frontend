@@ -38,9 +38,13 @@ import {
 import api from '../../api/projects';
 import showNotification from '../../components/notification/showNotification';
 
-const toKeyValue = ({ value }) => ({
-    key: value?.connectionName,
+const cleanValue = ({ value }) => ({
     value: omit(value, ['storageLabel'])
+});
+
+const toKeyValue = ({ key, value }) => ({
+    key,
+    value: cleanValue({ value }).value
 });
 
 export const fetchConnections = id => dispatch => {
@@ -49,14 +53,15 @@ export const fetchConnections = id => dispatch => {
     });
 
     return api.getProjectConnections(id).then(
-        response =>
+        response => {
             dispatch({
                 type: FETCH_CONNECTIONS_SUCCESS,
                 payload: {
                     ...response.data,
                     connections: response.data?.connections || []
                 }
-            }),
+            });
+        },
         error =>
             dispatch({
                 type: FETCH_CONNECTIONS_FAIL,
@@ -90,24 +95,22 @@ export const createConnection = (projectName, connection) => dispatch => {
     dispatch({
         type: CREATE_CONNECTION_START
     });
+    const cleaned = cleanValue(connection);
 
-    return api
-        .createProjectConnection(projectName, connection.key, toKeyValue(connection))
-        .then(
-            () =>
-                dispatch({
-                    type: CREATE_CONNECTION_SUCCESS,
-                    payload: {
-                        connection
-                    }
-                }),
+    return api.createProjectConnection(projectName, cleaned).then(
+        response => {
+            dispatch({
+                type: CREATE_CONNECTION_SUCCESS,
+                payload: { key: response.data, value: cleaned.value }
+            });
+        },
 
-            error =>
-                dispatch({
-                    type: CREATE_CONNECTION_FAIL,
-                    payload: { error }
-                })
-        );
+        error =>
+            dispatch({
+                type: CREATE_CONNECTION_FAIL,
+                payload: { error }
+            })
+    );
 };
 
 export const deleteConnection = (projectName, key) => dispatch => {
@@ -136,7 +139,7 @@ export const pingConnection = (projectName, { key, value }) => dispatch => {
         payload: { key }
     });
 
-    return api.pingProjectConnection(projectName, toKeyValue({ value })).then(
+    return api.pingProjectConnection(projectName, toKeyValue({ key, value })).then(
         response => {
             dispatch({
                 type: PING_CONNECTION_SUCCESS,
@@ -145,8 +148,9 @@ export const pingConnection = (projectName, { key, value }) => dispatch => {
 
             showNotification(
                 response.data.status
-                    ? `Connection "${key}" is valid`
-                    : response.data.message || `Connection "${key}" is invalid`,
+                    ? `Connection "${value.connectionName}" is valid`
+                    : response.data.message ||
+                          `Connection "${value.connectionName}" is invalid`,
                 response.data.status ? 'success' : 'error'
             );
         },

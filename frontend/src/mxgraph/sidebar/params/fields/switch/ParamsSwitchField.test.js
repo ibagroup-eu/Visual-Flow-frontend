@@ -17,16 +17,19 @@
  * limitations under the License.
  */
 
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { noop } from 'lodash';
-import ParamsSwitchField from './ParamsSwitchField';
 import { Switch, Typography } from '@material-ui/core';
 
+import ParamsSwitchField from './ParamsSwitchField';
+import ConfirmationDialog from '../../../../side-panel/helpers/ConfirmationDialog';
+
 describe('ParamsSwitchField', () => {
+    let defaultProps;
     const init = (props = {}, returnProps = false, func = shallow) => {
-        const defaultProps = {
+        defaultProps = {
             label: 'label',
             name: 'name',
             value: undefined,
@@ -61,7 +64,7 @@ describe('ParamsSwitchField', () => {
     });
 
     it('should support only view mode', () => {
-        const [wrapper] = init({ ableToEdit: false });
+        const [wrapper] = init({ ableToEdit: false }, true, mount);
 
         expect(wrapper.find(Switch).prop('disabled')).toBe(true);
     });
@@ -79,5 +82,30 @@ describe('ParamsSwitchField', () => {
         const [wrapper] = init({ value: true });
 
         expect(wrapper.find(Switch).prop('checked')).toBeTruthy();
+    });
+
+    it('should render ConfirmationDialog', () => {
+        const [wrapper] = init({ initialValue: true, showConfirmation: true });
+        wrapper.find(Switch).prop('onChange')({ target: { checked: false } });
+
+        expect(wrapper.find(ConfirmationDialog).prop('open')).toBeTruthy();
+
+        wrapper.find(ConfirmationDialog).prop('onClose')();
+        expect(wrapper.find(ConfirmationDialog).prop('open')).toBeFalsy();
+    });
+
+    it('should clear fields', () => {
+        const [wrapper] = init({
+            initialValue: true,
+            showConfirmation: true,
+            fieldsToClear: ['field1', 'field2']
+        });
+        wrapper.find(Switch).prop('onChange')({ target: { checked: false } });
+
+        expect(wrapper.find(ConfirmationDialog).prop('open')).toBeTruthy();
+
+        wrapper.find(ConfirmationDialog).prop('onConfirm')();
+        expect(wrapper.find(ConfirmationDialog).prop('open')).toBeFalsy();
+        expect(defaultProps.onChange).toHaveBeenCalledTimes(3);
     });
 });

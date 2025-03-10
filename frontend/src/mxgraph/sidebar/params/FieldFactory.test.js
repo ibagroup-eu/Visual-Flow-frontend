@@ -45,7 +45,7 @@ describe('FieldFactory', () => {
                             fields: {
                                 'SLACK.NOTIFY_FAILURE': {
                                     label: 'NotifyFailure',
-                                    type: 'email_switch'
+                                    type: 'switch'
                                 }
                             }
                         }

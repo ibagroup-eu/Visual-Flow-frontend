@@ -19,29 +19,25 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import SelectField from '../../../../components/select-field';
+import { useTranslation } from 'react-i18next';
 import { READWRITE } from '../../../constants';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 
-const UseSchema = ({ value, onChange, ableToEdit }) => (
-    <SelectField
-        ableToEdit={ableToEdit}
-        label="jobDesigner:avroSchema.useSchema.name"
-        name="useSchema"
-        value={value}
-        handleInputChange={onChange}
-        menuItems={[
-            {
-                value: 'true',
-                label: 'True'
-            },
-            {
-                value: 'false',
-                label: 'False'
-            }
-        ]}
-        type={READWRITE}
-    />
-);
+const UseSchema = ({ value, onChange, ableToEdit }) => {
+    const { t } = useTranslation();
+
+    return (
+        <ParamsSwitchField
+            ableToEdit={ableToEdit}
+            label={t('jobDesigner:avroSchema.useSchema.name')}
+            name="useSchema"
+            value={value === undefined ? undefined : value === 'true'}
+            onChange={onChange}
+            type={READWRITE}
+            defaultValue={false}
+        />
+    );
+};
 
 UseSchema.propTypes = {
     value: PropTypes.string,

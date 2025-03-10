@@ -65,4 +65,28 @@ describe('CronInput', () => {
 
         expect(props.setCronValue).toHaveBeenCalled();
     });
+
+    it('should handle additionalCheckParams', () => {
+        const [wrapper, props] = init({ isUseCron: false }, true);
+
+        const target = { value: '01 0 0 0 .' };
+
+        wrapper.find(TextField).prop('onChange')({ target });
+
+        wrapper.update();
+
+        expect(props.setCronValue).toHaveBeenCalled();
+    });
+
+    it('should handle additionalCheckParams', () => {
+        const [wrapper, props] = init({}, true);
+
+        const target = { value: '     ' };
+
+        wrapper.find(TextField).prop('onChange')({ target });
+
+        wrapper.update();
+
+        expect(props.setCronValue).toHaveBeenCalled();
+    });
 });

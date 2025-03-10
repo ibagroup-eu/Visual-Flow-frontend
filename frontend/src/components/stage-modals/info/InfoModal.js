@@ -24,7 +24,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import PopupForm from '../../popup-form';
-import { STORAGES, SHOW_DESCRIPTION } from '../../../mxgraph/constants';
+import { SHOW_DESCRIPTION, DATABRICKS, STORAGES } from '../../../mxgraph/constants';
 
 import useStyles from './InfoModal.Style';
 
@@ -45,11 +45,15 @@ const InfoModal = ({
     clickhouse,
     kafka,
     api,
+    databricks,
+    databricksJDBC,
     operations,
     display,
     title,
     onClose,
-    currentStorage
+    currentStorage,
+    asure,
+    google
 }) => {
     const classes = useStyles();
     const { t } = useTranslation();
@@ -108,6 +112,14 @@ const InfoModal = ({
                 return kafka;
             case STORAGES.API.label:
                 return api;
+            case STORAGES?.DATABRICKS?.label:
+                return databricks;
+            case STORAGES?.DATABRICKSJDBC?.label:
+                return databricksJDBC;
+            case STORAGES.AZURE.label:
+                return asure;
+            case STORAGES.GOOGLECLOUD.label:
+                return google;
             default:
                 return null;
         }
@@ -127,12 +139,19 @@ const InfoModal = ({
             })
             .map(({ hide, ...cleanValue }) => cleanValue);
 
+    const validateSTDOUT = value =>
+        value === STORAGES.STDOUT.label && title === 'Read';
+    const validateDataframe = value =>
+        value === STORAGES.DATAFRAME.label && title === 'Write';
+    const validateDatabricksPlatform = value =>
+        value === STORAGES?.DATABRICKS?.label && window.PLATFORM !== DATABRICKS;
     const filteredStorages = data =>
         data?.map(value => {
             if (
                 !(
-                    (value === STORAGES.STDOUT.label && title === 'Read') ||
-                    (value === STORAGES.DATAFRAME.label && title === 'Write')
+                    validateSTDOUT(value) ||
+                    validateDataframe(value) ||
+                    validateDatabricksPlatform(value)
                 )
             ) {
                 return (
@@ -274,6 +293,10 @@ InfoModal.propTypes = {
     dataframe: PropTypes.array,
     kafka: PropTypes.array,
     api: PropTypes.array,
+    databricks: PropTypes.array,
+    databricksJDBC: PropTypes.array,
+    asure: PropTypes.array,
+    google: PropTypes.array,
     operations: PropTypes.object,
     display: PropTypes.bool,
     title: PropTypes.string,

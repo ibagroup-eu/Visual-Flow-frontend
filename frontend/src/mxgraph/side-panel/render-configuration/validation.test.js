@@ -34,7 +34,17 @@ import {
     isAnyEmpty,
     windowFunctionRequiredFields,
     checkStringFunctionsFields,
-    checkHandleNullFields
+    checkHandleNullFields,
+    checkDatabricksRequiredFields,
+    checkAzureBlobRequiredFields,
+    checkGoogleCloudRequiredFields,
+    checkDatabricksJDBCRequiredFields,
+    checkDb2RequiredFields,
+    checkAWSRequiredFields,
+    checkKafkaReqiredFields,
+    checkRedisRequiredFields,
+    checkRedshiftRequiredFields,
+    checkAiValidation
 } from './validation';
 import {
     ADD_CONSTANT,
@@ -205,16 +215,380 @@ describe('validation', () => {
         expect(isAnyEmpty('name', 'type')({ name: '', type: 'test' })).toBeTruthy();
     });
 
-    it('should check empty values for Mongo storage', () => {
-        const fields = {
-            host: '',
-            port: 'port',
-            user: 'user',
-            password: 'pw',
-            database: 'db',
-            collection: 'collection'
-        };
-        expect(checkMongoRequiredFields(fields)).toBeTruthy();
+    // checkDb2RequiredFields
+    describe('checkDb2RequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    jdbcUrl: 'jdbcUrl',
+                    user: 'user',
+                    password: 'pw'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    jdbcUrl: 'jdbcUrl',
+                    user: 'user',
+                    password: 'pw',
+                    operation: READ,
+                    incrementalLoad: 'true',
+                    incrementalOffsetKey: 'incrementalOffsetKey',
+                    readingInParallel: 'true'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    jdbcUrl: 'jdbcUrl',
+                    user: 'user',
+                    password: 'pw',
+                    operation: READ,
+                    incrementalLoad: 'true'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    operation: WRITE,
+                    jdbcUrl: 'jdbcUrl',
+                    user: 'user',
+                    password: 'pw'
+                },
+                expected: true
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkDb2RequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkMongoRequiredFields ', () => {
+        it.each([
+            {
+                source: {
+                    host: 'host',
+                    port: 'port',
+                    user: 'user',
+                    password: 'pw',
+                    database: 'database',
+                    collection: 'collection'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    host: 'host',
+                    port: 'port',
+                    user: 'user',
+                    password: 'pw',
+                    database: 'database',
+                    collection: 'collection',
+                    operation: READ,
+                    incrementalLoad: 'true'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    host: 'host',
+                    port: 'port',
+                    user: 'user',
+                    password: 'pw',
+                    database: 'database',
+                    operation: READ,
+                    incrementalLoad: 'true',
+                    incrementalOffsetKey: 'incrementalOffsetKey',
+                    isConnectionPage: true
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkMongoRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkRedisRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    host: 'host',
+                    port: 'port',
+                    password: 'password',
+                    model: 'model'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    isConnectionPage: true,
+                    host: 'host',
+                    port: 'port',
+                    password: 'password',
+                    operation: READ,
+                    readMode: 'readMode'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    isConnectionPage: true,
+                    host: 'host',
+                    port: 'port',
+                    password: 'password',
+                    operation: READ,
+                    readMode: 'pattern'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    isConnectionPage: true,
+                    host: 'host',
+                    port: 'port',
+                    password: 'password',
+                    operation: READ,
+                    readMode: 'pattern',
+                    keysPattern: 'keysPattern'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    isConnectionPage: true,
+                    host: 'host',
+                    port: 'port',
+                    password: 'password',
+                    operation: READ,
+                    readMode: 'key',
+                    table: 'table'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkRedisRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkKafkaReqiredFields', () => {
+        it.each([
+            {
+                source: {
+                    bootstrapServers: 'bootstrapServers',
+                    operation: READ,
+                    subscribe: 'subscribe',
+                    incrementalLoad: 'false'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    bootstrapServers: 'bootstrapServers',
+                    operation: READ,
+                    subscribe: 'subscribe',
+                    incrementalLoad: 'true',
+                    incrementalOffsetKey: 'incrementalOffsetKey'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    bootstrapServers: 'bootstrapServers',
+                    isConnectionPage: true,
+                    subscribe: 'subscribe'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    bootstrapServers: 'bootstrapServers',
+                    topic: 'topic'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: READ,
+                    incrementalLoad: 'true'
+                },
+                expected: true
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkKafkaReqiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkRedshiftRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    host: 'host',
+                    port: 'port',
+                    user: 'user',
+                    password: 'password',
+                    accessKey: 'accessKey',
+                    secretKey: 'secretKey',
+                    database: 'database',
+                    bucket: 'bucket'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    isConnectionPage: true,
+                    host: 'host',
+                    port: 'port',
+                    user: 'user',
+                    password: 'password',
+                    accessKey: 'accessKey',
+                    secretKey: 'secretKey',
+                    database: 'database'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkRedshiftRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkAWSRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    isConnectionPage: true,
+                    endpoint: 'endpoint',
+                    anonymousAccess: 'anonymousAccess',
+                    format: 'binaryFile',
+                    binaryFormat: 'binaryFormat',
+                    outputContentColumn: 'outputContentColumn',
+                    outputPathColumn: 'outputPathColumn'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: READ,
+                    incrementalLoad: 'true',
+                    isConnectionPage: false,
+                    endpoint: 'endpoint',
+                    anonymousAccess: 'false',
+                    format: 'binaryFile'
+                },
+                expected: true
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkAWSRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkAiValidation', () => {
+        it.each([
+            {
+                source: {
+                    task: 'parseText',
+                    sourceColumn: 'sourceColumn',
+                    name: 'name',
+                    llm: 'llm',
+                    endpoint: 'endpoint',
+                    model: 'model',
+                    apiKey: 'apiKey'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    task: 'parseText',
+                    sourceColumn: 'sourceColumn'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    task: 'generateTask',
+                    sourceColumn: 'sourceColumn',
+                    name: 'name',
+                    llm: 'llm',
+                    endpoint: 'endpoint',
+                    model: 'model',
+                    apiKey: 'apiKey',
+                    numberOfRecords: 1,
+                    outputColumn: 'outputColumn'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    task: 'transcribe',
+                    sourceColumn: 'sourceColumn',
+                    name: 'name',
+                    llm: 'llm',
+                    endpoint: 'endpoint',
+                    model: 'model',
+                    apiKey: 'apiKey',
+                    outputColumn: 'outputColumn',
+                    pathColumn: 'pathColumn'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    task: 'generateData',
+                    sourceColumn: 'sourceColumn',
+                    name: 'name',
+                    llm: 'llm',
+                    endpoint: 'endpoint',
+                    model: 'model',
+                    apiKey: 'apiKey',
+                    numberOfRecords: 1
+                },
+                expected: false
+            },
+            {
+                source: {
+                    task: 'generateData',
+                    sourceColumn: 'sourceColumn',
+                    name: 'name',
+                    llm: 'llm',
+                    endpoint: 'endpoint',
+                    model: 'model',
+                    apiKey: 'apiKey'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    task: 'task',
+                    name: 'name',
+                    llm: 'llm',
+                    endpoint: 'endpoint',
+                    model: 'model',
+                    apiKey: 'apiKey'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkAiValidation(source)).toBe(expected);
+            }
+        );
     });
 
     describe('checkElasticsearchRequiredFields', () => {
@@ -497,6 +871,316 @@ describe('validation', () => {
         );
     });
 
+    describe('checkDatabricksRequiredFields', () => {
+        const common = {
+            catalog: 'ctlg',
+            schema: 'schm'
+        };
+        it.each([
+            {
+                source: {
+                    operation: READ,
+                    ...common,
+                    objectType: 'table',
+                    table: '1'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: READ,
+                    ...common,
+                    objectType: 'volume',
+                    volume: 'volume',
+                    volumePath: 'volumePath',
+                    format: 'format'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: READ,
+                    ...common,
+                    objectType: 'objectType'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: WRITE,
+                    ...common,
+                    writeMode: 'mode',
+                    objectType: 'table',
+                    table: '1'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pw',
+                    isConnectionPage: 'true'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when called with $source',
+            ({ source, expected }) => {
+                expect(checkDatabricksRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkAzureBlobRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    storageAccount: 'test acc',
+                    authType: 'storageAccountKey',
+                    storageAccountKey: 'test key',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
+            {
+                source: {
+                    storageAccount: 'test acc',
+                    authType: 'storageAccountKey',
+                    storageAccountKey: 'test key',
+                    isConnectionPage: false
+                },
+                expected: true
+            },
+            {
+                source: {
+                    storageAccount: 'test acc',
+                    authType: 'SASToken',
+                    SASToken: 'test token',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
+            {
+                source: {
+                    storageAccount: 'test acc',
+                    authType: 'SASToken',
+                    SASToken: 'test token',
+                    container: 'test container',
+                    containerPath: 'test container path',
+                    format: 'test format',
+                    isConnectionPage: false
+                },
+                expected: false
+            },
+            {
+                source: {
+                    storageAccount: 'test acc',
+                    authType: 'SASToken',
+                    SASToken: 'test token',
+                    container: 'test container',
+                    containerPath: 'test container path',
+                    format: 'binaryFile',
+                    binaryFormat: 'binaryFormat',
+                    outputContentColumn: 'outputContentColumn',
+                    outputPathColumn: 'outputPathColumn',
+                    isConnectionPage: false
+                },
+                expected: false
+            },
+            {
+                source: {
+                    storageAccount: 'test acc',
+                    authType: '',
+                    isConnectionPage: true
+                },
+                expected: true
+            }
+        ])(
+            'should return $expected when call with $source',
+            ({ source, expected }) => {
+                expect(checkAzureBlobRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkGoogleCloudRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    pathToKeyFile: '',
+                    isConnectionPage: true
+                },
+                expected: true
+            },
+            {
+                source: {
+                    pathToKeyFile: 'test path',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
+            {
+                source: {
+                    pathToKeyFile: 'test path',
+                    isConnectionPage: false
+                },
+                expected: true
+            },
+            {
+                source: {
+                    pathToKeyFile: 'test path',
+                    bucket: 'test bucket',
+                    path: 'test path',
+                    format: 'test format',
+                    isConnectionPage: false
+                },
+                expected: false
+            },
+            {
+                source: {
+                    pathToKeyFile: 'test path',
+                    bucket: 'test bucket',
+                    path: 'test path',
+                    format: 'binaryFile',
+                    isConnectionPage: false
+                },
+                expected: true
+            },
+            {
+                source: {
+                    pathToKeyFile: 'test path',
+                    bucket: 'test bucket',
+                    path: 'test path',
+                    format: 'binaryFile',
+                    binaryFormat: 'binaryFormat',
+                    outputContentColumn: 'outputContentColumn',
+                    outputPathColumn: 'outputPathColumn',
+                    isConnectionPage: false
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when call with $source',
+            ({ source, expected }) => {
+                expect(checkGoogleCloudRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
+    describe('checkDatabricksJDBCRequiredFields', () => {
+        it.each([
+            {
+                source: {
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    isConnectionPage: true
+                },
+                expected: false
+            },
+            {
+                source: {
+                    jdbcUrl: '',
+                    isConnectionPage: true
+                },
+                expected: true
+            },
+            {
+                source: {
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    isConnectionPage: false
+                },
+                expected: true
+            },
+            {
+                source: {
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    catalog: 'catalog',
+                    isConnectionPage: false
+                },
+                expected: false
+            },
+            {
+                source: {
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    catalog: 'catalog',
+                    isConnectionPage: false
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: WRITE,
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    catalog: 'catalog',
+                    isConnectionPage: false
+                },
+                expected: true
+            },
+            {
+                source: {
+                    operation: WRITE,
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    catalog: 'catalog',
+                    isConnectionPage: false,
+                    schema: 'schema',
+                    table: 'table',
+                    writeMode: 'write mode',
+                    readingInParallel: 'true',
+                    numPartitions: '1',
+                    batchsize: '1'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    operation: WRITE,
+                    jdbcUrl: 'urle',
+                    user: 'user',
+                    password: 'pass',
+                    catalog: 'catalog',
+                    isConnectionPage: false,
+                    schema: 'schema',
+                    table: 'table',
+                    writeMode: 'write mode',
+                    batchsize: '-1'
+                },
+                expected: true
+            },
+            {
+                source: {
+                    operation: READ,
+                    jdbcUrl: 'url',
+                    user: 'user',
+                    password: 'pass',
+                    catalog: 'catalog',
+                    isConnectionPage: false,
+                    customSql: 'false',
+                    schema: 'schema',
+                    table: 'table',
+                    fetchSize: '1'
+                },
+                expected: false
+            }
+        ])(
+            'should return $expected when call with $source',
+            ({ source, expected }) => {
+                expect(checkDatabricksJDBCRequiredFields(source)).toBe(expected);
+            }
+        );
+    });
+
     describe('windowFunctionRequiredFields', () => {
         it.each([
             { source: { 'option.windowFunction': MIN }, expected: true },
@@ -767,6 +1451,28 @@ describe('validation', () => {
                 },
                 expected: true
             },
+
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'custom',
+                    'option.fillChoice': 'names',
+                    'option.fillColumns': 'a,b',
+                    'option.fillValues': 'a,b'
+                },
+                expected: false
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'custom',
+                    'option.fillChoice': 'all',
+                    'option.fillValues': ''
+                },
+                expected: true
+            },
             {
                 source: {
                     mode: 'fill',
@@ -776,6 +1482,24 @@ describe('validation', () => {
                     'option.fillColumns': 'a,b'
                 },
                 expected: false
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': 'agg',
+                    'option.fillStrategy': 'mean',
+                    'option.fillColumns': ''
+                },
+                expected: true
+            },
+            {
+                source: {
+                    mode: 'fill',
+                    name: 'test',
+                    'option.fillValueType': ''
+                },
+                expected: true
             }
         ])(
             'should return $expected when called with $source',

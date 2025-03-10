@@ -21,11 +21,12 @@ import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { I18nextProvider } from 'react-i18next';
 
+import { omit } from 'lodash';
 import AvroSchema, { checkDuplicates, toField, toSchema } from './AvroSchema';
 import i18n from '../../i18n';
 import types, { NULL } from './types';
 import Row from './row';
-import { omit } from 'lodash';
+import SearchInput from '../search-input';
 
 describe('AvroSchema', () => {
     const init = props => {
@@ -61,6 +62,28 @@ describe('AvroSchema', () => {
         expect(wrapper).toBeDefined();
     });
 
+    it('should call onSave', () => {
+        const defaultProps = {
+            onSave: jest.fn(),
+            setIsValid: jest.fn(),
+            schemaFields: [
+                {
+                    name: 'Field_1',
+                    type: [NULL, types.Boolean],
+                    nullable: true
+                },
+                {
+                    name: 'Field_2',
+                    type: types.Double
+                }
+            ]
+        };
+        const ref = React.createRef();
+        const wrapper = mount(<AvroSchema ref={ref} {...defaultProps} />);
+        ref.current.onSave();
+        expect(wrapper).toBeDefined();
+    });
+
     it('should render correct number of rows', () => {
         const [wrapper, props] = init();
         expect(wrapper.find(Row).length).toBe(props.schemaFields.length);
@@ -69,6 +92,44 @@ describe('AvroSchema', () => {
     it('should render one row if schemaFields is empty', () => {
         const [wrapper, _] = init({ schemaFields: [] });
         expect(wrapper.find(Row).length).toBe(1);
+    });
+
+    it('should not disable delete button', () => {
+        const defaultProps = {
+            onSave: jest.fn(),
+            setIsValid: jest.fn(),
+            schemaFields: [
+                {
+                    name: 'Field_1',
+                    type: [NULL, types.Boolean],
+                    nullable: true
+                },
+                {
+                    name: 'Field_2',
+                    type: types.Double
+                }
+            ]
+        };
+
+        const wrapper = mount(<AvroSchema {...defaultProps} />);
+        expect(
+            wrapper
+                .find(Row)
+                .at(0)
+                .prop('shouldDisableDeleteBtn')
+        ).toBe(false);
+    });
+
+    it('should disable delete button', () => {
+        const [wrapper] = init({ schemaFields: [] });
+        expect(wrapper.find(Row).prop('shouldDisableDeleteBtn')).toBe(true);
+    });
+
+    it('should call onChange', () => {
+        const useStateSpy = jest.spyOn(React, 'useState');
+        const [wrapper] = init({ schemaFields: [] });
+        wrapper.find(SearchInput).prop('onChange')({ target: { value: 'value' } });
+        expect(useStateSpy).toHaveBeenCalled();
     });
 
     it('should transform to fields correctly', () => {

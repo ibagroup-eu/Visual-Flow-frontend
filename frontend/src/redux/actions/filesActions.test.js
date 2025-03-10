@@ -61,18 +61,18 @@ describe('Logs action', () => {
             });
         });
 
-        it('should dispatch UPLOAD_FILES_FAIL on failure', () => {
-            jest.spyOn(api, 'uploadFile').mockRejectedValue({});
-            return uploadFile(
-                projectId,
-                filePath,
-                fileData
-            )(dispatch).then(() => {
-                expect(dispatch.mock.calls).toEqual([
-                    [{ type: UPLOAD_FILES_START }],
-                    [{ type: UPLOAD_FILES_FAIL, payload: { error: {} } }]
-                ]);
-            });
+        it('should dispatch UPLOAD_FILES_FAIL on failure', async () => {
+            const error = {};
+            jest.spyOn(api, 'uploadFile').mockRejectedValue(error);
+
+            await expect(
+                uploadFile(projectId, filePath, fileData)(dispatch)
+            ).rejects.toEqual(error);
+
+            expect(dispatch.mock.calls).toEqual([
+                [{ type: UPLOAD_FILES_START }],
+                [{ type: UPLOAD_FILES_FAIL, payload: { error: error } }]
+            ]);
         });
     });
 

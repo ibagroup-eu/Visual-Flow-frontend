@@ -85,7 +85,11 @@ const RedisStorage = ({
             />
             <Ssl
                 ableToEdit={ableToEdit}
-                value={inputValues.ssl}
+                value={
+                    inputValues.ssl === undefined
+                        ? undefined
+                        : inputValues.ssl === 'true'
+                }
                 handleInputChange={handleInputChange}
                 connection={connection}
             />

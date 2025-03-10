@@ -20,23 +20,27 @@
 import React, { useCallback } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import {
     fetchContainerLogs,
+    fetchDatabricksJobLogs,
     fetchJobHistoryLogs,
     fetchJobLogs
 } from '../../../redux/actions/logsActions';
 import LogsList from '../logs-list';
 import LogsPageHeader from '../../../components/logs-page-header';
 import history from '../../../utils/history';
-import { PENDING, RUNNING } from '../../../mxgraph/constants';
+import { DATABRICKS, PENDING, RUNNING } from '../../../mxgraph/constants';
 import fetchJobStatus from '../../../redux/actions/oneJobStatusAction';
 
 export const Logs = ({
     projId,
     jobId,
+    jobName,
     logs: { data, loading, error },
     getJobLogs,
+    getDatabricksJobLogs,
     getContainerLogs,
     getJobHistoryLogs,
     modal,
@@ -49,6 +53,7 @@ export const Logs = ({
     jobsStatuses,
     status: initialStatus
 }) => {
+    const { t } = useTranslation();
     const [search, setSearch] = React.useState('');
     const [levels, setLevels] = React.useState([]);
     const status =
@@ -68,19 +73,25 @@ export const Logs = ({
                 getJobHistoryLogs(projId, jobId, logId);
             } else if (nodeId && pipelineId) {
                 getContainerLogs(projId, pipelineId, nodeId);
-            } else if (jobId) {
+            } else if (jobId && !jobName) {
                 getJobLogs(projId, jobId);
+            } else if (jobId && jobName) {
+                window.PLATFORM === DATABRICKS
+                    ? getDatabricksJobLogs(projId, pipelineId, jobName)
+                    : getJobLogs(projId, jobId);
             }
         }
     }, [
         getContainerLogs,
         getJobHistoryLogs,
         getJobLogs,
+        getDatabricksJobLogs,
         jobId,
         logId,
         nodeId,
         pipelineId,
-        projId
+        projId,
+        jobName
     ]);
 
     React.useEffect(() => {
@@ -88,7 +99,6 @@ export const Logs = ({
     }, [nodeId, jobId, callGetLogs]);
 
     const backTo = new URLSearchParams(history.location.search).get('backTo');
-    const jobName = new URLSearchParams(history.location.search).get('jobName');
 
     const arrowLink = () => {
         switch (backTo) {
@@ -137,7 +147,10 @@ export const Logs = ({
             <Grid container>
                 {!modal && (
                     <Grid item xs={12}>
-                        <LogsPageHeader title={jobName} arrowLink={arrowLink()} />
+                        <LogsPageHeader
+                            title={t('jobs:tooltip.Logs')}
+                            arrowLink={arrowLink()}
+                        />
                     </Grid>
                 )}
                 <Grid item xs={12}>
@@ -164,10 +177,12 @@ Logs.propTypes = {
     modal: PropTypes.bool,
     projId: PropTypes.string,
     jobId: PropTypes.string,
+    jobName: PropTypes.string,
     pipelineId: PropTypes.string,
     nodeId: PropTypes.string,
     logs: PropTypes.object,
     getJobLogs: PropTypes.func,
+    getDatabricksJobLogs: PropTypes.func,
     getContainerLogs: PropTypes.func,
     getJobHistoryLogs: PropTypes.func,
     getJob: PropTypes.func,
@@ -188,6 +203,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     getJob: fetchJobStatus,
     getJobLogs: fetchJobLogs,
+    getDatabricksJobLogs: fetchDatabricksJobLogs,
     getContainerLogs: fetchContainerLogs,
     getJobHistoryLogs: fetchJobHistoryLogs
 };

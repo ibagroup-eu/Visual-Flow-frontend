@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withTranslation } from 'react-i18next';
-import { Box, TextField, Button } from '@material-ui/core';
+import { Box, Button, TextField } from '@material-ui/core';
 
 import _ from 'lodash';
 import useStyles from './Import.Styles';
@@ -36,6 +36,8 @@ import { PageSkeleton } from '../../components/skeleton';
 import { fetchJobs } from '../../redux/actions/jobsActions';
 import { fetchPipelines } from '../../redux/actions/pipelinesActions';
 import AlertWindow from '../../components/alert-window';
+import { isNotValidFileContent } from '../../utils/validateImportFile';
+import { DATABRICKS } from '../../mxgraph/constants';
 
 const Import = ({
     t,
@@ -59,7 +61,9 @@ const Import = ({
 
     React.useEffect(() => {
         if (projectId) {
-            checkAccess(projectId);
+            if (window.PLATFORM !== DATABRICKS) {
+                checkAccess(projectId);
+            }
             getJobs(projectId);
             getPipelines(projectId);
         }
@@ -70,17 +74,15 @@ const Import = ({
         reader.onload = e => {
             try {
                 const fileData = JSON.parse(e.target.result);
-                const jobsList = fileData?.jobs || [];
-                const pipelinesList = fileData?.pipelines || [];
+                if (isNotValidFileContent(fileData)) {
+                    throw new Error();
+                }
 
-                setJobs(
-                    _.sortBy(jobsList, [o => o.metadata.labels.name.toLowerCase()])
-                );
-                setPipelines(
-                    _.sortBy(pipelinesList, [
-                        o => o.metadata.labels.name.toLowerCase()
-                    ])
-                );
+                const jobsList = fileData.jobs || [];
+                const pipelinesList = fileData.pipelines || [];
+
+                setJobs(_.sortBy(jobsList, [o => o.name.toLowerCase()]));
+                setPipelines(_.sortBy(pipelinesList, [o => o.name.toLowerCase()]));
                 setShowModal(true);
             } catch {
                 showNotification(t('main:importPage.BadFile'), 'error');
@@ -90,20 +92,10 @@ const Import = ({
         reader.readAsText(file);
     };
 
-    const handleDataImport = selectedIds => {
-        const importJobs = jobs.filter(job =>
-            selectedIds.find(([id]) => job === id)
-        );
-        const importPipelines = pipelines.filter(pipeline =>
-            selectedIds.find(([id]) => pipeline === id)
-        );
-
-        const data = {
-            jobs: [...importJobs],
-            pipelines: [...importPipelines]
-        };
-
-        importToProject(projectId, data);
+    const handleDataImport = data => {
+        importToProject(projectId, data)?.catch(error => {
+            showNotification(error.message, 'error');
+        });
         setFile(null);
     };
 
@@ -112,7 +104,7 @@ const Import = ({
     ) : (
         <>
             <AlertWindow
-                showAlert={!accessToImport}
+                showAlert={window.PLATFORM === DATABRICKS ? false : !accessToImport}
                 title={t('main:importPage.Notice')}
                 body={t('main:importPage.NotAutorized')}
             />

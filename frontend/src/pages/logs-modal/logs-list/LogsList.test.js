@@ -20,10 +20,11 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 
-import { ListItem, Typography } from '@material-ui/core';
+import { Grid, ListItem, Typography } from '@material-ui/core';
 import LogsList from './LogsList';
 import LogsHeader from '../../../components/logs-header';
 import { RUNNING } from '../../../mxgraph/constants';
+import { TextSkeleton } from '../../../components/skeleton';
 
 describe('LogsList', () => {
     const defaultProps = {
@@ -103,5 +104,72 @@ describe('LogsList', () => {
 
         expect(defaultProps.onSearch).toBeCalledWith('onSearchValue');
         expect(defaultProps.onSelect).toBeCalledWith('onSelectValue');
+    });
+
+    it('should render Skeleton when loading', () => {
+        const wrapper = init({ modal: false, loading: true }, mount);
+        expect(
+            wrapper
+                .find(Grid)
+                .at(0)
+                .prop('alignItems')
+        ).toEqual('center');
+        expect(wrapper.find(TextSkeleton).length).toEqual(1);
+    });
+
+    it('should render components with defined search and levels', () => {
+        const wrapper = init(
+            {
+                levels: ['INFO', 'level2'],
+                search: 'info'
+            },
+            mount
+        );
+        const text =
+            '2022-06-07 13:41:08,773 - INFO - org.apache.spark.internal.Logging - Running Spark version 3.1.1';
+        expect(wrapper.find(ListItem).length).toEqual(2);
+        expect(wrapper.find(Typography).length).toEqual(1);
+        expect(wrapper.find(Typography).text()).toEqual(text);
+    });
+
+    it('should render components with defined search (with \\n) and levels', () => {
+        const wrapper = init(
+            {
+                levels: ['INFO', 'level2'],
+                search: 'info',
+                data: [
+                    {
+                        timestamp: '2022-06-07 13:41:06,179',
+                        level: 'WARN',
+                        message:
+                            'org.apache.hadoop.util.NativeCodeLoader \n - Unable t…rm... using builtin-java classes where applicable'
+                    },
+                    {
+                        timestamp: '2022-06-07 13:41:08,773',
+                        level: 'INFO',
+                        message:
+                            'org.apache.spark.internal.Logging -\nRunning Spark version 3.1.1'
+                    }
+                ]
+            },
+            mount
+        );
+        const text1 =
+            '2022-06-07 13:41:08,773 - INFO - org.apache.spark.internal.Logging -';
+        const text2 = 'Running Spark version 3.1.1';
+        expect(wrapper.find(ListItem).length).toEqual(3);
+        expect(wrapper.find(Typography).length).toEqual(2);
+        expect(
+            wrapper
+                .find(Typography)
+                .at(0)
+                .text()
+        ).toEqual(text1);
+        expect(
+            wrapper
+                .find(Typography)
+                .at(1)
+                .text()
+        ).toEqual(text2);
     });
 });

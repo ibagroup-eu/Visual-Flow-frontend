@@ -24,5 +24,8 @@ export default makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         marginTop: theme.spacing(2)
+    },
+    menu: {
+        maxHeight: 300
     }
 }));

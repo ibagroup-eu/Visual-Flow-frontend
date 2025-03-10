@@ -56,5 +56,11 @@ export default theme => ({
         padding: theme.spacing(0.75, 2),
         whiteSpace: 'nowrap',
         fontSize: '1rem'
+    },
+    error: {
+        padding: theme.spacing(2)
+    },
+    errorModal: {
+        width: 350
     }
 });

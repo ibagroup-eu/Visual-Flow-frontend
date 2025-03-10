@@ -31,8 +31,13 @@ export default makeStyles(theme => ({
     },
     multilineButton: {
         top: theme.spacing(2.1),
-        position: 'absolute',
-        right: theme.spacing(1.75)
+        right: theme.spacing(1.75),
+        position: 'absolute'
+    },
+    multilineGrid: {
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+        marginLeft: theme.spacing(3)
     },
     disabled: {
         color: theme.palette.text.secondary

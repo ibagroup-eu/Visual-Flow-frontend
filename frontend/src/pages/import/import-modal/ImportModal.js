@@ -40,18 +40,10 @@ import toggleConfirmationWindow from '../../../redux/actions/modalsActions';
 
 const prepareData = (jobs, pipelines) =>
     pipelines.reduce((map, pipeline) => {
-        const jobIds = pipeline.spec?.templates
-            ?.filter(({ name }) => name === 'dagTemplate')
-            .flatMap(({ dag }) =>
-                dag?.tasks?.flatMap(task =>
-                    task?.arguments?.parameters
-                        ?.filter(({ name }) => name === 'configMap')
-                        .map(({ value }) => value)
-                )
-            );
-        const filteredJobs = jobs.filter(job =>
-            jobIds?.includes(job?.metadata?.name)
-        );
+        const jobIds = pipeline?.definition?.graph
+            ?.filter(({ value }) => value.operation === 'JOB')
+            .map(job => job.value.jobId);
+        const filteredJobs = jobs.filter(job => jobIds?.includes(job?.id));
         map.set(pipeline, filteredJobs);
         return map;
     }, new Map());
@@ -79,7 +71,10 @@ const ImportModal = ({
     importResources,
     t,
     existedList,
-    confirmationWindow
+    confirmationWindow,
+    currentProject,
+    projectJobs,
+    projectPipelines
 }) => {
     const classes = useStyles();
     const [dataList, setDataList] = React.useState(new Map());
@@ -134,21 +129,56 @@ const ImportModal = ({
         setPage(newPage);
     };
 
+    const getImported = (selectedIds, data) => {
+        return data.filter(elem => selectedIds.find(([id]) => elem === id));
+    };
+
+    const getSelectedData = selectedIds => {
+        return {
+            jobs: getImported(selectedIds, jobs),
+            pipelines: getImported(selectedIds, pipelines)
+        };
+    };
+
+    const getNumOverwritten = (arrSelected, arrExisted) => {
+        return arrSelected.reduce(
+            (accum, curr) =>
+                accum + (arrExisted?.some(({ id }) => id === curr?.id) ? 1 : 0),
+            0
+        );
+    };
+
+    const disableImport = () => {
+        const { demo, demoLimits } = currentProject;
+
+        const {
+            jobs: selectedJobs = [],
+            pipelines: selectedPipelines = []
+        } = getSelectedData(selected);
+
+        const jobRewrite = getNumOverwritten(selectedJobs, projectJobs);
+        const pipelineRewr = getNumOverwritten(selectedPipelines, projectPipelines);
+
+        return (
+            demo &&
+            (projectJobs?.length + selectedJobs?.length - jobRewrite >
+                demoLimits?.jobsNumAllowed ||
+                projectPipelines?.length + selectedPipelines?.length - pipelineRewr >
+                    demoLimits?.pipelinesNumAllowed)
+        );
+    };
+
     const handleImportResources = () => {
-        if (
-            existedList.some(item =>
-                selected.some(([v]) => v.metadata?.name === item.id)
-            )
-        ) {
+        if (existedList.some(({ id }) => selected.some(([v]) => v.id === id))) {
             confirmationWindow({
                 body: `${t('main:importPage.confirm')}`,
                 callback: () => {
-                    importResources(selected);
+                    importResources(getSelectedData(selected));
                     onClose();
                 }
             });
         } else {
-            importResources(selected);
+            importResources(getSelectedData(selected));
             onClose();
         }
     };
@@ -189,7 +219,6 @@ const ImportModal = ({
                 {Array.from(dataList.entries())
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map(([id, item], index) => {
-                        const { kind, metadata } = item;
                         const [child, parent] = id;
 
                         const disabled = id.length > 1 && isSelected([parent]);
@@ -197,11 +226,15 @@ const ImportModal = ({
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                             <ModalGridRow
-                                key={child?.metadata?.name + parent?.metadata?.name}
+                                key={child?.id + parent?.id}
                                 id={id}
                                 t={t}
-                                kind={kind}
-                                metadata={metadata}
+                                kind={
+                                    item.cron === undefined
+                                        ? 'ConfigMap'
+                                        : 'WorkflowTemplate'
+                                }
+                                metadata={item}
                                 isItemSelected={isItemSelected}
                                 labelId={labelId}
                                 disabled={disabled}
@@ -224,7 +257,7 @@ const ImportModal = ({
                         size="large"
                         variant="contained"
                         color="primary"
-                        disabled={!selected.length}
+                        disabled={!selected.length || disableImport()}
                         className={classes.button}
                     >
                         {t('main:button.Import')}
@@ -255,13 +288,22 @@ ImportModal.propTypes = {
     importResources: PropTypes.func,
     t: PropTypes.func,
     existedList: PropTypes.array,
-    confirmationWindow: PropTypes.func.isRequired
+    confirmationWindow: PropTypes.func.isRequired,
+    currentProject: PropTypes.object,
+    projectJobs: PropTypes.array,
+    projectPipelines: PropTypes.array
 };
+
+const mapStateToProps = state => ({
+    currentProject: state.pages.settingsBasic.project ?? {},
+    projectJobs: state.pages.jobs.data.jobs,
+    projectPipelines: state.pages.pipelines.data.pipelines
+});
 
 const mapDispatchToProps = {
     confirmationWindow: toggleConfirmationWindow
 };
 
-export default compose(connect(null, mapDispatchToProps))(
+export default compose(connect(mapStateToProps, mapDispatchToProps))(
     withTranslation()(ImportModal)
 );

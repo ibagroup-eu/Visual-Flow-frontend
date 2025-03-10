@@ -62,15 +62,39 @@ export const isTruncateStorageDB2 = storage =>
 
 export const isNilOrEmpty = v => isNil(v) || v === '';
 
+const validateNumberFields = fields =>
+    fields.some(({ value, min }) => !isNil(value) && value < min);
+
+export const isAnyEmpty = (...fields) => state =>
+    fields.some(key => isNilOrEmpty(state[key]));
+
 export const checkDb2RequiredFields = state => {
+    const numberFields = [];
     let fields = ['jdbcUrl', 'user', 'password'];
 
-    const { customSql, operation } = state;
+    const { customSql, operation, readingInParallel, incrementalLoad } = state;
+
+    if (operation === READ) {
+        numberFields.push({ value: state.fetchsize, min: 0 });
+        fields.push('incrementalLoad');
+    }
+    if (operation === READ && incrementalLoad === 'true') {
+        fields = fields.concat(['incrementalOffsetKey']);
+    }
     if (operation === WRITE || customSql === 'false') {
         fields = fields.concat(['schema', 'table']);
     }
+    if (readingInParallel === 'true') {
+        numberFields.push({ value: state.numPartitions, min: 1 });
+    }
+    if (operation === WRITE) {
+        numberFields.push({ value: state.batchsize, min: 1 });
+    }
 
-    return fields.some(key => isNilOrEmpty(state[key]));
+    return (
+        fields.some(key => isNilOrEmpty(state[key])) ||
+        validateNumberFields(numberFields)
+    );
 };
 
 export const checkRedisRequiredFields = state => {
@@ -152,10 +176,38 @@ export const checkRedshiftRequiredFields = state => {
     return fields.some(key => isNilOrEmpty(state[key]));
 };
 
+export const checkKafkaReqiredFields = state => {
+    let fields = ['bootstrapServers'];
+
+    if (state.operation === READ) {
+        fields.push('incrementalLoad');
+    }
+
+    if (state.operation === READ || state?.isConnectionPage) {
+        fields.push('subscribe');
+    } else {
+        fields.push('topic');
+    }
+
+    if (state.operation === READ && state.incrementalLoad === 'true') {
+        fields = fields.concat(['incrementalOffsetKey']);
+    }
+
+    return isAnyEmpty(...fields)(state);
+};
+
 export const checkMongoRequiredFields = state => {
-    const { isConnectionPage } = state;
+    const { isConnectionPage, operation, incrementalLoad } = state;
 
     let fields = ['host', 'port', 'user', 'password', 'database', 'collection'];
+
+    if (operation === READ) {
+        fields.push('incrementalLoad');
+    }
+
+    if (operation === READ && incrementalLoad === 'true') {
+        fields = fields.concat(['incrementalOffsetKey']);
+    }
 
     if (isConnectionPage) {
         fields = ['host', 'port', 'user', 'password', 'database'];
@@ -204,16 +256,37 @@ export const checkCassandraRequiredFields = state => {
 };
 
 export const checkAWSRequiredFields = state => {
-    const { isConnectionPage } = state;
+    const {
+        anonymousAccess,
+        format,
+        incrementalLoad,
+        operation,
+        isConnectionPage
+    } = state;
     let fields = ['endpoint', 'anonymousAccess', 'bucket', 'path', 'format'];
 
     if (isConnectionPage) {
         fields = ['endpoint', 'anonymousAccess'];
     }
 
-    const { anonymousAccess } = state;
+    if (operation === READ) {
+        fields.push('incrementalLoad');
+    }
+
     if (anonymousAccess === 'false') {
         fields = fields.concat(['accessKey', 'secretKey']);
+    }
+
+    if (operation === READ && incrementalLoad === 'true') {
+        fields = fields.concat(['incrementalOffsetKey']);
+    }
+
+    if (format === 'binaryFile') {
+        fields = fields.concat([
+            'binaryFormat',
+            'outputContentColumn',
+            'outputPathColumn'
+        ]);
     }
 
     return fields.some(key => isNilOrEmpty(state[key]));
@@ -251,8 +324,105 @@ export const windowFunctionRequiredFields = state => {
     return !valid || fields.some(key => isNilOrEmpty(state[key]));
 };
 
-export const isAnyEmpty = (...fields) => state =>
-    fields.some(key => isNilOrEmpty(state[key]));
+export const checkDatabricksRequiredFields = state => {
+    const numberFields = [];
+    const { operation, objectType, isConnectionPage } = state;
+    let fields = [];
+
+    if (isConnectionPage) {
+        fields = [...fields, 'jdbcUrl', 'user', 'password'];
+    } else {
+        fields = [...fields, 'catalog', 'schema', 'objectType'];
+        if (operation === WRITE) {
+            fields = [...fields, 'writeMode'];
+        }
+        if (operation === READ) {
+            numberFields.push({ value: state.versionAsOf, min: 1 });
+        }
+        if (objectType === 'table') {
+            fields = [...fields, 'table'];
+        }
+        if (objectType === 'volume') {
+            fields = [...fields, 'volume', 'volumePath', 'format'];
+        }
+    }
+
+    return (
+        fields.some(key => isNilOrEmpty(state[key])) ||
+        validateNumberFields(numberFields)
+    );
+};
+
+export const checkDatabricksJDBCRequiredFields = state => {
+    const numberFields = [];
+    const { operation, isConnectionPage, readingInParallel, customSql } = state;
+    let fields = ['jdbcUrl', 'user', 'password'];
+
+    if (!isConnectionPage) {
+        fields = [...fields, 'catalog'];
+
+        if (operation === WRITE || customSql === 'false') {
+            fields = [...fields, 'schema', 'table'];
+        }
+        if (operation === WRITE) {
+            fields = [...fields, 'writeMode'];
+            numberFields.push({ value: state.batchsize, min: 1 });
+        }
+        if (readingInParallel === 'true') {
+            numberFields.push({ value: state.numPartitions, min: 1 });
+        }
+        if (operation === READ) {
+            numberFields.push({ value: state.fetchsize, min: 0 });
+        }
+    }
+
+    return (
+        fields.some(key => isNilOrEmpty(state[key])) ||
+        validateNumberFields(numberFields)
+    );
+};
+
+export const checkAzureBlobRequiredFields = state => {
+    const { isConnectionPage, authType, format } = state;
+    let fields = ['storageAccount', 'authType'];
+
+    if (authType === 'storageAccountKey') {
+        fields = fields.concat('storageAccountKey');
+    }
+    if (authType === 'SASToken') {
+        fields = fields.concat('SASToken');
+    }
+    if (!isConnectionPage) {
+        fields = fields.concat(['container', 'containerPath', 'format']);
+    }
+    if (format === 'binaryFile') {
+        fields = fields.concat([
+            'binaryFormat',
+            'outputContentColumn',
+            'outputPathColumn'
+        ]);
+    }
+
+    return fields.some(key => isNilOrEmpty(state[key]));
+};
+
+export const checkGoogleCloudRequiredFields = state => {
+    const { isConnectionPage, format } = state;
+    let fields = ['pathToKeyFile'];
+
+    if (!isConnectionPage) {
+        fields = fields.concat(['bucket', 'path', 'format']);
+    }
+    if (format === 'binaryFile') {
+        fields = fields.concat([
+            'binaryFormat',
+            'outputContentColumn',
+            'outputPathColumn'
+        ]);
+    }
+
+    return fields.some(key => isNilOrEmpty(state[key]));
+};
 
 export const validations = {
     [STORAGES.DB2.value]: checkDb2RequiredFields,
@@ -261,6 +431,7 @@ export const validations = {
     [STORAGES.ORACLE.value]: checkDb2RequiredFields,
     [STORAGES.POSTGRE.value]: checkDb2RequiredFields,
     [STORAGES.REDSHIFTJDBC.value]: checkDb2RequiredFields,
+
     [STORAGES.REDSHIFT.value]: checkRedshiftRequiredFields,
     [STORAGES.REDIS.value]: checkRedisRequiredFields,
     [STORAGES.CASSANDRA.value]: checkCassandraRequiredFields,
@@ -269,8 +440,12 @@ export const validations = {
     [STORAGES.COS.value]: checkCosRequiredFields,
     [STORAGES.ELASTIC.value]: checkElasticsearchRequiredFields,
     [STORAGES.CLICKHOUSE.value]: checkClickHouseRequiredFields,
-    [STORAGES.KAFKA.value]: isAnyEmpty('bootstrapServers', 'subscribe'),
+    [STORAGES.KAFKA.value]: checkKafkaReqiredFields,
     [STORAGES.API.value]: isAnyEmpty('method', 'host'),
+    [STORAGES?.DATABRICKS?.value]: checkDatabricksRequiredFields,
+    [STORAGES?.DATABRICKSJDBC?.value]: checkDatabricksJDBCRequiredFields,
+    [STORAGES.AZURE.value]: checkAzureBlobRequiredFields,
+    [STORAGES.GOOGLECLOUD.value]: checkGoogleCloudRequiredFields,
     [DERIVE_COLUMN]: isAnyEmpty('option.expression'),
     [ADD_CONSTANT]: isAnyEmpty('option.constant'),
     [CHANGE_TYPE]: state => {
@@ -528,4 +703,27 @@ export const checkHandleNullFields = state => {
     }
 
     return isAnyEmpty('name', 'mode')(state);
+};
+
+export const checkAiValidation = state => {
+    const { task } = state;
+    let fields = [];
+    if (task === 'parseText' || task === 'generateTask' || task === 'transcribe') {
+        fields = fields.concat(['sourceColumn']);
+    }
+
+    if (task === 'generateData') {
+        fields = fields.concat(['numberOfRecords']);
+    }
+
+    if (task === 'generateTask' || task === 'transcribe') {
+        fields = fields.concat(['outputColumn']);
+    }
+
+    if (task === 'transcribe') {
+        fields = fields.concat(['pathColumn']);
+    }
+
+    fields = fields.concat(['name', 'llm', 'endpoint', 'model', 'apiKey']);
+    return fields.some(key => isNilOrEmpty(state[key]));
 };

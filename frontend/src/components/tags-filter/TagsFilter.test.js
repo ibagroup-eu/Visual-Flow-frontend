@@ -17,11 +17,17 @@
  * limitations under the License.
  */
 
-import { ClickAwayListener, Popper } from '@material-ui/core';
+import { Button, ClickAwayListener, Popper } from '@material-ui/core';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 import TagsButton from './tags-button/TagsButton';
 import TagsFilter from './TagsFilter';
+import { useTranslation } from 'react-i18next';
+
+jest.mock('react-i18next', () => ({
+    ...jest.requireActual('react-i18next'),
+    useTranslation: jest.fn()
+}));
 
 describe('TagsFilter', () => {
     let wrapper;
@@ -34,6 +40,8 @@ describe('TagsFilter', () => {
             resetTags: jest.fn(),
             checkedTags: { test: true }
         };
+
+        useTranslation.mockImplementation(() => ({ t: x => x }));
 
         wrapper = shallow(<TagsFilter {...props} />);
     });
@@ -52,6 +60,11 @@ describe('TagsFilter', () => {
 
     it('should calls onClickAway prop', () => {
         wrapper.find(ClickAwayListener).prop('onClickAway')();
+    });
+
+    it('should set null to anchorEl', () => {
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: 'someValue' });
+        wrapper.find(TagsButton).prop('onOpen')({});
     });
 
     it('should calls onChange prop for SearchInput', () => {
@@ -86,6 +99,18 @@ describe('TagsFilter', () => {
     });
 
     it('should calls ref prop for collapse', () => {
+        wrapper = mount(<TagsFilter {...props} />);
+        wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
+        wrapper
+            .find(Popper)
+            .props()
+            .children({ TransitionProps: {} })
+            .props.children.props.children.props.children.props.children.at(1)
+            .props.children.at(1)
+            .ref({ scrollHeight: 100 });
+    });
+
+    it('should set null to anchorEl', () => {
         wrapper = mount(<TagsFilter {...props} />);
         wrapper.find(TagsButton).prop('onOpen')({ currentTarget: {} });
         wrapper

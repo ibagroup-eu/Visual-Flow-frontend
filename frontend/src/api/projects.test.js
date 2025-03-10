@@ -152,15 +152,13 @@ describe('projects', () => {
             });
     });
 
-    it('should update project connection', () => {
-        const requestURL = `/project/${id}/connections/${connectionID}`;
+    it('should create project connection', () => {
+        const requestURL = `/project/${id}/connection`;
         const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
-        return projects
-            .createProjectConnection(id, connectionID, {})
-            .then(result => {
-                expect(result).toEqual(expected);
-                expect(spy).toHaveBeenCalledWith(requestURL, {});
-            });
+        return projects.createProjectConnection(id, {}).then(result => {
+            expect(result).toEqual(expected);
+            expect(spy).toHaveBeenCalledWith(requestURL, {});
+        });
     });
 
     it('should delete project connection', () => {
@@ -174,7 +172,9 @@ describe('projects', () => {
 
     it('should ping project connection', () => {
         const requestURL = `/db/${id}/connections`;
-        const spy = jest.spyOn(axiosSimpleInstance, 'post').mockResolvedValue(expected);
+        const spy = jest
+            .spyOn(axiosSimpleInstance, 'post')
+            .mockResolvedValue(expected);
         return projects.pingProjectConnection(id, {}).then(result => {
             expect(result).toEqual(expected);
             expect(spy).toHaveBeenCalledWith(requestURL, {});

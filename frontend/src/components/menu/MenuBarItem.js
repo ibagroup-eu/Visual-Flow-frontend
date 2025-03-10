@@ -75,14 +75,17 @@ export const MenuBarItem = ({ item, menuOpen, onClick, location }) => {
                 <Collapse in={open} timeout="auto" unmountOnExit>
                     <Divider />
                     <List component="div" disablePadding>
-                        {items.map(value => (
-                            <MenuBarItem
-                                item={value}
-                                key={value.name}
-                                onClick={onClick}
-                                location={location}
-                            />
-                        ))}
+                        {items.map(
+                            value =>
+                                !value.hidden && (
+                                    <MenuBarItem
+                                        item={value}
+                                        key={value.name}
+                                        onClick={onClick}
+                                        location={location}
+                                    />
+                                )
+                        )}
                     </List>
                 </Collapse>
             )}

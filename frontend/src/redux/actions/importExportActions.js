@@ -70,6 +70,27 @@ export const importResources = (projectId, data) => dispatch => {
                 type: IMPORT_FAIL,
                 payload: { error }
             });
+
+            const responseData = error.response?.data;
+            if (
+                responseData &&
+                typeof responseData === 'object' &&
+                typeof responseData.message !== 'string'
+            ) {
+                const errs = [];
+
+                Object.values(responseData).forEach(errObj => {
+                    if (errObj !== null && !Array.isArray(errObj)) {
+                        Object.keys(errObj).forEach(key => {
+                            errs.push(`${key} - ${errObj[key].join(' ')}`);
+                        });
+                    }
+                });
+
+                const err = error;
+                err.message = `There are some failures:\n${errs.join('\n')}`;
+                throw err;
+            }
         }
     );
 };

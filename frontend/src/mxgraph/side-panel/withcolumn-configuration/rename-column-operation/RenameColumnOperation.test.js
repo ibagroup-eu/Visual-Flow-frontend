@@ -23,8 +23,10 @@ import { TextField } from '@material-ui/core';
 import RenameColumnOperation from './RenameColumnOperation';
 
 describe('RenameColumnOperation', () => {
+    let defaultProps;
+
     const init = () => {
-        const defaultProps = {
+        defaultProps = {
             state: { 'option.columnName': 'test' },
             ableToEdit: true,
             handleInputChange: jest.fn()
@@ -35,5 +37,15 @@ describe('RenameColumnOperation', () => {
     it('should render without crashes', () => {
         const wrapper = init();
         expect(wrapper.find(TextField).exists()).toBeTruthy();
+    });
+
+    it('should render with empty value', () => {
+        const props = {
+            ...defaultProps,
+            state: {}
+        };
+        const wrapper = shallow(<RenameColumnOperation {...props} />);
+        expect(wrapper.find(TextField).exists()).toBeTruthy();
+        expect(wrapper.find(TextField).prop('value')).toBe('');
     });
 });

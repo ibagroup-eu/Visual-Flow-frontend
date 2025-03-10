@@ -19,12 +19,17 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Button } from '@material-ui/core';
-import { fromState, HEADER_KEY_VALIDATIONS, toState } from "./ApiStorage";
-import PropertyListModal from '../../property-list/PropertyListModal';
 import { useTranslation } from 'react-i18next';
-import ApiStorage from './ApiStorage';
-import { MESSAGES } from "../../../../pages/settings/parameters/validation/useParamValidation";
+
+import { Button } from '@material-ui/core';
+
+import ApiStorage, {
+    fromState,
+    HEADER_KEY_VALIDATIONS,
+    toState
+} from './ApiStorage';
+import PropertyListModal from '../../property-list/PropertyListModal';
+import { MESSAGES } from '../../../../pages/settings/parameters/validation/useParamValidation';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),
@@ -54,6 +59,64 @@ describe('API storage', () => {
         expect(wrapper).toBeDefined();
     });
 
+    it('should render buttons', () => {
+        const [wrapper] = init({});
+        expect(wrapper.find(Button).length).toBe(2);
+
+        expect(
+            wrapper
+                .find(Button)
+                .at(0)
+                .text()
+                .includes('addParams')
+        ).toBeTruthy();
+        expect(
+            wrapper
+                .find(Button)
+                .at(1)
+                .text()
+                .includes('addHeaders')
+        ).toBeTruthy();
+
+        wrapper
+            .find(Button)
+            .at(1)
+            .prop('onClick')();
+
+        expect(wrapper.find(PropertyListModal).length).toBe(1);
+        expect(wrapper.find(PropertyListModal).prop('buttonTitle')).toBe(
+            'jobDesigner:apiModal.headersAddButton'
+        );
+
+        wrapper.find(PropertyListModal).prop('onClose')();
+        expect(wrapper.find(PropertyListModal).length).toBe(0);
+    });
+
+    it('should test buttons text', () => {
+        const [wrapper] = init({
+            inputValues: {
+                'option.params': 'key:somekey;value:somevalue',
+                'option.headers': 'key:somekey;value:somevalue'
+            }
+        });
+        expect(wrapper.find(Button).length).toBe(2);
+
+        expect(
+            wrapper
+                .find(Button)
+                .at(0)
+                .text()
+                .includes('editParams')
+        ).toBeTruthy();
+        expect(
+            wrapper
+                .find(Button)
+                .at(1)
+                .text()
+                .includes('editHeaders')
+        ).toBeTruthy();
+    });
+
     it('should call onClick prop', () => {
         const [wrapper] = init({});
         wrapper
@@ -61,6 +124,9 @@ describe('API storage', () => {
             .at(0)
             .prop('onClick')();
         expect(wrapper.find(PropertyListModal).prop('open')).toBe(true);
+
+        wrapper.find(PropertyListModal).prop('onClose')();
+        expect(wrapper.find(PropertyListModal).length).toBe(0);
     });
 
     it('should call handleSave', () => {
@@ -68,6 +134,17 @@ describe('API storage', () => {
         wrapper
             .find(Button)
             .at(0)
+            .prop('onClick')();
+        wrapper.find(PropertyListModal).prop('onSave')([
+            ['parameter1', 'value1'],
+            ['parameter2', 'value2']
+        ]);
+        expect(props.setState).toHaveBeenCalled();
+        expect(wrapper.find(PropertyListModal).exists()).toBeFalsy();
+
+        wrapper
+            .find(Button)
+            .at(1)
             .prop('onClick')();
         wrapper.find(PropertyListModal).prop('onSave')([
             ['parameter1', 'value1'],

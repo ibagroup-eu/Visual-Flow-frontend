@@ -87,9 +87,7 @@ export const EnhancedTable = ({
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const items = data.filter(
-                item => item.pipelineId === null || item.pipelineId === undefined
-            );
+            const items = data.filter(item => !item.pipelineId);
             setSelected(items);
         } else {
             setSelected([]);

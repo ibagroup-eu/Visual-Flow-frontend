@@ -29,7 +29,9 @@ const prepareIndex = config => {
                 logger.error(err);
                 return;
             }
-            const result = data.replace(/%BASE_URL%/g, config.APP.BASE_URL);
+            const result = data
+                .replace(/%BASE_URL%/g, config.APP.BASE_URL)
+                .replace(/%PLATFORM%/g, config.APP.PLATFORM);
             fs.writeFile(
                 `${config.APP.BUILD_PATH}/index.html`,
                 result,

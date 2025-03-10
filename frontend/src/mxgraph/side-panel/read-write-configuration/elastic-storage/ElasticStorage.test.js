@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Divider } from '@material-ui/core';
 import ElasticStorage from './ElasticStorage';
 import ReadWriteTextFields from '../../../../components/rw-text-fields';
 import { WRITE } from '../../../constants';
@@ -70,7 +69,8 @@ describe('Elastic storage', () => {
             connectionPage: false,
             inputValues: {
                 ...defaultProps.inputValues,
-                operation: WRITE
+                operation: WRITE,
+                ssl: 'true'
             }
         });
         expect(wrapper.find(WriteMode)).toHaveLength(1);

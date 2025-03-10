@@ -21,6 +21,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { TextField, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { isNil } from 'lodash';
 import ClearButton from '../../mxgraph/side-panel/helpers/ClearButton';
 import useStyles from './NumberField.Styles';
 
@@ -40,7 +41,7 @@ const NumberField = ({
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (!value) {
+        if (!value && !isNil(defaultValue)) {
             const event = {
                 target: {
                     name,

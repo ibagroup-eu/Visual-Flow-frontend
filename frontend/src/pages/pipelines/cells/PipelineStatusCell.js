@@ -53,7 +53,7 @@ const PipelineStatusCell = ({
             >
                 {hint || t('pipelines:Status')}
             </Typography>
-            {status !== ERROR ? (
+            {status !== ERROR || !showRerun ? (
                 <Chip
                     label={t(`pipelines:${capitalize(status)}`)}
                     variant="outlined"

@@ -89,6 +89,7 @@ const JobsTable = ({
     run,
     stop,
     copy,
+    disabled,
     ableToEdit,
     lastRun,
     setLastRun,
@@ -99,7 +100,8 @@ const JobsTable = ({
     rowsPerPage,
     checkedTags,
     onCheckTags,
-    resetTags
+    resetTags,
+    isUpdating
 }) => {
     const { t } = useTranslation();
     const classes = withStyles();
@@ -155,72 +157,70 @@ const JobsTable = ({
     const getPipelineInstanceStatus = item =>
         !item.runnable ? `&status=${item.status}` : '';
 
-    const getActions = item =>
-        [
-            ![RUNNING, PENDING].includes(item.status)
-                ? {
-                      title: t('jobs:tooltip.Play'),
-                      Icon: PlayArrowOutlinedIcon,
-                      disabled: !item.runnable,
-                      onClick: () => run(projectId, item.id)
-                  }
-                : {
-                      title: t('jobs:tooltip.Stop'),
-                      Icon: StopOutlinedIcon,
-                      disabled: !!item.pipelineId,
-                      onClick: () => stop(projectId, item.id)
-                  },
-            {
-                title: t('jobs:tooltip.jobDesigner'),
-                Icon: PaletteOutlinedIcon,
-                onClick: () => {
-                    jobDesignerHendler(projectId, item, data, history);
-                }
-            },
-            {
-                title: t('jobs:tooltip.Logs'),
-                Icon: DescriptionOutlinedIcon,
-                disabled: [DRAFT, PENDING].includes(item.status) || !item.startedAt,
-                onClick: () =>
-                    history.push(
-                        `/jobs/${item.id}/logs/${projId}/?backTo=jobsTable&jobName=${
-                            item.name
-                        }${getPipelineInstanceStatus(item)}`
-                    )
-            },
-            {
-                title: t('jobs:tooltip.Copy'),
-                Icon: FileCopyOutlinedIcon,
-                disabled: !!item.pipelineId,
-                onClick: () => copy(projectId, item.id)
-            },
-            {
-                title: t('jobs:tooltip.History'),
-                Icon: HistoryOutlined,
-                disabled: !!item.pipelineId,
-                visible: UnitConfig.JOB.HISTORY,
-                onClick: () => setJobHistory({ data: item, display: true })
-            },
-            {
-                title: t('jobs:tooltip.Remove'),
-                Icon: DeleteOutlinedIcon,
-                disabled: item.pipelineInstances?.length !== 0,
-                onClick: () =>
-                    confirmationWindow({
-                        body: t('jobs:confirm.delete', { name: item.name }),
-                        callback: () => {
-                            removeHandler(
-                                projectId,
-                                [item.id],
-                                data.length,
-                                { rowsPerPage, currentPage },
-                                remove,
-                                setCurrentPage
-                            );
-                        }
-                    })
+    const getActions = item => [
+        ![RUNNING, PENDING].includes(item.status)
+            ? {
+                  title: t('jobs:tooltip.Play'),
+                  Icon: PlayArrowOutlinedIcon,
+                  disabled: !item.runnable || isUpdating === 'true',
+                  onClick: () => run(projectId, item.id)
+              }
+            : {
+                  title: t('jobs:tooltip.Stop'),
+                  Icon: StopOutlinedIcon,
+                  disabled: !!item.pipelineId,
+                  onClick: () => stop(projectId, item.id)
+              },
+        {
+            title: t('jobs:tooltip.jobDesigner'),
+            Icon: PaletteOutlinedIcon,
+            onClick: () => {
+                jobDesignerHendler(projectId, item, data, history);
             }
-        ].filter(action => action.visible !== false);
+        },
+        {
+            title: t('jobs:tooltip.Logs'),
+            Icon: DescriptionOutlinedIcon,
+            disabled: [DRAFT, PENDING].includes(item.status) || !item.startedAt,
+            onClick: () =>
+                history.push(
+                    `/jobs/${item.id}/logs/${projId}/?backTo=jobsTable&jobName=${
+                        item.name
+                    }${getPipelineInstanceStatus(item)}`
+                )
+        },
+        {
+            title: t('jobs:tooltip.Copy'),
+            Icon: FileCopyOutlinedIcon,
+            disabled: disabled || !!item.pipelineId,
+            onClick: () => copy(projectId, item.id)
+        },
+        {
+            title: t('jobs:tooltip.History'),
+            Icon: HistoryOutlined,
+            disabled: !!item.pipelineId,
+            onClick: () => setJobHistory({ data: item, display: true })
+        },
+        {
+            title: t('jobs:tooltip.Remove'),
+            Icon: DeleteOutlinedIcon,
+            disabled: item.pipelineInstances?.length !== 0,
+            onClick: () =>
+                confirmationWindow({
+                    body: t('jobs:confirm.delete', { name: item.name }),
+                    callback: () => {
+                        removeHandler(
+                            projectId,
+                            [item.id],
+                            data.length,
+                            { rowsPerPage, currentPage },
+                            remove,
+                            setCurrentPage
+                        );
+                    }
+                })
+        }
+    ];
 
     const closeHistory = () => setJobHistory({ ...jobHistory, display: false });
 
@@ -242,6 +242,7 @@ const JobsTable = ({
                 orderColumns={[
                     { id: 'name', name: t('main:form.Name') },
                     { id: 'startedAt', name: t('filters:lastRun') },
+                    { id: 'lastModified', name: t('filters:lastEdit') },
                     { id: 'status', name: t('filters:status') }
                 ]}
                 tagsData={checkedTags}
@@ -321,7 +322,9 @@ const JobsTable = ({
                             actions={
                                 ableToEdit
                                     ? getActions(item)
-                                    : withRunAction(item, getActions)
+                                    : withRunAction(item, getActions).concat(
+                                          getActions(item)[4]
+                                      )
                             }
                         />
                     </>
@@ -345,19 +348,22 @@ JobsTable.propTypes = {
     setStatus: PropTypes.func,
     confirmationWindow: PropTypes.func,
     ableToEdit: PropTypes.bool,
+    disabled: PropTypes.bool,
     setCurrentPage: PropTypes.func,
     currentPage: PropTypes.number,
     rowsPerPage: PropTypes.number,
     checkedTags: PropTypes.object,
     onCheckTags: PropTypes.func,
-    resetTags: PropTypes.func
+    resetTags: PropTypes.func,
+    isUpdating: PropTypes.string
 };
 
 const mapStateToProps = state => ({
     lastRun: state.pages.jobs.lastRun,
     status: state.pages.jobs.status,
     currentPage: state.enhancedTable.page,
-    rowsPerPage: state.enhancedTable.rowsPerPage
+    rowsPerPage: state.enhancedTable.rowsPerPage,
+    isUpdating: state.pages.settingsBasic?.project?.isUpdating
 });
 
 const mapDispatchToProps = {

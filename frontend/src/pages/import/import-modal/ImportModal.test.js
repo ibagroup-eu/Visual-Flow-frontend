@@ -36,12 +36,19 @@ describe('Import modal', () => {
                 { kind: 'WorkflowTemplate', metadata: { name: 'job2' } },
                 { kind: 'default', metadata: { name: 'job3' } }
             ],
-            pipelines: [{ kind: 'WorkflowTemplate', metadata: { name: 'pipe1' } }],
+            pipelines: [
+                {
+                    kind: 'WorkflowTemplate',
+                    id: 'pipe1',
+                    metadata: { name: 'pipe1' }
+                }
+            ],
             onClose: jest.fn(),
             importResources: jest.fn(),
             t: jest.fn(),
             existedList: [{ id: 'pipe1' }],
-            confirmationWindow: jest.fn()
+            confirmationWindow: jest.fn(),
+            currentProject: { demo: false, demoLimits: null }
         };
 
         wrapper = shallow(<ImportModal {...defaultProps} />).dive();
@@ -133,5 +140,7 @@ describe('Import modal', () => {
         const [importButton] = wrapper.find(Button).map(button => button);
         importButton.simulate('click');
         expect(defaultProps.confirmationWindow).toHaveBeenCalled();
+
+        expect(importButton.prop('disabled)')).toBeFalsy();
     });
 });

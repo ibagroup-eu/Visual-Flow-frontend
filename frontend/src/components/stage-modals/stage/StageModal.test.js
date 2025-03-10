@@ -36,13 +36,15 @@ import {
     SORT,
     TRANSFORM,
     UNION,
+    STRING,
     VALIDATE,
     WRITE,
     PIPELINE,
     WAIT,
     WITH_COLUMN,
     PIVOT,
-    HANDLE_NULL
+    HANDLE_NULL,
+    AI_TEXT_TASK
 } from '../../../mxgraph/constants';
 
 describe('StageModal', () => {
@@ -64,6 +66,7 @@ describe('StageModal', () => {
             JOIN,
             CDC,
             UNION,
+            STRING,
             TRANSFORM,
             JOB,
             NOTIFICATION,
@@ -77,7 +80,8 @@ describe('StageModal', () => {
             PIPELINE,
             WAIT,
             PIVOT,
-            HANDLE_NULL
+            HANDLE_NULL,
+            AI_TEXT_TASK
         ];
 
         stages.forEach(stageName => {

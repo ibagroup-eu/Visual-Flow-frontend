@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { DATABRICKS } from './mxgraph/constants';
+
 const UnitConfig = {
     JOB: {
         STAGES: {
@@ -37,7 +39,8 @@ const UnitConfig = {
             WITH_COLUMN: true,
             STRING: true,
             DATETIME: true,
-            HANDLE_NULL: true
+            HANDLE_NULL: true,
+            AI_TEXT_TASK: true
         },
         HISTORY: true
     },
@@ -45,9 +48,9 @@ const UnitConfig = {
         STAGES: {
             JOB: true,
             PIPELINE: true,
-            CONTAINER: true,
-            NOTIFICATION: true,
-            WAIT: true
+            CONTAINER: window.PLATFORM !== DATABRICKS,
+            NOTIFICATION: window.PLATFORM !== DATABRICKS,
+            WAIT: window.PLATFORM !== DATABRICKS
         },
         HISTORY: true
     }

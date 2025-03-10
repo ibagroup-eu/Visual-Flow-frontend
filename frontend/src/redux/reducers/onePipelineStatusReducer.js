@@ -21,6 +21,7 @@ import {
     FETCH_PIPELINE_STATUS_START,
     FETCH_PIPELINE_STATUS_SUCCESS,
     FETCH_PIPELINE_STATUS_FAIL,
+    RESET_PIPELINE_STATUS_SUCCESS,
     UPDATE_PIPELINE_STATUS_START,
     UPDATE_PIPELINE_STATUS_SUCCESS,
     UPDATE_PIPELINE_STATUS_FAIL
@@ -55,6 +56,10 @@ const onePipelineStatusReducer = (state = initialState, action = {}) => {
                 ...state,
                 loading: false,
                 error: action.payload.error
+            };
+        case RESET_PIPELINE_STATUS_SUCCESS:
+            return {
+                ...initialState
             };
         default:
             return state;

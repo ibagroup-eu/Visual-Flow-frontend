@@ -75,7 +75,7 @@ export const ExportModalWindow = ({
             pipelines: selectedPipelines
                 ? selectedPipelines.map(id => ({
                       pipelineId: id,
-                      withRelatedJobs: true
+                      withRelatedEntities: true
                   }))
                 : []
         };

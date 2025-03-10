@@ -82,6 +82,17 @@ const LogsHeader = ({
                                 className={classes.selectButton}
                                 value={levels}
                                 renderValue={selected => selected.join(', ')}
+                                MenuProps={{
+                                    anchorOrigin: {
+                                        vertical: 'bottom',
+                                        horizontal: 'left'
+                                    },
+                                    transformOrigin: {
+                                        vertical: 'top',
+                                        horizontal: 'left'
+                                    },
+                                    getContentAnchorEl: null
+                                }}
                             >
                                 {dropList.map(value => (
                                     <MenuItem key={value} value={value}>

@@ -29,7 +29,7 @@ describe('ClusterStorage', () => {
 
     beforeEach(() => {
         props = {
-            inputValues: { path: 'test/path/s', format: 'test_format' },
+            inputValues: { path: 'test/path/s', format: '' },
             stageId: 'some_id',
             handleInputChange: jest.fn(),
             ableToEdit: true
@@ -75,6 +75,6 @@ describe('ClusterStorage', () => {
                 }}
             />
         );
-        expect(props.handleInputChange).toBeCalledTimes(0);
+        expect(props.handleInputChange).toBeCalledTimes(1);
     });
 });

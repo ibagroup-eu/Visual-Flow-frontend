@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import React from 'react';
 import { shallow } from 'enzyme';
 import { set } from 'lodash';
@@ -26,10 +25,12 @@ import { Skeleton } from '@material-ui/lab';
 import { JobsToolbar } from './JobsToolbar';
 import EditDesignerButtons from '../edit-designer-buttons';
 import RunStopButtons from '../run-stop-buttons';
+import DebugRunButtons from '../debug-run-buttons';
 import Status from '../../../components/status';
-import { PENDING } from '../../constants';
-import history from '../../../utils/history';
 import HistoryPanel from '../../../components/history-panel/HistoryPanel';
+import InteractiveModeToggle from '../interactive-mode-toggle';
+import { RUN_ALL_EVENT, RUN_FAILED_EVENT } from '../../constants';
+import history from '../../../utils/history';
 
 jest.mock('../../../unitConfig', () => ({
     JOB: { HISTORY: true },
@@ -41,7 +42,7 @@ jest.mock('react-i18next', () => ({
     useTranslation: jest.fn()
 }));
 
-describe('Jobs toolbar', () => {
+describe('JobsToolbar', () => {
     const init = (props = {}, pathname = '/jobs/project/jobId') => {
         const defaultProps = {
             graph: {},
@@ -59,6 +60,8 @@ describe('Jobs toolbar', () => {
             },
             run: jest.fn(() => Promise.resolve()),
             stop: jest.fn(),
+            runAndRefresh: jest.fn(),
+            stopAndRefresh: jest.fn(),
             getStatus: jest.fn(),
             getActualJob: jest.fn(),
             storeStatus: { loading: false, status: 'some value 2', id: 'jobId' },
@@ -68,7 +71,14 @@ describe('Jobs toolbar', () => {
             setDirty: jest.fn(),
             setShowModal: jest.fn(),
             dirty: true,
-            undoButtonsDisabling: { undo: true, redo: true }
+            undoButtonsDisabling: { undo: true, redo: true },
+            jobStagesData: [
+                { id: '1', status: 'failed' },
+                { id: '2', status: 'succeeded' }
+            ],
+            sendInteractiveEvent: jest.fn(),
+            interactiveMode: false,
+            toggleInteractiveMode: jest.fn()
         };
 
         set(history, 'location.pathname', pathname);
@@ -86,94 +96,88 @@ describe('Jobs toolbar', () => {
         const [wrapper] = init();
 
         expect(wrapper).toBeDefined();
-
         expect(wrapper.find(EditDesignerButtons)).toHaveLength(1);
         expect(wrapper.find(RunStopButtons)).toHaveLength(1);
     });
 
-    it('should render skeleton while loading', () => {
-        const [wrapper] = init({
-            storeStatus: { loading: true }
-        });
+    it('should render DebugRunButtons in interactive mode', () => {
+        const [wrapper] = init({ interactiveMode: true });
 
-        expect(wrapper.find(Skeleton)).toHaveLength(1);
+        expect(wrapper.find(DebugRunButtons)).toHaveLength(1);
+        expect(wrapper.find(RunStopButtons)).toHaveLength(0);
     });
 
-    it('should call update action', () => {
+    it('should call updateJobHandler when save button is clicked', () => {
         const [wrapper, props] = init();
-        const [button] = wrapper.find(IconButton).map(b => b);
-        button.simulate('click');
+        const saveButton = wrapper.find(IconButton).at(0);
+        saveButton.simulate('click');
 
-        expect(props.update).toHaveBeenCalled();
+        expect(props.update).toHaveBeenCalledTimes(1);
     });
 
-    it('should call run action', () => {
+    it('should call setShowModal when logs button is clicked', () => {
         const [wrapper, props] = init();
-        wrapper.find(RunStopButtons).prop('run')();
-
-        expect(props.run).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call stop action', () => {
-        const [wrapper, props] = init();
-        wrapper.find(RunStopButtons).prop('stop')();
-
-        expect(props.stop).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call setShowModal prop', () => {
-        const [wrapper, props] = init();
-        const [, button] = wrapper.find(IconButton).map(b => b);
-        button.simulate('click');
+        const logsButton = wrapper.find(IconButton).at(1);
+        logsButton.simulate('click');
 
         expect(props.setShowModal).toHaveBeenCalledTimes(1);
     });
 
-    it('should call getStatus action', () => {
+    it('should call runAll on Run All button click', () => {
+        const [wrapper, props] = init({ interactiveMode: true });
+        wrapper.find(DebugRunButtons).prop('onRunAll')();
+
+        expect(props.sendInteractiveEvent).toHaveBeenCalledWith(
+            'project',
+            'jobId',
+            undefined,
+            { session: undefined, command: RUN_ALL_EVENT, id: [] }
+        );
+    });
+
+    it('should call handleDebug on Debug button click', () => {
+        const [wrapper, props] = init({ interactiveMode: true });
+        wrapper.find(DebugRunButtons).prop('onDebug')();
+
+        expect(props.sendInteractiveEvent).toHaveBeenCalledWith(
+            'project',
+            'jobId',
+            undefined,
+            { session: undefined, command: RUN_FAILED_EVENT, id: ['1'] }
+        );
+    });
+
+    it('should display correct status when current job matches id', () => {
         const [wrapper, props] = init();
-        wrapper.find(EditDesignerButtons).prop('refresh')();
-
-        expect(props.getStatus).toHaveBeenCalledTimes(1);
+        expect(wrapper.find(Status).prop('value')).toBe(props.storeStatus.status);
     });
 
-    it('should correctly set changesNotSaved', () => {
-        const [wrapper] = init();
-        expect(wrapper.find(RunStopButtons).prop('changesNotSaved')).toEqual(true);
-
-        wrapper.setProps({
-            sidePanelIsDirty: false
-        });
-        expect(wrapper.find(RunStopButtons).prop('changesNotSaved')).toEqual(true);
-
-        wrapper.setProps({
-            sidePanelIsDirty: false,
-            dirty: false
-        });
-        expect(wrapper.find(RunStopButtons).prop('changesNotSaved')).toEqual(false);
-    });
-
-    it('should produce correct stats value when currentJob is equal to id', () => {
-        const [wrapper, props] = init();
-
-        expect(wrapper.find(Status).prop('value')).toEqual(props.storeStatus.status);
-    });
-
-    it('should produce correct stats value when currentJob is not equal to id', () => {
+    it('should display correct status when current job does not match id', () => {
         const [wrapper, props] = init({}, '/jobs/project/anotherJob');
+        expect(wrapper.find(Status).prop('value')).toBe(props.data.status);
+    });
 
-        expect(wrapper.find(Status).prop('value')).toEqual(props.data.status);
+    it('should render skeleton while loading', () => {
+        const [wrapper] = init({ storeStatus: { loading: true } });
+        expect(wrapper.find(Skeleton)).toHaveLength(1);
     });
 
     it('should not render IconButton when enableViewMode returns false', () => {
-        const [wrapper] = init({
-            storeStatus: { status: PENDING }
-        });
-
-        expect(wrapper.find(IconButton)).toHaveLength(2);
+        const [wrapper] = init({ storeStatus: { status: 'pending' } });
+        expect(wrapper.find(IconButton)).toHaveLength(3);
     });
 
-    it('should call onClose prop', () => {
-        const [wrapper] = init();
+    it('should call toggleInteractiveMode when InteractiveModeToggle is clicked', () => {
+        const [wrapper, props] = init();
+        wrapper.find(InteractiveModeToggle).prop('toggleInteractiveMode')();
+
+        expect(props.toggleInteractiveMode).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onClose prop for HistoryPanel', () => {
+        const [wrapper, props] = init();
         wrapper.find(HistoryPanel).prop('onClose')();
+
+        expect(props.getStatus).not.toHaveBeenCalled();
     });
 });

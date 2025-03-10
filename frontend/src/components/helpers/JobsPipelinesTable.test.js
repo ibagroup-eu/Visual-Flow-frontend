@@ -26,6 +26,9 @@ import {
     runWithValidation
 } from './JobsPipelinesTable';
 import api from '../../api/pipelines';
+import showNotification from '../notification/showNotification';
+
+jest.mock('../notification/showNotification', () => jest.fn());
 
 describe('JobsPipelinesTable', () => {
     it('should not call "setCurrentPage" for removeHandler', () => {
@@ -69,9 +72,120 @@ describe('JobsPipelinesTable', () => {
         jest.spyOn(api, 'getPipelineById').mockResolvedValue({ data });
         const run = jest.fn();
 
-        await runWithValidation('projectId', 'itemId', {}, run, 'message');
+        await runWithValidation(
+            'projectId',
+            'itemId',
+            {},
+            run,
+            'message',
+            jest.fn()
+        );
 
         expect(run).toHaveBeenCalled();
+    });
+
+    it('runWithValidation - showNotification is called (stage value is JOB)', async () => {
+        const data = {
+            data: {
+                definition: {
+                    graph: [
+                        {
+                            value: {
+                                operation: 'JOB'
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+        api.getPipelineById = jest.fn().mockResolvedValue(data);
+
+        const run = jest.fn();
+        const warning = jest.fn();
+
+        await runWithValidation('projectId', 'itemId', {}, run, 'message', warning);
+
+        expect(showNotification).toHaveBeenCalled();
+    });
+
+    it('runWithValidation - showNotification is called (stage value is NOTIFICATION)', async () => {
+        const data = {
+            data: {
+                definition: {
+                    graph: [
+                        {
+                            value: {
+                                operation: 'NOTIFICATION'
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+        api.getPipelineById = jest.fn().mockResolvedValue(data);
+
+        const run = jest.fn();
+        const warning = jest.fn();
+
+        await runWithValidation('projectId', 'itemId', {}, run, 'message', warning);
+
+        expect(showNotification).toHaveBeenCalled();
+    });
+
+    it('runWithValidation - showNotification is called (stage value is CONTAINER)', async () => {
+        const data = {
+            data: {
+                definition: {
+                    graph: [
+                        {
+                            value: {
+                                operation: 'CONTAINER'
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+        api.getPipelineById = jest.fn().mockResolvedValue(data);
+
+        const run = jest.fn();
+        const warning = jest.fn();
+
+        await runWithValidation('projectId', 'itemId', {}, run, 'message', warning);
+
+        expect(showNotification).toHaveBeenCalled();
+    });
+
+    it('runWithValidation - warning is called', async () => {
+        const data = {
+            data: {
+                definition: {
+                    graph: [
+                        {
+                            value: {
+                                operation: 'JOB',
+                                jobId: '12345'
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+        api.getPipelineById = jest.fn().mockResolvedValue(data);
+
+        const run = jest.fn();
+        const warning = jest.fn();
+
+        await runWithValidation(
+            'projectId',
+            'itemId',
+            { dataJobs: [{ id: '12345', runnable: false }], dataParams: {} },
+            run,
+            'message',
+            warning
+        );
+
+        expect(warning).toHaveBeenCalled();
     });
 
     it('jobDesignerHendler', () => {

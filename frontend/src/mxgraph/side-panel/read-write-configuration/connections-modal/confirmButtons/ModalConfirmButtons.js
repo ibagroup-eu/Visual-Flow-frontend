@@ -25,7 +25,13 @@ import { Box, Button } from '@material-ui/core';
 
 import useStyles from './ModalConfirmButtons.Styles';
 
-const ModalConfirmButtons = ({ ableToEdit, selectedValue, onClose, onSetValue }) => {
+const ModalConfirmButtons = ({
+    ableToEdit,
+    selectedValue,
+    onClose,
+    onSetValue,
+    disabledConfirm
+}) => {
     const { t } = useTranslation();
     const classes = useStyles();
 
@@ -37,7 +43,7 @@ const ModalConfirmButtons = ({ ableToEdit, selectedValue, onClose, onSetValue })
                     variant="contained"
                     color="primary"
                     onClick={() => onSetValue(selectedValue)}
-                    disabled={!selectedValue}
+                    disabled={disabledConfirm}
                 >
                     {t('main:button.Confirm')}
                 </Button>
@@ -57,7 +63,8 @@ ModalConfirmButtons.propTypes = {
     ableToEdit: PropTypes.bool,
     selectedValue: PropTypes.string,
     onClose: PropTypes.func,
-    onSetValue: PropTypes.func
+    onSetValue: PropTypes.func,
+    disabledConfirm: PropTypes.bool
 };
 
 export default ModalConfirmButtons;

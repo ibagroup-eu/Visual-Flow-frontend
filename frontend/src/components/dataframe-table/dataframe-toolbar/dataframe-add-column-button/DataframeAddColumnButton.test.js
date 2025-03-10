@@ -94,4 +94,13 @@ describe('DataframeAddColumnButton', () => {
     it('should calls onOpen for Select', () => {
         wrapper.find(Select).prop('onOpen')();
     });
+
+    it('should have secondary dark text color', () => {
+        wrapper = shallow(<DataframeAddColumnButton {...props} />);
+        const { className } = wrapper
+            .find(Button)
+            .first()
+            .props();
+        expect(className.lastIndexOf('makeStyles-btn')).toBe(0);
+    });
 });

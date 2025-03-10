@@ -43,6 +43,7 @@ const TableSort = ({ orderColumns, order, orderBy, onRequestSort, classes }) => 
                     value={column.id}
                     selected={orderBy === column.id}
                     onClick={createSortHandler(column.id)}
+                    size="small"
                 >
                     <TableSortLabel
                         active={orderBy === column.id}

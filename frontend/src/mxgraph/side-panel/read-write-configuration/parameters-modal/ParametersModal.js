@@ -113,6 +113,7 @@ const ParametersModal = ({
                         selectedValue={selectedValue}
                         onClose={onClose}
                         onSetValue={onSetValue}
+                        disabledConfirm={!selectedValue}
                     />
                 </Box>
             )}

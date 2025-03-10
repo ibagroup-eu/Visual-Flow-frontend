@@ -18,90 +18,82 @@
  */
 
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Divider } from '@material-ui/core';
+import { mount, shallow } from 'enzyme';
 import Db2Storage from './Db2Storage';
 import ReadWriteTextFields from '../../../../components/rw-text-fields';
 import SelectField from '../../../../components/select-field';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 import { READ, WRITE } from '../../../constants';
 import WriteMode from '../helpers/WriteMode';
 
 describe('Db2 storage', () => {
-    let wrapper;
-    const defaultProps = {
-        inputValues: {
-            format: 'format',
-            operation: 'operation',
-            writeMode: 'write mode',
-            truncateMode: 'truncate mode',
-            customSql: 'true',
-            partitionBy: 'partition by',
-            storage: 'storage'
-        },
-        handleInputChange: jest.fn(),
-        openModal: jest.fn(),
-        ableToEdit: true,
-        connectionPage: true,
-        connection: {}
-    };
-    const connectionPageAndWriteMode = {
-        connectionPage: false,
-        inputValues: {
-            ...defaultProps.inputValues,
-            operation: WRITE
-        }
-    };
+    const init = (props = {}, func = shallow) => {
+        const defaultProps = {
+            inputValues: {
+                format: 'format',
+                operation: 'operation',
+                writeMode: 'write mode',
+                truncateMode: 'truncate mode',
+                customSql: 'true',
+                partitionBy: 'partition by',
+                storage: 'storage'
+            },
+            handleInputChange: jest.fn(),
+            openModal: jest.fn(),
+            ableToEdit: true,
+            connectionPage: true,
+            connection: {}
+        };
 
-    beforeEach(() => {
-        wrapper = shallow(<Db2Storage {...defaultProps} />);
-    });
+        const wrapper = func(<Db2Storage {...defaultProps} {...props} />);
+
+        return [wrapper, { ...defaultProps, ...props }];
+    };
 
     it('should render component', () => {
+        const [wrapper] = init();
         expect(wrapper).toBeDefined();
     });
 
-    it('should render SelectField when operation is READ', () => {
-        wrapper.setProps({
+    it('should render ParamsSwitchField when operation is READ', () => {
+        const [wrapper] = init({
             inputValues: {
-                ...defaultProps.inputValues,
                 operation: READ
             }
         });
-        expect(wrapper.find(SelectField)).toHaveLength(1);
+        expect(wrapper.find(ParamsSwitchField)).toHaveLength(1);
     });
 
     it('should render ReadWriteTextField when customSql is false', () => {
-        wrapper.setProps({
+        const [wrapper] = init({
             inputValues: {
-                ...defaultProps.inputValues,
                 customSql: 'false'
             }
         });
-        expect(wrapper.find(ReadWriteTextFields)).toHaveLength(3);
+        expect(wrapper.find(ReadWriteTextFields)).toHaveLength(2);
     });
 
     it('should render correct components when operation is WRITE and writeMode is Overwrite', () => {
-        wrapper.setProps({
+        const [wrapper] = init({
             inputValues: {
-                ...defaultProps.inputValues,
                 operation: WRITE,
                 writeMode: 'Overwrite'
             }
         });
-        expect(wrapper.find(ReadWriteTextFields)).toHaveLength(4);
+        expect(wrapper.find(ReadWriteTextFields)).toHaveLength(3);
         expect(wrapper.find(WriteMode)).toHaveLength(1);
         expect(wrapper.find(SelectField)).toHaveLength(1);
     });
 
     it('should render ReadWriteTextField when connectionPage is false', () => {
-        wrapper.setProps({
+        const [wrapper] = init({
             connectionPage: false
         });
         expect(wrapper.find(ReadWriteTextFields)).toHaveLength(4);
     });
 
     it('should set value of Select field to the empty string when it`s not set', () => {
-        wrapper.setProps({
+        const [wrapper] = init({
             inputValues: {
                 operation: WRITE,
                 writeMode: 'Overwrite',
@@ -114,14 +106,40 @@ describe('Db2 storage', () => {
         expect(wrapper.find(SelectField).prop('value')).toEqual('');
     });
 
-    it('should set value of Select field to None', () => {
-        wrapper.setProps({
+    it('should render form with default compression', () => {
+        const [wrapper] = init(
+            {
+                inputValues: {
+                    operation: WRITE,
+                    storage: 'mongodb',
+                    truncateMode: 'Cascade',
+                    writeMode: 'Overwrite'
+                },
+                handleInputChange: jest.fn()
+            },
+            mount
+        );
+
+        expect(
+            wrapper
+                .find(SelectField)
+                .at(1)
+                .prop('value')
+        ).toEqual('');
+    });
+
+    it('should not render SelectField', () => {
+        const [wrapper] = init({
             inputValues: {
-                ...defaultProps.inputValues,
-                operation: WRITE,
-                writeMode: 'Overwrite'
-            }
+                operation: READ,
+                storage: 'mongodb',
+                truncateMode: 'Cascade',
+                writeMode: 'Overwrite',
+                customSql: 'true'
+            },
+            handleInputChange: jest.fn()
         });
-        expect(wrapper.find(SelectField).prop('value')).toEqual('None');
+
+        expect(wrapper.find(ParamsSwitchField).prop('value')).toBeTruthy();
     });
 });

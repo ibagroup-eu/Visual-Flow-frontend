@@ -129,11 +129,15 @@ Pipeline.propTypes = {
     duplicatedName: PropTypes.bool
 };
 
-const mapStateToProps = state => {
+export const mapStateToProps = state => {
     const { data, loading } = state.pages.pipelines;
     const { id } = state.mxGraph.data;
+    const filteredPipelines = data.pipelines?.filter(item => item.id !== id);
     return {
-        data: data.pipelines?.filter(item => item.id !== id),
+        data: filteredPipelines.map(item => ({
+            ...item,
+            lastRun: item.startedAt && new Date(item.startedAt)
+        })),
         loading
     };
 };

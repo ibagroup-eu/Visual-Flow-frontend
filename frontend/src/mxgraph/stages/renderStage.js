@@ -61,12 +61,14 @@ import {
     VALIDATE,
     WITH_COLUMN,
     PIVOT,
-    HANDLE_NULL
+    HANDLE_NULL,
+    AI_TEXT_TASK
 } from '../constants';
 import { StageWithIcon } from '../sidebar/stage-icon';
 import ValidateStage from './validate-stage';
 import DateTimeStage from './datetime-stage/DateTimeStage';
 import HandleNullStage from './handlenull-stage';
+import AiStage from './ai-stage';
 
 const root = {
     position: 'relative',
@@ -160,6 +162,8 @@ const renderContent = (stage, t, type, jobs, params, pipelines) => {
             return <PivotStage stage={stage} />;
         case HANDLE_NULL:
             return <HandleNullStage stage={stage} />;
+        case AI_TEXT_TASK:
+            return <AiStage stage={stage} />;
         default:
             return null;
     }

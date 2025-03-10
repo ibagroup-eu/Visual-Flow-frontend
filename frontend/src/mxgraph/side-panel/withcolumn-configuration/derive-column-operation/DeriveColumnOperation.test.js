@@ -23,8 +23,9 @@ import { TextField } from '@material-ui/core';
 import DeriveColumnOperation from './DeriveColumnOperation';
 
 describe('DeriveColumnOperation', () => {
+    let defaultProps;
     const init = () => {
-        const defaultProps = {
+        defaultProps = {
             state: { 'option.expression': 'test' },
             ableToEdit: true,
             handleInputChange: jest.fn()
@@ -35,5 +36,15 @@ describe('DeriveColumnOperation', () => {
     it('should render without crashes', () => {
         const wrapper = init();
         expect(wrapper.find(TextField).exists()).toBeTruthy();
+    });
+
+    it('should render with empty value', () => {
+        const props = {
+            ...defaultProps,
+            state: {}
+        };
+        const wrapper = shallow(<DeriveColumnOperation {...props} />);
+        expect(wrapper.find(TextField).exists()).toBeTruthy();
+        expect(wrapper.find(TextField).prop('value')).toBe('');
     });
 });

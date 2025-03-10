@@ -31,7 +31,6 @@ import {
 import api from '../../api/cron';
 import { createCron, getCron, updateCron } from './cronActions';
 
-
 describe('cron action', () => {
     let dispatch;
 
@@ -53,7 +52,11 @@ describe('cron action', () => {
         });
 
         it('should dispatch CREATE_CRON_SUCCESS on success', () => {
-            return createCron(projectId, id, cronData)(dispatch).then(() => {
+            return createCron(
+                projectId,
+                id,
+                cronData
+            )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: CREATE_CRON_START }],
                     [{ type: CREATE_CRON_SUCCESS }],
@@ -64,13 +67,18 @@ describe('cron action', () => {
 
         it('should dispatch CREATE_CRON_FAIL on failure', () => {
             jest.spyOn(api, 'createCron').mockRejectedValue({ wrongData });
-            return createCron(projectId, id, cronData)(dispatch).then(() => {
+            return createCron(
+                projectId,
+                id,
+                cronData
+            )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: CREATE_CRON_START }],
-                    [{
-                        type: CREATE_CRON_FAIL,
-                        payload: { error: { wrongData } }
-                    }
+                    [
+                        {
+                            type: CREATE_CRON_FAIL,
+                            payload: { error: { wrongData } }
+                        }
                     ],
                     [expect.any(Function)]
                 ]);
@@ -111,7 +119,6 @@ describe('cron action', () => {
         });
     });
 
-
     describe('updateCron', () => {
         let cronData;
         let wrongData;
@@ -130,7 +137,11 @@ describe('cron action', () => {
         });
 
         it('should dispatch UPDATE_CRON_SUCCESS on success', () => {
-            return updateCron(projectId, id, cronData)(dispatch).then(() => {
+            return updateCron(
+                projectId,
+                id,
+                cronData
+            )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: UPDATE_CRON_START }],
                     [{ type: UPDATE_CRON_SUCCESS }],
@@ -141,7 +152,11 @@ describe('cron action', () => {
 
         it('should dispatch UPDATE_CRON_FAIL on failure', () => {
             jest.spyOn(api, 'updateCron').mockRejectedValue({ wrongData });
-            return updateCron(projectId, id, cronData)(dispatch).then(() => {
+            return updateCron(
+                projectId,
+                id,
+                cronData
+            )(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: UPDATE_CRON_START }],
                     [

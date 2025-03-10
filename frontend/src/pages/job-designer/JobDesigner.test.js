@@ -105,4 +105,61 @@ describe('JobDesigner', () => {
             expect(validate('abcd')).toBeNull();
         });
     });
+
+    describe('isValidRange', () => {
+        it('should return correct results', () => {
+            const [_, props] = init({}, true, mount);
+            [
+                'WORKERS',
+                'MIN_WORKERS',
+                'MAX_WORKERS',
+                'MAX_SPOT_PRICE',
+                'VOLUMES',
+                'DB_SIZE'
+            ].forEach(elem => {
+                const validate =
+                    props.createFields.mock.calls[0][0]['JOB_CLUSTER']['fields'][
+                        elem
+                    ].validate;
+
+                expect(validate(-1)).toContain('main:validation.range');
+            });
+        });
+    });
+
+    describe('isValidLimits', () => {
+        it('should return correct results', () => {
+            const [_, props] = init({}, true, mount);
+
+            const validate =
+                props.createFields.mock.calls[0][0]['RETRIES_PANEL']['fields'][
+                    'UP_TO'
+                ].validate;
+
+            expect(validate(30)).toBeNull();
+            expect(validate(-1)).toBe('main:validation.positive');
+            expect(validate(45)).toBe('main:validation.multiple', { multiple: 30 });
+            expect(validate(630)).toBe('main:validation.range', {
+                min: 30,
+                max: 600
+            });
+        });
+
+        it('should return correct results', () => {
+            const [_, props] = init({}, true, mount);
+
+            const validate =
+                props.createFields.mock.calls[0][0]['RETRIES_PANEL']['fields'][
+                    'INTERVALS'
+                ].validate;
+
+            expect(validate(30)).toBeNull();
+            expect(validate(-1)).toBe('main:validation.positive');
+            expect(validate(45)).toBe('main:validation.multiple', { multiple: 30 });
+            expect(validate(630)).toBe('main:validation.range', {
+                min: 30,
+                max: 600
+            });
+        });
+    });
 });

@@ -35,6 +35,7 @@ const CONFIG = {
     APP: {
         VERSION: version,
         BASE_URL: process.env.BASE_URL || '/',
+        PLATFORM: process.env.PLATFORM,
         LOGOUT_URL: process.env.LOGOUT_URL,
         COOKIE_MAX_AGE: process.env.COOKIE_MAX_AGE || 3600 * 1000 * 8,
         BUILD_PATH:

@@ -19,10 +19,12 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import LogsPageHeader from './LogsPageHeader';
+import { useTranslation } from 'react-i18next';
+
 import AppBar from '@material-ui/core/AppBar';
 import { Toolbar, Typography } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
+
+import LogsPageHeader from './LogsPageHeader';
 
 jest.mock('react-i18next', () => ({
     ...jest.requireActual('react-i18next'),

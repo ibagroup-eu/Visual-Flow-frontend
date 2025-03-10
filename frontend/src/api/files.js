@@ -23,7 +23,7 @@ export default {
     uploadFile: (projectId, filePath, file) =>
         axiosInstance.post(`/project/${projectId}/files/upload`, file, {
             params: {
-                projectID: projectId,
+                projectId,
                 uploadFilePath: filePath
             },
             headers: {
@@ -34,7 +34,7 @@ export default {
     downloadFile: (projectId, filePath, fileName) =>
         axiosInstance.get(`/project/${projectId}/files/download`, {
             params: {
-                projectID: projectId,
+                projectId,
                 downloadFilePath: filePath,
                 fileName
             },

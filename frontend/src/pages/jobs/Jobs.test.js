@@ -47,7 +47,8 @@ describe('Jobs', () => {
             setCurrentPage: jest.fn(),
             setSearchField: jest.fn(),
             searchField: 'field',
-            loadingExport: false
+            loadingExport: false,
+            project: { demo: false, demoLimits: null }
         };
 
         // withPagination.mockImplementation(x => x);

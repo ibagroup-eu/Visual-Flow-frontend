@@ -117,8 +117,7 @@ const DateTimeConfiguration = ({ state, ableToEdit, onChange }) => {
                         ({ field, conditions }, index) =>
                             ((index === 0 && state.function) ||
                                 conditions?.find(
-                                    ({ operationType }) =>
-                                        operationType === state.function
+                                    item => item.function === state.function
                                 )) && (
                                 <Box key={field} className={classes.wrapper}>
                                     <TextField

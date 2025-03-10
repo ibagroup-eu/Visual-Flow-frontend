@@ -47,7 +47,9 @@ describe('Pipelines toolbar', () => {
             graph: {},
             reversible: {},
             data: {
-                definition: { graph: [{ value: { operation: 'JOB' } }] },
+                definition: {
+                    graph: [{ value: { operation: 'JOB', jobId: '123' } }]
+                },
                 editable: true,
                 finishedAt: null,
                 lastModified: '',
@@ -64,6 +66,7 @@ describe('Pipelines toolbar', () => {
             create: jest.fn(),
             getActualJobs: jest.fn(),
             getActualPipeline: jest.fn(),
+            confirmationWindow: jest.fn(),
             pipelineStatus: {
                 loading: false,
                 status: 'some value 2',
@@ -98,20 +101,6 @@ describe('Pipelines toolbar', () => {
 
         expect(wrapper.find(EditDesignerButtons)).toHaveLength(1);
         expect(wrapper.find(ControlButtons)).toHaveLength(1);
-    });
-
-    it('should produce correct statusValue value when currentPipline is not equal to id', () => {
-        const [wrapper, props] = init({}, '/piplines/project/anotherPipline');
-
-        expect(wrapper.find(Status).prop('value')).toEqual(props.data.status);
-    });
-
-    it('should render skeleton while loading', () => {
-        const [wrapper] = init({
-            pipelineStatus: { loading: true }
-        });
-
-        expect(wrapper.find(Skeleton)).toHaveLength(1);
     });
 
     it('enableViewMode func should return with false ', () => {
@@ -161,7 +150,7 @@ describe('Pipelines toolbar', () => {
     });
 
     it('should call run prop', () => {
-        const [wrapper, props] = init({}, '');
+        const [wrapper, props] = init({ jobs: [{ id: '123', runnable: true }] }, '');
         wrapper.find(ControlButtons).prop('run')();
         expect(props.run).toHaveBeenCalled();
     });
@@ -193,5 +182,14 @@ describe('Pipelines toolbar', () => {
     it('should call onClose prop', () => {
         const [wrapper] = init();
         wrapper.find(HistoryPanel).prop('onClose')();
+    });
+
+    it('should call confirmationWindow prop', () => {
+        const [wrapper, props] = init(
+            { jobs: [{ id: '123', runnable: false }] },
+            ''
+        );
+        wrapper.find(ControlButtons).prop('run')();
+        expect(props.confirmationWindow).toHaveBeenCalled();
     });
 });

@@ -53,3 +53,10 @@ export const duplicates = (arr, getHash) => {
 
     return duplicated;
 };
+
+export const sortUnique = array =>
+    array
+        .sort((x, y) => (x < y ? -1 : 1))
+        .filter((curr, i, arr) => arr.indexOf(curr) === i);
+
+export const mapSortUnique = (arr, fn) => sortUnique(arr.map(fn));

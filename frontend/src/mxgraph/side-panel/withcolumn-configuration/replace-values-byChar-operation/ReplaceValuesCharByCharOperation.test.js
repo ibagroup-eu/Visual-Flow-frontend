@@ -23,8 +23,9 @@ import { TextField } from '@material-ui/core';
 import ReplaceValuesCharByCharOperation from './ReplaceValuesCharByCharOperation';
 
 describe('ReplaceValuesCharByCharOperation', () => {
+    let defaultProps;
     const init = () => {
-        const defaultProps = {
+        defaultProps = {
             state: { 'option.oldChars': 'value1', 'option.newChars': 'value2' },
             ableToEdit: true,
             handleInputChange: jest.fn()
@@ -35,5 +36,27 @@ describe('ReplaceValuesCharByCharOperation', () => {
     it('should render without crashes', () => {
         const wrapper = init();
         expect(wrapper.find(TextField)).toHaveLength(2);
+    });
+
+    it('should render with empty value', () => {
+        const props = {
+            ...defaultProps,
+            state: {}
+        };
+
+        const wrapper = shallow(<ReplaceValuesCharByCharOperation {...props} />);
+        expect(wrapper.find(TextField)).toHaveLength(2);
+        expect(
+            wrapper
+                .find(TextField)
+                .at(0)
+                .prop('value')
+        ).toBe('');
+        expect(
+            wrapper
+                .find(TextField)
+                .at(1)
+                .prop('value')
+        ).toBe('');
     });
 });

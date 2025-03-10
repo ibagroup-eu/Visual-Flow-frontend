@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import SelectField from '../../../../components/select-field';
 import { READWRITE } from '../../../constants';
 
-const WriteMode = ({ disabled, value, onChange, storage }) => {
+const WriteMode = ({ disabled, value, onChange, storage, required }) => {
     const clickHouseWriteMode = [
         {
             value: 'Append',
@@ -37,7 +37,11 @@ const WriteMode = ({ disabled, value, onChange, storage }) => {
         ...clickHouseWriteMode,
         {
             value: 'ErrorIfExists',
-            label: 'Error if table exists'
+            label: 'Error if data exists'
+        },
+        {
+            value: 'Ignore',
+            label: 'Ignore'
         }
     ];
 
@@ -50,6 +54,8 @@ const WriteMode = ({ disabled, value, onChange, storage }) => {
             handleInputChange={onChange}
             menuItems={storage !== 'clickHouse' ? writeModes : clickHouseWriteMode}
             type={READWRITE}
+            required={required || false}
+            defaultValue={storage !== 'clickHouse' ? 'ErrorIfExists' : null}
         />
     );
 };
@@ -58,7 +64,8 @@ WriteMode.propTypes = {
     disabled: PropTypes.bool,
     value: PropTypes.string,
     onChange: PropTypes.func,
-    storage: PropTypes.string
+    storage: PropTypes.string,
+    required: PropTypes.bool
 };
 
 export default WriteMode;

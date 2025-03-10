@@ -111,7 +111,7 @@ describe('pipelines', () => {
     });
 
     it('should copy pipeline', () => {
-        const requestURL = `/project/${projectId}/${pipelineId}/copyPipeline`;
+        const requestURL = `/project/${projectId}/pipeline/${pipelineId}/copy`;
         const spy = jest.spyOn(axiosInstance, 'post').mockResolvedValue(expected);
         return pipelines.copyPipeline(projectId, pipelineId).then(result => {
             expect(result).toEqual(expected);

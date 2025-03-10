@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /*
  * Copyright (c) 2021 IBA Group, a.s. All rights reserved.
  *
@@ -35,7 +36,12 @@ import {
     setGraphDirty,
     setLogsModal,
     setSidePanel,
-    setZoomValue
+    setZoomValue,
+    setStageCopy,
+    setInteractiveMode,
+    getInteractiveJobSession,
+    interactiveSessionEvent,
+    clearInteractiveData
 } from '../redux/actions/mxGraphActions';
 import styles from './GraphDesigner.Styles';
 import DesignerToolbar from './toolbar/designer-toolbar';
@@ -55,10 +61,12 @@ import {
     CDC,
     CONTAINER,
     EDGE,
+    INTERACTIVE_SUCCEEDED,
     JOB,
     JOIN,
     PENDING,
     PIPELINE,
+    RUN_EVENT,
     RUNNING,
     SUSPENDED,
     WAIT
@@ -66,7 +74,13 @@ import {
 import LogsModal from '../pages/logs-modal';
 import { jobStagesByType } from './jobStages';
 import { pipelinesStagesByType } from './pipelinesStages';
-import { addStyles, findJobInstance, getNodeType, toObject } from './graph/utils';
+import {
+    addStyles,
+    findJobInstance,
+    getNodeType,
+    toObject,
+    isStageRunnable
+} from './graph/utils';
 import {
     activateCell,
     deactivateCell,
@@ -88,6 +102,8 @@ import {
     swapEdges
 } from './graph';
 import { setDefaultPopupMenuStyle } from './graph/styles';
+import InteractiveModeModal from '../components/inreractive-mode/Modal';
+import PopoverWithMessage from '../components/inreractive-mode/PopoverWithMessage';
 
 export class GraphDesigner extends Component {
     constructor(props) {
@@ -99,32 +115,56 @@ export class GraphDesigner extends Component {
         this.state = {
             graph: {},
             jobId: '',
+            jobName: '',
             nodeId: '',
             undoManagerConfig: {},
-            stageCopy: null,
             stages:
                 type === JOB ? jobStagesByType(theme) : pipelinesStagesByType(theme),
-            status: ''
+            status: '',
+            openMetadataModal: false,
+            operation: '',
+            openPopper: false,
+            popoverType: '',
+            popoverText: '',
+            anchorEl: null,
+            stageName: '',
+            outputData: {},
+            inputData: []
         };
 
         this.createPopupMenu = this.popupMenu.bind(this);
     }
 
     componentDidMount() {
-        const { data } = this.props;
+        const {
+            data,
+            type,
+            getJobSession,
+            runId,
+            toggleInteractiveMode
+        } = this.props;
+        const currentPath = history.location.pathname.split('/');
+        const currentProject = currentPath.slice(-2, -1)[0];
+        const currentJob = currentPath.slice(-1)[0];
+
+        toggleInteractiveMode(false);
+
+        if (type === JOB && runId) {
+            getJobSession(currentProject, currentJob, runId);
+        }
         this.loadGraph(data?.definition);
         document.addEventListener('keydown', this.handleKeyDown);
     }
 
     componentDidUpdate(prevProps) {
-        const { data, theme, type } = this.props;
+        const { data, theme, type, interactiveMode, jobStagesData } = this.props;
         const { graph, stages } = this.state;
 
         if (
-            !(
-                isEqual(data?.definition, prevProps.data?.definition) &&
-                isEqual(data?.jobsStatuses, prevProps.data?.jobsStatuses)
-            )
+            !isEqual(data?.definition, prevProps.data?.definition) ||
+            !isEqual(data?.jobsStatuses, prevProps.data?.jobsStatuses) ||
+            interactiveMode !== prevProps.interactiveMode ||
+            !isEqual(jobStagesData, prevProps.jobStagesData)
         ) {
             loadContent(
                 data?.definition,
@@ -132,7 +172,9 @@ export class GraphDesigner extends Component {
                 stages,
                 theme,
                 type,
-                data?.jobsStatuses
+                data?.jobsStatuses,
+                interactiveMode,
+                jobStagesData
             );
         }
 
@@ -153,12 +195,13 @@ export class GraphDesigner extends Component {
             jobStatus,
             pipelineStatus,
             sidePanelIsOpen,
-            currentCell
+            currentCell,
+            interactiveMode
         } = this.props;
         if (graph) {
             const status = type === JOB ? jobStatus : pipelineStatus;
             const that = this;
-            if ([PENDING, RUNNING, SUSPENDED].includes(status)) {
+            if (!interactiveMode && [PENDING, RUNNING, SUSPENDED].includes(status)) {
                 graph.setEnabled(false);
                 // eslint-disable-next-line no-param-reassign
                 graph.popupMenuHandler.factoryMethod = noop;
@@ -181,10 +224,10 @@ export class GraphDesigner extends Component {
     };
 
     pasteCopyHandler = (event, graph) => {
-        const { stageCopy, stages } = this.state;
-        const { theme } = this.props;
+        const { stages } = this.state;
+        const { stageCopy, theme } = this.props;
 
-        const valuesCopy = toObject(stageCopy.value.attributes);
+        const valuesCopy = toObject(stageCopy.data.value.attributes);
         const newPoint = graph.getPointForEvent(event);
 
         if (valuesCopy.operation === JOIN) {
@@ -197,12 +240,12 @@ export class GraphDesigner extends Component {
 
         graph.insertVertex(
             graph.getDefaultParent(),
-            stageCopy.target,
+            stageCopy.data.target,
             stageLabels(valuesCopy),
             newPoint.x,
             newPoint.y,
-            stageCopy.geometry.width,
-            stageCopy.geometry.height,
+            stageCopy.data.geometry.width,
+            stageCopy.data.geometry.height,
             addStyles({
                 fillColor: stages[valuesCopy.operation].color,
                 strokeColor: theme.palette.other.border
@@ -220,10 +263,10 @@ export class GraphDesigner extends Component {
             type,
             setCell,
             classes,
+            copyStage,
+            stageCopy,
             t
         } = this.props;
-
-        const { stageCopy } = this.state;
 
         const items = [
             {
@@ -264,7 +307,11 @@ export class GraphDesigner extends Component {
                 name: t('jobDesigner:stagePopupMenu.copyStage'),
                 visible: cell && !cell.edge,
                 onClick: () => {
-                    this.setState({ stageCopy: cell });
+                    copyStage({
+                        data: cell,
+                        project: this.getCurrentProject(),
+                        type
+                    });
                 }
             },
             {
@@ -280,7 +327,11 @@ export class GraphDesigner extends Component {
             },
             {
                 name: t('jobDesigner:stagePopupMenu.pasteStage'),
-                visible: !cell && stageCopy !== null,
+                visible:
+                    !cell &&
+                    stageCopy !== null &&
+                    stageCopy.project === this.getCurrentProject() &&
+                    stageCopy.type === type,
                 onClick: () => {
                     this.pasteCopyHandler(event, graph);
                     setDirtyGraph(true);
@@ -354,8 +405,39 @@ export class GraphDesigner extends Component {
         }
     };
 
+    getInputSchemas = (cell, jobStagesData) => {
+        const cellEdges = cell.edges.map(edge => edge.id);
+
+        if (cellEdges.length < 2) {
+            return undefined;
+        }
+
+        const inputIds = cell.parent.children
+            .filter(
+                c => c.edge && cellEdges.includes(c.id) && c.source.id !== cell.id
+            )
+            .map(el => ({ id: el.source.id, name: el.source.getAttribute('name') }));
+
+        return jobStagesData
+            .filter(el => inputIds.map(ids => ids.id).includes(el.id))
+            .map(el => ({
+                ...el,
+                name: inputIds.find(ids => ids.id === el.id)?.name
+            }));
+    };
+
     onClickListener = (sender, event) => {
-        const { jobs, data, setLogs } = this.props;
+        const {
+            jobs,
+            data,
+            setLogs,
+            jobStagesData,
+            sendInteractiveEvent,
+            runId
+        } = this.props;
+        const currentPath = history.location.pathname.split('/');
+        const currentProject = currentPath.slice(-2, -1)[0];
+        const currentJob = currentPath.slice(-1)[0];
 
         const cell = event.getProperty('cell');
 
@@ -363,13 +445,13 @@ export class GraphDesigner extends Component {
             const mouseEvent = event.getProperty('event');
 
             const nodeName = get(mouseEvent, 'target.nodeName', '');
-
             const nodeId =
                 nodeName === 'svg'
                     ? get(mouseEvent, 'target.id', '')
                     : get(mouseEvent, 'target.parentElement.id', '');
 
             const operation = cell.getAttribute('operation');
+            const jobName = cell.getAttribute('jobName');
 
             if (operation === JOB && cell.getAttribute('jobId') === nodeId) {
                 const jobId = get(findJobInstance(data.id, nodeId, jobs), 'id');
@@ -377,6 +459,7 @@ export class GraphDesigner extends Component {
                 this.setState({
                     jobId: jobId || nodeId,
                     nodeId: '',
+                    jobName,
                     status
                 });
                 setLogs(true);
@@ -386,11 +469,78 @@ export class GraphDesigner extends Component {
                 this.setState({ nodeId: cell.id });
                 setLogs(true);
             }
+
+            const stageData = this.getInteractiveModeStage(jobStagesData, cell.id);
+
+            if (typeof nodeId === 'string' && nodeId.startsWith('view-metadata')) {
+                const input = this.getInputSchemas(cell, jobStagesData);
+
+                this.setState({
+                    openMetadataModal: true,
+                    operation,
+                    stageName: cell.getAttribute('name'),
+                    outputData: stageData,
+                    inputData: input
+                });
+            }
+
+            const rowCount = stageData?.rowCount
+                ? new Intl.NumberFormat('de-DE').format(stageData?.rowCount)
+                : 'No row count available';
+            const errorMessage = stageData?.statusMessage || 'Unknown Error';
+            const isEligibleToRun = isStageRunnable(cell.id, data, jobStagesData);
+
+            if (typeof nodeId === 'string' && nodeId.startsWith('error')) {
+                this.setState(prevState => ({
+                    openPopper: !prevState.openPopper,
+                    popoverType: 'error',
+                    popoverText: errorMessage
+                }));
+
+                const anc = document.getElementById(nodeId);
+                this.setState({ anchorEl: anc });
+            }
+
+            if (typeof nodeId === 'string' && nodeId.startsWith('rowCount')) {
+                this.setState(prevState => ({
+                    openPopper: !prevState.openPopper,
+                    popoverType: 'message',
+                    popoverText: `Row count: ${rowCount}`
+                }));
+
+                const anc = document.getElementById(nodeId);
+                this.setState({ anchorEl: anc });
+            }
+
+            if (
+                typeof nodeId === 'string' &&
+                nodeId.startsWith('run-stage') &&
+                isEligibleToRun
+            ) {
+                const stageId = nodeId.split('run-stage-')[1];
+                sendInteractiveEvent(currentProject, currentJob, runId, {
+                    session: runId,
+                    command: RUN_EVENT,
+                    id: [stageId]
+                });
+            }
         }
     };
 
+    getInteractiveModeStage = (stages, id) => stages?.find(stage => stage.id === id);
+
     onConvertValueToStringListener = cell => {
-        const { theme, data, jobs, type, t, params, pipelines } = this.props;
+        const {
+            theme,
+            data,
+            jobs,
+            type,
+            t,
+            params,
+            pipelines,
+            interactiveMode,
+            jobStagesData
+        } = this.props;
 
         if (
             !mxUtils.isNode(cell.value) ||
@@ -409,6 +559,24 @@ export class GraphDesigner extends Component {
                 set(value, 'showLogs', true);
             }
         }
+
+        const stageData = this.getInteractiveModeStage(jobStagesData, cell.id);
+        const isRunEnabled = isStageRunnable(cell.id, data, jobStagesData);
+
+        if (stageData) {
+            set(value, 'rowCount', stageData.rowCount);
+            set(value, 'status', stageData.status);
+            set(value, 'statusMessage', stageData.statusMessage);
+            set(
+                value,
+                'isMetadataEnabled',
+                stageData.status === INTERACTIVE_SUCCEEDED
+            );
+        }
+
+        set(value, 'isRunEnabled', isRunEnabled);
+        set(value, 'interactiveMode', interactiveMode);
+        set(value, 'id', cell.id);
 
         return ReactDOMServer.renderToString(
             renderStage(value, t, type, jobs, params, pipelines, theme)
@@ -616,7 +784,14 @@ export class GraphDesigner extends Component {
 
     loadGraph = content => {
         const { stages } = this.state;
-        const { theme, type, data, setDirtyGraph } = this.props;
+        const {
+            theme,
+            type,
+            data,
+            setDirtyGraph,
+            interactiveMode,
+            jobStagesData
+        } = this.props;
 
         // eslint-disable-next-line react/no-find-dom-node
         const container = ReactDOM.findDOMNode(this.refGraph.current);
@@ -641,7 +816,9 @@ export class GraphDesigner extends Component {
                         stages,
                         theme,
                         type,
-                        data?.jobsStatuses
+                        data?.jobsStatuses,
+                        interactiveMode,
+                        jobStagesData
                     );
                 this.updateGraph(graph);
             });
@@ -683,7 +860,13 @@ export class GraphDesigner extends Component {
     };
 
     graphIsDisabled = value => {
-        const { jobStatus, pipelineStatus, type, data } = this.props;
+        const {
+            jobStatus,
+            pipelineStatus,
+            type,
+            data,
+            interactiveMode
+        } = this.props;
 
         const status = type === JOB ? jobStatus : pipelineStatus;
 
@@ -691,14 +874,26 @@ export class GraphDesigner extends Component {
             return true; // new job, parameters are active
         }
 
-        return [SUSPENDED, PENDING, RUNNING].includes(status) ? false : value;
+        return !interactiveMode && [SUSPENDED, PENDING, RUNNING].includes(status)
+            ? false
+            : value;
+    };
+
+    getCurrentProject = () => {
+        const currentPath = history?.location?.pathname?.split('/');
+        return currentPath ? currentPath.slice(-2, -1)[0] : '';
+    };
+
+    closePopoverHandler = () => {
+        this.setState({ anchorEl: null });
+        this.setState({ openPopper: false });
     };
 
     render() {
         const {
             classes,
             data,
-            param,
+            // param,
             type,
             zoomVal,
             panning,
@@ -707,28 +902,64 @@ export class GraphDesigner extends Component {
             setPanel,
             setDirtyGraph,
             setLogs,
-            setCell
+            setCell,
+            interactiveMode,
+            toggleInteractiveMode
         } = this.props;
-        const { graph, jobId, nodeId, undoManagerConfig, status } = this.state;
+        const {
+            graph,
+            jobId,
+            nodeId,
+            undoManagerConfig,
+            status,
+            jobName,
+            openMetadataModal,
+            operation,
+            openPopper,
+            popoverType,
+            popoverText,
+            anchorEl,
+            stageName,
+            outputData,
+            inputData
+        } = this.state;
+
         const currentPath = history.location.pathname.split('/');
-        const currentProject = currentPath.slice(-2, -1)[0];
         const currentJob = type === PIPELINE ? jobId : currentPath.slice(-1)[0];
+        const currentJobName = type === PIPELINE ? jobName : undefined;
 
         return (
             <div className={classes.root}>
+                <PopoverWithMessage
+                    open={openPopper}
+                    onClose={() => this.setState({ openPopper: false })}
+                    anchorEl={anchorEl}
+                    type={popoverType}
+                    text={popoverText}
+                />
+                <InteractiveModeModal
+                    open={openMetadataModal}
+                    onClose={() => this.setState({ openMetadataModal: false })}
+                    stageName={stageName}
+                    operation={operation}
+                    inputData={inputData}
+                    outputData={outputData}
+                />
                 <LogsModal
                     display={showLogsModal}
-                    projectId={currentProject}
+                    projectId={this.getCurrentProject()}
                     pipelineId={data.id}
                     nodeId={nodeId}
                     jobId={currentJob}
+                    jobName={currentJobName}
                     onClose={() => setLogs(false)}
                     status={status}
                 />
                 <Sidebar
                     graph={graph}
                     name={data?.name}
-                    ableToEdit={this.graphIsDisabled(param)}
+                    // ableToEdit={this.graphIsDisabled(param)}
+                    ableToEdit={this.graphIsDisabled(data.editable)}
                 />
                 <div className={classes.content}>
                     <DesignerToolbar
@@ -743,6 +974,8 @@ export class GraphDesigner extends Component {
                                 setShowModal={setLogs}
                                 setSidePanel={setPanel}
                                 sidePanelIsOpen={sidePanelIsOpen}
+                                interactiveMode={interactiveMode}
+                                toggleInteractiveMode={toggleInteractiveMode}
                             />
                         )}
                         {type === PIPELINE && (
@@ -811,7 +1044,7 @@ GraphDesigner.propTypes = {
     projectId: PropTypes.string,
     pipelineStatus: PropTypes.string,
     t: PropTypes.func,
-    param: PropTypes.bool,
+    // param: PropTypes.bool,
     sidePanelIsOpen: PropTypes.bool,
     type: PropTypes.string,
     zoomVal: PropTypes.number,
@@ -820,7 +1053,16 @@ GraphDesigner.propTypes = {
     jobs: PropTypes.array,
     pipelines: PropTypes.array,
     params: PropTypes.array,
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    copyStage: PropTypes.func,
+    stageCopy: PropTypes.object,
+    interactiveMode: PropTypes.bool,
+    toggleInteractiveMode: PropTypes.func,
+    getJobSession: PropTypes.func,
+    runId: PropTypes.string,
+    jobStagesData: PropTypes.array,
+    sendInteractiveEvent: PropTypes.func,
+    deleteInteractiveData: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -829,13 +1071,17 @@ const mapStateToProps = state => ({
     data: state.mxGraph.data,
     jobStatus: state.jobStatus.status,
     pipelineStatus: state.pipelineStatus.status,
-    param: state.pages.settingsParameters.editable,
+    // param: state.pages.settingsParameters.editable,
     zoomVal: state.mxGraph.zoomValue,
     jobs: state.pages.jobs.data.jobs,
     pipelines: state.pages.pipelines.data.pipelines,
     panning: state.mxGraph.panning,
     showLogsModal: state.mxGraph.showLogsModal,
-    params: state.pages.settingsParameters.params
+    params: state.pages.settingsParameters.params,
+    stageCopy: state.mxGraph.stageCopy,
+    interactiveMode: state.mxGraph.interactive.interactiveMode,
+    jobStagesData: state.mxGraph.interactive.data,
+    runId: state.pages.jobs.runId
 });
 
 const mapDispatchToProps = {
@@ -843,7 +1089,12 @@ const mapDispatchToProps = {
     setDirtyGraph: setGraphDirty,
     setPanel: setSidePanel,
     setCell: setCurrentCell,
-    zoomTo: setZoomValue
+    zoomTo: setZoomValue,
+    copyStage: setStageCopy,
+    toggleInteractiveMode: setInteractiveMode,
+    getJobSession: getInteractiveJobSession,
+    sendInteractiveEvent: interactiveSessionEvent,
+    deleteInteractiveData: clearInteractiveData
 };
 
 export default compose(

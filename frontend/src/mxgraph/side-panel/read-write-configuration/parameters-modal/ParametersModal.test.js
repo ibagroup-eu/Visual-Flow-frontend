@@ -22,6 +22,7 @@ import { mount, shallow } from 'enzyme';
 import ParametersModal from './ParametersModal';
 import { PageSkeleton } from '../../../../components/skeleton';
 import SearchInput from '../../../../components/search-input';
+import ParametersModalRow from './parameters-modal-row/ParametersModalRow';
 
 describe('ParametersModal', () => {
     let wrapper;
@@ -34,7 +35,7 @@ describe('ParametersModal', () => {
             onClose: jest.fn(),
             onSetValue: jest.fn(),
             loading: false,
-            parameters: { params: [{ key: 'test', secret: true }] },
+            params: [{ key: 'test', value: 'value', secret: true }],
             currentValue: ''
         };
 
@@ -43,6 +44,8 @@ describe('ParametersModal', () => {
 
     it('should render component', () => {
         expect(wrapper).toBeDefined();
+
+        expect(wrapper.find(ParametersModalRow)).toHaveLength(props.params.length);
     });
 
     it('should render PageSkeleton', () => {

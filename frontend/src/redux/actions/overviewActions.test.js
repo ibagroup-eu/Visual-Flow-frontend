@@ -22,11 +22,13 @@ import api from '../../api/projects';
 import {
     FETCH_RESOURCE_UTILIZATION_START,
     FETCH_RESOURCE_UTILIZATION_SUCCESS,
-    FETCH_RESOURCE_UTILIZATION_FAIL
+    FETCH_RESOURCE_UTILIZATION_FAIL,
+    GET_PROJECT_SUCCESS,
+    GET_PROJECT_FAIL
 } from './types';
 import jobApi from '../../api/jobs';
 import pipelineApi from '../../api/pipelines';
-import { DRAFT } from '../../mxgraph/constants';
+import { DATABRICKS, DRAFT } from '../../mxgraph/constants';
 
 describe('Overview actions', () => {
     const projectData = {
@@ -84,6 +86,31 @@ describe('Overview actions', () => {
             memory: 1
         }
     };
+    const transformDataDatabricks = {
+        jobsStat: {
+            Draft: 1,
+            Pending: 0,
+            Running: 0,
+            Succeeded: 0,
+            Failed: 0
+        },
+        pipelinesStat: {
+            Draft: 1,
+            Pending: 0,
+            Running: 0,
+            Succeeded: 0,
+            Failed: 0,
+            Error: 0,
+            Stopped: 0,
+            Suspended: 0,
+            Terminated: 0
+        },
+        description: 'description',
+        name: 'name',
+        demo: undefined,
+        demoLimits: undefined,
+        id: undefined
+    };
     let dispatch;
     describe('fetchResourceUtilization', () => {
         beforeEach(() => {
@@ -128,6 +155,12 @@ describe('Overview actions', () => {
                     [{ type: FETCH_RESOURCE_UTILIZATION_START }],
                     [
                         {
+                            type: GET_PROJECT_SUCCESS,
+                            payload: projectData
+                        }
+                    ],
+                    [
+                        {
                             type: FETCH_RESOURCE_UTILIZATION_SUCCESS,
                             payload: transformData
                         }
@@ -136,11 +169,36 @@ describe('Overview actions', () => {
             });
         });
 
+        it('should dispatch FETCH_RESOURCE_UTILIZATION_SUCCESS on success for DATABRICKS', () => {
+            Object.defineProperty(window, 'PLATFORM', {
+                value: DATABRICKS
+            });
+            return fetchResourceUtilization()(dispatch).then(() => {
+                expect(dispatch.mock.calls).toEqual([
+                    [{ type: FETCH_RESOURCE_UTILIZATION_START }],
+                    [
+                        {
+                            type: GET_PROJECT_SUCCESS,
+                            payload: projectData
+                        }
+                    ],
+                    [
+                        {
+                            type: FETCH_RESOURCE_UTILIZATION_SUCCESS,
+                            payload: transformDataDatabricks
+                        }
+                    ]
+                ]);
+            });
+        });
+
         it('should dispatch FETCH_RESOURCE_UTILIZATION_FAIL on failure', () => {
+            jest.spyOn(api, 'getProjectById').mockRejectedValue({});
             jest.spyOn(api, 'getResourceUtilization').mockRejectedValue({});
             return fetchResourceUtilization()(dispatch).then(() => {
                 expect(dispatch.mock.calls).toEqual([
                     [{ type: FETCH_RESOURCE_UTILIZATION_START }],
+                    [{ type: GET_PROJECT_FAIL, payload: { error: {} } }],
                     [
                         {
                             type: FETCH_RESOURCE_UTILIZATION_FAIL,

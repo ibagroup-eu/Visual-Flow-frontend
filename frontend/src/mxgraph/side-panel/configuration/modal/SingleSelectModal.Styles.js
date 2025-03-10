@@ -27,6 +27,14 @@ export default makeStyles(theme => ({
         width: '85vw',
         maxWidth: '100%'
     },
+    panel: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: theme.spacing(2),
+        margin: theme.spacing(0, 1, 3, 9)
+    },
     listContent: {
         overflow: 'auto',
         maxHeight: '45vh'
@@ -34,8 +42,8 @@ export default makeStyles(theme => ({
     search: {
         display: 'flex',
         justifyContent: 'space-between',
-        paddingBottom: theme.spacing(3),
-        width: '35%'
+        width: '35%',
+        minWidth: 275
     },
     jobCell: {
         width: '100%'

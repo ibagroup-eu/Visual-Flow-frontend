@@ -19,32 +19,26 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import SelectField from '../../../../components/select-field';
+import { useTranslation } from 'react-i18next';
 import { READWRITE } from '../../../constants';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
 
-const sslDropdown = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
+const Ssl = ({ ableToEdit, value, handleInputChange, connection }) => {
+    const { t } = useTranslation();
 
-const Ssl = ({ ableToEdit, value, handleInputChange, connection }) => (
-    <SelectField
-        ableToEdit={ableToEdit}
-        label="jobDesigner:readConfiguration.ssl"
-        name="ssl"
-        value={value}
-        handleInputChange={handleInputChange}
-        menuItems={sslDropdown}
-        type={READWRITE}
-        connection={connection}
-    />
-);
+    return (
+        <ParamsSwitchField
+            ableToEdit={ableToEdit}
+            label={t('jobDesigner:readConfiguration.ssl')}
+            name="ssl"
+            value={value}
+            onChange={handleInputChange}
+            connection={connection}
+            type={READWRITE}
+            defaultValue={false}
+        />
+    );
+};
 
 Ssl.propTypes = {
     ableToEdit: PropTypes.bool,

@@ -19,8 +19,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import RenderJobConfiguration from './RenderJobConfiguration';
-import { EDGE } from '../../constants';
+import { EDGE, READ } from '../../constants';
 import EdgeConfiguration from '../edge-configuration';
+import Configuration from '../configuration';
 
 describe('RenderJobConfiguration', () => {
     const graph = {
@@ -36,6 +37,21 @@ describe('RenderJobConfiguration', () => {
             <RenderJobConfiguration configuration={configuration} graph={graph} />
         );
         expect(wrapper.find(EdgeConfiguration).exists()).toBeTruthy();
+    });
+
+    it('should render READ component matching operation', () => {
+        const configuration = {
+            operation: READ
+        };
+
+        const wrapper = shallow(
+            <RenderJobConfiguration configuration={configuration} graph={graph} />
+        );
+        const configComp = wrapper.find(Configuration);
+        expect(configComp.exists()).toBeTruthy();
+        expect(configComp.prop('configuration')).toMatchObject({
+            operation: 'READ'
+        });
     });
 
     it('should not render when operation does not exist', () => {

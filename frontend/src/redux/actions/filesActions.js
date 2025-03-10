@@ -41,6 +41,7 @@ export const uploadFile = (projectId, filePath, file) => dispatch => {
                 type: UPLOAD_FILES_FAIL,
                 payload: { error }
             });
+            throw error;
         }
     );
 };

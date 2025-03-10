@@ -19,27 +19,33 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Box } from '@material-ui/core';
+import { TextField, Box, InputAdornment } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { has } from 'lodash';
+import classNames from 'classnames';
 import ClearButton from '../../mxgraph/side-panel/helpers/ClearButton';
 import useStyles from './SelectField.Styles';
 import getMenuItems from '../../mxgraph/side-panel/helpers/getMenuItems';
 import { READWRITE } from '../../mxgraph/constants';
+import getMenuItemsCluster from '../../mxgraph/side-panel/helpers/getMenuItemsCluster';
 
 const SelectField = ({
     ableToEdit,
     label,
     name,
     value,
+    adornment,
     handleInputChange,
     menuItems,
     type,
     defaultValue,
     required,
-    connection
+    connection,
+    className,
+    closeIcon = true
 }) => {
     const classes = useStyles();
+    const [selectedOptionObject, setSelectedOptionObject] = React.useState();
     const { t } = useTranslation();
     React.useEffect(() => {
         if (!value && defaultValue) {
@@ -55,6 +61,11 @@ const SelectField = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    React.useEffect(() => {
+        setSelectedOptionObject(menuItems?.find(item => item.value === value));
+    }, [value, menuItems]);
+
     return (
         <Box className={classes.wrapper}>
             <TextField
@@ -66,10 +77,14 @@ const SelectField = ({
                 select
                 SelectProps={{
                     MenuProps: {
-                        style: {
-                            maxHeight: 300
-                        }
-                    }
+                        className: classNames(classes.menu, className)
+                    },
+                    renderValue: () => selectedOptionObject?.label
+                }}
+                InputProps={{
+                    endAdornment: adornment && (
+                        <InputAdornment position="end">{adornment}</InputAdornment>
+                    )
                 }}
                 name={name}
                 value={value || ''}
@@ -84,15 +99,19 @@ const SelectField = ({
                 }
                 required={required}
             >
-                {getMenuItems(menuItems)}
+                {menuItems.length && menuItems[0].entity
+                    ? getMenuItemsCluster(menuItems)
+                    : getMenuItems(menuItems)}
             </TextField>
-            <ClearButton
-                name={name}
-                value={value}
-                ableToEdit={!has(connection, name) && ableToEdit}
-                handleInputChange={handleInputChange}
-                type={type}
-            />
+            {closeIcon && (
+                <ClearButton
+                    name={name}
+                    value={value}
+                    ableToEdit={!has(connection, name) && ableToEdit}
+                    handleInputChange={handleInputChange}
+                    type={type}
+                />
+            )}
         </Box>
     );
 };
@@ -102,12 +121,15 @@ SelectField.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     value: PropTypes.any,
+    adornment: PropTypes.string,
     handleInputChange: PropTypes.func,
     menuItems: PropTypes.array,
     type: PropTypes.string,
     defaultValue: PropTypes.string,
     required: PropTypes.bool,
-    connection: PropTypes.object
+    connection: PropTypes.object,
+    className: PropTypes.string,
+    closeIcon: PropTypes.bool
 };
 
 export default SelectField;

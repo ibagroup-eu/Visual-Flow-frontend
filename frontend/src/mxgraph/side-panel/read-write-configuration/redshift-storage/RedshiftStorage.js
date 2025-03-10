@@ -19,11 +19,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import ReadTextFields from '../../../../components/rw-text-fields';
 import WriteMode from '../helpers/WriteMode';
 import { WRITE, READ, READWRITE } from '../../../constants';
-import SelectField from '../../../../components/select-field';
 import Ssl from '../helpers/Ssl';
+import ParamsSwitchField from '../../../sidebar/params/fields/switch/ParamsSwitchField';
+import ReadWriteEditorField from '../../../../components/rw-editor-field';
 
 const fields = [
     [{ field: 'host' }, { field: 'port' }, { field: 'user' }],
@@ -37,121 +39,125 @@ const dataBaseField = [{ field: 'database' }];
 
 const field = [{ field: 'password' }];
 
-const booleanFields = [
-    {
-        value: 'true',
-        label: 'True'
-    },
-    {
-        value: 'false',
-        label: 'False'
-    }
-];
-
 const RedshiftStorage = ({
     inputValues,
     handleInputChange,
     openModal,
     ableToEdit,
     connectionPage,
-    connection
-}) => (
-    <>
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={fields[0]}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            required
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={field}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            hidden
-            required
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={dataBaseField}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            required
-        />
-        <Ssl
-            ableToEdit={ableToEdit}
-            value={inputValues.ssl}
-            handleInputChange={handleInputChange}
-            connection={connection}
-        />
-        <ReadTextFields
-            ableToEdit={ableToEdit}
-            fields={keyFields}
-            inputValues={inputValues}
-            handleInputChange={handleInputChange}
-            openModal={openModal}
-            connection={connection}
-            hidden
-            required
-        />
+    connection,
+    storageName
+}) => {
+    const { t } = useTranslation();
+    return (
+        <>
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={fields[0]}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                required
+            />
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={field}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                hidden
+                required
+            />
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={dataBaseField}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                required
+            />
+            <Ssl
+                ableToEdit={ableToEdit}
+                value={
+                    inputValues.ssl === undefined
+                        ? undefined
+                        : inputValues.ssl === 'true'
+                }
+                handleInputChange={handleInputChange}
+                connection={connection}
+            />
+            <ReadTextFields
+                ableToEdit={ableToEdit}
+                fields={keyFields}
+                inputValues={inputValues}
+                handleInputChange={handleInputChange}
+                openModal={openModal}
+                connection={connection}
+                hidden
+                required
+            />
 
-        {!connectionPage && (
-            <>
+            {!connectionPage && (
+                <>
+                    <ReadTextFields
+                        ableToEdit={ableToEdit}
+                        fields={fields[1]}
+                        inputValues={inputValues}
+                        handleInputChange={handleInputChange}
+                        openModal={openModal}
+                        required
+                    />
+                </>
+            )}
+            {inputValues.operation === READ && (
+                <ParamsSwitchField
+                    ableToEdit={ableToEdit}
+                    label={t('jobDesigner:readConfiguration.customSql')}
+                    name="customSql"
+                    value={
+                        inputValues.customSql === undefined
+                            ? undefined
+                            : inputValues.customSql === 'true'
+                    }
+                    onChange={handleInputChange}
+                    type={READWRITE}
+                    defaultValue={false}
+                />
+            )}
+            {(inputValues.customSql === 'false' ||
+                inputValues.operation === WRITE) && (
                 <ReadTextFields
                     ableToEdit={ableToEdit}
-                    fields={fields[1]}
+                    fields={fields[3]}
                     inputValues={inputValues}
                     handleInputChange={handleInputChange}
                     openModal={openModal}
-                    required
                 />
-            </>
-        )}
-        {inputValues.operation === READ && (
-            <SelectField
-                ableToEdit={ableToEdit}
-                label="jobDesigner:readConfiguration.customSql"
-                name="customSql"
-                value={inputValues.customSql}
-                handleInputChange={handleInputChange}
-                menuItems={booleanFields}
-                type={READWRITE}
-            />
-        )}
-        {(inputValues.customSql === 'false' || inputValues.operation === WRITE) && (
-            <ReadTextFields
-                ableToEdit={ableToEdit}
-                fields={fields[3]}
-                inputValues={inputValues}
-                handleInputChange={handleInputChange}
-                openModal={openModal}
-            />
-        )}
-        {inputValues.customSql === 'true' && inputValues.operation === READ && (
-            <ReadTextFields
-                ableToEdit={ableToEdit}
-                fields={[{ field: 'query', rows: 6 }]}
-                inputValues={inputValues}
-                handleInputChange={handleInputChange}
-                openModal={openModal}
-            />
-        )}
-        {inputValues.operation === WRITE && (
-            <WriteMode
-                disabled={!ableToEdit}
-                value={inputValues.writeMode}
-                onChange={handleInputChange}
-            />
-        )}
-    </>
-);
+            )}
+            {inputValues.customSql === 'true' && inputValues.operation === READ && (
+                <ReadWriteEditorField
+                    name="query"
+                    placeholder={t('jobDesigner:readConfiguration.query')}
+                    inputValues={inputValues}
+                    onChange={handleInputChange}
+                    ableToEdit={ableToEdit}
+                    openModal={openModal}
+                    storageName={storageName}
+                />
+            )}
+            {inputValues.operation === WRITE && (
+                <WriteMode
+                    disabled={!ableToEdit}
+                    value={inputValues.writeMode}
+                    onChange={handleInputChange}
+                />
+            )}
+        </>
+    );
+};
 
 RedshiftStorage.propTypes = {
     inputValues: PropTypes.object,
@@ -159,7 +165,8 @@ RedshiftStorage.propTypes = {
     openModal: PropTypes.func,
     ableToEdit: PropTypes.bool,
     connectionPage: PropTypes.bool,
-    connection: PropTypes.object
+    connection: PropTypes.object,
+    storageName: PropTypes.string
 };
 
 export default RedshiftStorage;

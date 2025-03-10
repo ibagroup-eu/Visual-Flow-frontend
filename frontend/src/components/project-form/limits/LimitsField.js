@@ -38,8 +38,12 @@ const LimitsField = ({
     return (
         <Grid item xs={12} sm={6}>
             <TextField
-                value={card.limits[id]}
-                disabled={project && (!editMode || !card.limits.editable)}
+                value={card[id]}
+                disabled={
+                    project &&
+                    (!editMode || !card.editable) &&
+                    card.editable !== undefined
+                }
                 required
                 id={id}
                 label={t(`jobs:${label}`)}
@@ -53,10 +57,10 @@ const LimitsField = ({
                 }}
                 onChange={handleChangeLimits}
                 helperText={
-                    !isPositiveNumber(Number(card.limits[id])) &&
+                    !isPositiveNumber(Number(card[id])) &&
                     t('main:validation.positive')
                 }
-                error={!isPositiveNumber(Number(card.limits[id]))}
+                error={!isPositiveNumber(Number(card[id]))}
             />
         </Grid>
     );
