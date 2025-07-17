@@ -103,3 +103,31 @@ f.e. in `backend/.env` file
 2. Setup dependencies: `npm install` / `npm ci`.
 3. Set necessary environment variables (at least `API_SERVER`, `NODE_ENV=production`),
 4. Run server in production mode: `npm run start:prod`.
+
+# How to develop a new connector
+
+1) Register new connector in [`constants.js`](./frontend/src/mxgraph/constants.js) under `COMMON_STORAGES`:
+   ```js
+   NEW_STORAGE: {
+     value: 'newStorage',
+     label: 'New Storage'
+   }
+   ```
+
+2) Create connector UI component in [`read-write-configuration`](./frontend/src/mxgraph/side-panel/read-write-configuration):
+  - Create a folder, e.g., `new-storage/`
+  - Inside, create a file `NewStorage.js` exporting a React component that defines your connector form.
+  - See existing examples like [`AwsStorage.js`](./frontend/src/mxgraph/side-panel/read-write-configuration/aws-storage/AwsStorage.js) or [`RedisStorage.js`](./frontend/src/mxgraph/side-panel/read-write-configuration/redis-storage/RedisStorage.js)
+
+3) Register connector component in [`ReadWriteConfiguration.js`](./frontend/src/mxgraph/side-panel/read-write-configuration/ReadWriteConfiguration.js):
+  - Import your new component:
+    ```js
+    import NewStorage from './new-storage/NewStorage';
+    ```
+  - Add a `case` inside `getStorageComponent()`:
+    ```js
+    case STORAGES.NEW_STORAGE.value:
+        return NewStorage;
+    ```
+
+4) After these steps, your connector will become available in the frontend UI.
